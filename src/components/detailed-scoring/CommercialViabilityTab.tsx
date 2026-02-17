@@ -18,7 +18,21 @@ interface Props {
 
 export function CommercialViabilityTab({ scoring, onUpdate, readonly }: Props) {
   const { t } = useI18n();
-  const [local, setLocal] = useState(scoring.commercialViability);
+  const defaultProjections = [
+    { year: 1, revenue: 0, costs: 0 },
+    { year: 2, revenue: 0, costs: 0 },
+    { year: 3, revenue: 0, costs: 0 },
+    { year: 4, revenue: 0, costs: 0 },
+    { year: 5, revenue: 0, costs: 0 },
+  ];
+  const [local, setLocal] = useState({
+    ...scoring.commercialViability,
+    pricingModel: scoring.commercialViability.pricingModel ?? "",
+    unitPrice: scoring.commercialViability.unitPrice ?? 0,
+    grossMargin: scoring.commercialViability.grossMargin ?? 0,
+    projections: scoring.commercialViability.projections ?? defaultProjections,
+    breakEvenUnits: scoring.commercialViability.breakEvenUnits ?? 0,
+  });
   const [dirty, setDirty] = useState(false);
 
   const updateField = <K extends keyof typeof local>(field: K, value: typeof local[K]) => {
