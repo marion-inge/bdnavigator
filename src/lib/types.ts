@@ -40,10 +40,17 @@ export interface RevenueProjection {
   costs: number;
 }
 
+export interface FeasibilityMilestone {
+  id: string;
+  name: string;
+  targetDate: string;
+  status: "planned" | "in_progress" | "completed" | "delayed";
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string };
-  feasibility: { score: number; details: string };
+  feasibility: { score: number; details: string; trl?: number; milestones?: FeasibilityMilestone[] };
   commercialViability: {
     score: number;
     details: string;
@@ -133,7 +140,7 @@ export function createDefaultDetailedScoring(): DetailedScoring {
       analysis: { tam: "", sam: "", targetCustomers: "", customerRelationship: "", competitors: "", competitivePosition: "" },
     },
     strategicFit: { score: 3, details: "" },
-    feasibility: { score: 3, details: "" },
+    feasibility: { score: 3, details: "", trl: 1, milestones: [] },
     commercialViability: {
       score: 3,
       details: "",

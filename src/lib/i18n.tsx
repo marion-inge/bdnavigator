@@ -130,6 +130,16 @@ const translations = {
     cvProjectionData: "Projection Data",
     cvBreakEvenUnits: "Break-Even Units",
     cvBreakEvenUnitsPlaceholder: "Number of units/customers needed to break even",
+    // Feasibility
+    feTrl: "Technology Readiness Level (TRL)",
+    feTimeline: "Development Timeline",
+    feAddMilestone: "Add Milestone",
+    feMilestoneName: "Milestone name",
+    feNoMilestones: "No milestones yet. Add milestones to track your development timeline.",
+    feStatusPlanned: "Planned",
+    feStatusInProgress: "In Progress",
+    feStatusCompleted: "Completed",
+    feStatusDelayed: "Delayed",
     // Business case
     investmentCost: "Investment Cost (€)",
     expectedRevenue: "Expected Annual Revenue (€)",
@@ -262,6 +272,16 @@ const translations = {
     cvProjectionData: "Projektionsdaten",
     cvBreakEvenUnits: "Break-Even Einheiten",
     cvBreakEvenUnitsPlaceholder: "Anzahl Einheiten/Kunden bis zum Break-Even",
+    // Feasibility
+    feTrl: "Technology Readiness Level (TRL)",
+    feTimeline: "Entwicklungs-Timeline",
+    feAddMilestone: "Meilenstein hinzufügen",
+    feMilestoneName: "Meilensteinname",
+    feNoMilestones: "Noch keine Meilensteine. Fügen Sie Meilensteine hinzu, um Ihre Entwicklungs-Timeline zu verfolgen.",
+    feStatusPlanned: "Geplant",
+    feStatusInProgress: "In Arbeit",
+    feStatusCompleted: "Abgeschlossen",
+    feStatusDelayed: "Verzögert",
     // Business case
     investmentCost: "Investitionskosten (€)",
     expectedRevenue: "Erwarteter Jahresumsatz (€)",
