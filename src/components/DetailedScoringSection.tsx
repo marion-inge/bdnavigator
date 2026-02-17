@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScoringOverviewTab } from "./detailed-scoring/ScoringOverviewTab";
 import { MarketAttractivenessTab } from "./detailed-scoring/MarketAttractivenessTab";
+import { CommercialViabilityTab } from "./detailed-scoring/CommercialViabilityTab";
 import { CriterionTab } from "./detailed-scoring/CriterionTab";
 import { Crosshair, Wrench, DollarSign, AlertTriangle } from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
@@ -73,18 +74,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
       </TabsContent>
 
       <TabsContent value="commercial">
-        <CriterionTab
-          criterionKey="commercialViability"
-          scoring={scoring}
-          onUpdate={handleUpdate}
-          readonly={readonly}
-          icon={DollarSign}
-          guidanceKeys={[
-            "guidance_cv_1" as TranslationKey,
-            "guidance_cv_2" as TranslationKey,
-            "guidance_cv_3" as TranslationKey,
-          ]}
-        />
+        <CommercialViabilityTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
       </TabsContent>
 
       <TabsContent value="risk">
