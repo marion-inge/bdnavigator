@@ -87,8 +87,8 @@ export default function Index() {
             <p className="text-muted-foreground">{t("noOpportunities")}</p>
           </div>
         ) : (
-          <div className="rounded-lg border border-border bg-card overflow-hidden">
-            <table className="w-full">
+          <div className="rounded-lg border border-border bg-card overflow-x-auto">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
