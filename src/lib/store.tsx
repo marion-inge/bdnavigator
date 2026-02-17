@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { Opportunity, createDefaultScoring, GateRecord, Stage, Scoring } from "./types";
+import { MOCK_OPPORTUNITIES } from "./mockData";
 
 interface StoreContextType {
   opportunities: Opportunity[];
@@ -18,7 +19,9 @@ const STORAGE_KEY = "bd-pipeline-opportunities";
 function loadOpportunities(): Opportunity[] {
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    if (data) return JSON.parse(data);
+    saveOpportunities(MOCK_OPPORTUNITIES);
+    return [...MOCK_OPPORTUNITIES];
   } catch {
     return [];
   }

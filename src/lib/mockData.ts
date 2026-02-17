@@ -1,0 +1,177 @@
+import { Opportunity, Scoring, GateRecord, Stage } from "./types";
+
+function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, comments?: Partial<Record<string, string>>): Scoring {
+  return {
+    marketAttractiveness: { id: "marketAttractiveness", score: ma, comment: comments?.marketAttractiveness ?? "" },
+    strategicFit: { id: "strategicFit", score: sf, comment: comments?.strategicFit ?? "" },
+    feasibility: { id: "feasibility", score: fe, comment: comments?.feasibility ?? "" },
+    commercialViability: { id: "commercialViability", score: cv, comment: comments?.commercialViability ?? "" },
+    risk: { id: "risk", score: ri, comment: comments?.risk ?? "" },
+  };
+}
+
+export const MOCK_OPPORTUNITIES: Opportunity[] = [
+  {
+    id: "opp-001",
+    title: "Autonomous Navigation Module for Container Ships",
+    description: "Development of an AI-driven navigation assistance module targeting mid-size container vessels. Leverages existing sensor technology and partners with classification societies for certification.",
+    market: "Marine",
+    owner: "Thomas Berger",
+    stage: "business_case",
+    scoring: scoring(5, 4, 3, 4, 2, {
+      marketAttractiveness: "Strong demand from major shipping lines for fuel-efficient autonomous solutions.",
+      strategicFit: "Aligns with our maritime digitalization roadmap.",
+      feasibility: "Requires sensor fusion expertise; prototype feasible within 12 months.",
+      risk: "Regulatory approval timelines uncertain in some flag states.",
+    }),
+    gates: [
+      {
+        id: "g-001",
+        gate: "gate1",
+        decision: "go",
+        comment: "Strong market pull confirmed. Proceed to full business case development.",
+        decider: "Dr. Claudia Weiss",
+        date: "2025-11-15T10:00:00Z",
+      },
+    ],
+    createdAt: "2025-09-20T08:30:00Z",
+  },
+  {
+    id: "opp-002",
+    title: "Hydrogen Fuel Cell Integration for Regional Rail",
+    description: "Retrofit solution for diesel regional trains with hydrogen fuel cell powertrains. Targeting European operators with aging fleets under decarbonization mandates.",
+    market: "Hydrogen",
+    owner: "Markus Schneider",
+    stage: "gate1",
+    scoring: scoring(4, 5, 3, 3, 3, {
+      marketAttractiveness: "EU Green Deal driving strong demand; multiple tenders expected 2026.",
+      strategicFit: "Core competency in powertrain engineering; direct fit.",
+      commercialViability: "High upfront cost; subsidies required for first deployments.",
+      risk: "Hydrogen supply chain maturity varies by region.",
+    }),
+    gates: [],
+    createdAt: "2025-10-05T14:20:00Z",
+  },
+  {
+    id: "opp-003",
+    title: "Predictive Maintenance Platform for Wind Turbines",
+    description: "Cloud-based vibration analytics platform for offshore wind turbine gearboxes. Uses edge sensors and ML models to predict failures 6 weeks in advance.",
+    market: "Energy",
+    owner: "Lisa Hoffmann",
+    stage: "scoring",
+    scoring: scoring(4, 3, 4, 4, 2, {
+      marketAttractiveness: "Offshore wind capacity growing 15% YoY in Europe.",
+      feasibility: "Existing sensor hardware can be reused; ML models in prototype.",
+    }),
+    gates: [],
+    createdAt: "2025-12-01T09:00:00Z",
+  },
+  {
+    id: "opp-004",
+    title: "Defense-Grade Underwater Communication System",
+    description: "Acoustic modem for NATO-standard submarine communication. Ultra-low latency, encrypted data links for unmanned underwater vehicles.",
+    market: "Defense",
+    owner: "Stefan Koch",
+    stage: "idea",
+    scoring: scoring(3, 4, 2, 3, 4, {
+      strategicFit: "Extends our underwater sensor portfolio.",
+      risk: "Long procurement cycles; export control restrictions.",
+    }),
+    gates: [],
+    createdAt: "2026-01-10T11:00:00Z",
+  },
+  {
+    id: "opp-005",
+    title: "Aviation Ground Support Robotics",
+    description: "Autonomous baggage handling and pushback robots for airport ramp operations. Reduces turnaround time by 20% and eliminates common ground damage incidents.",
+    market: "Aviation",
+    owner: "Anna Müller",
+    stage: "go_to_market",
+    scoring: scoring(5, 4, 4, 5, 1, {
+      marketAttractiveness: "Airport operators facing chronic labor shortages globally.",
+      commercialViability: "Strong ROI; payback within 18 months at major hubs.",
+      risk: "Low technical risk; proven components.",
+    }),
+    gates: [
+      {
+        id: "g-005a",
+        gate: "gate1",
+        decision: "go",
+        comment: "Excellent market fit. Fast-track to business case.",
+        decider: "Dr. Claudia Weiss",
+        date: "2025-07-20T09:00:00Z",
+      },
+      {
+        id: "g-005b",
+        gate: "gate2",
+        decision: "go",
+        comment: "Business case approved. Unit economics validated with Frankfurt Airport pilot.",
+        decider: "Michael Braun",
+        date: "2025-12-10T14:00:00Z",
+      },
+    ],
+    createdAt: "2025-05-15T07:30:00Z",
+  },
+  {
+    id: "opp-006",
+    title: "Rail Track Inspection Drone Service",
+    description: "Drone-based visual and thermal inspection service for railway infrastructure. Subscription model targeting European rail operators.",
+    market: "Rail",
+    owner: "Thomas Berger",
+    stage: "closed",
+    scoring: scoring(3, 2, 4, 2, 4, {
+      marketAttractiveness: "Niche market with strong incumbents.",
+      strategicFit: "Limited synergy with core portfolio.",
+      risk: "High competition from established inspection companies.",
+    }),
+    gates: [
+      {
+        id: "g-006",
+        gate: "gate1",
+        decision: "no-go",
+        comment: "Insufficient strategic fit and market differentiation. Recommend revisiting if drone regulations change significantly.",
+        decider: "Michael Braun",
+        date: "2026-01-25T16:00:00Z",
+      },
+    ],
+    createdAt: "2025-11-01T10:00:00Z",
+  },
+  {
+    id: "opp-007",
+    title: "Collaborative Welding Robot for Shipyards",
+    description: "Lightweight cobot solution for automated welding in confined ship compartments. Reduces manual welding hours by 40% while maintaining classification standards.",
+    market: "Robotics",
+    owner: "Lisa Hoffmann",
+    stage: "business_case",
+    scoring: scoring(4, 5, 3, 4, 2, {
+      marketAttractiveness: "Shipyards worldwide struggling with skilled welder shortage.",
+      strategicFit: "Perfect fit with our robotics and maritime divisions.",
+      feasibility: "Requires custom end-effector development; 18-month timeline.",
+    }),
+    gates: [
+      {
+        id: "g-007",
+        gate: "gate1",
+        decision: "go",
+        comment: "Clear differentiation in a growing niche. Approved for detailed business case.",
+        decider: "Dr. Claudia Weiss",
+        date: "2026-01-05T11:30:00Z",
+      },
+    ],
+    createdAt: "2025-10-20T13:00:00Z",
+  },
+  {
+    id: "opp-008",
+    title: "Smart Grid Battery Management System",
+    description: "Software platform for optimizing battery storage dispatch in industrial microgrids. AI-based forecasting for peak shaving and grid services revenue.",
+    market: "Energy",
+    owner: "Markus Schneider",
+    stage: "gate1",
+    scoring: scoring(4, 3, 4, 5, 2, {
+      marketAttractiveness: "Industrial energy storage market CAGR 25% through 2030.",
+      commercialViability: "SaaS model with recurring revenue; high margins after scale.",
+    }),
+    gates: [],
+    createdAt: "2025-12-15T08:00:00Z",
+  },
+];
