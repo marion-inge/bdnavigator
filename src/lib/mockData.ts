@@ -40,7 +40,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         },
       },
       strategicFit: { score: 4, details: "Core maritime digitalization strategy. Leverages existing sensor portfolio and marine engineering team. Extends our digital twin platform into autonomous operations. Minor gap: need to hire 2 ML engineers." },
-      feasibility: { score: 3, details: "Sensor fusion expertise in-house. Classification society (DNV) approval process initiated — 8 month timeline. Prototype hardware available. Software stack requires 6 months additional development." },
+      feasibility: { score: 3, details: "Sensor fusion expertise in-house. Classification society (DNV) approval process initiated — 8 month timeline. Prototype hardware available. Software stack requires 6 months additional development.", trl: 5, milestones: [
+        { id: "ms-001-1", name: "Sensor fusion prototype", targetDate: "2025-12-01", status: "completed" },
+        { id: "ms-001-2", name: "DNV certification submission", targetDate: "2026-03-15", status: "in_progress" },
+        { id: "ms-001-3", name: "Sea trial alpha", targetDate: "2026-06-01", status: "planned" },
+        { id: "ms-001-4", name: "Software stack v1.0", targetDate: "2026-08-15", status: "planned" },
+        { id: "ms-001-5", name: "DNV type approval", targetDate: "2026-10-01", status: "planned" },
+      ] },
       commercialViability: {
         score: 4,
         details: "SaaS + hardware model. €500K per vessel installation + €50K/year software license. 60% gross margin at 20+ installations. Break-even at 15 vessels.",
@@ -159,7 +165,12 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         },
       },
       strategicFit: { score: 4, details: "Strong robotics DNA from industrial division. Aviation domain expertise from 10+ years of consulting. Gap: need dedicated aviation sales team (3 FTEs)." },
-      feasibility: { score: 4, details: "Core navigation from warehouse robotics (TRL 8). Aviation safety certification (DO-178C) completed Q3 2025. Frankfurt pilot: 6 months, zero incidents, 22% turnaround improvement." },
+      feasibility: { score: 4, details: "Core navigation from warehouse robotics (TRL 8). Aviation safety certification (DO-178C) completed Q3 2025. Frankfurt pilot: 6 months, zero incidents, 22% turnaround improvement.", trl: 8, milestones: [
+        { id: "ms-005-1", name: "Warehouse robotics adaptation", targetDate: "2025-03-01", status: "completed" },
+        { id: "ms-005-2", name: "DO-178C certification", targetDate: "2025-09-30", status: "completed" },
+        { id: "ms-005-3", name: "Frankfurt airport pilot", targetDate: "2025-12-01", status: "completed" },
+        { id: "ms-005-4", name: "Production ramp-up", targetDate: "2026-02-01", status: "in_progress" },
+      ] },
       commercialViability: {
         score: 5,
         details: "RaaS model: €8K/robot/month (36-month contracts). COGS: €35K/robot. At 200 robots deployed: €19.2M ARR, 65% gross margin.",
@@ -243,7 +254,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         },
       },
       strategicFit: { score: 5, details: "Combines robotics division expertise with maritime division domain knowledge. CEO priority project — aligns with 'Smart Shipyard' strategic initiative." },
-      feasibility: { score: 3, details: "Cobot platform: UR20 off-the-shelf (TRL 9). Custom end-effector: design phase complete, prototype in 4 months. Total timeline: 18 months to market-ready." },
+      feasibility: { score: 3, details: "Cobot platform: UR20 off-the-shelf (TRL 9). Custom end-effector: design phase complete, prototype in 4 months. Total timeline: 18 months to market-ready.", trl: 4, milestones: [
+        { id: "ms-007-1", name: "End-effector design complete", targetDate: "2026-01-15", status: "completed" },
+        { id: "ms-007-2", name: "Prototype build", targetDate: "2026-05-01", status: "in_progress" },
+        { id: "ms-007-3", name: "Weld quality testing", targetDate: "2026-08-01", status: "planned" },
+        { id: "ms-007-4", name: "Shipyard field trial", targetDate: "2026-11-01", status: "planned" },
+        { id: "ms-007-5", name: "Classification approval", targetDate: "2027-03-01", status: "planned" },
+      ] },
       commercialViability: {
         score: 4,
         details: "System price: €150K. Gross margin: 55%. Recurring: €20K/year. Customer ROI: replaces 1.5 FTE welders — payback in 18 months.",
