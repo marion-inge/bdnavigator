@@ -71,6 +71,10 @@ const translations = {
     // Filters
     allStages: "All Stages",
     allIndustries: "All Industries",
+    allGeographies: "All Geographies",
+    allTechnologies: "All Technologies",
+    allOwners: "All Owners",
+    clearFilters: "Clear filters",
     createdAt: "Created",
     pipelineFunnel: "Pipeline Funnel",
     // Detailed scoring
@@ -155,6 +159,10 @@ const translations = {
     moveToBusinessCase: "Zum Business Case",
     allStages: "Alle Phasen",
     allIndustries: "Alle Branchen",
+    allGeographies: "Alle Geografien",
+    allTechnologies: "Alle Technologien",
+    allOwners: "Alle Verantwortlichen",
+    clearFilters: "Filter zurücksetzen",
     createdAt: "Erstellt",
     pipelineFunnel: "Pipeline-Funnel",
     // Detailed scoring
