@@ -34,11 +34,25 @@ export interface DetailedMarketAnalysis {
   competitivePosition: string;
 }
 
+export interface RevenueProjection {
+  year: number;
+  revenue: number;
+  costs: number;
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string };
   feasibility: { score: number; details: string };
-  commercialViability: { score: number; details: string };
+  commercialViability: {
+    score: number;
+    details: string;
+    pricingModel: string;
+    unitPrice: number;
+    grossMargin: number;
+    projections: RevenueProjection[];
+    breakEvenUnits: number;
+  };
   risk: { score: number; details: string };
 }
 
@@ -120,7 +134,21 @@ export function createDefaultDetailedScoring(): DetailedScoring {
     },
     strategicFit: { score: 3, details: "" },
     feasibility: { score: 3, details: "" },
-    commercialViability: { score: 3, details: "" },
+    commercialViability: {
+      score: 3,
+      details: "",
+      pricingModel: "",
+      unitPrice: 0,
+      grossMargin: 0,
+      projections: [
+        { year: 1, revenue: 0, costs: 0 },
+        { year: 2, revenue: 0, costs: 0 },
+        { year: 3, revenue: 0, costs: 0 },
+        { year: 4, revenue: 0, costs: 0 },
+        { year: 5, revenue: 0, costs: 0 },
+      ],
+      breakEvenUnits: 0,
+    },
     risk: { score: 3, details: "" },
   };
 }
