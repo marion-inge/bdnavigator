@@ -56,9 +56,25 @@ export interface RiskItem {
   mitigation: string;
 }
 
+export interface AlignmentDimension {
+  key: string;
+  label: string;
+  current: number; // 1-5 current capability
+  required: number; // 1-5 required level
+}
+
+export interface CapabilityGap {
+  id: string;
+  capability: string;
+  currentLevel: number; // 1-5
+  requiredLevel: number; // 1-5
+  action: string;
+  priority: "high" | "medium" | "low";
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
-  strategicFit: { score: number; details: string };
+  strategicFit: { score: number; details: string; alignmentDimensions?: AlignmentDimension[]; capabilityGaps?: CapabilityGap[] };
   feasibility: { score: number; details: string; trl?: number; milestones?: FeasibilityMilestone[] };
   commercialViability: {
     score: number;
@@ -148,7 +164,7 @@ export function createDefaultDetailedScoring(): DetailedScoring {
       score: 3,
       analysis: { tam: "", sam: "", targetCustomers: "", customerRelationship: "", competitors: "", competitivePosition: "" },
     },
-    strategicFit: { score: 3, details: "" },
+    strategicFit: { score: 3, details: "", alignmentDimensions: [], capabilityGaps: [] },
     feasibility: { score: 3, details: "", trl: 1, milestones: [] },
     commercialViability: {
       score: 3,

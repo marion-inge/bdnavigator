@@ -7,6 +7,7 @@ import { MarketAttractivenessTab } from "./detailed-scoring/MarketAttractiveness
 import { CommercialViabilityTab } from "./detailed-scoring/CommercialViabilityTab";
 import { FeasibilityTab } from "./detailed-scoring/FeasibilityTab";
 import { RiskTab } from "./detailed-scoring/RiskTab";
+import { StrategicFitTab } from "./detailed-scoring/StrategicFitTab";
 import { CriterionTab } from "./detailed-scoring/CriterionTab";
 import { Crosshair, Wrench, DollarSign, AlertTriangle } from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
@@ -46,18 +47,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
       </TabsContent>
 
       <TabsContent value="strategic">
-        <CriterionTab
-          criterionKey="strategicFit"
-          scoring={scoring}
-          onUpdate={handleUpdate}
-          readonly={readonly}
-          icon={Crosshair}
-          guidanceKeys={[
-            "guidance_sf_1" as TranslationKey,
-            "guidance_sf_2" as TranslationKey,
-            "guidance_sf_3" as TranslationKey,
-          ]}
-        />
+        <StrategicFitTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
       </TabsContent>
 
       <TabsContent value="feasibility">
