@@ -55,10 +55,12 @@
     --sidebar-ring: 200 60% 55%;
 
     --stage-idea: 215 50% 30%;
-    --stage-scoring: 200 60% 45%;
+    --stage-rough-scoring: 200 60% 45%;
     --stage-gate1: 38 90% 50%;
-    --stage-business-case: 170 50% 40%;
+    --stage-detailed-scoring: 260 45% 55%;
     --stage-gate2: 280 40% 50%;
+    --stage-business-case: 170 50% 40%;
+    --stage-gate3: 320 45% 50%;
     --stage-gtm: 145 55% 40%;
     --stage-closed: 220 10% 60%;
   }

@@ -63,7 +63,7 @@ export default function Index() {
 
       <main className="mx-auto max-w-6xl px-6 py-6 space-y-6">
         {/* Stage dashboard */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3">
           {STAGE_ORDER.map((stage) => (
             <button
               key={stage}

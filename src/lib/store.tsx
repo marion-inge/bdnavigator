@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, GateRecord, Stage, Scoring } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultDetailedScoring, createDefaultBusinessCase, GateRecord, Stage, Scoring, DetailedScoring, BusinessCase } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 
 interface StoreContextType {
@@ -9,6 +9,8 @@ interface StoreContextType {
   deleteOpportunity: (id: string) => void;
   getOpportunity: (id: string) => Opportunity | undefined;
   updateScoring: (id: string, scoring: Scoring) => void;
+  updateDetailedScoring: (id: string, detailedScoring: DetailedScoring) => void;
+  updateBusinessCase: (id: string, businessCase: BusinessCase) => void;
   addGateDecision: (id: string, gate: GateRecord) => void;
 }
 
@@ -77,9 +79,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const updateScoring = useCallback(
     (id: string, scoring: Scoring) => {
-      persist(
-        opportunities.map((o) => (o.id === id ? { ...o, scoring } : o))
-      );
+      persist(opportunities.map((o) => (o.id === id ? { ...o, scoring } : o)));
+    },
+    [opportunities, persist]
+  );
+
+  const updateDetailedScoring = useCallback(
+    (id: string, detailedScoring: DetailedScoring) => {
+      persist(opportunities.map((o) => (o.id === id ? { ...o, detailedScoring } : o)));
+    },
+    [opportunities, persist]
+  );
+
+  const updateBusinessCase = useCallback(
+    (id: string, businessCase: BusinessCase) => {
+      persist(opportunities.map((o) => (o.id === id ? { ...o, businessCase } : o)));
     },
     [opportunities, persist]
   );
@@ -92,13 +106,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const gates = [...o.gates, gate];
           let stage: Stage = o.stage;
           if (gate.gate === "gate1") {
-            if (gate.decision === "go") stage = "business_case";
+            if (gate.decision === "go") stage = "detailed_scoring";
             else if (gate.decision === "no-go") stage = "closed";
           } else if (gate.gate === "gate2") {
+            if (gate.decision === "go") stage = "business_case";
+            else if (gate.decision === "no-go") stage = "closed";
+          } else if (gate.gate === "gate3") {
             if (gate.decision === "go") stage = "go_to_market";
             else if (gate.decision === "no-go") stage = "closed";
           }
-          return { ...o, gates, stage };
+          // Initialize defaults when advancing
+          const updates: Partial<Opportunity> = { gates, stage };
+          if (stage === "detailed_scoring" && !o.detailedScoring) {
+            updates.detailedScoring = createDefaultDetailedScoring();
+          }
+          if (stage === "business_case" && !o.businessCase) {
+            updates.businessCase = createDefaultBusinessCase();
+          }
+          return { ...o, ...updates };
         })
       );
     },
@@ -107,7 +132,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ opportunities, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, addGateDecision }}
+      value={{ opportunities, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision }}
     >
       {children}
     </StoreContext.Provider>
