@@ -9,7 +9,8 @@ import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, TrendingUp, RotateCcw } from "lucide-react";
 
 export default function Index() {
   const { opportunities } = useStore();
@@ -77,6 +78,17 @@ export default function Index() {
             <h1 className="text-xl font-bold text-card-foreground">{t("appTitle")}</h1>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                localStorage.removeItem("bd-pipeline-opportunities");
+                window.location.reload();
+              }}
+              title="Reset Data"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
             <LanguageSwitch />
             <NewOpportunityDialog />
           </div>
