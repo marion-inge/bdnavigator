@@ -46,31 +46,55 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
 
   return (
     <div className="space-y-6">
-      {/* Decision history */}
+      {/* Decision timeline */}
       {gates.length > 0 ? (
-        <div className="space-y-3">
-          {gates.map((g) => (
-            <div key={g.id} className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center gap-2 mb-2">
-                {decisionIcons[g.decision]}
-                <span className="font-semibold text-card-foreground">
-                  {t(g.gate === "gate1" ? "stage_gate1" : "stage_gate2")}
-                </span>
-                <span className={`ml-auto rounded-full px-2 py-0.5 text-xs font-medium ${
-                  g.decision === "go" ? "bg-success/10 text-success" :
-                  g.decision === "hold" ? "bg-warning/10 text-warning" :
-                  "bg-destructive/10 text-destructive"
-                }`}>
-                  {t(g.decision === "no-go" ? "noGo" : g.decision as any)}
-                </span>
+        <div className="relative ml-4 border-l-2 border-border pl-6 space-y-8">
+          {gates.map((g, i) => {
+            const colorClass =
+              g.decision === "go" ? "bg-success border-success" :
+              g.decision === "hold" ? "bg-warning border-warning" :
+              "bg-destructive border-destructive";
+            const badgeClass =
+              g.decision === "go" ? "bg-success/10 text-success" :
+              g.decision === "hold" ? "bg-warning/10 text-warning" :
+              "bg-destructive/10 text-destructive";
+
+            return (
+              <div key={g.id} className="relative">
+                {/* Timeline dot */}
+                <div className={`absolute -left-[calc(1.5rem+5px)] top-1 h-3 w-3 rounded-full border-2 ${colorClass}`} />
+
+                <div className="rounded-lg border border-border bg-card p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {decisionIcons[g.decision]}
+                      <span className="font-semibold text-card-foreground">
+                        {t(g.gate === "gate1" ? "stage_gate1" : "stage_gate2")}
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badgeClass}`}>
+                        {t(g.decision === "no-go" ? "noGo" : g.decision as any)}
+                      </span>
+                    </div>
+                    <time className="text-sm font-medium text-muted-foreground">
+                      {new Date(g.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
+                    </time>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="font-medium text-card-foreground">{g.decider}</span>
+                    <span>·</span>
+                    <span>{t("decider")}</span>
+                  </div>
+
+                  {g.comment && (
+                    <p className="text-sm text-muted-foreground border-t border-border pt-2 mt-2">
+                      {g.comment}
+                    </p>
+                  )}
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">{g.comment}</p>
-              <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-                <span>{t("decider")}: {g.decider}</span>
-                <span>{new Date(g.date).toLocaleDateString()}</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">{t("noDecisions")}</p>
