@@ -10,7 +10,7 @@ import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, TrendingUp, RotateCcw } from "lucide-react";
+import { Search, TrendingUp, RotateCcw, X } from "lucide-react";
 
 export default function Index() {
   const { opportunities } = useStore();
@@ -18,6 +18,10 @@ export default function Index() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
+  const [industryFilter, setIndustryFilter] = useState<string>("all");
+  const [geographyFilter, setGeographyFilter] = useState<string>("all");
+  const [technologyFilter, setTechnologyFilter] = useState<string>("all");
+  const [ownerFilter, setOwnerFilter] = useState<string>("all");
 
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -26,15 +30,18 @@ export default function Index() {
     return counts;
   }, [opportunities]);
 
-  // Cumulative funnel: how many opportunities have reached or passed each stage
+  // Unique values for filters
+  const uniqueIndustries = useMemo(() => [...new Set(opportunities.map((o) => o.industry).filter(Boolean))].sort(), [opportunities]);
+  const uniqueGeographies = useMemo(() => [...new Set(opportunities.map((o) => o.geography).filter(Boolean))].sort(), [opportunities]);
+  const uniqueTechnologies = useMemo(() => [...new Set(opportunities.map((o) => o.technology).filter(Boolean))].sort(), [opportunities]);
+  const uniqueOwners = useMemo(() => [...new Set(opportunities.map((o) => o.owner).filter(Boolean))].sort(), [opportunities]);
+
   const funnelData = useMemo(() => {
     return STAGE_ORDER.filter((s) => s !== "closed").map((stage) => {
       const stageIdx = STAGE_ORDER.indexOf(stage);
       const count = opportunities.filter((o) => {
         const oppIdx = STAGE_ORDER.indexOf(o.stage);
-        // closed opportunities count toward the stage they reached (based on gates)
         if (o.stage === "closed") {
-          // Find the furthest gate they passed
           const maxGateIdx = o.gates.reduce((max, g) => {
             const gIdx = STAGE_ORDER.indexOf(g.gate);
             return gIdx > max ? gIdx : max;
@@ -58,21 +65,35 @@ export default function Index() {
           o.technology.toLowerCase().includes(search.toLowerCase()) ||
           o.owner.toLowerCase().includes(search.toLowerCase());
         const matchesStage = stageFilter === "all" || o.stage === stageFilter;
-        return matchesSearch && matchesStage;
+        const matchesIndustry = industryFilter === "all" || o.industry === industryFilter;
+        const matchesGeography = geographyFilter === "all" || o.geography === geographyFilter;
+        const matchesTechnology = technologyFilter === "all" || o.technology === technologyFilter;
+        const matchesOwner = ownerFilter === "all" || o.owner === ownerFilter;
+        return matchesSearch && matchesStage && matchesIndustry && matchesGeography && matchesTechnology && matchesOwner;
       })
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [opportunities, search, stageFilter]);
+  }, [opportunities, search, stageFilter, industryFilter, geographyFilter, technologyFilter, ownerFilter]);
 
-  const stageOptions: { value: string; label: string }[] = [
+  const stageOptions = [
     { value: "all", label: t("allStages") },
     ...STAGE_ORDER.map((s) => ({ value: s, label: t(`stage_${s}` as any) })),
   ];
 
+  const hasActiveFilters = stageFilter !== "all" || industryFilter !== "all" || geographyFilter !== "all" || technologyFilter !== "all" || ownerFilter !== "all";
+
+  const clearAllFilters = () => {
+    setStageFilter("all");
+    setIndustryFilter("all");
+    setGeographyFilter("all");
+    setTechnologyFilter("all");
+    setOwnerFilter("all");
+    setSearch("");
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-6xl px-6 py-5 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
               <TrendingUp className="h-5 w-5 text-primary-foreground" />
@@ -97,10 +118,7 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-6 space-y-6">
-        {/* Stage dashboard tiles removed — funnel is the primary overview */}
-
-        {/* Pipeline Funnel */}
+      <main className="mx-auto max-w-7xl px-6 py-6 space-y-6">
         <PipelineFunnel
           data={funnelData}
           activeStage={stageFilter}
@@ -108,28 +126,87 @@ export default function Index() {
         />
 
         {/* Filters */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t("search")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
-            />
+        <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-card-foreground">{t("search")}</h3>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-xs text-muted-foreground">
+                <X className="h-3 w-3 mr-1" />
+                {t("clearFilters")}
+              </Button>
+            )}
           </div>
-          <Select value={stageFilter} onValueChange={setStageFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {stageOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={t("search")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <Select value={stageFilter} onValueChange={setStageFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("allStages")} />
+              </SelectTrigger>
+              <SelectContent>
+                {stageOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={industryFilter} onValueChange={setIndustryFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("allIndustries")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("allIndustries")}</SelectItem>
+                {uniqueIndustries.map((v) => (
+                  <SelectItem key={v} value={v}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={geographyFilter} onValueChange={setGeographyFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("allGeographies")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("allGeographies")}</SelectItem>
+                {uniqueGeographies.map((v) => (
+                  <SelectItem key={v} value={v}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={technologyFilter} onValueChange={setTechnologyFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("allTechnologies")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("allTechnologies")}</SelectItem>
+                {uniqueTechnologies.map((v) => (
+                  <SelectItem key={v} value={v}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={ownerFilter} onValueChange={setOwnerFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("allOwners")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("allOwners")}</SelectItem>
+                {uniqueOwners.map((v) => (
+                  <SelectItem key={v} value={v}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Table */}
@@ -140,36 +217,18 @@ export default function Index() {
           </div>
         ) : (
           <div className="rounded-lg border border-border bg-card overflow-x-auto">
-            <table className="w-full min-w-[600px]">
+            <table className="w-full min-w-[900px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("title")}
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("industry")}
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("geography")}
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("technology")}
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("owner")}
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("stage")}
-                  </th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("roughScoring")}
-                  </th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("detailedScoring")}
-                  </th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("paybackPeriod")}
-                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("geography")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("technology")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("detailedScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("paybackPeriod")}</th>
                 </tr>
               </thead>
               <tbody>
