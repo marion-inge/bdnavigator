@@ -27,7 +27,8 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
 
   const canDecideGate1 = currentStage === "gate1";
   const canDecideGate2 = currentStage === "gate2";
-  const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : null;
+  const canDecideGate3 = currentStage === "gate3";
+  const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : canDecideGate3 ? "gate3" : null;
 
   const handleSubmit = () => {
     if (!activeGate || !decider.trim()) return;
@@ -44,12 +45,17 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
     setDecision("go");
   };
 
+  const gateLabel = (gate: string) => {
+    if (gate === "gate1") return t("stage_gate1");
+    if (gate === "gate2") return t("stage_gate2");
+    return t("stage_gate3");
+  };
+
   return (
     <div className="space-y-6">
-      {/* Decision timeline */}
       {gates.length > 0 ? (
         <div className="relative ml-4 border-l-2 border-border pl-6 space-y-8">
-          {gates.map((g, i) => {
+          {gates.map((g) => {
             const colorClass =
               g.decision === "go" ? "bg-success border-success" :
               g.decision === "hold" ? "bg-warning border-warning" :
@@ -61,16 +67,12 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
 
             return (
               <div key={g.id} className="relative">
-                {/* Timeline dot */}
                 <div className={`absolute -left-[calc(1.5rem+5px)] top-1 h-3 w-3 rounded-full border-2 ${colorClass}`} />
-
                 <div className="rounded-lg border border-border bg-card p-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {decisionIcons[g.decision]}
-                      <span className="font-semibold text-card-foreground">
-                        {t(g.gate === "gate1" ? "stage_gate1" : "stage_gate2")}
-                      </span>
+                      <span className="font-semibold text-card-foreground">{gateLabel(g.gate)}</span>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badgeClass}`}>
                         {t(g.decision === "no-go" ? "noGo" : g.decision as any)}
                       </span>
@@ -79,17 +81,13 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
                       {new Date(g.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
                     </time>
                   </div>
-
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span className="font-medium text-card-foreground">{g.decider}</span>
                     <span>·</span>
                     <span>{t("decider")}</span>
                   </div>
-
                   {g.comment && (
-                    <p className="text-sm text-muted-foreground border-t border-border pt-2 mt-2">
-                      {g.comment}
-                    </p>
+                    <p className="text-sm text-muted-foreground border-t border-border pt-2 mt-2">{g.comment}</p>
                   )}
                 </div>
               </div>
@@ -100,20 +98,16 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
         <p className="text-sm text-muted-foreground">{t("noDecisions")}</p>
       )}
 
-      {/* New decision form */}
       {activeGate && (
         <div className="rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 p-5 space-y-4">
           <h4 className="font-semibold text-foreground">
-            {t("gateDecision")}: {t(activeGate === "gate1" ? "stage_gate1" : "stage_gate2")}
+            {t("gateDecision")}: {gateLabel(activeGate)}
           </h4>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">{t("decision")}</label>
               <Select value={decision} onValueChange={(v) => setDecision(v as GateDecision)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="go">{t("go")}</SelectItem>
                   <SelectItem value="hold">{t("hold")}</SelectItem>
@@ -126,15 +120,11 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision }: G
               <Input value={decider} onChange={(e) => setDecider(e.target.value)} />
             </div>
           </div>
-
           <div>
             <label className="text-sm font-medium text-foreground mb-1.5 block">{t("decisionComment")}</label>
             <Textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} />
           </div>
-
-          <Button onClick={handleSubmit} disabled={!decider.trim()}>
-            {t("submitDecision")}
-          </Button>
+          <Button onClick={handleSubmit} disabled={!decider.trim()}>{t("submitDecision")}</Button>
         </div>
       )}
     </div>

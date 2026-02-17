@@ -3,10 +3,12 @@ import { Stage } from "@/lib/types";
 
 const stageColors: Record<Stage, string> = {
   idea: "bg-stage-idea",
-  scoring: "bg-stage-scoring",
+  rough_scoring: "bg-stage-rough-scoring",
   gate1: "bg-stage-gate1",
-  business_case: "bg-stage-business-case",
+  detailed_scoring: "bg-stage-detailed-scoring",
   gate2: "bg-stage-gate2",
+  business_case: "bg-stage-business-case",
+  gate3: "bg-stage-gate3",
   go_to_market: "bg-stage-gtm",
   closed: "bg-stage-closed",
 };

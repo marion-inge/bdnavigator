@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
+import { DetailedScoringSection } from "@/components/DetailedScoringSection";
+import { BusinessCaseSection } from "@/components/BusinessCaseSection";
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
@@ -13,7 +15,7 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, addGateDecision, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateOpportunity, deleteOpportunity } = useStore();
   const { t } = useI18n();
 
   const opp = getOpportunity(id!);
@@ -27,12 +29,20 @@ export default function OpportunityDetail() {
 
   const totalScore = calculateTotalScore(opp.scoring);
 
-  const canMoveToScoring = opp.stage === "idea";
-  const canMoveToGate1 = opp.stage === "scoring";
-  const canMoveToGate2 = opp.stage === "business_case";
+  const canMoveToRoughScoring = opp.stage === "idea";
+  const canMoveToGate1 = opp.stage === "rough_scoring";
+  const canMoveToGate2 = opp.stage === "detailed_scoring";
+  const canMoveToGate3 = opp.stage === "business_case";
 
   const handleAdvanceStage = (stage: Stage) => {
-    updateOpportunity(opp.id, { stage });
+    const updates: Partial<typeof opp> = { stage };
+    if (stage === "detailed_scoring" && !opp.detailedScoring) {
+      updates.detailedScoring = createDefaultDetailedScoring();
+    }
+    if (stage === "business_case" && !opp.businessCase) {
+      updates.businessCase = createDefaultBusinessCase();
+    }
+    updateOpportunity(opp.id, updates);
   };
 
   const handleDelete = () => {
@@ -42,7 +52,6 @@ export default function OpportunityDetail() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -68,9 +77,11 @@ export default function OpportunityDetail() {
 
       <main className="mx-auto max-w-5xl px-6 py-6">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
+          <TabsList className="flex-wrap">
             <TabsTrigger value="overview">{t("overview")}</TabsTrigger>
-            <TabsTrigger value="scoring">{t("scoring")}</TabsTrigger>
+            <TabsTrigger value="scoring">{t("roughScoring")}</TabsTrigger>
+            <TabsTrigger value="detailed_scoring">{t("detailedScoring")}</TabsTrigger>
+            <TabsTrigger value="business_case">{t("businessCase")}</TabsTrigger>
             <TabsTrigger value="gates">{t("stageGates")}</TabsTrigger>
           </TabsList>
 
@@ -104,15 +115,14 @@ export default function OpportunityDetail() {
                   <p className="text-xs text-muted-foreground mt-1">/ 5.0</p>
                 </div>
 
-                {/* Stage advancement buttons */}
                 <div className="rounded-lg border border-border bg-card p-5 space-y-3">
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("stage")}</label>
                   <div className="flex items-center gap-2">
                     <StageBadge stage={opp.stage} />
                   </div>
-                  {canMoveToScoring && (
-                    <Button size="sm" onClick={() => handleAdvanceStage("scoring")}>
-                      {t("moveToScoring")}
+                  {canMoveToRoughScoring && (
+                    <Button size="sm" onClick={() => handleAdvanceStage("rough_scoring")}>
+                      {t("moveToRoughScoring")}
                     </Button>
                   )}
                   {canMoveToGate1 && (
@@ -125,6 +135,11 @@ export default function OpportunityDetail() {
                       → {t("stage_gate2")}
                     </Button>
                   )}
+                  {canMoveToGate3 && (
+                    <Button size="sm" onClick={() => handleAdvanceStage("gate3")}>
+                      → {t("stage_gate3")}
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -134,6 +149,22 @@ export default function OpportunityDetail() {
             <ScoringSection
               scoring={opp.scoring}
               onSave={(scoring) => updateScoring(opp.id, scoring)}
+              readonly={opp.stage === "closed"}
+            />
+          </TabsContent>
+
+          <TabsContent value="detailed_scoring">
+            <DetailedScoringSection
+              detailedScoring={opp.detailedScoring}
+              onSave={(ds) => updateDetailedScoring(opp.id, ds)}
+              readonly={opp.stage === "closed"}
+            />
+          </TabsContent>
+
+          <TabsContent value="business_case">
+            <BusinessCaseSection
+              businessCase={opp.businessCase}
+              onSave={(bc) => updateBusinessCase(opp.id, bc)}
               readonly={opp.stage === "closed"}
             />
           </TabsContent>

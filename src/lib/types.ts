@@ -1,9 +1,11 @@
 export type Stage =
   | "idea"
-  | "scoring"
+  | "rough_scoring"
   | "gate1"
-  | "business_case"
+  | "detailed_scoring"
   | "gate2"
+  | "business_case"
+  | "gate3"
   | "go_to_market"
   | "closed";
 
@@ -23,9 +25,36 @@ export interface Scoring {
   risk: ScoringCriterion;
 }
 
+export interface DetailedMarketAnalysis {
+  tam: string;
+  sam: string;
+  targetCustomers: string;
+  customerRelationship: string;
+  competitors: string;
+  competitivePosition: string;
+}
+
+export interface DetailedScoring {
+  marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
+  strategicFit: { score: number; details: string };
+  feasibility: { score: number; details: string };
+  commercialViability: { score: number; details: string };
+  risk: { score: number; details: string };
+}
+
+export interface BusinessCase {
+  investmentCost: number;
+  expectedRevenue: number;
+  roi: number;
+  breakEvenMonths: number;
+  paybackPeriod: number;
+  npv: number;
+  notes: string;
+}
+
 export interface GateRecord {
   id: string;
-  gate: "gate1" | "gate2";
+  gate: "gate1" | "gate2" | "gate3";
   decision: GateDecision;
   comment: string;
   decider: string;
@@ -40,6 +69,8 @@ export interface Opportunity {
   owner: string;
   stage: Stage;
   scoring: Scoring;
+  detailedScoring?: DetailedScoring;
+  businessCase?: BusinessCase;
   gates: GateRecord[];
   createdAt: string;
 }
@@ -57,7 +88,7 @@ export function calculateTotalScore(scoring: Scoring): number {
   let totalWeight = 0;
   let weightedSum = 0;
   for (const [key, weight] of entries) {
-    const score = key === "risk" ? 6 - scoring[key].score : scoring[key].score; // risk: lower is better → invert
+    const score = key === "risk" ? 6 - scoring[key].score : scoring[key].score;
     weightedSum += score * weight;
     totalWeight += weight;
   }
@@ -79,12 +110,39 @@ export function createDefaultScoring(): Scoring {
   };
 }
 
+export function createDefaultDetailedScoring(): DetailedScoring {
+  return {
+    marketAttractiveness: {
+      score: 3,
+      analysis: { tam: "", sam: "", targetCustomers: "", customerRelationship: "", competitors: "", competitivePosition: "" },
+    },
+    strategicFit: { score: 3, details: "" },
+    feasibility: { score: 3, details: "" },
+    commercialViability: { score: 3, details: "" },
+    risk: { score: 3, details: "" },
+  };
+}
+
+export function createDefaultBusinessCase(): BusinessCase {
+  return {
+    investmentCost: 0,
+    expectedRevenue: 0,
+    roi: 0,
+    breakEvenMonths: 0,
+    paybackPeriod: 0,
+    npv: 0,
+    notes: "",
+  };
+}
+
 export const STAGE_ORDER: Stage[] = [
   "idea",
-  "scoring",
+  "rough_scoring",
   "gate1",
-  "business_case",
+  "detailed_scoring",
   "gate2",
+  "business_case",
+  "gate3",
   "go_to_market",
   "closed",
 ];
