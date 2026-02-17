@@ -25,13 +25,42 @@ export interface Scoring {
   risk: ScoringCriterion;
 }
 
+export interface CustomerSegment {
+  name: string;
+  size: number; // percentage or absolute
+  description: string;
+}
+
+export interface CompetitorEntry {
+  name: string;
+  marketShare: number; // percentage
+  threatLevel: number; // 1-5
+}
+
+export interface GeographicalRegion {
+  region: string;
+  potential: number; // 1-5
+  marketSize: string;
+  notes: string;
+}
+
 export interface DetailedMarketAnalysis {
+  // Marktpotential
   tam: string;
+  tamDescription: string;
   sam: string;
+  samDescription: string;
+  marketGrowthRate: string;
+  // Customer Landscape
   targetCustomers: string;
   customerRelationship: string;
+  customerSegments: CustomerSegment[];
+  // Competitor Landscape
   competitors: string;
   competitivePosition: string;
+  competitorEntries: CompetitorEntry[];
+  // Geographical Focus
+  geographicalRegions: GeographicalRegion[];
 }
 
 export interface RevenueProjection {
@@ -162,7 +191,7 @@ export function createDefaultDetailedScoring(): DetailedScoring {
   return {
     marketAttractiveness: {
       score: 3,
-      analysis: { tam: "", sam: "", targetCustomers: "", customerRelationship: "", competitors: "", competitivePosition: "" },
+      analysis: { tam: "", tamDescription: "", sam: "", samDescription: "", marketGrowthRate: "", targetCustomers: "", customerRelationship: "", customerSegments: [], competitors: "", competitivePosition: "", competitorEntries: [], geographicalRegions: [] },
     },
     strategicFit: { score: 3, details: "", alignmentDimensions: [], capabilityGaps: [] },
     feasibility: { score: 3, details: "", trl: 1, milestones: [] },
