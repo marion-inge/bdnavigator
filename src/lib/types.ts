@@ -65,7 +65,9 @@ export interface Opportunity {
   id: string;
   title: string;
   description: string;
-  market: string;
+  industry: string;
+  geography: string;
+  technology: string;
   owner: string;
   stage: Stage;
   scoring: Scoring;
