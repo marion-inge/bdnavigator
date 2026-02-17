@@ -62,7 +62,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         ],
         breakEvenUnits: 15,
       },
-      risk: { score: 2, details: "Regulatory risk manageable — DNV partnership de-risks certification. Technical risk moderate — sensor fusion proven in defense applications." },
+      risk: { score: 2, details: "Regulatory risk manageable — DNV partnership de-risks certification. Technical risk moderate — sensor fusion proven in defense applications.", riskItems: [
+        { id: "ri-001-1", name: "DNV certification delay", category: "regulatory", probability: 3, impact: 4, mitigation: "Engage DNV early, parallel submission tracks for different flag states." },
+        { id: "ri-001-2", name: "Sensor fusion accuracy", category: "technical", probability: 2, impact: 3, mitigation: "Proven in defense; iterative testing with real vessel data." },
+        { id: "ri-001-3", name: "Flag state divergence", category: "regulatory", probability: 4, impact: 3, mitigation: "Focus on early-adopter flag states (Norway, Singapore) first." },
+        { id: "ri-001-4", name: "Competitor price war", category: "market", probability: 2, impact: 4, mitigation: "Differentiate on AI-first approach and lower retrofit cost." },
+        { id: "ri-001-5", name: "Integration complexity", category: "execution", probability: 3, impact: 2, mitigation: "Modular architecture; pre-integration testing protocol." },
+      ] },
     },
     businessCase: {
       investmentCost: 5000000,
@@ -186,7 +192,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         ],
         breakEvenUnits: 50,
       },
-      risk: { score: 1, details: "Technical: proven in pilot (TRL 8). Regulatory: DO-178C certified. Market: strong demand validated." },
+      risk: { score: 1, details: "Technical: proven in pilot (TRL 8). Regulatory: DO-178C certified. Market: strong demand validated.", riskItems: [
+        { id: "ri-005-1", name: "Airport regulatory changes", category: "regulatory", probability: 1, impact: 3, mitigation: "DO-178C certification already achieved. Active participation in EASA working groups." },
+        { id: "ri-005-2", name: "Robot malfunction on ramp", category: "technical", probability: 1, impact: 5, mitigation: "Triple-redundant safety systems. 6-month pilot with zero incidents." },
+        { id: "ri-005-3", name: "Scaling production", category: "execution", probability: 2, impact: 3, mitigation: "Contract manufacturing partnership with Foxconn. Buffer stock strategy." },
+      ] },
     },
     businessCase: {
       investmentCost: 8000000,
@@ -276,7 +286,12 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         ],
         breakEvenUnits: 20,
       },
-      risk: { score: 2, details: "Technical: confined-space navigation is novel but simulation results promising (98.5% collision avoidance). Market: welder shortage is structural." },
+      risk: { score: 2, details: "Technical: confined-space navigation is novel but simulation results promising (98.5% collision avoidance). Market: welder shortage is structural.", riskItems: [
+        { id: "ri-007-1", name: "Confined-space navigation failure", category: "technical", probability: 3, impact: 5, mitigation: "Simulation results at 98.5% collision avoidance. Additional LiDAR backup sensor planned." },
+        { id: "ri-007-2", name: "Weld quality rejection", category: "technical", probability: 2, impact: 4, mitigation: "Pre-qualification with DNV and Lloyd's Register. Extensive testing protocol." },
+        { id: "ri-007-3", name: "Classification society resistance", category: "regulatory", probability: 3, impact: 4, mitigation: "Early engagement with DNV, BV, and Lloyd's. Joint R&D project proposed." },
+        { id: "ri-007-4", name: "Skilled operator shortage", category: "execution", probability: 2, impact: 2, mitigation: "Intuitive UI design. 2-day training program. Remote support capability." },
+      ] },
     },
     gates: [
       { id: "g-007", gate: "gate1", decision: "go", comment: "Clear differentiation in a growing niche. Welder shortage is structural. Approved for detailed analysis.", decider: "Dr. Claudia Weiss", date: "2026-01-05T11:30:00Z" },

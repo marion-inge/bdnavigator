@@ -6,6 +6,7 @@ import { ScoringOverviewTab } from "./detailed-scoring/ScoringOverviewTab";
 import { MarketAttractivenessTab } from "./detailed-scoring/MarketAttractivenessTab";
 import { CommercialViabilityTab } from "./detailed-scoring/CommercialViabilityTab";
 import { FeasibilityTab } from "./detailed-scoring/FeasibilityTab";
+import { RiskTab } from "./detailed-scoring/RiskTab";
 import { CriterionTab } from "./detailed-scoring/CriterionTab";
 import { Crosshair, Wrench, DollarSign, AlertTriangle } from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
@@ -68,18 +69,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
       </TabsContent>
 
       <TabsContent value="risk">
-        <CriterionTab
-          criterionKey="risk"
-          scoring={scoring}
-          onUpdate={handleUpdate}
-          readonly={readonly}
-          icon={AlertTriangle}
-          guidanceKeys={[
-            "guidance_ri_1" as TranslationKey,
-            "guidance_ri_2" as TranslationKey,
-            "guidance_ri_3" as TranslationKey,
-          ]}
-        />
+        <RiskTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
       </TabsContent>
     </Tabs>
   );
