@@ -3,6 +3,8 @@ import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 interface ScoringProps {
   scoring: Scoring;
@@ -44,17 +46,27 @@ export function ScoringSection({ scoring, onSave, readonly }: ScoringProps) {
         {criteriaKeys.map((key) => (
           <div key={key} className="rounded-lg border border-border bg-card p-4">
             <div className="flex items-center justify-between mb-3">
-              <div>
+              <div className="flex items-center gap-2">
                 <h4 className="font-medium text-card-foreground">
                   {t(key as any)}
                   {key === "risk" && (
                     <span className="ml-2 text-xs text-muted-foreground">{t("riskNote")}</span>
                   )}
                 </h4>
-                <span className="text-xs text-muted-foreground">
-                  {t("weight")}: {SCORING_WEIGHTS[key]}
-                </span>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs text-sm">
+                      {t(`tooltip_${key}` as any)}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
+              <span className="text-xs text-muted-foreground">
+                {t("weight")}: {SCORING_WEIGHTS[key]}
+              </span>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((val) => (
                   <button
