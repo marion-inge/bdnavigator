@@ -17,6 +17,13 @@ export default function Index() {
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
 
+  const stageCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const s of STAGE_ORDER) counts[s] = 0;
+    for (const o of opportunities) counts[o.stage] = (counts[o.stage] || 0) + 1;
+    return counts;
+  }, [opportunities]);
+
   const filtered = useMemo(() => {
     return opportunities
       .filter((o) => {
@@ -54,7 +61,24 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-6">
+      <main className="mx-auto max-w-6xl px-6 py-6 space-y-6">
+        {/* Stage dashboard */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+          {STAGE_ORDER.map((stage) => (
+            <button
+              key={stage}
+              onClick={() => setStageFilter(stageFilter === stage ? "all" : stage)}
+              className={`rounded-lg border p-3 text-center transition-colors cursor-pointer ${
+                stageFilter === stage
+                  ? "border-primary bg-primary/10"
+                  : "border-border bg-card hover:bg-muted/50"
+              }`}
+            >
+              <p className="text-2xl font-bold text-primary">{stageCounts[stage]}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">{t(`stage_${stage}` as any)}</p>
+            </button>
+          ))}
+        </div>
         {/* Filters */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1 max-w-sm">
