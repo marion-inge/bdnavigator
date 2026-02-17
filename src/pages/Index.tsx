@@ -6,6 +6,7 @@ import { calculateTotalScore, Stage, STAGE_ORDER } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
+import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, TrendingUp } from "lucide-react";
@@ -23,6 +24,27 @@ export default function Index() {
     for (const o of opportunities) counts[o.stage] = (counts[o.stage] || 0) + 1;
     return counts;
   }, [opportunities]);
+
+  // Cumulative funnel: how many opportunities have reached or passed each stage
+  const funnelData = useMemo(() => {
+    return STAGE_ORDER.filter((s) => s !== "closed").map((stage) => {
+      const stageIdx = STAGE_ORDER.indexOf(stage);
+      const count = opportunities.filter((o) => {
+        const oppIdx = STAGE_ORDER.indexOf(o.stage);
+        // closed opportunities count toward the stage they reached (based on gates)
+        if (o.stage === "closed") {
+          // Find the furthest gate they passed
+          const maxGateIdx = o.gates.reduce((max, g) => {
+            const gIdx = STAGE_ORDER.indexOf(g.gate);
+            return gIdx > max ? gIdx : max;
+          }, 0);
+          return maxGateIdx >= stageIdx;
+        }
+        return oppIdx >= stageIdx;
+      }).length;
+      return { stage, label: t(`stage_${stage}` as any), count };
+    });
+  }, [opportunities, t]);
 
   const filtered = useMemo(() => {
     return opportunities
@@ -79,6 +101,10 @@ export default function Index() {
             </button>
           ))}
         </div>
+
+        {/* Pipeline Funnel */}
+        <PipelineFunnel data={funnelData} />
+
         {/* Filters */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1 max-w-sm">
