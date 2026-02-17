@@ -99,7 +99,11 @@ export default function Index() {
         {/* Stage dashboard tiles removed — funnel is the primary overview */}
 
         {/* Pipeline Funnel */}
-        <PipelineFunnel data={funnelData} />
+        <PipelineFunnel
+          data={funnelData}
+          activeStage={stageFilter}
+          onStageClick={(stage) => setStageFilter(stageFilter === stage ? "all" : stage)}
+        />
 
         {/* Filters */}
         <div className="flex items-center gap-3 mb-6">
