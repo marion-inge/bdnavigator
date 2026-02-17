@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, createDefaultStrategicAnalyses } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
 import { DetailedScoringSection } from "@/components/DetailedScoringSection";
 import { BusinessCaseSection } from "@/components/BusinessCaseSection";
 import { GateDecisionSection } from "@/components/GateDecisionSection";
+import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,6 +84,7 @@ export default function OpportunityDetail() {
             <TabsTrigger value="detailed_scoring">{t("detailedScoring")}</TabsTrigger>
             <TabsTrigger value="business_case">{t("businessCase")}</TabsTrigger>
             <TabsTrigger value="gates">{t("stageGates")}</TabsTrigger>
+            <TabsTrigger value="strategic_analyses">{t("saTab")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -182,6 +184,14 @@ export default function OpportunityDetail() {
               gates={opp.gates}
               currentStage={opp.stage}
               onSubmitDecision={(gate) => addGateDecision(opp.id, gate)}
+            />
+          </TabsContent>
+
+          <TabsContent value="strategic_analyses">
+            <StrategicAnalysesSection
+              strategicAnalyses={opp.strategicAnalyses}
+              onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
+              readonly={opp.stage === "closed"}
             />
           </TabsContent>
         </Tabs>

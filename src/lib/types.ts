@@ -136,6 +136,40 @@ export interface GateRecord {
   date: string; // ISO date
 }
 
+export interface StrategicAnalyses {
+  ansoff: { position: string; description: string; rationale: string };
+  bcg: { position: string; description: string; rationale: string };
+  mckinsey: { position: string; description: string; rationale: string };
+  swot: {
+    strengths: string;
+    weaknesses: string;
+    opportunities: string;
+    threats: string;
+    description: string;
+    rationale: string;
+  };
+  pestel: {
+    political: string;
+    economic: string;
+    social: string;
+    technological: string;
+    environmental: string;
+    legal: string;
+    description: string;
+    rationale: string;
+  };
+}
+
+export function createDefaultStrategicAnalyses(): StrategicAnalyses {
+  return {
+    ansoff: { position: "", description: "", rationale: "" },
+    bcg: { position: "", description: "", rationale: "" },
+    mckinsey: { position: "", description: "", rationale: "" },
+    swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
+    pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
+  };
+}
+
 export interface Opportunity {
   id: string;
   title: string;
@@ -148,6 +182,7 @@ export interface Opportunity {
   scoring: Scoring;
   detailedScoring?: DetailedScoring;
   businessCase?: BusinessCase;
+  strategicAnalyses?: StrategicAnalyses;
   gates: GateRecord[];
   createdAt: string;
 }
