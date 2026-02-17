@@ -162,13 +162,26 @@ export default function Index() {
                     {t("stage")}
                   </th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("score")}
+                    {t("roughScoring")}
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t("detailedScoring")}
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t("paybackPeriod")}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((opp) => {
-                  const score = calculateTotalScore(opp.scoring);
+                  const roughScore = calculateTotalScore(opp.scoring);
+                  const ds = opp.detailedScoring;
+                  const detailedScore = ds
+                    ? Math.round(
+                        ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
+                      ) / 10
+                    : null;
+                  const payback = opp.businessCase?.paybackPeriod;
                   return (
                     <tr
                       key={opp.id}
@@ -186,7 +199,13 @@ export default function Index() {
                         <StageBadge stage={opp.stage} />
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-primary">{score.toFixed(1)}</span>
+                        <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="font-semibold text-primary">{detailedScore !== null ? detailedScore.toFixed(1) : "—"}</span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="font-semibold text-card-foreground">{payback ? `${payback} mo` : "—"}</span>
                       </td>
                     </tr>
                   );
