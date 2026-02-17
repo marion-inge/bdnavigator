@@ -84,23 +84,7 @@ export default function Index() {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-6 space-y-6">
-        {/* Stage dashboard */}
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3">
-          {STAGE_ORDER.map((stage) => (
-            <button
-              key={stage}
-              onClick={() => setStageFilter(stageFilter === stage ? "all" : stage)}
-              className={`rounded-lg border p-3 text-center transition-colors cursor-pointer ${
-                stageFilter === stage
-                  ? "border-primary bg-primary/10"
-                  : "border-border bg-card hover:bg-muted/50"
-              }`}
-            >
-              <p className="text-2xl font-bold text-primary">{stageCounts[stage]}</p>
-              <p className="text-xs text-muted-foreground mt-0.5 truncate">{t(`stage_${stage}` as any)}</p>
-            </button>
-          ))}
-        </div>
+        {/* Stage dashboard tiles removed — funnel is the primary overview */}
 
         {/* Pipeline Funnel */}
         <PipelineFunnel data={funnelData} />
