@@ -70,6 +70,7 @@ const translations = {
     allStages: "All Stages",
     allMarkets: "All Markets",
     createdAt: "Created",
+    pipelineFunnel: "Pipeline Funnel",
     // Detailed scoring
     tam: "TAM (Total Addressable Market)",
     sam: "SAM (Serviceable Addressable Market)",
@@ -151,6 +152,7 @@ const translations = {
     allStages: "Alle Phasen",
     allMarkets: "Alle Märkte",
     createdAt: "Erstellt",
+    pipelineFunnel: "Pipeline-Funnel",
     // Detailed scoring
     tam: "TAM (Gesamter adressierbarer Markt)",
     sam: "SAM (Erreichbarer Markt)",
