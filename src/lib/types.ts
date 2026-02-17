@@ -47,6 +47,15 @@ export interface FeasibilityMilestone {
   status: "planned" | "in_progress" | "completed" | "delayed";
 }
 
+export interface RiskItem {
+  id: string;
+  name: string;
+  category: "market" | "technical" | "regulatory" | "execution" | "financial";
+  probability: number; // 1-5
+  impact: number; // 1-5
+  mitigation: string;
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string };
@@ -60,7 +69,7 @@ export interface DetailedScoring {
     projections: RevenueProjection[];
     breakEvenUnits: number;
   };
-  risk: { score: number; details: string };
+  risk: { score: number; details: string; riskItems?: RiskItem[] };
 }
 
 export interface BusinessCase {
@@ -156,7 +165,7 @@ export function createDefaultDetailedScoring(): DetailedScoring {
       ],
       breakEvenUnits: 0,
     },
-    risk: { score: 3, details: "" },
+    risk: { score: 3, details: "", riskItems: [] },
   };
 }
 
