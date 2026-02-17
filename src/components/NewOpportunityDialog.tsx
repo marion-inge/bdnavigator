@@ -19,15 +19,19 @@ export function NewOpportunityDialog() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [market, setMarket] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [geography, setGeography] = useState("");
+  const [technology, setTechnology] = useState("");
   const [owner, setOwner] = useState("");
 
   const handleCreate = () => {
     if (!title.trim()) return;
-    addOpportunity({ title: title.trim(), description, market, owner });
+    addOpportunity({ title: title.trim(), description, industry, geography, technology, owner });
     setTitle("");
     setDescription("");
-    setMarket("");
+    setIndustry("");
+    setGeography("");
+    setTechnology("");
     setOwner("");
     setOpen(false);
   };
@@ -55,8 +59,16 @@ export function NewOpportunityDialog() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("market")}</label>
-              <Input value={market} onChange={(e) => setMarket(e.target.value)} placeholder="e.g. Marine, Aviation" />
+              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("industry")}</label>
+              <Input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Marine, Aviation" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("geography")}</label>
+              <Input value={geography} onChange={(e) => setGeography(e.target.value)} placeholder="e.g. Europe, APAC" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("technology")}</label>
+              <Input value={technology} onChange={(e) => setTechnology(e.target.value)} placeholder="e.g. AI, Robotics" />
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">{t("owner")}</label>

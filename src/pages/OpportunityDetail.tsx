@@ -62,7 +62,7 @@ export default function OpportunityDetail() {
               <h1 className="text-xl font-bold text-card-foreground">{opp.title}</h1>
               <div className="flex items-center gap-3 mt-1">
                 <StageBadge stage={opp.stage} />
-                {opp.market && <span className="text-sm text-muted-foreground">{opp.market}</span>}
+                {opp.industry && <span className="text-sm text-muted-foreground">{opp.industry}</span>}
               </div>
             </div>
           </div>
@@ -94,8 +94,16 @@ export default function OpportunityDetail() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("market")}</label>
-                    <p className="mt-1 text-sm text-card-foreground">{opp.market || "—"}</p>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("industry")}</label>
+                    <p className="mt-1 text-sm text-card-foreground">{opp.industry || "—"}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("geography")}</label>
+                    <p className="mt-1 text-sm text-card-foreground">{opp.geography || "—"}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("technology")}</label>
+                    <p className="mt-1 text-sm text-card-foreground">{opp.technology || "—"}</p>
                   </div>
                   <div>
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("owner")}</label>

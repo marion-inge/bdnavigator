@@ -53,7 +53,9 @@ export default function Index() {
         const matchesSearch =
           !search ||
           o.title.toLowerCase().includes(search.toLowerCase()) ||
-          o.market.toLowerCase().includes(search.toLowerCase()) ||
+          o.industry.toLowerCase().includes(search.toLowerCase()) ||
+          o.geography.toLowerCase().includes(search.toLowerCase()) ||
+          o.technology.toLowerCase().includes(search.toLowerCase()) ||
           o.owner.toLowerCase().includes(search.toLowerCase());
         const matchesStage = stageFilter === "all" || o.stage === stageFilter;
         return matchesSearch && matchesStage;
@@ -145,7 +147,13 @@ export default function Index() {
                     {t("title")}
                   </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("market")}
+                    {t("industry")}
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t("geography")}
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t("technology")}
                   </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     {t("owner")}
@@ -170,7 +178,9 @@ export default function Index() {
                       <td className="px-4 py-3">
                         <span className="font-medium text-card-foreground">{opp.title}</span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.market || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.geography || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.technology || "—"}</td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
                       <td className="px-4 py-3">
                         <StageBadge stage={opp.stage} />
