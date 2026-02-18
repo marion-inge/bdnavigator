@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
 import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, createDefaultStrategicAnalyses } from "@/lib/types";
+import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
 import { DetailedScoringSection } from "@/components/DetailedScoringSection";
@@ -88,71 +89,7 @@ export default function OpportunityDetail() {
           </TabsList>
 
           <TabsContent value="overview">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-lg border border-border bg-card p-5 space-y-4">
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("description")}</label>
-                  <p className="mt-1 text-sm text-card-foreground">{opp.description || "—"}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("industry")}</label>
-                    <p className="mt-1 text-sm text-card-foreground">{opp.industry || "—"}</p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("geography")}</label>
-                    <p className="mt-1 text-sm text-card-foreground">{opp.geography || "—"}</p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("technology")}</label>
-                    <p className="mt-1 text-sm text-card-foreground">{opp.technology || "—"}</p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("owner")}</label>
-                    <p className="mt-1 text-sm text-card-foreground">{opp.owner || "—"}</p>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("createdAt")}</label>
-                  <p className="mt-1 text-sm text-card-foreground">{new Date(opp.createdAt).toLocaleDateString()}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-lg border border-border bg-card p-5 text-center">
-                  <span className="text-sm text-muted-foreground">{t("totalScore")}</span>
-                  <p className="text-4xl font-bold text-primary mt-1">{totalScore.toFixed(1)}</p>
-                  <p className="text-xs text-muted-foreground mt-1">/ 5.0</p>
-                </div>
-
-                <div className="rounded-lg border border-border bg-card p-5 space-y-3">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("stage")}</label>
-                  <div className="flex items-center gap-2">
-                    <StageBadge stage={opp.stage} />
-                  </div>
-                  {canMoveToRoughScoring && (
-                    <Button size="sm" onClick={() => handleAdvanceStage("rough_scoring")}>
-                      {t("moveToRoughScoring")}
-                    </Button>
-                  )}
-                  {canMoveToGate1 && (
-                    <Button size="sm" onClick={() => handleAdvanceStage("gate1")}>
-                      → {t("stage_gate1")}
-                    </Button>
-                  )}
-                  {canMoveToGate2 && (
-                    <Button size="sm" onClick={() => handleAdvanceStage("gate2")}>
-                      → {t("stage_gate2")}
-                    </Button>
-                  )}
-                  {canMoveToGate3 && (
-                    <Button size="sm" onClick={() => handleAdvanceStage("gate3")}>
-                      → {t("stage_gate3")}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
+            <OpportunityOverview opportunity={opp} onAdvanceStage={handleAdvanceStage} />
           </TabsContent>
 
           <TabsContent value="scoring">
