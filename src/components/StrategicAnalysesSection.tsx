@@ -1,11 +1,12 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, createDefaultStrategicAnalyses } from "@/lib/types";
+import { StrategicAnalyses, PortersFiveForces, PorterForce, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
@@ -30,6 +31,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <TabsTrigger value="mckinsey" className="text-xs sm:text-sm">{t("saMckinsey")}</TabsTrigger>
         <TabsTrigger value="swot" className="text-xs sm:text-sm">{t("saSwot")}</TabsTrigger>
         <TabsTrigger value="pestel" className="text-xs sm:text-sm">{t("saPestel")}</TabsTrigger>
+        <TabsTrigger value="porter" className="text-xs sm:text-sm">{t("saPorter")}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -246,6 +248,63 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
             <div className="space-y-3">
               <div><Label>{t("saDescription")}</Label><Textarea value={data.pestel.description} onChange={(e) => update({ ...data, pestel: { ...data.pestel, description: e.target.value } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={data.pestel.rationale} onChange={(e) => update({ ...data, pestel: { ...data.pestel, rationale: e.target.value } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Porter's Five Forces */}
+      <TabsContent value="porter">
+        <Card>
+          <CardHeader><CardTitle>{t("saPorter")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-5">
+              {([
+                { key: "competitiveRivalry" as const, label: "saCompetitiveRivalry", icon: "⚔️" },
+                { key: "threatOfNewEntrants" as const, label: "saThreatNewEntrants", icon: "🚪" },
+                { key: "threatOfSubstitutes" as const, label: "saThreatSubstitutes", icon: "🔄" },
+                { key: "bargainingPowerBuyers" as const, label: "saBargainingBuyers", icon: "🛒" },
+                { key: "bargainingPowerSuppliers" as const, label: "saBargainingSuppliers", icon: "🏭" },
+              ] as const).map(({ key, label, icon }) => {
+                const porter = data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" };
+                const force = porter[key];
+                const intensityColor = force.intensity <= 2 ? "text-green-600" : force.intensity <= 3 ? "text-yellow-600" : "text-red-600";
+                return (
+                  <div key={key} className="rounded-lg border border-border p-4 bg-card space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold">{icon} {t(label)}</Label>
+                      <span className={`text-sm font-bold ${intensityColor}`}>{force.intensity}/5</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">{t("saIntensity")}:</span>
+                      <Slider
+                        min={1} max={5} step={1}
+                        value={[force.intensity]}
+                        onValueChange={([v]) => {
+                          const updatedPorter = { ...porter, [key]: { ...force, intensity: v } };
+                          update({ ...data, porter: updatedPorter });
+                        }}
+                        disabled={readonly}
+                        className="flex-1"
+                      />
+                    </div>
+                    <Textarea
+                      value={force.description}
+                      onChange={(e) => {
+                        const updatedPorter = { ...porter, [key]: { ...force, description: e.target.value } };
+                        update({ ...data, porter: updatedPorter });
+                      }}
+                      placeholder={`${t(label)}...`}
+                      disabled={readonly}
+                      rows={2}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="space-y-3">
+              <div><Label>{t("saDescription")}</Label><Textarea value={(data.porter || { description: "" }).description} onChange={(e) => update({ ...data, porter: { ...(data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" }), description: e.target.value } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+              <div><Label>{t("saRationale")}</Label><Textarea value={(data.porter || { rationale: "" }).rationale} onChange={(e) => update({ ...data, porter: { ...(data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" }), rationale: e.target.value } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
           </CardContent>
         </Card>
