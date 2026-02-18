@@ -7,6 +7,7 @@ import { StageBadge } from "@/components/StageBadge";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
+import { DashboardOverview } from "@/components/DashboardOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -123,6 +124,8 @@ export default function Index() {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-6 space-y-6">
+        <DashboardOverview opportunities={opportunities} />
+
         <PipelineFunnel
           data={funnelData}
           activeStage={stageFilter}
