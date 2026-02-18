@@ -100,7 +100,10 @@ export default function Index() {
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
               <TrendingUp className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-card-foreground">{t("appTitle")}</h1>
+            <div>
+              <h1 className="text-xl font-bold text-card-foreground">{t("appTitle")}</h1>
+              <p className="text-xs text-muted-foreground">{t("appSlogan")}</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Button
