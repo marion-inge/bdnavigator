@@ -4,7 +4,7 @@ export type Language = "en" | "de";
 
 const translations = {
   en: {
-    appTitle: "BD Pipeline",
+    appTitle: "BD Navigator",
     appSlogan: "Where Bold Ideas Meet Smart Decisions",
     opportunities: "Opportunities",
     newOpportunity: "New Opportunity",
@@ -405,7 +405,7 @@ const translations = {
     homeGoNoGo: "Go / Hold / No-Go",
   },
   de: {
-    appTitle: "BD Pipeline",
+    appTitle: "BD Navigator",
     appSlogan: "Wo mutige Ideen auf kluge Entscheidungen treffen",
     opportunities: "Opportunities",
     newOpportunity: "Neues Opportunity",
