@@ -7,6 +7,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { StoreProvider } from "@/lib/store";
 import Index from "./pages/Index";
 import OpportunityDetail from "./pages/OpportunityDetail";
+import ProcessGuide from "./pages/ProcessGuide";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/opportunity/:id" element={<OpportunityDetail />} />
+              <Route path="/guide" element={<ProcessGuide />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
