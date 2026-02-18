@@ -1,6 +1,7 @@
 import { useI18n } from "@/lib/i18n";
 import { StrategicAnalyses, PortersFiveForces, PorterForce, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -258,6 +259,31 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <Card>
           <CardHeader><CardTitle>{t("saPorter")}</CardTitle></CardHeader>
           <CardContent className="space-y-6">
+            {/* Radar Chart */}
+            {(() => {
+              const porter = data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" };
+              const radarData = [
+                { force: t("saCompetitiveRivalry"), value: porter.competitiveRivalry.intensity },
+                { force: t("saThreatNewEntrants"), value: porter.threatOfNewEntrants.intensity },
+                { force: t("saBargainingBuyers"), value: porter.bargainingPowerBuyers.intensity },
+                { force: t("saThreatSubstitutes"), value: porter.threatOfSubstitutes.intensity },
+                { force: t("saBargainingSuppliers"), value: porter.bargainingPowerSuppliers.intensity },
+              ];
+              return (
+                <div className="w-full h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
+                      <PolarGrid stroke="hsl(var(--border))" />
+                      <PolarAngleAxis dataKey="force" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                      <PolarRadiusAxis domain={[0, 5]} tickCount={6} tick={{ fontSize: 10 }} />
+                      <Tooltip />
+                      <Radar name={t("saIntensity")} dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} strokeWidth={2} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
+              );
+            })()}
+
             <div className="space-y-5">
               {([
                 { key: "competitiveRivalry" as const, label: "saCompetitiveRivalry", icon: "⚔️" },
