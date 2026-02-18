@@ -5,7 +5,7 @@ export type Language = "en" | "de";
 const translations = {
   en: {
     appTitle: "BD Pipeline",
-    appSlogan: "From Idea to Impact — Structured Innovation",
+    appSlogan: "Where Bold Ideas Meet Smart Decisions",
     opportunities: "Opportunities",
     newOpportunity: "New Opportunity",
     title: "Title",
@@ -406,7 +406,7 @@ const translations = {
   },
   de: {
     appTitle: "BD Pipeline",
-    appSlogan: "Von der Idee zur Wirkung — Strukturierte Innovation",
+    appSlogan: "Wo mutige Ideen auf kluge Entscheidungen treffen",
     opportunities: "Opportunities",
     newOpportunity: "Neues Opportunity",
     title: "Titel",
