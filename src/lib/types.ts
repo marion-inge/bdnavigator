@@ -136,6 +136,21 @@ export interface GateRecord {
   date: string; // ISO date
 }
 
+export interface PorterForce {
+  intensity: number; // 1-5
+  description: string;
+}
+
+export interface PortersFiveForces {
+  competitiveRivalry: PorterForce;
+  threatOfNewEntrants: PorterForce;
+  threatOfSubstitutes: PorterForce;
+  bargainingPowerBuyers: PorterForce;
+  bargainingPowerSuppliers: PorterForce;
+  description: string;
+  rationale: string;
+}
+
 export interface StrategicAnalyses {
   ansoff: { position: string; description: string; rationale: string };
   bcg: { position: string; description: string; rationale: string };
@@ -158,6 +173,20 @@ export interface StrategicAnalyses {
     description: string;
     rationale: string;
   };
+  porter: PortersFiveForces;
+}
+
+function createDefaultPorter(): PortersFiveForces {
+  const force = (): PorterForce => ({ intensity: 3, description: "" });
+  return {
+    competitiveRivalry: force(),
+    threatOfNewEntrants: force(),
+    threatOfSubstitutes: force(),
+    bargainingPowerBuyers: force(),
+    bargainingPowerSuppliers: force(),
+    description: "",
+    rationale: "",
+  };
 }
 
 export function createDefaultStrategicAnalyses(): StrategicAnalyses {
@@ -167,6 +196,7 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     mckinsey: { position: "", description: "", rationale: "" },
     swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
     pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
+    porter: createDefaultPorter(),
   };
 }
 
