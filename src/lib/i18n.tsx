@@ -400,7 +400,7 @@ const translations = {
     dashAvgRadar: "Avg. Scoring Profile",
     dashByIndustry: "By Industry",
     homeProcessTitle: "Stage-Gate Process",
-    homeProcessSub: "How ideas become products",
+    homeProcessSub: "How ideas become business",
     homeStep_idea: "Capture & describe",
     homeStep_rough_scoring: "Quick 5-criteria eval",
     homeStep_detailed_scoring: "Deep market & risk analysis",
