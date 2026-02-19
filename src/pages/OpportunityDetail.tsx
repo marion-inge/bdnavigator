@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, createDefaultStrategicAnalyses } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, createDefaultStrategicAnalyses, STAGE_ORDER } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
@@ -96,7 +96,10 @@ export default function OpportunityDetail() {
             <ScoringSection
               scoring={opp.scoring}
               onSave={(scoring) => updateScoring(opp.id, scoring)}
+              onSaveAnswers={(answers) => updateOpportunity(opp.id, { roughScoringAnswers: answers })}
               readonly={opp.stage === "closed"}
+              initialAnswers={opp.roughScoringAnswers}
+              showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring")}
             />
           </TabsContent>
 

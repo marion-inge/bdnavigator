@@ -213,6 +213,7 @@ export interface Opportunity {
   detailedScoring?: DetailedScoring;
   businessCase?: BusinessCase;
   strategicAnalyses?: StrategicAnalyses;
+  roughScoringAnswers?: Record<string, number>;
   gates: GateRecord[];
   createdAt: string;
 }
