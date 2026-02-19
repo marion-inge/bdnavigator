@@ -48,6 +48,7 @@ export function ProcessOverview() {
                       <div className="w-8 h-8 rounded-lg bg-[hsl(var(--warning))]/15 border border-[hsl(var(--warning))]/30 flex items-center justify-center">
                         <span className="text-[9px] font-bold text-[hsl(var(--warning))]">G{gateIdx + 1}</span>
                       </div>
+                      <span className="text-[8px] text-muted-foreground mt-0.5">Approval</span>
                       
                     </>
                   ) : (
