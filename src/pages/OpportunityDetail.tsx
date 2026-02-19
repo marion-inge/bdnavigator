@@ -17,7 +17,7 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t } = useI18n();
 
   const opp = getOpportunity(id!);
@@ -121,6 +121,9 @@ export default function OpportunityDetail() {
               gates={opp.gates}
               currentStage={opp.stage}
               onSubmitDecision={(gate) => addGateDecision(opp.id, gate)}
+              onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
+              onDeleteDecision={(gateId) => deleteGateDecision(opp.id, gateId)}
+              onRevertStage={() => revertStage(opp.id)}
             />
           </TabsContent>
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, createDefaultDetailedScoring, createDefaultBusinessCase, GateRecord, Stage, Scoring, DetailedScoring, BusinessCase } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultDetailedScoring, createDefaultBusinessCase, GateRecord, Stage, Scoring, DetailedScoring, BusinessCase, STAGE_ORDER } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 
 interface StoreContextType {
@@ -12,6 +12,9 @@ interface StoreContextType {
   updateDetailedScoring: (id: string, detailedScoring: DetailedScoring) => void;
   updateBusinessCase: (id: string, businessCase: BusinessCase) => void;
   addGateDecision: (id: string, gate: GateRecord) => void;
+  updateGateDecision: (oppId: string, gateId: string, updates: Partial<GateRecord>) => void;
+  deleteGateDecision: (oppId: string, gateId: string) => void;
+  revertStage: (id: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -130,9 +133,50 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [opportunities, persist]
   );
 
+  const updateGateDecision = useCallback(
+    (oppId: string, gateId: string, updates: Partial<GateRecord>) => {
+      persist(
+        opportunities.map((o) => {
+          if (o.id !== oppId) return o;
+          const gates = o.gates.map((g) => (g.id === gateId ? { ...g, ...updates } : g));
+          return { ...o, gates };
+        })
+      );
+    },
+    [opportunities, persist]
+  );
+
+  const deleteGateDecision = useCallback(
+    (oppId: string, gateId: string) => {
+      persist(
+        opportunities.map((o) => {
+          if (o.id !== oppId) return o;
+          const gates = o.gates.filter((g) => g.id !== gateId);
+          return { ...o, gates };
+        })
+      );
+    },
+    [opportunities, persist]
+  );
+
+  const revertStage = useCallback(
+    (id: string) => {
+      persist(
+        opportunities.map((o) => {
+          if (o.id !== id) return o;
+          const idx = STAGE_ORDER.indexOf(o.stage);
+          if (idx <= 0) return o;
+          const prevStage = STAGE_ORDER[idx - 1];
+          return { ...o, stage: prevStage };
+        })
+      );
+    },
+    [opportunities, persist]
+  );
+
   return (
     <StoreContext.Provider
-      value={{ opportunities, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision }}
+      value={{ opportunities, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
     >
       {children}
     </StoreContext.Provider>
