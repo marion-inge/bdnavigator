@@ -159,6 +159,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [opportunities, persist]
   );
 
+  const GATE_STAGE_INDEX: Record<string, number> = {
+    gate1: STAGE_ORDER.indexOf("gate1"),
+    gate2: STAGE_ORDER.indexOf("gate2"),
+    gate3: STAGE_ORDER.indexOf("gate3"),
+  };
+
   const revertStage = useCallback(
     (id: string) => {
       persist(
@@ -167,7 +173,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const idx = STAGE_ORDER.indexOf(o.stage);
           if (idx <= 0) return o;
           const prevStage = STAGE_ORDER[idx - 1];
-          return { ...o, stage: prevStage };
+          const prevIdx = idx - 1;
+          // Remove gate decisions that are at or beyond the new stage
+          const gates = o.gates.filter((g) => {
+            const gateIdx = GATE_STAGE_INDEX[g.gate];
+            return gateIdx !== undefined && gateIdx < prevIdx;
+          });
+          return { ...o, stage: prevStage, gates };
         })
       );
     },
