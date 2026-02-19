@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { GateRecord, GateDecision, Stage } from "@/lib/types";
+import { GateRecord, GateDecision, Stage, STAGE_ORDER } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +41,18 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
   const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : canDecideGate3 ? "gate3" : null;
 
   const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "business_case", "gate3", "go_to_market"].includes(currentStage);
+
+  // Filter gates to only show those that are before the current stage
+  const GATE_STAGE_INDEX: Record<string, number> = {
+    gate1: STAGE_ORDER.indexOf("gate1"),
+    gate2: STAGE_ORDER.indexOf("gate2"),
+    gate3: STAGE_ORDER.indexOf("gate3"),
+  };
+  const currentStageIdx = STAGE_ORDER.indexOf(currentStage);
+  const visibleGates = gates.filter((g) => {
+    const gateIdx = GATE_STAGE_INDEX[g.gate];
+    return gateIdx !== undefined && gateIdx < currentStageIdx;
+  });
 
   const handleSubmit = () => {
     if (!activeGate || !decider.trim()) return;
@@ -125,9 +137,9 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
         </div>
       )}
 
-      {gates.length > 0 ? (
+      {visibleGates.length > 0 ? (
         <div className="relative ml-4 border-l-2 border-border pl-6 space-y-8">
-          {gates.map((g) => {
+          {visibleGates.map((g) => {
             const isEditing = editingId === g.id;
             const colorClass =
               g.decision === "go" ? "bg-success border-success" :
