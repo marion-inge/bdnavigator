@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, PauseCircle, XCircle, Pencil, Trash2, Undo2 } from "lucide-react";
+import { StageTimeline } from "@/components/StageTimeline";
 
 interface GateDecisionSectionProps {
   gates: GateRecord[];
@@ -99,6 +100,12 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
 
   return (
     <div className="space-y-6">
+      {/* Stage Progress Timeline */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <h3 className="text-sm font-semibold text-card-foreground mb-4">{t("ovStageProgress")}</h3>
+        <StageTimeline currentStage={currentStage} />
+      </div>
+
       {/* Revert stage button */}
       {canRevert && onRevertStage && (
         <div className="flex items-center gap-3">
