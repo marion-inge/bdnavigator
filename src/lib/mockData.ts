@@ -118,6 +118,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       { id: "g-001a", gate: "gate1", decision: "go", comment: "Strong market pull confirmed through customer interviews. Team unanimously supports proceeding.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
       { id: "g-001b", gate: "gate2", decision: "go", comment: "Detailed market analysis validates €3B SAM. Competitive differentiation clear. DNV partnership secured.", decider: "Michael Braun", date: "2026-01-10T14:00:00Z" },
     ],
+    roughScoringAnswers: {
+      ma_market_size: 5, ma_growth_rate: 4, ma_customer_demand: 5, ma_competition: 4, ma_accessibility: 4,
+      sf_strategy_alignment: 4, sf_competency_match: 4, sf_portfolio_synergy: 4, sf_customer_channel: 4,
+      fe_technical_readiness: 3, fe_resources: 3, fe_timeline: 3, fe_dependencies: 4,
+      cv_revenue_model: 4, cv_margins: 4, cv_scalability: 4, cv_payback: 4,
+      ri_market_risk: 2, ri_technical_risk: 2, ri_execution_risk: 2, ri_financial_risk: 3,
+    },
     createdAt: "2025-09-20T08:30:00Z",
   },
   {
@@ -136,6 +143,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       commercialViability: "High upfront cost (€2.5M per trainset); subsidies required for first deployments. TCO competitive over 20-year lifecycle.",
       risk: "Hydrogen supply chain maturity varies by region. Green hydrogen availability uncertain before 2028 in some markets.",
     }),
+    roughScoringAnswers: {
+      ma_market_size: 4, ma_growth_rate: 4, ma_customer_demand: 5, ma_competition: 3, ma_accessibility: 3,
+      sf_strategy_alignment: 5, sf_competency_match: 5, sf_portfolio_synergy: 4, sf_customer_channel: 4,
+      fe_technical_readiness: 3, fe_resources: 3, fe_timeline: 2, fe_dependencies: 3,
+      cv_revenue_model: 3, cv_margins: 3, cv_scalability: 3, cv_payback: 2,
+      ri_market_risk: 3, ri_technical_risk: 3, ri_execution_risk: 3, ri_financial_risk: 4,
+    },
     gates: [],
     createdAt: "2025-10-05T14:20:00Z",
   },
@@ -155,6 +169,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       commercialViability: "SaaS model: €15K/turbine/year. Target 500 turbines in Year 1. Gross margin 75%.",
       risk: "Low technical risk. Market entry requires partnerships with turbine OEMs (Vestas, Siemens Gamesa).",
     }),
+    roughScoringAnswers: {
+      ma_market_size: 4, ma_growth_rate: 5, ma_customer_demand: 4, ma_competition: 3, ma_accessibility: 4,
+      sf_strategy_alignment: 3, sf_competency_match: 3, sf_portfolio_synergy: 3, sf_customer_channel: 2,
+      fe_technical_readiness: 4, fe_resources: 4, fe_timeline: 4, fe_dependencies: 3,
+      cv_revenue_model: 4, cv_margins: 5, cv_scalability: 4, cv_payback: 3,
+      ri_market_risk: 2, ri_technical_risk: 2, ri_execution_risk: 2, ri_financial_risk: 1,
+    },
     gates: [],
     createdAt: "2025-12-01T09:00:00Z",
   },
@@ -283,6 +304,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
       { id: "g-005c", gate: "gate3", decision: "go", comment: "Business case compelling — 180% ROI. Handing off to product management for launch Q1 2026.", decider: "Dr. Claudia Weiss", date: "2025-12-10T14:00:00Z" },
     ],
+    roughScoringAnswers: {
+      ma_market_size: 5, ma_growth_rate: 5, ma_customer_demand: 5, ma_competition: 5, ma_accessibility: 4,
+      sf_strategy_alignment: 4, sf_competency_match: 5, sf_portfolio_synergy: 4, sf_customer_channel: 3,
+      fe_technical_readiness: 5, fe_resources: 4, fe_timeline: 4, fe_dependencies: 3,
+      cv_revenue_model: 5, cv_margins: 5, cv_scalability: 5, cv_payback: 5,
+      ri_market_risk: 1, ri_technical_risk: 1, ri_execution_risk: 1, ri_financial_risk: 1,
+    },
     createdAt: "2025-05-15T07:30:00Z",
   },
   {
@@ -304,6 +332,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     gates: [
       { id: "g-006", gate: "gate1", decision: "no-go", comment: "Insufficient strategic fit — would require building entirely new capability. Market differentiation unclear.", decider: "Michael Braun", date: "2026-01-25T16:00:00Z" },
     ],
+    roughScoringAnswers: {
+      ma_market_size: 3, ma_growth_rate: 3, ma_customer_demand: 3, ma_competition: 2, ma_accessibility: 2,
+      sf_strategy_alignment: 2, sf_competency_match: 2, sf_portfolio_synergy: 2, sf_customer_channel: 2,
+      fe_technical_readiness: 4, fe_resources: 3, fe_timeline: 4, fe_dependencies: 3,
+      cv_revenue_model: 2, cv_margins: 2, cv_scalability: 3, cv_payback: 2,
+      ri_market_risk: 4, ri_technical_risk: 3, ri_execution_risk: 4, ri_financial_risk: 4,
+    },
     createdAt: "2025-11-01T10:00:00Z",
   },
   {
@@ -402,6 +437,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     gates: [
       { id: "g-007", gate: "gate1", decision: "go", comment: "Clear differentiation in a growing niche. Welder shortage is structural. Approved for detailed analysis.", decider: "Dr. Claudia Weiss", date: "2026-01-05T11:30:00Z" },
     ],
+    roughScoringAnswers: {
+      ma_market_size: 4, ma_growth_rate: 4, ma_customer_demand: 5, ma_competition: 4, ma_accessibility: 3,
+      sf_strategy_alignment: 5, sf_competency_match: 5, sf_portfolio_synergy: 5, sf_customer_channel: 4,
+      fe_technical_readiness: 3, fe_resources: 3, fe_timeline: 3, fe_dependencies: 3,
+      cv_revenue_model: 4, cv_margins: 4, cv_scalability: 3, cv_payback: 4,
+      ri_market_risk: 2, ri_technical_risk: 3, ri_execution_risk: 2, ri_financial_risk: 2,
+    },
     createdAt: "2025-10-20T13:00:00Z",
   },
   {
@@ -420,6 +462,13 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       commercialViability: "SaaS model: €5K/month per site. Revenue share on grid services (10% of customer earnings). 80% margins at scale.",
       risk: "Low technical risk. Regulatory risk around grid services market rules varies by country.",
     }),
+    roughScoringAnswers: {
+      ma_market_size: 4, ma_growth_rate: 5, ma_customer_demand: 4, ma_competition: 3, ma_accessibility: 3,
+      sf_strategy_alignment: 3, sf_competency_match: 3, sf_portfolio_synergy: 3, sf_customer_channel: 2,
+      fe_technical_readiness: 4, fe_resources: 4, fe_timeline: 4, fe_dependencies: 3,
+      cv_revenue_model: 5, cv_margins: 5, cv_scalability: 5, cv_payback: 4,
+      ri_market_risk: 2, ri_technical_risk: 2, ri_execution_risk: 2, ri_financial_risk: 2,
+    },
     gates: [],
     createdAt: "2025-12-15T08:00:00Z",
   },

@@ -8,8 +8,10 @@ import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw } from "lucide-react
 
 interface RoughScoringWizardProps {
   scoring: Scoring;
-  onSave: (scoring: Scoring) => void;
+  onSave: (scoring: Scoring, answers: Record<string, number>) => void;
   readonly?: boolean;
+  initialAnswers?: Record<string, number>;
+  startWithSummary?: boolean;
 }
 
 type Answers = Record<string, number>;
@@ -35,13 +37,16 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, startWithSummary }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>(() => {
+    if (initialAnswers && Object.keys(initialAnswers).length > 0) {
+      return { ...initialAnswers };
+    }
     // Pre-fill from existing scoring
     const initial: Answers = {};
     for (const q of allQuestions) {
@@ -49,7 +54,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly }: RoughScoringWi
     }
     return initial;
   });
-  const [showSummary, setShowSummary] = useState(false);
+  const [showSummary, setShowSummary] = useState(!!startWithSummary);
 
   const totalQuestions = allQuestions.length;
   const currentQuestion = allQuestions[currentIndex];
@@ -92,7 +97,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly }: RoughScoringWi
 
   const handleSave = () => {
     const newScoring = answersToScoring(answers, allQuestions, scoring);
-    onSave(newScoring);
+    onSave(newScoring, answers);
   };
 
   const handleReset = () => {

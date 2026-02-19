@@ -10,7 +10,10 @@ import { RoughScoringWizard } from "@/components/RoughScoringWizard";
 interface ScoringProps {
   scoring: Scoring;
   onSave: (scoring: Scoring) => void;
+  onSaveAnswers?: (answers: Record<string, number>) => void;
   readonly?: boolean;
+  initialAnswers?: Record<string, number>;
+  showResults?: boolean;
 }
 
 const criteriaKeys: (keyof Scoring)[] = [
@@ -21,7 +24,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSave, readonly }: ScoringProps) {
+export function ScoringSection({ scoring, onSave, onSaveAnswers, readonly, initialAnswers, showResults }: ScoringProps) {
   const { t, language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
   const [dirty, setDirty] = useState(false);
@@ -40,7 +43,7 @@ export function ScoringSection({ scoring, onSave, readonly }: ScoringProps) {
     setDirty(false);
   };
 
-  const handleWizardSave = (newScoring: Scoring) => {
+  const handleWizardSave = (newScoring: Scoring, answers: Record<string, number>) => {
     // Preserve comments from local state
     const merged: Scoring = { ...newScoring };
     for (const key of criteriaKeys) {
@@ -48,6 +51,7 @@ export function ScoringSection({ scoring, onSave, readonly }: ScoringProps) {
     }
     setLocal(merged);
     onSave(merged);
+    onSaveAnswers?.(answers);
     setDirty(false);
   };
 
@@ -88,6 +92,8 @@ export function ScoringSection({ scoring, onSave, readonly }: ScoringProps) {
           scoring={local}
           onSave={handleWizardSave}
           readonly={readonly}
+          initialAnswers={initialAnswers}
+          startWithSummary={showResults}
         />
       ) : (
         <>
