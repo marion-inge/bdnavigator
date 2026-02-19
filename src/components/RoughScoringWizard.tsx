@@ -221,19 +221,35 @@ export function RoughScoringWizard({ scoring, onSave, readonly }: RoughScoringWi
         </div>
         <Progress value={progress} className="h-2" />
 
-        {/* Category indicator */}
-        <div className="flex items-center gap-2">
-          {categorizedQuestions.map(({ category }, idx) => (
-            <div
-              key={category}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                idx < currentCategoryIndex
-                  ? "bg-primary"
-                  : idx === currentCategoryIndex
-                  ? "bg-primary/60"
-                  : "bg-secondary"
-              }`}
-            />
+      {/* Category indicator — clickable question dots */}
+        <div className="flex items-center gap-1">
+          {categorizedQuestions.map(({ category, questions }, catIdx) => (
+            <div key={category} className="flex items-center gap-0.5">
+              {questions.map((q, qIdx) => {
+                const globalIdx = categorizedQuestions
+                  .slice(0, catIdx)
+                  .reduce((sum, c) => sum + c.questions.length, 0) + qIdx;
+                const isAnswered = answers[q.id] > 0;
+                const isCurrent = globalIdx === currentIndex;
+                return (
+                  <button
+                    key={q.id}
+                    onClick={() => setCurrentIndex(globalIdx)}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      isCurrent
+                        ? "bg-primary ring-2 ring-primary/30 scale-125"
+                        : isAnswered
+                        ? "bg-primary/60 hover:bg-primary/80"
+                        : "bg-secondary hover:bg-secondary/80"
+                    }`}
+                    title={q.question[language]}
+                  />
+                );
+              })}
+              {catIdx < categorizedQuestions.length - 1 && (
+                <div className="w-2" />
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -299,7 +315,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly }: RoughScoringWi
           {t("back")}
         </Button>
 
-        <Button onClick={handleNext} disabled={currentAnswer === 0}>
+        <Button onClick={handleNext}>
           {currentIndex === totalQuestions - 1 ? (
             <>
               {language === "de" ? "Ergebnis anzeigen" : "Show Results"}
