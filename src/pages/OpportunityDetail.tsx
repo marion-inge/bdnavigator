@@ -83,9 +83,9 @@ export default function OpportunityDetail() {
             <TabsTrigger value="overview">{t("overview")}</TabsTrigger>
             <TabsTrigger value="scoring">{t("roughScoring")}</TabsTrigger>
             <TabsTrigger value="detailed_scoring">{t("detailedScoring")}</TabsTrigger>
-            <TabsTrigger value="strategic_analyses">{t("saTab")}</TabsTrigger>
             <TabsTrigger value="business_case">{t("businessCase")}</TabsTrigger>
             <TabsTrigger value="gates">{t("stageGates")}</TabsTrigger>
+            <TabsTrigger value="strategic_analyses">{t("saTab")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
