@@ -86,7 +86,7 @@ export default function OpportunityDetail() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border bg-card shrink-0">
-        <div className="px-6 py-4 flex items-center justify-between">
+        <div className="px-4 sm:px-6 xl:px-8 py-4 flex items-center justify-between max-w-[1600px] mx-auto">
           <div className="flex items-center gap-3">
             {/* Hamburger – only on mobile */}
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
@@ -173,7 +173,7 @@ export default function OpportunityDetail() {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-4xl mx-auto px-6 py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 py-6">
             {activeTab === "overview" && (
               <OpportunityOverview opportunity={opp} onAdvanceStage={handleAdvanceStage} />
             )}

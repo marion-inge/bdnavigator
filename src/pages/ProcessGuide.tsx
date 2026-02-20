@@ -14,7 +14,7 @@ export default function ProcessGuide() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-5 w-5" />
@@ -28,7 +28,7 @@ export default function ProcessGuide() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8 space-y-10">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-8 space-y-10">
         {/* Stage Gate Process Overview */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t("guideProcessTitle")}</h2>
