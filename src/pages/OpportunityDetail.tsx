@@ -12,7 +12,7 @@ import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, Circle, ChevronRight } from "lucide-react";
 
 type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "gates" | "strategic_analyses";
 
@@ -47,6 +47,30 @@ export default function OpportunityDetail() {
     deleteOpportunity(opp.id);
     navigate("/");
   };
+
+  // Map each nav item to the stage threshold that marks it as "completed"
+  
+  const tabStageThreshold: Record<TabKey, Stage> = {
+    overview:            "rough_scoring",
+    scoring:             "gate1",
+    detailed_scoring:    "gate2",
+    business_case:       "gate3",
+    gates:               "go_to_market",
+    strategic_analyses:  "closed",
+  };
+  const tabCurrentStage: Record<TabKey, Stage | ""> = {
+    overview:           "idea",
+    scoring:            "rough_scoring",
+    detailed_scoring:   "detailed_scoring",
+    business_case:      "business_case",
+    gates:              "gate1",
+    strategic_analyses: "",
+  };
+
+  const isTabDone = (key: TabKey) =>
+    STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf(tabStageThreshold[key]);
+  const isTabCurrent = (key: TabKey) =>
+    tabCurrentStage[key] !== "" && opp.stage === tabCurrentStage[key];
 
   const navItems: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -86,9 +110,19 @@ export default function OpportunityDetail() {
       {/* Body: sidebar + content */}
       <div className="flex flex-1 min-h-0">
         {/* Vertical Sidebar Nav */}
-        <aside className="w-56 shrink-0 border-r border-border bg-card flex flex-col py-3 gap-0.5 px-2">
-          {navItems.map((item) => {
+        <aside className="w-60 shrink-0 border-r border-border bg-card flex flex-col py-4 gap-0.5 px-3">
+          {/* Stage progress label */}
+          <div className="px-2 pb-3 mb-1 border-b border-border">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">Fortschritt</p>
+            <div className="flex items-center gap-1.5">
+              <StageBadge stage={opp.stage} />
+            </div>
+          </div>
+
+          {navItems.map((item, idx) => {
             const isActive = activeTab === item.key;
+            const done = isTabDone(item.key);
+            const current = isTabCurrent(item.key);
             return (
               <button
                 key={item.key}
@@ -97,12 +131,24 @@ export default function OpportunityDetail() {
                   w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors
                   ${isActive
                     ? "bg-primary text-primary-foreground"
+                    : done
+                    ? "text-card-foreground hover:bg-muted"
                     : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
                   }
                 `}
               >
-                {item.icon}
-                <span>{item.label}</span>
+                {/* Step icon */}
+                <span className={`shrink-0 ${isActive ? "text-primary-foreground" : done ? "text-[hsl(var(--success))]" : "text-muted-foreground"}`}>
+                  {done && !isActive ? <CheckCircle2 className="h-4 w-4" /> : item.icon}
+                </span>
+
+                <span className="flex-1 leading-tight">{item.label}</span>
+
+                {/* Current stage pip */}
+                {current && !isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" title="Aktuelle Phase" />
+                )}
+                {isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />}
               </button>
             );
           })}
