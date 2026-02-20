@@ -116,7 +116,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
         {/* Geography Bar */}
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("geography")}</h3>
+          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByGeography")}</h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={geoData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
@@ -132,7 +132,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
         {/* Technology Bar */}
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("technology")}</h3>
+          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByTechnology")}</h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={techData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
