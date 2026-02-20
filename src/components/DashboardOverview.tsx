@@ -3,7 +3,6 @@ import { useI18n } from "@/lib/i18n";
 import { Opportunity, calculateTotalScore, STAGE_ORDER } from "@/lib/types";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 import { TrendingUp, Lightbulb, Target, BarChart3, AlertTriangle } from "lucide-react";
@@ -23,11 +22,6 @@ const INDUSTRY_COLORS = [
   "hsl(0, 65%, 50%)",
 ];
 
-const SCORE_COLORS = {
-  high: "hsl(145, 55%, 40%)",
-  medium: "hsl(38, 90%, 50%)",
-  low: "hsl(0, 65%, 50%)",
-};
 
 export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   const { t } = useI18n();
@@ -54,24 +48,6 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     return Object.entries(counts)
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
-  }, [opportunities]);
-
-  // Score distribution for bar chart
-  const scoreDistribution = useMemo(() => {
-    const buckets = [
-      { range: "1.0–2.0", min: 1, max: 2, count: 0 },
-      { range: "2.0–3.0", min: 2, max: 3, count: 0 },
-      { range: "3.0–3.5", min: 3, max: 3.5, count: 0 },
-      { range: "3.5–4.0", min: 3.5, max: 4, count: 0 },
-      { range: "4.0–4.5", min: 4, max: 4.5, count: 0 },
-      { range: "4.5–5.0", min: 4.5, max: 5.01, count: 0 },
-    ];
-    opportunities.forEach((o) => {
-      const score = calculateTotalScore(o.scoring);
-      const bucket = buckets.find((b) => score >= b.min && score < b.max);
-      if (bucket) bucket.count++;
-    });
-    return buckets;
   }, [opportunities]);
 
   // Average scoring by criterion (radar)
@@ -137,39 +113,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Score Distribution */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashScoreDist")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={scoreDistribution} margin={{ top: 0, right: 0, bottom: 0, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" />
-              <XAxis dataKey="range" tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(0, 0%, 100%)",
-                  border: "1px solid hsl(220, 15%, 88%)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
-              <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={32}>
-                {scoreDistribution.map((entry, idx) => (
-                  <Cell
-                    key={idx}
-                    fill={
-                      entry.min >= 4 ? SCORE_COLORS.high :
-                      entry.min >= 3 ? SCORE_COLORS.medium :
-                      SCORE_COLORS.low
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Avg Scoring Radar */}
         <div className="rounded-lg border border-border bg-card p-4">
           <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashAvgRadar")}</h3>
