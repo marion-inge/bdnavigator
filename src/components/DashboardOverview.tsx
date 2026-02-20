@@ -1,17 +1,17 @@
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import { Opportunity, calculateTotalScore, STAGE_ORDER } from "@/lib/types";
+import { Opportunity, calculateTotalScore } from "@/lib/types";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { TrendingUp, Lightbulb, Target, BarChart3, AlertTriangle } from "lucide-react";
+import { TrendingUp, Lightbulb, Target, BarChart3 } from "lucide-react";
 
 interface DashboardOverviewProps {
   opportunities: Opportunity[];
 }
 
-const INDUSTRY_COLORS = [
+const CHART_COLORS = [
   "hsl(215, 50%, 30%)",
   "hsl(200, 60%, 45%)",
   "hsl(170, 50%, 40%)",
@@ -22,6 +22,12 @@ const INDUSTRY_COLORS = [
   "hsl(0, 65%, 50%)",
 ];
 
+const TOOLTIP_STYLE = {
+  backgroundColor: "hsl(0, 0%, 100%)",
+  border: "1px solid hsl(220, 15%, 88%)",
+  borderRadius: "8px",
+  fontSize: "12px",
+};
 
 export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   const { t } = useI18n();
@@ -31,49 +37,29 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     const active = opportunities.filter((o) => o.stage !== "closed").length;
     const scores = opportunities.map((o) => calculateTotalScore(o.scoring));
     const avgScore = total > 0 ? scores.reduce((a, b) => a + b, 0) / total : 0;
-    const topScorer = total > 0 ? opportunities.reduce((best, o) => 
+    const topScorer = total > 0 ? opportunities.reduce((best, o) =>
       calculateTotalScore(o.scoring) > calculateTotalScore(best.scoring) ? o : best
     ) : null;
     const gtmCount = opportunities.filter((o) => o.stage === "go_to_market").length;
     return { total, active, avgScore, topScorer, gtmCount };
   }, [opportunities]);
 
-  // Industry breakdown for pie chart
   const industryData = useMemo(() => {
     const counts: Record<string, number> = {};
-    opportunities.forEach((o) => {
-      const key = o.industry || "Other";
-      counts[key] = (counts[key] || 0) + 1;
-    });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
+    opportunities.forEach((o) => { const k = o.industry || "Other"; counts[k] = (counts[k] || 0) + 1; });
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [opportunities]);
 
-  // Average scoring by criterion (radar)
-  const radarData = useMemo(() => {
-    if (opportunities.length === 0) return [];
-    const keys = ["marketAttractiveness", "strategicFit", "feasibility", "commercialViability", "risk"] as const;
-    return keys.map((key) => {
-      const avg = opportunities.reduce((sum, o) => sum + o.scoring[key].score, 0) / opportunities.length;
-      return {
-        criterion: t(key),
-        value: Math.round(avg * 10) / 10,
-        fullMark: 5,
-      };
-    });
-  }, [opportunities, t]);
-
-  // Geography breakdown
   const geoData = useMemo(() => {
     const counts: Record<string, number> = {};
-    opportunities.forEach((o) => {
-      const key = o.geography || "Other";
-      counts[key] = (counts[key] || 0) + 1;
-    });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
+    opportunities.forEach((o) => { const k = o.geography || "Other"; counts[k] = (counts[k] || 0) + 1; });
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  }, [opportunities]);
+
+  const techData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    opportunities.forEach((o) => { const k = o.technology || "Other"; counts[k] = (counts[k] || 0) + 1; });
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [opportunities]);
 
   if (opportunities.length === 0) return null;
@@ -93,7 +79,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
           icon={<Target className="h-4 w-4" />}
           label={t("dashAvgScore")}
           value={stats.avgScore.toFixed(1)}
-          sub={`/ 5.0`}
+          sub="/ 5.0"
           color="bg-accent"
         />
         <KpiCard
@@ -113,64 +99,50 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Avg Scoring Radar */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashAvgRadar")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <RadarChart data={radarData} outerRadius={60}>
-              <PolarGrid stroke="hsl(220, 15%, 88%)" />
-              <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 9, fill: "hsl(220, 10%, 50%)" }} />
-              <PolarRadiusAxis domain={[0, 5]} tick={false} axisLine={false} />
-              <Radar
-                dataKey="value"
-                stroke="hsl(200, 60%, 45%)"
-                fill="hsl(200, 60%, 45%)"
-                fillOpacity={0.25}
-                strokeWidth={2}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(0, 0%, 100%)",
-                  border: "1px solid hsl(220, 15%, 88%)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Industry & Geography Breakdown */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Industry Pie */}
         <div className="rounded-lg border border-border bg-card p-4">
           <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByIndustry")}</h3>
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
-              <Pie
-                data={industryData}
-                cx="50%"
-                cy="50%"
-                outerRadius={55}
-                innerRadius={30}
-                dataKey="value"
-                paddingAngle={2}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={false}
-                style={{ fontSize: 9 }}
-              >
-                {industryData.map((_, idx) => (
-                  <Cell key={idx} fill={INDUSTRY_COLORS[idx % INDUSTRY_COLORS.length]} />
-                ))}
+              <Pie data={industryData} cx="50%" cy="50%" outerRadius={55} innerRadius={28} dataKey="value" paddingAngle={2}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} style={{ fontSize: 9 }}>
+                {industryData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
               </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(0, 0%, 100%)",
-                  border: "1px solid hsl(220, 15%, 88%)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
             </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Geography Bar */}
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("geography")}</h3>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={geoData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
+              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" width={72} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
+                {geoData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Technology Bar */}
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("technology")}</h3>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={techData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
+              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" width={72} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
+                {techData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[(idx + 3) % CHART_COLORS.length]} />)}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
