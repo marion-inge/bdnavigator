@@ -44,12 +44,19 @@ export interface GeographicalRegion {
   notes: string;
 }
 
+export interface MarketYearValue {
+  year: number;
+  value: number; // in M€
+}
+
 export interface DetailedMarketAnalysis {
   // Marktpotential
-  tam: string;
+  tam: string; // kept for legacy / description
   tamDescription: string;
-  sam: string;
+  tamProjections: MarketYearValue[]; // 5-year TAM
+  sam: string; // kept for legacy / description
   samDescription: string;
+  samProjections: MarketYearValue[]; // 5-year SAM
   marketGrowthRate: string;
   // Customer Landscape
   targetCustomers: string;
@@ -257,7 +264,15 @@ export function createDefaultDetailedScoring(): DetailedScoring {
   return {
     marketAttractiveness: {
       score: 3,
-      analysis: { tam: "", tamDescription: "", sam: "", samDescription: "", marketGrowthRate: "", targetCustomers: "", customerRelationship: "", customerSegments: [], competitors: "", competitivePosition: "", competitorEntries: [], geographicalRegions: [] },
+      analysis: {
+        tam: "", tamDescription: "",
+        tamProjections: [1,2,3,4,5].map((y) => ({ year: y, value: 0 })),
+        sam: "", samDescription: "",
+        samProjections: [1,2,3,4,5].map((y) => ({ year: y, value: 0 })),
+        marketGrowthRate: "", targetCustomers: "", customerRelationship: "",
+        customerSegments: [], competitors: "", competitivePosition: "",
+        competitorEntries: [], geographicalRegions: [],
+      },
     },
     strategicFit: { score: 3, details: "", alignmentDimensions: [], capabilityGaps: [] },
     feasibility: { score: 3, details: "", trl: 1, milestones: [] },

@@ -33,8 +33,10 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         analysis: {
           tam: "€15B global autonomous shipping market by 2030 (Allied Market Research)",
           tamDescription: "Includes all autonomous navigation, collision avoidance, and remote control systems for commercial vessels globally. Covers full autonomy levels (IMO degrees 1-4) across all vessel types.",
+          tamProjections: [{ year: 1, value: 4200 }, { year: 2, value: 6000 }, { year: 3, value: 8500 }, { year: 4, value: 11500 }, { year: 5, value: 15000 }],
           sam: "€3B European container fleet segment — focus on mid-size operators with 50-500 TEU vessels",
           samDescription: "European container operators with fleets >20 vessels that have the infrastructure for retrofit installations. Excludes bulk carriers, tankers, and ultra-large container vessels (>10,000 TEU) due to different regulatory requirements.",
+          samProjections: [{ year: 1, value: 900 }, { year: 2, value: 1300 }, { year: 3, value: 1800 }, { year: 4, value: 2300 }, { year: 5, value: 3000 }],
           marketGrowthRate: "18% CAGR through 2030 — driven by IMO regulations, fuel efficiency mandates, and crew shortage",
           targetCustomers: "Mid-size container operators (50-200 vessels): Hapag-Lloyd, CMA CGM feeder fleets, regional operators in Scandinavia and Mediterranean",
           customerRelationship: "Existing partnerships with 3 major operators through sensor sales. LOIs from Hapag-Lloyd and a Norwegian coastal operator.",
@@ -220,8 +222,10 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         analysis: {
           tam: "€45B global ground handling market (IATA 2025). Automation-addressable segment: €12B",
           tamDescription: "All ground handling services worldwide including baggage handling, pushback, de-icing, and cargo loading. Automation-addressable portion limited to repetitive physical tasks on the apron.",
+          tamProjections: [{ year: 1, value: 7000 }, { year: 2, value: 10000 }, { year: 3, value: 14000 }, { year: 4, value: 19000 }, { year: 5, value: 25000 }],
           sam: "€2.5B European hub airports (top 50 airports). Initial focus on DACH + Nordics.",
           samDescription: "European airports with >10M PAX/year that have the infrastructure and budget for autonomous ground support. Focus on ramp operations (baggage + pushback) at hub airports.",
+          samProjections: [{ year: 1, value: 600 }, { year: 2, value: 900 }, { year: 3, value: 1300 }, { year: 4, value: 1800 }, { year: 5, value: 2500 }],
           marketGrowthRate: "12% CAGR through 2030 — labor shortages and safety regulations driving automation",
           targetCustomers: "Fraport, Swissport, SATS, dnata — hub airport operators with >30M PAX/year.",
           customerRelationship: "Fraport: pilot partner since 2025, LOI for 40 robots. Swissport: MOU signed.",
@@ -363,8 +367,10 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         analysis: {
           tam: "€6B global shipyard automation market (Frost & Sullivan 2025). Welding automation subset: €1.8B",
           tamDescription: "All automation systems used in shipbuilding including cutting, welding, painting, and assembly. Welding automation covers robotic and semi-automated welding across hull construction, outfitting, and pipe work.",
+          tamProjections: [{ year: 1, value: 1800 }, { year: 2, value: 2200 }, { year: 3, value: 3000 }, { year: 4, value: 4200 }, { year: 5, value: 6000 }],
           sam: "€450M European and South Korean shipyards. Focus on mid-size yards building offshore vessels and cruise ships.",
           samDescription: "European and Korean shipyards with confined-space welding needs — specifically yards building cruise ships, offshore vessels, and naval ships where compartment welding is >40% of total welding hours.",
+          samProjections: [{ year: 1, value: 150 }, { year: 2, value: 200 }, { year: 3, value: 270 }, { year: 4, value: 360 }, { year: 5, value: 450 }],
           marketGrowthRate: "8% CAGR through 2030 — welder shortage and quality requirements driving adoption",
           targetCustomers: "Meyer Werft (Germany), Fincantieri (Italy), HD Hyundai (Korea), Damen Shipyards (Netherlands).",
           customerRelationship: "Meyer Werft: existing customer for industrial robots. Fincantieri: discussions initiated through maritime trade shows.",
