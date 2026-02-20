@@ -95,7 +95,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
               <TrendingUp className="h-5 w-5 text-primary-foreground" />
@@ -127,7 +127,7 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-6 space-y-6">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
         <ProcessOverview />
 
         <DashboardOverview opportunities={opportunities} />
