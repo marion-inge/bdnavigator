@@ -9,6 +9,7 @@ import { FeasibilityTab } from "./detailed-scoring/FeasibilityTab";
 import { RiskTab } from "./detailed-scoring/RiskTab";
 import { StrategicFitTab } from "./detailed-scoring/StrategicFitTab";
 import { CompetitorLandscapeTab } from "./detailed-scoring/CompetitorLandscapeTab";
+import { CustomerLandscapeTab } from "./detailed-scoring/CustomerLandscapeTab";
 import { OrganisationalReadinessTab } from "./detailed-scoring/OrganisationalReadinessTab";
 import { CriterionTab } from "./detailed-scoring/CriterionTab";
 import { Crosshair, Wrench, DollarSign, AlertTriangle } from "lucide-react";
@@ -34,6 +35,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="overview" className="text-xs sm:text-sm">{t("scoringOverview")}</TabsTrigger>
         <TabsTrigger value="market" className="text-xs sm:text-sm">{t("marketAttractiveness")}</TabsTrigger>
+        <TabsTrigger value="customer" className="text-xs sm:text-sm">{t("maCustomerLandscape")}</TabsTrigger>
         <TabsTrigger value="competitor" className="text-xs sm:text-sm">{t("dsCompetitorLandscape")}</TabsTrigger>
         <TabsTrigger value="strategic" className="text-xs sm:text-sm">{t("strategicFit")}</TabsTrigger>
         <TabsTrigger value="feasibility" className="text-xs sm:text-sm">{t("feasibility")}</TabsTrigger>
@@ -48,6 +50,10 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
 
       <TabsContent value="market">
         <MarketAttractivenessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+      </TabsContent>
+
+      <TabsContent value="customer">
+        <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
       </TabsContent>
 
       <TabsContent value="competitor">
