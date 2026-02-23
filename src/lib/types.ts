@@ -231,6 +231,50 @@ export interface LeanCanvas {
   rationale: string;
 }
 
+export interface ValuePropositionCanvas {
+  customerJobs: string;
+  customerPains: string;
+  customerGains: string;
+  productsServices: string;
+  painRelievers: string;
+  gainCreators: string;
+  description: string;
+  rationale: string;
+}
+
+export interface CustomerBenefitAnalysis {
+  functionalBenefits: string;
+  emotionalBenefits: string;
+  socialBenefits: string;
+  selfExpressiveBenefits: string;
+  description: string;
+  rationale: string;
+}
+
+export interface ThreeCircleModel {
+  ourValue: string;
+  competitorValue: string;
+  customerNeeds: string;
+  ourUnique: string;
+  theirUnique: string;
+  commonValue: string;
+  unmetNeeds: string;
+  description: string;
+  rationale: string;
+}
+
+export interface PositioningStatement {
+  targetAudience: string;
+  category: string;
+  keyBenefit: string;
+  reasonToBelieve: string;
+  competitiveAlternative: string;
+  differentiator: string;
+  statement: string;
+  description: string;
+  rationale: string;
+}
+
 export interface BusinessModelCanvas {
   valueProposition: string;
   customerSegments: string;
@@ -274,6 +318,10 @@ export interface StrategicAnalyses {
   customerInterviewing?: { entries: CustomerInterviewEntry[]; description: string; rationale: string };
   businessModelling?: BusinessModelCanvas;
   leanCanvas?: LeanCanvas;
+  valuePropositionCanvas?: ValuePropositionCanvas;
+  customerBenefitAnalysis?: CustomerBenefitAnalysis;
+  threeCircleModel?: ThreeCircleModel;
+  positioningStatement?: PositioningStatement;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -309,6 +357,25 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     leanCanvas: {
       problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "",
       customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "",
+      description: "", rationale: "",
+    },
+    valuePropositionCanvas: {
+      customerJobs: "", customerPains: "", customerGains: "",
+      productsServices: "", painRelievers: "", gainCreators: "",
+      description: "", rationale: "",
+    },
+    customerBenefitAnalysis: {
+      functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "",
+      description: "", rationale: "",
+    },
+    threeCircleModel: {
+      ourValue: "", competitorValue: "", customerNeeds: "",
+      ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "",
+      description: "", rationale: "",
+    },
+    positioningStatement: {
+      targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "",
+      competitiveAlternative: "", differentiator: "", statement: "",
       description: "", rationale: "",
     },
   };
