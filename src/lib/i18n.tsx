@@ -43,7 +43,7 @@ const translations = {
     // Scoring criteria
     marketAttractiveness: "Market Potential",
     strategicFit: "Strategic Fit",
-    feasibility: "Feasibility",
+    feasibility: "Technical Feasibility",
     commercialViability: "Commercial Viability",
     risk: "Risk",
     weight: "Weight",
@@ -677,7 +677,7 @@ const translations = {
     stage_closed: "Geschlossen",
     marketAttractiveness: "Marktpotenzial",
     strategicFit: "Strategischer Fit",
-    feasibility: "Machbarkeit",
+    feasibility: "Technische Machbarkeit",
     commercialViability: "Kommerzielle Tragfähigkeit",
     risk: "Risiko",
     weight: "Gewicht",
