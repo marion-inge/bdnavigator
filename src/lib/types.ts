@@ -217,6 +217,20 @@ export interface CustomerInterviewEntry {
   quotes: string;
 }
 
+export interface LeanCanvas {
+  problem: string;
+  solution: string;
+  uniqueValueProposition: string;
+  unfairAdvantage: string;
+  customerSegments: string;
+  keyMetrics: string;
+  channels: string;
+  costStructure: string;
+  revenueStreams: string;
+  description: string;
+  rationale: string;
+}
+
 export interface BusinessModelCanvas {
   valueProposition: string;
   customerSegments: string;
@@ -259,6 +273,7 @@ export interface StrategicAnalyses {
   competitorAnalysis?: { entries: CompetitorAnalysisEntry[]; description: string; rationale: string };
   customerInterviewing?: { entries: CustomerInterviewEntry[]; description: string; rationale: string };
   businessModelling?: BusinessModelCanvas;
+  leanCanvas?: LeanCanvas;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -289,6 +304,11 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     businessModelling: {
       valueProposition: "", customerSegments: "", channels: "", customerRelationships: "",
       revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "",
+      description: "", rationale: "",
+    },
+    leanCanvas: {
+      problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "",
+      customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "",
       description: "", rationale: "",
     },
   };

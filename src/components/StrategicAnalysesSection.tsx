@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain, CustomerSegmentEntry, CompetitorAnalysisEntry, CustomerInterviewEntry, BusinessModelCanvas } from "@/lib/types";
+import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain, CustomerSegmentEntry, CompetitorAnalysisEntry, CustomerInterviewEntry, BusinessModelCanvas, LeanCanvas } from "@/lib/types";
 import { useState } from "react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,6 +41,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <TabsTrigger value="compAnalysis" className="text-xs sm:text-sm">{t("saCompAnalysis")}</TabsTrigger>
         <TabsTrigger value="custInt" className="text-xs sm:text-sm">{t("saCustInt")}</TabsTrigger>
         <TabsTrigger value="bizModel" className="text-xs sm:text-sm">{t("saBizModel")}</TabsTrigger>
+        <TabsTrigger value="leanCanvas" className="text-xs sm:text-sm">{t("saLeanCanvas")}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -695,6 +696,59 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
                   <div className="space-y-3">
                     <div><Label>{t("saDescription")}</Label><Textarea value={bm.description} onChange={e => updateBm({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                     <div><Label>{t("saRationale")}</Label><Textarea value={bm.rationale} onChange={e => updateBm({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Lean Canvas */}
+      <TabsContent value="leanCanvas">
+        <Card>
+          <CardHeader><CardTitle>{t("saLeanCanvas")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const lc: LeanCanvas = data.leanCanvas || {
+                problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "",
+                customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "",
+                description: "", rationale: "",
+              };
+              const updateLc = (updates: Partial<LeanCanvas>) => update({ ...data, leanCanvas: { ...lc, ...updates } });
+
+              const canvasItems: { key: keyof LeanCanvas; label: string; placeholder: string; color: string }[] = [
+                { key: "problem", label: "saLcProblem", placeholder: "saLcProblemPlaceholder", color: "bg-red-500/10 border-red-500/30" },
+                { key: "solution", label: "saLcSolution", placeholder: "saLcSolutionPlaceholder", color: "bg-green-500/10 border-green-500/30" },
+                { key: "uniqueValueProposition", label: "saLcUvp", placeholder: "saLcUvpPlaceholder", color: "bg-primary/10 border-primary/30" },
+                { key: "unfairAdvantage", label: "saLcUnfairAdv", placeholder: "saLcUnfairAdvPlaceholder", color: "bg-violet-500/10 border-violet-500/30" },
+                { key: "customerSegments", label: "saLcCustSeg", placeholder: "saLcCustSegPlaceholder", color: "bg-blue-500/10 border-blue-500/30" },
+                { key: "keyMetrics", label: "saLcKeyMetrics", placeholder: "saLcKeyMetricsPlaceholder", color: "bg-yellow-500/10 border-yellow-500/30" },
+                { key: "channels", label: "saLcChannels", placeholder: "saLcChannelsPlaceholder", color: "bg-orange-500/10 border-orange-500/30" },
+                { key: "costStructure", label: "saLcCostStr", placeholder: "saLcCostStrPlaceholder", color: "bg-pink-500/10 border-pink-500/30" },
+                { key: "revenueStreams", label: "saLcRevenue", placeholder: "saLcRevenuePlaceholder", color: "bg-emerald-500/10 border-emerald-500/30" },
+              ];
+
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {canvasItems.map(({ key, label, placeholder, color }) => (
+                      <div key={key} className={`rounded-lg border p-4 ${color}`}>
+                        <Label className="text-sm font-semibold">{t(label as any)}</Label>
+                        <Textarea
+                          className="mt-2 bg-background"
+                          value={lc[key]}
+                          onChange={e => updateLc({ [key]: e.target.value })}
+                          placeholder={t(placeholder as any)}
+                          disabled={readonly}
+                          rows={4}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={lc.description} onChange={e => updateLc({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={lc.rationale} onChange={e => updateLc({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
                   </div>
                 </>
               );
