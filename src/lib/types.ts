@@ -188,6 +188,49 @@ export function createDefaultValueChain(): IndustryValueChain {
   return { stages: createDefaultValueChainStages(), description: "", rationale: "" };
 }
 
+export interface CustomerSegmentEntry {
+  id: string;
+  name: string;
+  size: string;
+  needs: string;
+  willingnessToPay: string;
+  priority: "high" | "medium" | "low";
+}
+
+export interface CompetitorAnalysisEntry {
+  id: string;
+  name: string;
+  strengths: string;
+  weaknesses: string;
+  marketShare: string;
+  strategy: string;
+  threatLevel: number; // 1-5
+}
+
+export interface CustomerInterviewEntry {
+  id: string;
+  date: string;
+  customerName: string;
+  role: string;
+  keyInsights: string;
+  painPoints: string;
+  quotes: string;
+}
+
+export interface BusinessModelCanvas {
+  valueProposition: string;
+  customerSegments: string;
+  channels: string;
+  customerRelationships: string;
+  revenueStreams: string;
+  keyResources: string;
+  keyActivities: string;
+  keyPartners: string;
+  costStructure: string;
+  description: string;
+  rationale: string;
+}
+
 export interface StrategicAnalyses {
   ansoff: { position: string; description: string; rationale: string };
   bcg: { position: string; description: string; rationale: string };
@@ -212,6 +255,10 @@ export interface StrategicAnalyses {
   };
   porter: PortersFiveForces;
   valueChain?: IndustryValueChain;
+  customerSegmentation?: { entries: CustomerSegmentEntry[]; description: string; rationale: string };
+  competitorAnalysis?: { entries: CompetitorAnalysisEntry[]; description: string; rationale: string };
+  customerInterviewing?: { entries: CustomerInterviewEntry[]; description: string; rationale: string };
+  businessModelling?: BusinessModelCanvas;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -236,6 +283,14 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
     porter: createDefaultPorter(),
     valueChain: createDefaultValueChain(),
+    customerSegmentation: { entries: [], description: "", rationale: "" },
+    competitorAnalysis: { entries: [], description: "", rationale: "" },
+    customerInterviewing: { entries: [], description: "", rationale: "" },
+    businessModelling: {
+      valueProposition: "", customerSegments: "", channels: "", customerRelationships: "",
+      revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "",
+      description: "", rationale: "",
+    },
   };
 }
 
