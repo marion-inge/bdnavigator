@@ -158,6 +158,35 @@ export interface PortersFiveForces {
   rationale: string;
 }
 
+export interface ValueChainStage {
+  id: string;
+  name: string;
+  isOurPosition: boolean;
+  marginAttractiveness: number; // 1-5
+  differentiators: string;
+  dynamics: string;
+}
+
+export interface IndustryValueChain {
+  stages: ValueChainStage[];
+  description: string;
+  rationale: string;
+}
+
+function createDefaultValueChainStages(): ValueChainStage[] {
+  return [
+    { id: "vc-1", name: "Raw Materials", isOurPosition: false, marginAttractiveness: 2, differentiators: "", dynamics: "" },
+    { id: "vc-2", name: "Components / Manufacturing", isOurPosition: false, marginAttractiveness: 3, differentiators: "", dynamics: "" },
+    { id: "vc-3", name: "Assembly / Integration", isOurPosition: false, marginAttractiveness: 3, differentiators: "", dynamics: "" },
+    { id: "vc-4", name: "Distribution / Sales", isOurPosition: false, marginAttractiveness: 3, differentiators: "", dynamics: "" },
+    { id: "vc-5", name: "After-Sales / Service", isOurPosition: false, marginAttractiveness: 4, differentiators: "", dynamics: "" },
+  ];
+}
+
+export function createDefaultValueChain(): IndustryValueChain {
+  return { stages: createDefaultValueChainStages(), description: "", rationale: "" };
+}
+
 export interface StrategicAnalyses {
   ansoff: { position: string; description: string; rationale: string };
   bcg: { position: string; description: string; rationale: string };
@@ -181,6 +210,7 @@ export interface StrategicAnalyses {
     rationale: string;
   };
   porter: PortersFiveForces;
+  valueChain?: IndustryValueChain;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -204,6 +234,7 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
     pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
     porter: createDefaultPorter(),
+    valueChain: createDefaultValueChain(),
   };
 }
 
