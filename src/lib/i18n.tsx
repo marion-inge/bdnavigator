@@ -395,6 +395,7 @@ const translations = {
     guideSwotDesc: "Systematic analysis of internal Strengths and Weaknesses alongside external Opportunities and Threats.",
     guidePestelDesc: "Macro-environmental analysis covering Political, Economic, Social, Technological, Environmental, and Legal factors.",
     guidePorterDesc: "Analyzes five competitive forces: rivalry, new entrants, substitutes, buyer power, and supplier power to assess industry profitability.",
+    guideValueChainDesc: "Maps the industry value chain from raw materials to end customer, identifies where the opportunity positions itself, and highlights differentiation factors and dynamics at each stage.",
     // Formula
     guideFormulaTitle: "Score Calculation",
     guideFormulaDesc: "The total score is a weighted average of all five criteria. Risk is inverted (6 minus score) so that low-risk opportunities score higher.",
@@ -812,6 +813,7 @@ const translations = {
     guideSwotDesc: "Systematische Analyse interner Stärken und Schwächen zusammen mit externen Chancen und Risiken.",
     guidePestelDesc: "Makroumweltanalyse mit Abdeckung politischer, wirtschaftlicher, sozialer, technologischer, ökologischer und rechtlicher Faktoren.",
     guidePorterDesc: "Analysiert fünf Wettbewerbskräfte: Rivalität, neue Marktteilnehmer, Substitute, Käufermacht und Lieferantenmacht zur Bewertung der Branchenrentabilität.",
+    guideValueChainDesc: "Bildet die Branchen-Wertschöpfungskette von Rohstoffen bis zum Endkunden ab, identifiziert die Positionierung der Opportunity und hebt Differenzierungsfaktoren sowie Branchendynamiken auf jeder Stufe hervor.",
     guideFormulaTitle: "Score-Berechnung",
     guideFormulaDesc: "Der Gesamtscore ist ein gewichteter Durchschnitt aller fünf Kriterien. Risiko wird invertiert (6 minus Score), sodass Opportunities mit niedrigem Risiko höher bewertet werden.",
     guideWeightNote_MA: "Höchstes Gewicht — Marktgröße bestimmt den Opportunity-Wert",
