@@ -10,12 +10,14 @@ import { DetailedScoringSection } from "@/components/DetailedScoringSection";
 import { BusinessCaseSection } from "@/components/BusinessCaseSection";
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
+import { GoToMarketSection } from "@/components/GoToMarketSection";
+import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown, Rocket, RefreshCw } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 
-type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "gates" | "strategic_analyses";
+type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "go_to_market" | "implement_review" | "gates" | "strategic_analyses";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +59,8 @@ export default function OpportunityDetail() {
     scoring:             "gate1",
     detailed_scoring:    "gate2",
     business_case:       "gate3",
+    go_to_market:        "implement_review",
+    implement_review:    "closed",
     gates:               "go_to_market",
     strategic_analyses:  "implement_review",
   };
@@ -65,6 +69,8 @@ export default function OpportunityDetail() {
     scoring:            "rough_scoring",
     detailed_scoring:   "detailed_scoring",
     business_case:      "business_case",
+    go_to_market:       "go_to_market",
+    implement_review:   "implement_review",
     gates:              "gate1",
     strategic_analyses: "",
   };
@@ -79,6 +85,8 @@ export default function OpportunityDetail() {
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" /> },
     { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
+    { key: "go_to_market",        label: t("stage_go_to_market"),icon: <Rocket className="h-4 w-4" /> },
+    { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
     { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
     { key: "strategic_analyses",  label: t("saTab"),             icon: <LineChart className="h-4 w-4" /> },
   ];
@@ -202,6 +210,20 @@ export default function OpportunityDetail() {
               <BusinessCaseSection
                 businessCase={opp.businessCase}
                 onSave={(bc) => updateBusinessCase(opp.id, bc)}
+                readonly={opp.stage === "closed"}
+              />
+            )}
+            {activeTab === "go_to_market" && (
+              <GoToMarketSection
+                goToMarketPlan={opp.goToMarketPlan}
+                onSave={(plan) => updateOpportunity(opp.id, { goToMarketPlan: plan })}
+                readonly={opp.stage === "closed"}
+              />
+            )}
+            {activeTab === "implement_review" && (
+              <ImplementReviewSection
+                implementReview={opp.implementReview}
+                onSave={(ir) => updateOpportunity(opp.id, { implementReview: ir })}
                 readonly={opp.stage === "closed"}
               />
             )}
