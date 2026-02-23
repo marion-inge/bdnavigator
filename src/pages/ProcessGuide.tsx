@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen, Shield, Users, Target } from "lucide-react";
 
 export default function ProcessGuide() {
   const navigate = useNavigate();
@@ -36,6 +36,26 @@ export default function ProcessGuide() {
           <StageFlowDiagram t={t} />
         </section>
 
+        {/* Gate Deciders */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{t("guideGateDeciders")}</h2>
+          <p className="text-muted-foreground leading-relaxed">{t("guideGateDecidersDesc")}</p>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              { gate: "G1", icon: <Target className="h-5 w-5" />, text: t("guideGate1Decider"), color: "border-l-amber-400" },
+              { gate: "G2", icon: <Users className="h-5 w-5" />, text: t("guideGate2Decider"), color: "border-l-amber-500" },
+              { gate: "G3", icon: <Shield className="h-5 w-5" />, text: t("guideGate3Decider"), color: "border-l-amber-600" },
+            ].map(({ gate, icon, text, color }) => (
+              <Card key={gate} className={`border-l-4 ${color}`}>
+                <CardContent className="pt-4 flex items-start gap-3">
+                  <div className="mt-0.5 text-amber-600">{icon}</div>
+                  <p className="text-sm text-muted-foreground">{text}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
         {/* Stages Detail */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t("guideStagesTitle")}</h2>
@@ -59,6 +79,35 @@ export default function ProcessGuide() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{t(descKey)}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Detailed Scoring Dimensions */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{t("guideDetailedTitle")}</h2>
+          <p className="text-muted-foreground leading-relaxed">{t("guideDetailedDesc")}</p>
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              { key: "market", icon: "📈", titleKey: "guideDS_market", descKey: "guideDS_marketDesc" },
+              { key: "customer", icon: "👥", titleKey: "guideDS_customer", descKey: "guideDS_customerDesc" },
+              { key: "competitor", icon: "🛡️", titleKey: "guideDS_competitor", descKey: "guideDS_competitorDesc" },
+              { key: "strategic", icon: "🧭", titleKey: "guideDS_strategic", descKey: "guideDS_strategicDesc" },
+              { key: "feasibility", icon: "⚙️", titleKey: "guideDS_feasibility", descKey: "guideDS_feasibilityDesc" },
+              { key: "orgReadiness", icon: "🏢", titleKey: "guideDS_orgReadiness", descKey: "guideDS_orgReadinessDesc" },
+              { key: "commercial", icon: "💰", titleKey: "guideDS_commercial", descKey: "guideDS_commercialDesc" },
+              { key: "risk", icon: "⚠️", titleKey: "guideDS_risk", descKey: "guideDS_riskDesc" },
+            ].map(({ key, icon, titleKey, descKey }) => (
+              <Card key={key}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <span>{icon}</span> {t(titleKey as any)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{t(descKey as any)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -192,6 +241,9 @@ export default function ProcessGuide() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t("guideStrategicTitle")}</h2>
           <p className="text-muted-foreground leading-relaxed">{t("guideStrategicDesc")}</p>
+
+          {/* Group: Market & Strategy */}
+          <h3 className="text-lg font-semibold text-foreground mt-6">Market & Strategy</h3>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               { key: "ansoff", icon: "📐", title: t("saAnsoff"), desc: t("guideAnsoffDesc") },
@@ -201,6 +253,69 @@ export default function ProcessGuide() {
               { key: "pestel", icon: "🌍", title: t("saPestel"), desc: t("guidePestelDesc") },
               { key: "porter", icon: "⚔️", title: t("saPorter"), desc: t("guidePorterDesc") },
               { key: "valueChain", icon: "🔗", title: t("saValueChain"), desc: t("guideValueChainDesc") },
+            ].map(({ key, icon, title, desc }) => (
+              <Card key={key}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <span>{icon}</span> {title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Group: Market Research */}
+          <h3 className="text-lg font-semibold text-foreground mt-6">Market Research</h3>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { key: "custSeg", icon: "🎯", title: t("saCustSeg"), desc: t("guideCustSegDesc" as any) },
+              { key: "compAnalysis", icon: "🏆", title: t("saCompAnalysis"), desc: t("guideCompAnalysisDesc" as any) },
+              { key: "custInt", icon: "🎤", title: t("saCustInt"), desc: t("guideCustIntDesc" as any) },
+            ].map(({ key, icon, title, desc }) => (
+              <Card key={key}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <span>{icon}</span> {title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Group: Business Modelling */}
+          <h3 className="text-lg font-semibold text-foreground mt-6">Business Modelling</h3>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { key: "bizModel", icon: "🏗️", title: t("saBizModel"), desc: t("guideBizModelDesc" as any) },
+              { key: "leanCanvas", icon: "📋", title: t("saLeanCanvas"), desc: t("guideLeanCanvasDesc" as any) },
+              { key: "vpc", icon: "💎", title: t("saVpc"), desc: t("guideVpcDesc" as any) },
+              { key: "cba", icon: "🎁", title: t("saCba"), desc: t("guideCbaDesc" as any) },
+            ].map(({ key, icon, title, desc }) => (
+              <Card key={key}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <span>{icon}</span> {title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Group: Competitive Positioning */}
+          <h3 className="text-lg font-semibold text-foreground mt-6">Competitive Positioning</h3>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { key: "tcm", icon: "⭕", title: t("saTcm"), desc: t("guideTcmDesc" as any) },
+              { key: "pos", icon: "📍", title: t("saPos"), desc: t("guidePosDesc" as any) },
             ].map(({ key, icon, title, desc }) => (
               <Card key={key}>
                 <CardHeader className="pb-2">
@@ -262,20 +377,21 @@ function StageFlowDiagram({ t }: { t: (k: string) => string }) {
   const stages = [
     { key: "idea", color: "bg-blue-500" },
     { key: "rough_scoring", color: "bg-indigo-500" },
-    { key: "gate1", color: "bg-amber-500" },
+    { key: "gate1", color: "bg-amber-500", decider: "Dir. BD" },
     { key: "detailed_scoring", color: "bg-purple-500" },
-    { key: "gate2", color: "bg-amber-500" },
+    { key: "gate2", color: "bg-amber-500", decider: "BU-Mgr/MD" },
     { key: "business_case", color: "bg-teal-500" },
-    { key: "gate3", color: "bg-amber-500" },
+    { key: "gate3", color: "bg-amber-500", decider: "EVP" },
     { key: "go_to_market", color: "bg-green-500" },
     { key: "implement_review", color: "bg-orange-500" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {stages.map(({ key, color }, i) => (
+      {stages.map(({ key, color, decider }, i) => (
         <div key={key} className="flex items-center gap-2">
-          <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap`}>
-            {t(`stage_${key}`)}
+          <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap flex flex-col items-center`}>
+            <span>{t(`stage_${key}`)}</span>
+            {decider && <span className="text-[10px] opacity-80 font-normal">{decider}</span>}
           </div>
           {i < stages.length - 1 && <span className="text-muted-foreground text-lg">→</span>}
         </div>
