@@ -12,7 +12,8 @@ import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown } from "lucide-react";
+import { exportOpportunityPdf } from "@/lib/pdfExport";
 
 type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "gates" | "strategic_analyses";
 
@@ -105,6 +106,9 @@ export default function OpportunityDetail() {
           </div>
           <div className="flex items-center gap-3">
             <LanguageSwitch />
+            <Button variant="outline" size="icon" onClick={() => exportOpportunityPdf(opp)} title="PDF Export">
+              <FileDown className="h-4 w-4" />
+            </Button>
             <Button variant="outline" size="icon" onClick={handleDelete} className="text-destructive hover:bg-destructive/10">
               <Trash2 className="h-4 w-4" />
             </Button>

@@ -12,7 +12,8 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, TrendingUp, RotateCcw, X, BookOpen } from "lucide-react";
+import { Search, TrendingUp, RotateCcw, X, BookOpen, FileDown } from "lucide-react";
+import { exportDashboardPdf } from "@/lib/pdfExport";
 
 export default function Index() {
   const { opportunities } = useStore();
@@ -116,6 +117,10 @@ export default function Index() {
               title="Reset Data"
             >
               <RotateCcw className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => exportDashboardPdf(opportunities)} className="gap-1.5" title="PDF Export">
+              <FileDown className="h-4 w-4" />
+              <span className="hidden sm:inline">PDF</span>
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/guide")} className="gap-1.5">
               <BookOpen className="h-4 w-4" />
