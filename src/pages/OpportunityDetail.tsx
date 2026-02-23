@@ -26,6 +26,7 @@ export default function OpportunityDetail() {
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
 
   const opp = getOpportunity(id!);
   if (!opp) {
@@ -158,7 +159,7 @@ export default function OpportunityDetail() {
             return (
               <button
                 key={item.key}
-                onClick={() => { setActiveTab(item.key); setSidebarOpen(false); }}
+                onClick={() => { setActiveTab(item.key); setSidebarOpen(false); if (item.key !== "strategic_analyses") setSaDefaultTab(undefined); }}
                 className={`
                   w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors
                   ${isActive
@@ -204,6 +205,10 @@ export default function OpportunityDetail() {
                 detailedScoring={opp.detailedScoring}
                 onSave={(ds) => updateDetailedScoring(opp.id, ds)}
                 readonly={opp.stage === "closed"}
+                onNavigateToAnalysis={(analysisTab) => {
+                  setSaDefaultTab(analysisTab);
+                  setActiveTab("strategic_analyses");
+                }}
               />
             )}
             {activeTab === "business_case" && (
@@ -242,6 +247,7 @@ export default function OpportunityDetail() {
                 strategicAnalyses={opp.strategicAnalyses}
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
+                defaultTab={saDefaultTab}
               />
             )}
           </div>

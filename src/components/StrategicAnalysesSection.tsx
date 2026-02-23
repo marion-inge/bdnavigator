@@ -16,9 +16,10 @@ interface Props {
   strategicAnalyses?: StrategicAnalyses;
   onSave: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
+  defaultTab?: string;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, defaultTab }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
@@ -28,7 +29,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
   };
 
   return (
-    <Tabs defaultValue="ansoff" className="space-y-6">
+    <Tabs defaultValue={defaultTab || "ansoff"} key={defaultTab} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="ansoff" className="text-xs sm:text-sm">{t("saAnsoff")}</TabsTrigger>
         <TabsTrigger value="bcg" className="text-xs sm:text-sm">{t("saBcg")}</TabsTrigger>
