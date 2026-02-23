@@ -11,6 +11,7 @@ import { StrategicFitTab } from "./detailed-scoring/StrategicFitTab";
 import { CompetitorLandscapeTab } from "./detailed-scoring/CompetitorLandscapeTab";
 import { CustomerLandscapeTab } from "./detailed-scoring/CustomerLandscapeTab";
 import { OrganisationalReadinessTab } from "./detailed-scoring/OrganisationalReadinessTab";
+import { PilotCustomerTab } from "./detailed-scoring/PilotCustomerTab";
 import { RelatedAnalyses, type StrategicAnalysisTab } from "./detailed-scoring/RelatedAnalyses";
 
 interface Props {
@@ -41,6 +42,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
         <TabsTrigger value="commercial" className="text-xs sm:text-sm">{t("commercialViability")}</TabsTrigger>
         <TabsTrigger value="risk" className="text-xs sm:text-sm">{t("risk")}</TabsTrigger>
+        <TabsTrigger value="pilotCustomer" className="text-xs sm:text-sm">{t("dsPilotCustomer" as any)}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview">
@@ -101,6 +103,10 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
           <RelatedAnalyses scoringTab="risk" onNavigate={onNavigateToAnalysis} />
           <RiskTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
         </div>
+      </TabsContent>
+
+      <TabsContent value="pilotCustomer">
+        <PilotCustomerTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
       </TabsContent>
     </Tabs>
   );

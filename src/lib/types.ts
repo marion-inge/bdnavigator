@@ -120,6 +120,56 @@ export interface OrganisationalReadiness {
   details: string;
 }
 
+export type PilotContactStatus = "identified" | "contacted" | "interested" | "loi_confirmed";
+
+export interface PilotCustomerEntry {
+  id: string;
+  name: string;
+  industry: string;
+  contactStatus: PilotContactStatus;
+  validationResults: string;
+  feedback: string;
+}
+
+export interface PilotCustomerData {
+  score: number; // 1-5 readiness
+  entries: PilotCustomerEntry[];
+  notes: string;
+}
+
+export interface PilotAgreement {
+  id: string;
+  customerName: string;
+  scope: string;
+  timeline: string;
+  status: "planned" | "active" | "completed" | "cancelled";
+  successCriteria: string;
+  results: string;
+}
+
+export interface LeadGenChannel {
+  id: string;
+  channel: string;
+  strategy: string;
+  targetLeads: number;
+  actualLeads: number;
+  conversionRate: number;
+}
+
+export interface LeadGenActivity {
+  id: string;
+  activity: string;
+  status: "planned" | "in_progress" | "completed";
+  date: string;
+  notes: string;
+}
+
+export interface LeadGenerationData {
+  channels: LeadGenChannel[];
+  activities: LeadGenActivity[];
+  pipelineNotes: string;
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string; alignmentDimensions?: AlignmentDimension[]; capabilityGaps?: CapabilityGap[] };
@@ -136,6 +186,7 @@ export interface DetailedScoring {
   risk: { score: number; details: string; riskItems?: RiskItem[] };
   competitorLandscape?: { score: number; analysis: DetailedMarketAnalysis };
   organisationalReadiness?: OrganisationalReadiness;
+  pilotCustomer?: PilotCustomerData;
 }
 
 export interface BusinessCase {
@@ -409,6 +460,9 @@ export interface GoToMarketPlan {
   kpis: string;
   notes: string;
   checklist: ChecklistItem[];
+  pilotAgreements?: PilotAgreement[];
+  pilotNotes?: string;
+  leadGeneration?: LeadGenerationData;
 }
 
 export interface ImplementReview {
