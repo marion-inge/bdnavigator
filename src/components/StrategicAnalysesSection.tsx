@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain } from "@/lib/types";
+import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain, CustomerSegmentEntry, CompetitorAnalysisEntry, CustomerInterviewEntry, BusinessModelCanvas } from "@/lib/types";
 import { useState } from "react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +37,10 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <TabsTrigger value="pestel" className="text-xs sm:text-sm">{t("saPestel")}</TabsTrigger>
         <TabsTrigger value="porter" className="text-xs sm:text-sm">{t("saPorter")}</TabsTrigger>
         <TabsTrigger value="valueChain" className="text-xs sm:text-sm">{t("saValueChain")}</TabsTrigger>
+        <TabsTrigger value="custSeg" className="text-xs sm:text-sm">{t("saCustSeg")}</TabsTrigger>
+        <TabsTrigger value="compAnalysis" className="text-xs sm:text-sm">{t("saCompAnalysis")}</TabsTrigger>
+        <TabsTrigger value="custInt" className="text-xs sm:text-sm">{t("saCustInt")}</TabsTrigger>
+        <TabsTrigger value="bizModel" className="text-xs sm:text-sm">{t("saBizModel")}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -475,6 +479,222 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
                   <div className="space-y-3">
                     <div><Label>{t("saDescription")}</Label><Textarea value={vc.description} onChange={(e) => updateVc({ ...vc, description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                     <div><Label>{t("saRationale")}</Label><Textarea value={vc.rationale} onChange={(e) => updateVc({ ...vc, rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Customer Segmentation */}
+      <TabsContent value="custSeg">
+        <Card>
+          <CardHeader><CardTitle>{t("saCustSeg")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const seg = data.customerSegmentation || { entries: [], description: "", rationale: "" };
+              const updateSeg = (updated: typeof seg) => update({ ...data, customerSegmentation: updated });
+              const addEntry = () => {
+                updateSeg({ ...seg, entries: [...seg.entries, { id: crypto.randomUUID(), name: "", size: "", needs: "", willingnessToPay: "", priority: "medium" }] });
+              };
+              const removeEntry = (id: string) => updateSeg({ ...seg, entries: seg.entries.filter(e => e.id !== id) });
+              const updateEntry = (id: string, updates: Partial<CustomerSegmentEntry>) => {
+                updateSeg({ ...seg, entries: seg.entries.map(e => e.id === id ? { ...e, ...updates } : e) });
+              };
+              return (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold">{t("saCustSegEntries")}</Label>
+                    {!readonly && <Button variant="outline" size="sm" onClick={addEntry} className="gap-1"><Plus className="h-3.5 w-3.5" /> {t("saCustSegAdd")}</Button>}
+                  </div>
+                  {seg.entries.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">{t("saCustSegNoEntries")}</p>
+                  ) : (
+                    seg.entries.map(entry => (
+                      <div key={entry.id} className="rounded-lg border border-border p-4 bg-card space-y-3">
+                        <div className="flex items-center gap-3">
+                          <Input value={entry.name} onChange={e => updateEntry(entry.id, { name: e.target.value })} placeholder={t("saCustSegName")} disabled={readonly} className="flex-1 font-medium" />
+                          <Select value={entry.priority} onValueChange={v => updateEntry(entry.id, { priority: v as "high" | "medium" | "low" })} disabled={readonly}>
+                            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="high">🔴 {t("sfPriorityHigh")}</SelectItem>
+                              <SelectItem value="medium">🟡 {t("sfPriorityMedium")}</SelectItem>
+                              <SelectItem value="low">🟢 {t("sfPriorityLow")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive shrink-0"><Trash2 className="h-4 w-4" /></Button>}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div><Label className="text-xs">{t("saCustSegSize")}</Label><Input value={entry.size} onChange={e => updateEntry(entry.id, { size: e.target.value })} placeholder={t("saCustSegSizePlaceholder")} disabled={readonly} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCustSegNeeds")}</Label><Textarea value={entry.needs} onChange={e => updateEntry(entry.id, { needs: e.target.value })} placeholder={t("saCustSegNeedsPlaceholder")} disabled={readonly} rows={2} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCustSegWtp")}</Label><Textarea value={entry.willingnessToPay} onChange={e => updateEntry(entry.id, { willingnessToPay: e.target.value })} placeholder={t("saCustSegWtpPlaceholder")} disabled={readonly} rows={2} className="mt-1" /></div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={seg.description} onChange={e => updateSeg({ ...seg, description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={seg.rationale} onChange={e => updateSeg({ ...seg, rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Competitor Analysis */}
+      <TabsContent value="compAnalysis">
+        <Card>
+          <CardHeader><CardTitle>{t("saCompAnalysis")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const comp = data.competitorAnalysis || { entries: [], description: "", rationale: "" };
+              const updateComp = (updated: typeof comp) => update({ ...data, competitorAnalysis: updated });
+              const addEntry = () => {
+                updateComp({ ...comp, entries: [...comp.entries, { id: crypto.randomUUID(), name: "", strengths: "", weaknesses: "", marketShare: "", strategy: "", threatLevel: 3 }] });
+              };
+              const removeEntry = (id: string) => updateComp({ ...comp, entries: comp.entries.filter(e => e.id !== id) });
+              const updateEntry = (id: string, updates: Partial<CompetitorAnalysisEntry>) => {
+                updateComp({ ...comp, entries: comp.entries.map(e => e.id === id ? { ...e, ...updates } : e) });
+              };
+              return (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold">{t("saCompEntries")}</Label>
+                    {!readonly && <Button variant="outline" size="sm" onClick={addEntry} className="gap-1"><Plus className="h-3.5 w-3.5" /> {t("saCompAdd")}</Button>}
+                  </div>
+                  {comp.entries.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">{t("saCompNoEntries")}</p>
+                  ) : (
+                    comp.entries.map(entry => (
+                      <div key={entry.id} className="rounded-lg border border-border p-4 bg-card space-y-3">
+                        <div className="flex items-center gap-3">
+                          <Input value={entry.name} onChange={e => updateEntry(entry.id, { name: e.target.value })} placeholder={t("saCompName")} disabled={readonly} className="flex-1 font-medium" />
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-xs text-muted-foreground">{t("saCompThreat")}:</span>
+                            <Slider min={1} max={5} step={1} value={[entry.threatLevel]} onValueChange={([v]) => updateEntry(entry.id, { threatLevel: v })} disabled={readonly} className="w-24" />
+                            <span className={`text-xs font-bold ${entry.threatLevel <= 2 ? "text-green-600" : entry.threatLevel <= 3 ? "text-yellow-600" : "text-red-600"}`}>{entry.threatLevel}/5</span>
+                          </div>
+                          {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive shrink-0"><Trash2 className="h-4 w-4" /></Button>}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div><Label className="text-xs">{t("saCompStrengths")}</Label><Textarea value={entry.strengths} onChange={e => updateEntry(entry.id, { strengths: e.target.value })} placeholder={t("saCompStrengthsPlaceholder")} disabled={readonly} rows={2} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCompWeaknesses")}</Label><Textarea value={entry.weaknesses} onChange={e => updateEntry(entry.id, { weaknesses: e.target.value })} placeholder={t("saCompWeaknessesPlaceholder")} disabled={readonly} rows={2} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCompMarketShare")}</Label><Input value={entry.marketShare} onChange={e => updateEntry(entry.id, { marketShare: e.target.value })} placeholder={t("saCompMarketSharePlaceholder")} disabled={readonly} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCompStrategy")}</Label><Textarea value={entry.strategy} onChange={e => updateEntry(entry.id, { strategy: e.target.value })} placeholder={t("saCompStrategyPlaceholder")} disabled={readonly} rows={2} className="mt-1" /></div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={comp.description} onChange={e => updateComp({ ...comp, description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={comp.rationale} onChange={e => updateComp({ ...comp, rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Customer Interviewing */}
+      <TabsContent value="custInt">
+        <Card>
+          <CardHeader><CardTitle>{t("saCustInt")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const ci = data.customerInterviewing || { entries: [], description: "", rationale: "" };
+              const updateCi = (updated: typeof ci) => update({ ...data, customerInterviewing: updated });
+              const addEntry = () => {
+                updateCi({ ...ci, entries: [...ci.entries, { id: crypto.randomUUID(), date: new Date().toISOString().slice(0, 10), customerName: "", role: "", keyInsights: "", painPoints: "", quotes: "" }] });
+              };
+              const removeEntry = (id: string) => updateCi({ ...ci, entries: ci.entries.filter(e => e.id !== id) });
+              const updateEntry = (id: string, updates: Partial<CustomerInterviewEntry>) => {
+                updateCi({ ...ci, entries: ci.entries.map(e => e.id === id ? { ...e, ...updates } : e) });
+              };
+              return (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold">{t("saCustIntEntries")} ({ci.entries.length})</Label>
+                    {!readonly && <Button variant="outline" size="sm" onClick={addEntry} className="gap-1"><Plus className="h-3.5 w-3.5" /> {t("saCustIntAdd")}</Button>}
+                  </div>
+                  {ci.entries.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">{t("saCustIntNoEntries")}</p>
+                  ) : (
+                    ci.entries.map(entry => (
+                      <div key={entry.id} className="rounded-lg border border-border p-4 bg-card space-y-3">
+                        <div className="flex items-center gap-3">
+                          <Input type="date" value={entry.date} onChange={e => updateEntry(entry.id, { date: e.target.value })} disabled={readonly} className="w-40" />
+                          <Input value={entry.customerName} onChange={e => updateEntry(entry.id, { customerName: e.target.value })} placeholder={t("saCustIntCustomer")} disabled={readonly} className="flex-1 font-medium" />
+                          <Input value={entry.role} onChange={e => updateEntry(entry.id, { role: e.target.value })} placeholder={t("saCustIntRolePlaceholder")} disabled={readonly} className="w-48" />
+                          {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive shrink-0"><Trash2 className="h-4 w-4" /></Button>}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div><Label className="text-xs">{t("saCustIntInsights")}</Label><Textarea value={entry.keyInsights} onChange={e => updateEntry(entry.id, { keyInsights: e.target.value })} placeholder={t("saCustIntInsightsPlaceholder")} disabled={readonly} rows={3} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCustIntPainPoints")}</Label><Textarea value={entry.painPoints} onChange={e => updateEntry(entry.id, { painPoints: e.target.value })} placeholder={t("saCustIntPainPointsPlaceholder")} disabled={readonly} rows={3} className="mt-1" /></div>
+                          <div><Label className="text-xs">{t("saCustIntQuotes")}</Label><Textarea value={entry.quotes} onChange={e => updateEntry(entry.id, { quotes: e.target.value })} placeholder={t("saCustIntQuotesPlaceholder")} disabled={readonly} rows={3} className="mt-1" /></div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={ci.description} onChange={e => updateCi({ ...ci, description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={ci.rationale} onChange={e => updateCi({ ...ci, rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Business Modelling (Canvas) */}
+      <TabsContent value="bizModel">
+        <Card>
+          <CardHeader><CardTitle>{t("saBizModel")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const bm: BusinessModelCanvas = data.businessModelling || {
+                valueProposition: "", customerSegments: "", channels: "", customerRelationships: "",
+                revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "",
+                description: "", rationale: "",
+              };
+              const updateBm = (updates: Partial<BusinessModelCanvas>) => update({ ...data, businessModelling: { ...bm, ...updates } });
+
+              const canvasItems: { key: keyof BusinessModelCanvas; label: string; placeholder: string; color: string }[] = [
+                { key: "valueProposition", label: "saBizValueProp", placeholder: "saBizValuePropPlaceholder", color: "bg-primary/10 border-primary/30" },
+                { key: "customerSegments", label: "saBizCustSeg", placeholder: "saBizCustSegPlaceholder", color: "bg-blue-500/10 border-blue-500/30" },
+                { key: "channels", label: "saBizChannels", placeholder: "saBizChannelsPlaceholder", color: "bg-green-500/10 border-green-500/30" },
+                { key: "customerRelationships", label: "saBizCustRel", placeholder: "saBizCustRelPlaceholder", color: "bg-yellow-500/10 border-yellow-500/30" },
+                { key: "revenueStreams", label: "saBizRevenue", placeholder: "saBizRevenuePlaceholder", color: "bg-emerald-500/10 border-emerald-500/30" },
+                { key: "keyResources", label: "saBizKeyRes", placeholder: "saBizKeyResPlaceholder", color: "bg-violet-500/10 border-violet-500/30" },
+                { key: "keyActivities", label: "saBizKeyAct", placeholder: "saBizKeyActPlaceholder", color: "bg-orange-500/10 border-orange-500/30" },
+                { key: "keyPartners", label: "saBizKeyPart", placeholder: "saBizKeyPartPlaceholder", color: "bg-pink-500/10 border-pink-500/30" },
+                { key: "costStructure", label: "saBizCostStr", placeholder: "saBizCostStrPlaceholder", color: "bg-red-500/10 border-red-500/30" },
+              ];
+
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {canvasItems.map(({ key, label, placeholder, color }) => (
+                      <div key={key} className={`rounded-lg border p-4 ${color}`}>
+                        <Label className="text-sm font-semibold">{t(label as any)}</Label>
+                        <Textarea
+                          className="mt-2 bg-background"
+                          value={bm[key]}
+                          onChange={e => updateBm({ [key]: e.target.value })}
+                          placeholder={t(placeholder as any)}
+                          disabled={readonly}
+                          rows={4}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={bm.description} onChange={e => updateBm({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={bm.rationale} onChange={e => updateBm({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
                   </div>
                 </>
               );
