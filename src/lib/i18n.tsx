@@ -440,6 +440,7 @@ const translations = {
     saPosStatementPlaceholder: "For [target audience] who [need], [product] is a [category] that [key benefit]. Unlike [alternative], we [differentiator] because [reason to believe].",
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Competitor Landscape",
+    dsRelatedAnalyses: "Related Analyses",
     // Organisational Readiness (Detailed Scoring)
     dsOrgReadiness: "Organisational Readiness",
     dsOrCulture: "Culture & Change Readiness",
@@ -1069,6 +1070,7 @@ const translations = {
     saPosStatementPlaceholder: "Für [Zielgruppe], die [Bedürfnis], ist [Produkt] eine [Kategorie], die [Hauptnutzen]. Im Gegensatz zu [Alternative] bieten wir [Differenzierung], weil [Reason to Believe].",
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Wettbewerbslandschaft",
+    dsRelatedAnalyses: "Relevante Analysen",
     // Organisational Readiness (Detailed Scoring)
     dsOrgReadiness: "Organisatorische Bereitschaft",
     dsOrCulture: "Kultur & Veränderungsbereitschaft",

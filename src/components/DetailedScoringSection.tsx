@@ -11,17 +11,16 @@ import { StrategicFitTab } from "./detailed-scoring/StrategicFitTab";
 import { CompetitorLandscapeTab } from "./detailed-scoring/CompetitorLandscapeTab";
 import { CustomerLandscapeTab } from "./detailed-scoring/CustomerLandscapeTab";
 import { OrganisationalReadinessTab } from "./detailed-scoring/OrganisationalReadinessTab";
-import { CriterionTab } from "./detailed-scoring/CriterionTab";
-import { Crosshair, Wrench, DollarSign, AlertTriangle } from "lucide-react";
-import type { TranslationKey } from "@/lib/i18n";
+import { RelatedAnalyses, type StrategicAnalysisTab } from "./detailed-scoring/RelatedAnalyses";
 
 interface Props {
   detailedScoring?: DetailedScoring;
   onSave: (ds: DetailedScoring) => void;
   readonly?: boolean;
+  onNavigateToAnalysis?: (analysisTab: StrategicAnalysisTab) => void;
 }
 
-export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Props) {
+export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNavigateToAnalysis }: Props) {
   const { t } = useI18n();
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
 
@@ -49,35 +48,59 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly }: Pr
       </TabsContent>
 
       <TabsContent value="market">
-        <MarketAttractivenessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="market" onNavigate={onNavigateToAnalysis} />
+          <MarketAttractivenessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="customer">
-        <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="customer" onNavigate={onNavigateToAnalysis} />
+          <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="competitor">
-        <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="competitor" onNavigate={onNavigateToAnalysis} />
+          <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="strategic">
-        <StrategicFitTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="strategic" onNavigate={onNavigateToAnalysis} />
+          <StrategicFitTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="feasibility">
-        <FeasibilityTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="feasibility" onNavigate={onNavigateToAnalysis} />
+          <FeasibilityTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="commercial">
-        <CommercialViabilityTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="commercial" onNavigate={onNavigateToAnalysis} />
+          <CommercialViabilityTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="risk">
-        <RiskTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="risk" onNavigate={onNavigateToAnalysis} />
+          <RiskTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
 
       <TabsContent value="orgReadiness">
-        <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="orgReadiness" onNavigate={onNavigateToAnalysis} />
+          <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
       </TabsContent>
     </Tabs>
   );
