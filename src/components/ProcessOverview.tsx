@@ -65,10 +65,13 @@ export function ProcessOverview() {
                   <div className="flex items-center gap-0">
                     <div className="w-3 h-[2px] bg-[hsl(var(--warning))]/50" />
                     <div className="flex flex-col items-center">
-                      <div className="w-8 h-10 rounded-md bg-[hsl(var(--warning))]/15 border border-[hsl(var(--warning))]/40 flex flex-col items-center justify-center gap-0.5 shadow-sm">
+                      <div className="w-8 h-10 rounded-md bg-[hsl(var(--warning))]/15 border border-[hsl(var(--warning))]/40 flex flex-col items-center justify-center gap-0 shadow-sm">
                         <span className="text-[9px] font-bold text-[hsl(var(--warning))] uppercase tracking-wide">G{currentGate}</span>
                         <span className="text-[8px] text-[hsl(var(--warning))]/80 font-medium">Gate</span>
                       </div>
+                      <span className="text-[8px] text-muted-foreground mt-0.5 leading-tight text-center whitespace-nowrap">
+                        {currentGate === 1 ? "Dir. BD" : currentGate === 2 ? "BU-Mgr/MD" : "EVP"}
+                      </span>
                     </div>
                     <div className="w-3 h-[2px] bg-[hsl(var(--warning))]/50" />
                   </div>
