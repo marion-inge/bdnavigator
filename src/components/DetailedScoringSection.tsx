@@ -38,9 +38,9 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         <TabsTrigger value="competitor" className="text-xs sm:text-sm">{t("dsCompetitorLandscape")}</TabsTrigger>
         <TabsTrigger value="strategic" className="text-xs sm:text-sm">{t("strategicFit")}</TabsTrigger>
         <TabsTrigger value="feasibility" className="text-xs sm:text-sm">{t("feasibility")}</TabsTrigger>
+        <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
         <TabsTrigger value="commercial" className="text-xs sm:text-sm">{t("commercialViability")}</TabsTrigger>
         <TabsTrigger value="risk" className="text-xs sm:text-sm">{t("risk")}</TabsTrigger>
-        <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview">
@@ -82,6 +82,13 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         </div>
       </TabsContent>
 
+      <TabsContent value="orgReadiness">
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="orgReadiness" onNavigate={onNavigateToAnalysis} />
+          <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
+      </TabsContent>
+
       <TabsContent value="commercial">
         <div className="space-y-4">
           <RelatedAnalyses scoringTab="commercial" onNavigate={onNavigateToAnalysis} />
@@ -93,13 +100,6 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         <div className="space-y-4">
           <RelatedAnalyses scoringTab="risk" onNavigate={onNavigateToAnalysis} />
           <RiskTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
-        </div>
-      </TabsContent>
-
-      <TabsContent value="orgReadiness">
-        <div className="space-y-4">
-          <RelatedAnalyses scoringTab="orgReadiness" onNavigate={onNavigateToAnalysis} />
-          <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
         </div>
       </TabsContent>
     </Tabs>
