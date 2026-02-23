@@ -239,6 +239,48 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
   };
 }
 
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  done: boolean;
+}
+
+export interface GoToMarketPlan {
+  targetSegments: string;
+  channels: string;
+  launchDate: string;
+  pricingStrategy: string;
+  keyPartners: string;
+  kpis: string;
+  notes: string;
+  checklist: ChecklistItem[];
+}
+
+export interface ImplementReview {
+  status: string;
+  progressNotes: string;
+  lessonsLearned: string;
+  nextSteps: string;
+  reviewDate: string;
+  reviewOutcome: string;
+  notes: string;
+  checklist: ChecklistItem[];
+}
+
+export function createDefaultGoToMarketPlan(): GoToMarketPlan {
+  return {
+    targetSegments: "", channels: "", launchDate: "", pricingStrategy: "",
+    keyPartners: "", kpis: "", notes: "", checklist: [],
+  };
+}
+
+export function createDefaultImplementReview(): ImplementReview {
+  return {
+    status: "", progressNotes: "", lessonsLearned: "", nextSteps: "",
+    reviewDate: "", reviewOutcome: "", notes: "", checklist: [],
+  };
+}
+
 export interface Opportunity {
   id: string;
   title: string;
@@ -252,6 +294,8 @@ export interface Opportunity {
   detailedScoring?: DetailedScoring;
   businessCase?: BusinessCase;
   strategicAnalyses?: StrategicAnalyses;
+  goToMarketPlan?: GoToMarketPlan;
+  implementReview?: ImplementReview;
   roughScoringAnswers?: Record<string, number>;
   gates: GateRecord[];
   createdAt: string;
