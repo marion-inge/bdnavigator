@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { useState } from "react";
 
 interface FunnelItem {
   stage: string;
@@ -14,86 +14,110 @@ interface PipelineFunnelProps {
 }
 
 const STAGE_COLORS = [
-  "hsl(215, 50%, 30%)",   // idea
-  "hsl(200, 60%, 45%)",   // rough_scoring
-  "hsl(38, 90%, 50%)",    // gate1
-  "hsl(260, 45%, 55%)",   // detailed_scoring
-  "hsl(280, 40%, 50%)",   // gate2
-  "hsl(170, 50%, 40%)",   // business_case
-  "hsl(320, 45%, 50%)",   // gate3
-  "hsl(145, 55%, 40%)",   // go_to_market
-  "hsl(30, 70%, 50%)",    // implement_review
+  "hsl(215, 50%, 30%)",
+  "hsl(200, 60%, 45%)",
+  "hsl(38, 90%, 50%)",
+  "hsl(260, 45%, 55%)",
+  "hsl(280, 40%, 50%)",
+  "hsl(170, 50%, 40%)",
+  "hsl(320, 45%, 50%)",
+  "hsl(145, 55%, 40%)",
+  "hsl(30, 70%, 50%)",
 ];
-
-const STAGE_COLORS_DIM = STAGE_COLORS.map((c) => c.replace(")", " / 0.3)").replace("hsl(", "hsl("));
 
 export function PipelineFunnel({ data, activeStage, onStageClick }: PipelineFunnelProps) {
   const { t } = useI18n();
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   if (data.every((d) => d.count === 0)) return null;
 
-  const handleClick = (entry: any) => {
-    if (onStageClick && entry?.activePayload?.[0]?.payload) {
-      const stage = entry.activePayload[0].payload.stage;
-      onStageClick(stage);
-    }
-  };
+  const maxCount = Math.max(...data.map((d) => d.count), 1);
+  const totalHeight = 320;
+  const segmentCount = data.length;
+  const segmentH = totalHeight / segmentCount;
+  const svgWidth = 500;
+  const minWidth = 80;
+  const maxWidth = svgWidth - 40;
+  const centerX = svgWidth / 2;
+
+  // Calculate widths proportional to count, with a minimum
+  const widths = data.map((d) => {
+    const ratio = d.count / maxCount;
+    return minWidth + (maxWidth - minWidth) * ratio;
+  });
+
+  // Build funnel: each segment is a trapezoid from current width to next width
+  const segments = data.map((item, idx) => {
+    const topW = widths[idx];
+    const bottomW = idx < segmentCount - 1 ? widths[idx + 1] : widths[idx] * 0.7;
+    const y = idx * segmentH;
+
+    const topLeft = centerX - topW / 2;
+    const topRight = centerX + topW / 2;
+    const bottomLeft = centerX - bottomW / 2;
+    const bottomRight = centerX + bottomW / 2;
+
+    const points = `${topLeft},${y} ${topRight},${y} ${bottomRight},${y + segmentH} ${bottomLeft},${y + segmentH}`;
+
+    const isActive = !activeStage || activeStage === "all" || item.stage === activeStage;
+    const isHovered = hoveredIdx === idx;
+
+    return { item, idx, points, y, topW, isActive, isHovered, centerY: y + segmentH / 2 };
+  });
 
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <h3 className="text-sm font-semibold text-card-foreground mb-4">{t("pipelineFunnel")}</h3>
-      <ResponsiveContainer width="100%" height={220}>
-        <BarChart
-          data={data}
-          layout="horizontal"
-          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-          onClick={handleClick}
-          style={{ cursor: "pointer" }}
-        >
-          <XAxis
-            dataKey="label"
-            tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }}
-            axisLine={false}
-            tickLine={false}
-            interval={0}
-            angle={-30}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis
-            allowDecimals={false}
-            tick={{ fontSize: 11, fill: "hsl(220, 10%, 50%)" }}
-            axisLine={false}
-            tickLine={false}
-            width={30}
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "hsl(0, 0%, 100%)",
-              border: "1px solid hsl(220, 15%, 88%)",
-              borderRadius: "8px",
-              fontSize: "13px",
-            }}
-            formatter={(value: number) => [value, t("opportunities")]}
-          />
-          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={48}>
-            {data.map((item, idx) => (
-              <Cell
-                key={idx}
-                fill={
-                  !activeStage || activeStage === "all"
-                    ? STAGE_COLORS[idx]
-                    : item.stage === activeStage
-                      ? STAGE_COLORS[idx]
-                      : STAGE_COLORS_DIM[idx]
-                }
-                stroke={item.stage === activeStage ? STAGE_COLORS[idx] : "none"}
-                strokeWidth={item.stage === activeStage ? 2 : 0}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <svg
+        viewBox={`0 0 ${svgWidth} ${totalHeight}`}
+        className="w-full"
+        style={{ maxHeight: 340 }}
+      >
+        {segments.map(({ item, idx, points, y, isActive, isHovered, centerY }) => (
+          <g
+            key={item.stage}
+            onClick={() => onStageClick?.(item.stage)}
+            onMouseEnter={() => setHoveredIdx(idx)}
+            onMouseLeave={() => setHoveredIdx(null)}
+            style={{ cursor: "pointer" }}
+          >
+            <polygon
+              points={points}
+              fill={STAGE_COLORS[idx]}
+              opacity={isActive ? (isHovered ? 1 : 0.85) : 0.25}
+              stroke={isHovered ? "hsl(0,0%,100%)" : "none"}
+              strokeWidth={isHovered ? 1.5 : 0}
+              style={{ transition: "opacity 0.2s" }}
+            />
+            {/* Count */}
+            <text
+              x={centerX}
+              y={centerY - 2}
+              textAnchor="middle"
+              dominantBaseline="auto"
+              fontSize="16"
+              fontWeight="700"
+              fill="hsl(0,0%,100%)"
+              style={{ pointerEvents: "none", textShadow: "0 1px 3px rgba(0,0,0,0.4)" }}
+            >
+              {item.count}
+            </text>
+            {/* Label */}
+            <text
+              x={centerX}
+              y={centerY + 14}
+              textAnchor="middle"
+              dominantBaseline="auto"
+              fontSize="10"
+              fill="hsl(0,0%,100%)"
+              opacity={0.85}
+              style={{ pointerEvents: "none", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+            >
+              {item.label}
+            </text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }
