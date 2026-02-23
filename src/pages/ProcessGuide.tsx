@@ -199,6 +199,7 @@ export default function ProcessGuide() {
               { key: "swot", icon: "⚡", title: t("saSwot"), desc: t("guideSwotDesc") },
               { key: "pestel", icon: "🌍", title: t("saPestel"), desc: t("guidePestelDesc") },
               { key: "porter", icon: "⚔️", title: t("saPorter"), desc: t("guidePorterDesc") },
+              { key: "valueChain", icon: "🔗", title: t("saValueChain"), desc: t("guideValueChainDesc") },
             ].map(({ key, icon, title, desc }) => (
               <Card key={key}>
                 <CardHeader className="pb-2">
