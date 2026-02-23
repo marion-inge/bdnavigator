@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain, CustomerSegmentEntry, CompetitorAnalysisEntry, CustomerInterviewEntry, BusinessModelCanvas, LeanCanvas } from "@/lib/types";
+import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainStage, createDefaultStrategicAnalyses, createDefaultValueChain, CustomerSegmentEntry, CompetitorAnalysisEntry, CustomerInterviewEntry, BusinessModelCanvas, LeanCanvas, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement } from "@/lib/types";
 import { useState } from "react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,6 +42,10 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <TabsTrigger value="custInt" className="text-xs sm:text-sm">{t("saCustInt")}</TabsTrigger>
         <TabsTrigger value="bizModel" className="text-xs sm:text-sm">{t("saBizModel")}</TabsTrigger>
         <TabsTrigger value="leanCanvas" className="text-xs sm:text-sm">{t("saLeanCanvas")}</TabsTrigger>
+        <TabsTrigger value="vpc" className="text-xs sm:text-sm">{t("saVpc")}</TabsTrigger>
+        <TabsTrigger value="cba" className="text-xs sm:text-sm">{t("saCba")}</TabsTrigger>
+        <TabsTrigger value="tcm" className="text-xs sm:text-sm">{t("saTcm")}</TabsTrigger>
+        <TabsTrigger value="positioning" className="text-xs sm:text-sm">{t("saPos")}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -749,6 +753,218 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
                   <div className="space-y-3">
                     <div><Label>{t("saDescription")}</Label><Textarea value={lc.description} onChange={e => updateLc({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                     <div><Label>{t("saRationale")}</Label><Textarea value={lc.rationale} onChange={e => updateLc({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Value Proposition Canvas */}
+      <TabsContent value="vpc">
+        <Card>
+          <CardHeader><CardTitle>{t("saVpc")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const vpc: ValuePropositionCanvas = data.valuePropositionCanvas || {
+                customerJobs: "", customerPains: "", customerGains: "",
+                productsServices: "", painRelievers: "", gainCreators: "",
+                description: "", rationale: "",
+              };
+              const updateVpc = (updates: Partial<ValuePropositionCanvas>) => update({ ...data, valuePropositionCanvas: { ...vpc, ...updates } });
+
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Customer side */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">👤 Customer Profile</h4>
+                      {([
+                        { key: "customerJobs" as const, label: "saVpcCustJobs", placeholder: "saVpcCustJobsPlaceholder", color: "bg-blue-500/10 border-blue-500/30" },
+                        { key: "customerPains" as const, label: "saVpcCustPains", placeholder: "saVpcCustPainsPlaceholder", color: "bg-red-500/10 border-red-500/30" },
+                        { key: "customerGains" as const, label: "saVpcCustGains", placeholder: "saVpcCustGainsPlaceholder", color: "bg-green-500/10 border-green-500/30" },
+                      ]).map(({ key, label, placeholder, color }) => (
+                        <div key={key} className={`rounded-lg border p-4 ${color}`}>
+                          <Label className="text-sm font-semibold">{t(label as any)}</Label>
+                          <Textarea className="mt-2 bg-background" value={vpc[key]} onChange={e => updateVpc({ [key]: e.target.value })} placeholder={t(placeholder as any)} disabled={readonly} rows={4} />
+                        </div>
+                      ))}
+                    </div>
+                    {/* Value Map side */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">📦 Value Map</h4>
+                      {([
+                        { key: "productsServices" as const, label: "saVpcProducts", placeholder: "saVpcProductsPlaceholder", color: "bg-violet-500/10 border-violet-500/30" },
+                        { key: "painRelievers" as const, label: "saVpcPainRelievers", placeholder: "saVpcPainRelieversPlaceholder", color: "bg-orange-500/10 border-orange-500/30" },
+                        { key: "gainCreators" as const, label: "saVpcGainCreators", placeholder: "saVpcGainCreatorsPlaceholder", color: "bg-emerald-500/10 border-emerald-500/30" },
+                      ]).map(({ key, label, placeholder, color }) => (
+                        <div key={key} className={`rounded-lg border p-4 ${color}`}>
+                          <Label className="text-sm font-semibold">{t(label as any)}</Label>
+                          <Textarea className="mt-2 bg-background" value={vpc[key]} onChange={e => updateVpc({ [key]: e.target.value })} placeholder={t(placeholder as any)} disabled={readonly} rows={4} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={vpc.description} onChange={e => updateVpc({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={vpc.rationale} onChange={e => updateVpc({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Customer Benefit Analysis */}
+      <TabsContent value="cba">
+        <Card>
+          <CardHeader><CardTitle>{t("saCba")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const cba: CustomerBenefitAnalysis = data.customerBenefitAnalysis || {
+                functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "",
+                description: "", rationale: "",
+              };
+              const updateCba = (updates: Partial<CustomerBenefitAnalysis>) => update({ ...data, customerBenefitAnalysis: { ...cba, ...updates } });
+
+              const items: { key: keyof CustomerBenefitAnalysis; label: string; placeholder: string; color: string; icon: string }[] = [
+                { key: "functionalBenefits", label: "saCbaFunctional", placeholder: "saCbaFunctionalPlaceholder", color: "bg-blue-500/10 border-blue-500/30", icon: "⚙️" },
+                { key: "emotionalBenefits", label: "saCbaEmotional", placeholder: "saCbaEmotionalPlaceholder", color: "bg-pink-500/10 border-pink-500/30", icon: "❤️" },
+                { key: "socialBenefits", label: "saCbaSocial", placeholder: "saCbaSocialPlaceholder", color: "bg-yellow-500/10 border-yellow-500/30", icon: "👥" },
+                { key: "selfExpressiveBenefits", label: "saCbaSelfExpressive", placeholder: "saCbaSelfExpressivePlaceholder", color: "bg-violet-500/10 border-violet-500/30", icon: "✨" },
+              ];
+
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {items.map(({ key, label, placeholder, color, icon }) => (
+                      <div key={key} className={`rounded-lg border p-4 ${color}`}>
+                        <Label className="text-sm font-semibold">{icon} {t(label as any)}</Label>
+                        <Textarea className="mt-2 bg-background" value={cba[key]} onChange={e => updateCba({ [key]: e.target.value })} placeholder={t(placeholder as any)} disabled={readonly} rows={4} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={cba.description} onChange={e => updateCba({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={cba.rationale} onChange={e => updateCba({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Three Circle Model */}
+      <TabsContent value="tcm">
+        <Card>
+          <CardHeader><CardTitle>{t("saTcm")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const tcm: ThreeCircleModel = data.threeCircleModel || {
+                ourValue: "", competitorValue: "", customerNeeds: "",
+                ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "",
+                description: "", rationale: "",
+              };
+              const updateTcm = (updates: Partial<ThreeCircleModel>) => update({ ...data, threeCircleModel: { ...tcm, ...updates } });
+
+              return (
+                <>
+                  {/* Three circles description */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="rounded-lg border p-4 bg-blue-500/10 border-blue-500/30">
+                      <Label className="text-sm font-semibold">🔵 {t("saTcmOurValue" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.ourValue} onChange={e => updateTcm({ ourValue: e.target.value })} placeholder={t("saTcmOurValuePlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                    <div className="rounded-lg border p-4 bg-red-500/10 border-red-500/30">
+                      <Label className="text-sm font-semibold">🔴 {t("saTcmCompValue" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.competitorValue} onChange={e => updateTcm({ competitorValue: e.target.value })} placeholder={t("saTcmCompValuePlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                    <div className="rounded-lg border p-4 bg-green-500/10 border-green-500/30">
+                      <Label className="text-sm font-semibold">🟢 {t("saTcmCustNeeds" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.customerNeeds} onChange={e => updateTcm({ customerNeeds: e.target.value })} placeholder={t("saTcmCustNeedsPlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                  </div>
+                  {/* Intersections */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="rounded-lg border p-4 bg-primary/10 border-primary/30">
+                      <Label className="text-sm font-semibold">🎯 {t("saTcmOurUnique" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.ourUnique} onChange={e => updateTcm({ ourUnique: e.target.value })} placeholder={t("saTcmOurUniquePlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                    <div className="rounded-lg border p-4 bg-orange-500/10 border-orange-500/30">
+                      <Label className="text-sm font-semibold">⚠️ {t("saTcmTheirUnique" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.theirUnique} onChange={e => updateTcm({ theirUnique: e.target.value })} placeholder={t("saTcmTheirUniquePlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                    <div className="rounded-lg border p-4 bg-yellow-500/10 border-yellow-500/30">
+                      <Label className="text-sm font-semibold">🤝 {t("saTcmCommon" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.commonValue} onChange={e => updateTcm({ commonValue: e.target.value })} placeholder={t("saTcmCommonPlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                    <div className="rounded-lg border p-4 bg-violet-500/10 border-violet-500/30">
+                      <Label className="text-sm font-semibold">💡 {t("saTcmUnmet" as any)}</Label>
+                      <Textarea className="mt-2 bg-background" value={tcm.unmetNeeds} onChange={e => updateTcm({ unmetNeeds: e.target.value })} placeholder={t("saTcmUnmetPlaceholder" as any)} disabled={readonly} rows={3} />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={tcm.description} onChange={e => updateTcm({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={tcm.rationale} onChange={e => updateTcm({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Positioning Statement */}
+      <TabsContent value="positioning">
+        <Card>
+          <CardHeader><CardTitle>{t("saPos")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const pos: PositioningStatement = data.positioningStatement || {
+                targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "",
+                competitiveAlternative: "", differentiator: "", statement: "",
+                description: "", rationale: "",
+              };
+              const updatePos = (updates: Partial<PositioningStatement>) => update({ ...data, positioningStatement: { ...pos, ...updates } });
+
+              return (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label>{t("saPosTarget" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.targetAudience} onChange={e => updatePos({ targetAudience: e.target.value })} placeholder={t("saPosTargetPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                    <div>
+                      <Label>{t("saPosCategory" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.category} onChange={e => updatePos({ category: e.target.value })} placeholder={t("saPosCategoryPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                    <div>
+                      <Label>{t("saPosKeyBenefit" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.keyBenefit} onChange={e => updatePos({ keyBenefit: e.target.value })} placeholder={t("saPosKeyBenefitPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                    <div>
+                      <Label>{t("saPosRtb" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.reasonToBelieve} onChange={e => updatePos({ reasonToBelieve: e.target.value })} placeholder={t("saPosRtbPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                    <div>
+                      <Label>{t("saPosCompAlt" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.competitiveAlternative} onChange={e => updatePos({ competitiveAlternative: e.target.value })} placeholder={t("saPosCompAltPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                    <div>
+                      <Label>{t("saPosDiff" as any)}</Label>
+                      <Textarea className="mt-1" value={pos.differentiator} onChange={e => updatePos({ differentiator: e.target.value })} placeholder={t("saPosDiffPlaceholder" as any)} disabled={readonly} rows={2} />
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
+                    <Label className="text-sm font-semibold">{t("saPosStatement" as any)}</Label>
+                    <Textarea className="mt-2 bg-background" value={pos.statement} onChange={e => updatePos({ statement: e.target.value })} placeholder={t("saPosStatementPlaceholder" as any)} disabled={readonly} rows={4} />
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={pos.description} onChange={e => updatePos({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={pos.rationale} onChange={e => updatePos({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
                   </div>
                 </>
               );
