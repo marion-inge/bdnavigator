@@ -109,6 +109,17 @@ export interface CapabilityGap {
   priority: "high" | "medium" | "low";
 }
 
+export interface OrganisationalReadiness {
+  score: number;
+  culture: string;
+  processes: string;
+  skills: string;
+  leadership: string;
+  resources: string;
+  stakeholders: string;
+  details: string;
+}
+
 export interface DetailedScoring {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string; alignmentDimensions?: AlignmentDimension[]; capabilityGaps?: CapabilityGap[] };
@@ -123,6 +134,8 @@ export interface DetailedScoring {
     breakEvenUnits: number;
   };
   risk: { score: number; details: string; riskItems?: RiskItem[] };
+  competitorLandscape?: { score: number; analysis: DetailedMarketAnalysis };
+  organisationalReadiness?: OrganisationalReadiness;
 }
 
 export interface BusinessCase {
