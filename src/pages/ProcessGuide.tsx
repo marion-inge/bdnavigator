@@ -122,8 +122,11 @@ export default function ProcessGuide() {
           <Tabs defaultValue="marketAttractiveness" className="space-y-4">
             <TabsList className="flex-wrap h-auto gap-1 p-1">
               <TabsTrigger value="marketAttractiveness" className="text-xs sm:text-sm">{t("marketAttractiveness")}</TabsTrigger>
+              <TabsTrigger value="customerLandscape" className="text-xs sm:text-sm">{t("maCustomerLandscape")}</TabsTrigger>
+              <TabsTrigger value="competitorLandscape" className="text-xs sm:text-sm">{t("dsCompetitorLandscape")}</TabsTrigger>
               <TabsTrigger value="strategicFit" className="text-xs sm:text-sm">{t("strategicFit")}</TabsTrigger>
               <TabsTrigger value="feasibility" className="text-xs sm:text-sm">{t("feasibility")}</TabsTrigger>
+              <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
               <TabsTrigger value="commercialViability" className="text-xs sm:text-sm">{t("commercialViability")}</TabsTrigger>
               <TabsTrigger value="risk" className="text-xs sm:text-sm">{t("risk")}</TabsTrigger>
             </TabsList>
@@ -146,6 +149,48 @@ export default function ProcessGuide() {
                   { score: 3, label: t("guideMA_s3") },
                   { score: 4, label: t("guideMA_s4") },
                   { score: 5, label: t("guideMA_s5") },
+                ]}
+              />
+            </TabsContent>
+
+            <TabsContent value="customerLandscape">
+              <ScoringCategoryDetail
+                t={t}
+                title={t("maCustomerLandscape")}
+                weight={3}
+                description={t("guideCL_desc" as any)}
+                subcategories={[
+                  { name: t("guideCL_sub1" as any), desc: t("guideCL_sub1_desc" as any) },
+                  { name: t("guideCL_sub2" as any), desc: t("guideCL_sub2_desc" as any) },
+                  { name: t("guideCL_sub3" as any), desc: t("guideCL_sub3_desc" as any) },
+                ]}
+                scoringTable={[
+                  { score: 1, label: t("guideCL_s1" as any) },
+                  { score: 2, label: t("guideCL_s2" as any) },
+                  { score: 3, label: t("guideCL_s3" as any) },
+                  { score: 4, label: t("guideCL_s4" as any) },
+                  { score: 5, label: t("guideCL_s5" as any) },
+                ]}
+              />
+            </TabsContent>
+
+            <TabsContent value="competitorLandscape">
+              <ScoringCategoryDetail
+                t={t}
+                title={t("dsCompetitorLandscape")}
+                weight={3}
+                description={t("guideCompL_desc" as any)}
+                subcategories={[
+                  { name: t("guideCompL_sub1" as any), desc: t("guideCompL_sub1_desc" as any) },
+                  { name: t("guideCompL_sub2" as any), desc: t("guideCompL_sub2_desc" as any) },
+                  { name: t("guideCompL_sub3" as any), desc: t("guideCompL_sub3_desc" as any) },
+                ]}
+                scoringTable={[
+                  { score: 1, label: t("guideCompL_s1" as any) },
+                  { score: 2, label: t("guideCompL_s2" as any) },
+                  { score: 3, label: t("guideCompL_s3" as any) },
+                  { score: 4, label: t("guideCompL_s4" as any) },
+                  { score: 5, label: t("guideCompL_s5" as any) },
                 ]}
               />
             </TabsContent>
@@ -188,6 +233,28 @@ export default function ProcessGuide() {
                   { score: 3, label: t("guideFE_s3") },
                   { score: 4, label: t("guideFE_s4") },
                   { score: 5, label: t("guideFE_s5") },
+                ]}
+              />
+            </TabsContent>
+
+            <TabsContent value="orgReadiness">
+              <ScoringCategoryDetail
+                t={t}
+                title={t("dsOrgReadiness")}
+                weight={2}
+                description={t("guideOR_desc" as any)}
+                subcategories={[
+                  { name: t("guideOR_sub1" as any), desc: t("guideOR_sub1_desc" as any) },
+                  { name: t("guideOR_sub2" as any), desc: t("guideOR_sub2_desc" as any) },
+                  { name: t("guideOR_sub3" as any), desc: t("guideOR_sub3_desc" as any) },
+                  { name: t("guideOR_sub4" as any), desc: t("guideOR_sub4_desc" as any) },
+                ]}
+                scoringTable={[
+                  { score: 1, label: t("guideOR_s1" as any) },
+                  { score: 2, label: t("guideOR_s2" as any) },
+                  { score: 3, label: t("guideOR_s3" as any) },
+                  { score: 4, label: t("guideOR_s4" as any) },
+                  { score: 5, label: t("guideOR_s5" as any) },
                 ]}
               />
             </TabsContent>
