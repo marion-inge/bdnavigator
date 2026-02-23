@@ -62,6 +62,7 @@
     --stage-business-case: 170 50% 40%;
     --stage-gate3: 320 45% 50%;
     --stage-gtm: 145 55% 40%;
+    --stage-implement-review: 30 70% 50%;
     --stage-closed: 220 10% 60%;
   }
 

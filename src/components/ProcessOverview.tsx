@@ -6,6 +6,7 @@ const STAGES = [
   { key: "detailed_scoring", icon: "🔍", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
   { key: "business_case", icon: "💼", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
   { key: "go_to_market", icon: "🚀", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "implement_review", icon: "🔄", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
 
 export function ProcessOverview() {

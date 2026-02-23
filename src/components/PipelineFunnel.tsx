@@ -22,6 +22,7 @@ const STAGE_COLORS = [
   "hsl(170, 50%, 40%)",   // business_case
   "hsl(320, 45%, 50%)",   // gate3
   "hsl(145, 55%, 40%)",   // go_to_market
+  "hsl(30, 70%, 50%)",    // implement_review
 ];
 
 const STAGE_COLORS_DIM = STAGE_COLORS.map((c) => c.replace(")", " / 0.3)").replace("hsl(", "hsl("));

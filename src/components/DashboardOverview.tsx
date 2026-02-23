@@ -40,7 +40,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     const topScorer = total > 0 ? opportunities.reduce((best, o) =>
       calculateTotalScore(o.scoring) > calculateTotalScore(best.scoring) ? o : best
     ) : null;
-    const gtmCount = opportunities.filter((o) => o.stage === "go_to_market").length;
+    const gtmCount = opportunities.filter((o) => o.stage === "go_to_market" || o.stage === "implement_review").length;
     return { total, active, avgScore, topScorer, gtmCount };
   }, [opportunities]);
 

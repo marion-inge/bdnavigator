@@ -7,6 +7,7 @@ export type Stage =
   | "business_case"
   | "gate3"
   | "go_to_market"
+  | "implement_review"
   | "closed";
 
 export type GateDecision = "go" | "hold" | "no-go";
@@ -347,5 +348,6 @@ export const STAGE_ORDER: Stage[] = [
   "business_case",
   "gate3",
   "go_to_market",
+  "implement_review",
   "closed",
 ];
