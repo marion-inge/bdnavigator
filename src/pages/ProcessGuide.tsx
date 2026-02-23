@@ -89,7 +89,7 @@ export default function ProcessGuide() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t("guideDetailedTitle")}</h2>
           <p className="text-muted-foreground leading-relaxed">{t("guideDetailedDesc")}</p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               { key: "market", icon: "📈", titleKey: "guideDS_market", descKey: "guideDS_marketDesc" },
               { key: "customer", icon: "👥", titleKey: "guideDS_customer", descKey: "guideDS_customerDesc" },
@@ -99,6 +99,7 @@ export default function ProcessGuide() {
               { key: "orgReadiness", icon: "🏢", titleKey: "guideDS_orgReadiness", descKey: "guideDS_orgReadinessDesc" },
               { key: "commercial", icon: "💰", titleKey: "guideDS_commercial", descKey: "guideDS_commercialDesc" },
               { key: "risk", icon: "⚠️", titleKey: "guideDS_risk", descKey: "guideDS_riskDesc" },
+              { key: "pilotCustomer", icon: "🤝", titleKey: "guideDS_pilotCustomer", descKey: "guideDS_pilotCustomerDesc" },
             ].map(({ key, icon, titleKey, descKey }) => (
               <Card key={key}>
                 <CardHeader className="pb-2">
@@ -392,6 +393,30 @@ export default function ProcessGuide() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Go-to-Market Features */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{t("guideGtmTitle" as any)}</h2>
+          <p className="text-muted-foreground leading-relaxed">{t("guideGtmDesc" as any)}</p>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              { icon: "🚀", titleKey: "guideGtmStrategy", descKey: "guideGtmStrategyDesc" },
+              { icon: "🤝", titleKey: "guideGtmPilot", descKey: "guideGtmPilotDesc" },
+              { icon: "🎯", titleKey: "guideGtmLeadGen", descKey: "guideGtmLeadGenDesc" },
+            ].map(({ icon, titleKey, descKey }) => (
+              <Card key={titleKey}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <span>{icon}</span> {t(titleKey as any)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{t(descKey as any)}</p>
                 </CardContent>
               </Card>
             ))}
