@@ -158,6 +158,29 @@ export interface PortersFiveForces {
   rationale: string;
 }
 
+export interface ValueChainActivity {
+  relevance: number; // 1-5
+  description: string;
+}
+
+export interface IndustryValueChain {
+  primaryActivities: {
+    inboundLogistics: ValueChainActivity;
+    operations: ValueChainActivity;
+    outboundLogistics: ValueChainActivity;
+    marketingSales: ValueChainActivity;
+    service: ValueChainActivity;
+  };
+  supportActivities: {
+    firmInfrastructure: ValueChainActivity;
+    hrManagement: ValueChainActivity;
+    technologyDevelopment: ValueChainActivity;
+    procurement: ValueChainActivity;
+  };
+  description: string;
+  rationale: string;
+}
+
 export interface StrategicAnalyses {
   ansoff: { position: string; description: string; rationale: string };
   bcg: { position: string; description: string; rationale: string };
@@ -181,6 +204,7 @@ export interface StrategicAnalyses {
     rationale: string;
   };
   porter: PortersFiveForces;
+  valueChain?: IndustryValueChain;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -196,6 +220,27 @@ function createDefaultPorter(): PortersFiveForces {
   };
 }
 
+function createDefaultValueChain(): IndustryValueChain {
+  const activity = (): ValueChainActivity => ({ relevance: 3, description: "" });
+  return {
+    primaryActivities: {
+      inboundLogistics: activity(),
+      operations: activity(),
+      outboundLogistics: activity(),
+      marketingSales: activity(),
+      service: activity(),
+    },
+    supportActivities: {
+      firmInfrastructure: activity(),
+      hrManagement: activity(),
+      technologyDevelopment: activity(),
+      procurement: activity(),
+    },
+    description: "",
+    rationale: "",
+  };
+}
+
 export function createDefaultStrategicAnalyses(): StrategicAnalyses {
   return {
     ansoff: { position: "", description: "", rationale: "" },
@@ -204,6 +249,7 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
     swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
     pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
     porter: createDefaultPorter(),
+    valueChain: createDefaultValueChain(),
   };
 }
 
