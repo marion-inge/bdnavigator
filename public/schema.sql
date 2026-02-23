@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS opportunities (
   stage            TEXT NOT NULL DEFAULT 'idea'
                      CHECK (stage IN (
                        'idea','rough_scoring','gate1','detailed_scoring',
-                       'gate2','business_case','gate3','go_to_market','closed'
+                       'gate2','business_case','gate3','go_to_market',
+                       'implement_review','closed'
                      )),
   created_at       TEXT NOT NULL DEFAULT (datetime('now')),
 

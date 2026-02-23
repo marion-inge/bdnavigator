@@ -11,6 +11,7 @@ const STAGE_LABELS: Record<string, string> = {
   business_case: "Business Case",
   gate3: "Gate 3",
   go_to_market: "Go-To-Market",
+  implement_review: "Umsetzung & Review",
   closed: "Geschlossen",
 };
 

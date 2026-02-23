@@ -49,6 +49,7 @@ export default function ProcessGuide() {
               { stage: "business_case" as const, icon: "💼", descKey: "guideStage_business_case" as const },
               { stage: "gate3" as const, icon: "🚪", descKey: "guideStage_gate3" as const },
               { stage: "go_to_market" as const, icon: "🚀", descKey: "guideStage_go_to_market" as const },
+              { stage: "implement_review" as const, icon: "🔄", descKey: "guideStage_implement_review" as const },
             ] as const).map(({ stage, icon, descKey }) => (
               <Card key={stage}>
                 <CardHeader className="pb-2">
@@ -267,6 +268,7 @@ function StageFlowDiagram({ t }: { t: (k: string) => string }) {
     { key: "business_case", color: "bg-teal-500" },
     { key: "gate3", color: "bg-amber-500" },
     { key: "go_to_market", color: "bg-green-500" },
+    { key: "implement_review", color: "bg-orange-500" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">

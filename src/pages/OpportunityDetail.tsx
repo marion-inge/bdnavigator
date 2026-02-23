@@ -58,7 +58,7 @@ export default function OpportunityDetail() {
     detailed_scoring:    "gate2",
     business_case:       "gate3",
     gates:               "go_to_market",
-    strategic_analyses:  "closed",
+    strategic_analyses:  "implement_review",
   };
   const tabCurrentStage: Record<TabKey, Stage | ""> = {
     overview:           "idea",

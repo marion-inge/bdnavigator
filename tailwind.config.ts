@@ -81,6 +81,7 @@ export default {
           "business-case": "hsl(var(--stage-business-case))",
           gate3: "hsl(var(--stage-gate3))",
           gtm: "hsl(var(--stage-gtm))",
+          "implement-review": "hsl(var(--stage-implement-review))",
           closed: "hsl(var(--stage-closed))",
         },
       },
