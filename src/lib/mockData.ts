@@ -116,6 +116,16 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         stakeholders: "DNV (certification), Hapag-Lloyd (pilot customer), TU Hamburg (research). All actively engaged.",
         details: "Team is highly motivated. Main bottleneck is ML talent acquisition — competitive market requires premium packages.",
       },
+      pilotCustomer: {
+        score: 4,
+        entries: [
+          { id: "pc-001-1", name: "Hapag-Lloyd", industry: "Container Shipping", contactStatus: "loi_confirmed", validationResults: "Confirmed 10% fuel savings target. Integration with Fleet Tracker feasible. Budget approved for 5-vessel pilot.", feedback: "\"If the fuel savings are real, we'll scale to 50 vessels in Year 1.\" — VP Fleet Ops. Strong internal champion in digital transformation team." },
+          { id: "pc-001-2", name: "Nor Lines AS", industry: "Coastal Shipping (Norway)", contactStatus: "interested", validationResults: "Crew shortage is primary driver. Autonomous navigation in fjords is key use case. Norwegian Maritime Authority supportive.", feedback: "CEO very engaged. Concerned about integration with existing Kongsberg bridge systems. Wants on-site demo before commitment." },
+          { id: "pc-001-3", name: "CMA CGM Feeder", industry: "Container Feeder Services", contactStatus: "contacted", validationResults: "Initial meeting positive. Interested in Mediterranean feeder routes optimization. Requesting detailed ROI analysis.", feedback: "Procurement team cautious — want to see Hapag-Lloyd pilot results first. Technical team enthusiastic about AI approach." },
+          { id: "pc-001-4", name: "Viking Supply Ships", industry: "Offshore Supply", contactStatus: "identified", validationResults: "", feedback: "" },
+        ],
+        notes: "Hapag-Lloyd is our anchor pilot customer with signed LoI. Nor Lines represents the coastal/crew-shortage value proposition. Focus next quarter on converting Nor Lines to LoI and progressing CMA CGM to interested stage.",
+      },
     },
     businessCase: {
       investmentCost: 5000000,
@@ -326,6 +336,15 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         resources: "€3M budget approved. Workshop space allocated at Mannheim facility. Test track access secured.",
         stakeholders: "DB Regio and SNCF engaged as pilot customers. Hydrogenics as key supplier. TÜV SÜD for certification.",
         details: "Organisation well-positioned for this transition. Main gap is hydrogen-specific expertise, being addressed through targeted hiring and partnerships.",
+      },
+      pilotCustomer: {
+        score: 3,
+        entries: [
+          { id: "pc-002-1", name: "DB Regio Bayern", industry: "Rail Operations", contactStatus: "interested", validationResults: "Strong interest in Augsburg–Füssen line (non-electrified, 120km). Budget discussions with Bavarian transport ministry ongoing.", feedback: "Technical team positive. Procurement wants to see ERA certification roadmap before committing to LoI." },
+          { id: "pc-002-2", name: "SNCF TER Occitanie", industry: "Rail Operations", contactStatus: "contacted", validationResults: "Initial meeting at InnoTrans. Interested in Toulouse–Auch corridor retrofit (8 trainsets).", feedback: "French hydrogen strategy aligns well. Need to adapt solution for French safety standards (EPSF)." },
+          { id: "pc-002-3", name: "BLS AG (Switzerland)", industry: "Rail Operations", contactStatus: "identified", validationResults: "", feedback: "" },
+        ],
+        notes: "DB Regio is primary pilot target — Bavarian government subsidies make economics work. SNCF requires French certification path which adds complexity. BLS is a stretch target for Swiss market validation.",
       },
     },
     gates: [],
@@ -585,6 +604,28 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         { id: "gtm-007", text: "Zurich airport pilot proposal sent", done: true },
         { id: "gtm-008", text: "Copenhagen airport intro meeting", done: false },
       ],
+      pilotAgreements: [
+        { id: "pa-005-1", customerName: "Fraport AG (Frankfurt)", scope: "20 robots on 4 terminals — full baggage + pushback operations. 24/7 autonomous operation with remote monitoring.", timeline: "Q1 2026 – Q4 2026", status: "active", successCriteria: "18% turnaround time improvement, <2% error rate, 95% uptime, positive ground crew feedback", results: "Month 3: 15% turnaround improvement (on track). Uptime at 97%. Ground crew adoption exceeding expectations." },
+        { id: "pa-005-2", customerName: "Zurich Airport (Flughafen Zürich)", scope: "10 robots on 2 terminals — baggage handling only. Day operations first, expanding to night shifts in Phase 2.", timeline: "Q2 2026 – Q1 2027", status: "planned", successCriteria: "15% efficiency gain, integration with existing SITA BagManager system, Swiss safety compliance", results: "" },
+        { id: "pa-005-3", customerName: "Swissport International", scope: "Global framework agreement — pilot at Munich Airport with 15 robots. Template for worldwide rollout.", timeline: "Q3 2026 – Q2 2027", status: "planned", successCriteria: "Scalable deployment model, training program for ground handlers, ROI validation across different airport sizes", results: "" },
+      ],
+      pilotNotes: "Fraport pilot is the anchor — results are critical for all subsequent sales. Zurich pilot validates Swiss/EASA compliance path. Swissport pilot proves scalability model for global rollout. Aim to have Fraport ROI case study ready by Q3 2026 for inter airport Europe presentation.",
+      leadGeneration: {
+        channels: [
+          { id: "lg-005-1", channel: "Direct Enterprise Sales", strategy: "Dedicated aviation sales team (3 FTEs) targeting top 50 European hub airports. Personalized outreach with Fraport case study.", targetLeads: 50, actualLeads: 32, conversionRate: 18 },
+          { id: "lg-005-2", channel: "Trade Shows & Events", strategy: "inter airport Europe 2026 (booth + live demo), IATA Ground Handling Conference, Airport Show Dubai.", targetLeads: 80, actualLeads: 45, conversionRate: 8 },
+          { id: "lg-005-3", channel: "Partner Referrals", strategy: "Swissport and IATA network referrals to airport operators. Fraport reference visits for qualified prospects.", targetLeads: 30, actualLeads: 12, conversionRate: 25 },
+          { id: "lg-005-4", channel: "Content & Digital", strategy: "LinkedIn thought leadership, aviation trade press (Airport World, Ground Handling Intl.), webinars on autonomous ground ops.", targetLeads: 120, actualLeads: 67, conversionRate: 5 },
+        ],
+        activities: [
+          { id: "la-005-1", activity: "Fraport case study & video production", status: "completed", date: "2026-01-15", notes: "Published on website and distributed to all prospects" },
+          { id: "la-005-2", activity: "Airport World feature article", status: "completed", date: "2026-02-01", notes: "Full-page feature in Feb issue. 3 inbound inquiries generated." },
+          { id: "la-005-3", activity: "inter airport Europe booth preparation", status: "in_progress", date: "2026-06-15", notes: "Live robot demo confirmed. VIP invitation list being finalized." },
+          { id: "la-005-4", activity: "Nordic airports roadshow (CPH, OSL, ARN)", status: "planned", date: "2026-04-20", notes: "3-day trip with live demo kit. Meetings confirmed with CPH and OSL." },
+          { id: "la-005-5", activity: "Webinar: Future of Autonomous Ground Handling", status: "planned", date: "2026-05-10", notes: "Co-hosted with IATA. Target 200 registrants." },
+        ],
+        pipelineNotes: "Pipeline at 156 leads with 32 from direct sales (highest quality). Conversion from trade shows needs improvement — follow-up process being optimized. Fraport reference visits convert at 40% — maximize these. Q2 focus: Nordic roadshow and Swissport network activation.",
+      },
     },
     createdAt: "2025-05-15T07:30:00Z",
   },
