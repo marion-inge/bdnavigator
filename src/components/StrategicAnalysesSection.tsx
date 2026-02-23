@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, PortersFiveForces, PorterForce, createDefaultStrategicAnalyses } from "@/lib/types";
+import { StrategicAnalyses, PortersFiveForces, PorterForce, IndustryValueChain, ValueChainActivity, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +33,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
         <TabsTrigger value="swot" className="text-xs sm:text-sm">{t("saSwot")}</TabsTrigger>
         <TabsTrigger value="pestel" className="text-xs sm:text-sm">{t("saPestel")}</TabsTrigger>
         <TabsTrigger value="porter" className="text-xs sm:text-sm">{t("saPorter")}</TabsTrigger>
+        <TabsTrigger value="valueChain" className="text-xs sm:text-sm">{t("saValueChain")}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -332,6 +333,111 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly }
               <div><Label>{t("saDescription")}</Label><Textarea value={(data.porter || { description: "" }).description} onChange={(e) => update({ ...data, porter: { ...(data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" }), description: e.target.value } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={(data.porter || { rationale: "" }).rationale} onChange={(e) => update({ ...data, porter: { ...(data.porter || { competitiveRivalry: { intensity: 3, description: "" }, threatOfNewEntrants: { intensity: 3, description: "" }, threatOfSubstitutes: { intensity: 3, description: "" }, bargainingPowerBuyers: { intensity: 3, description: "" }, bargainingPowerSuppliers: { intensity: 3, description: "" }, description: "", rationale: "" }), rationale: e.target.value } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Industry Value Chain */}
+      <TabsContent value="valueChain">
+        <Card>
+          <CardHeader><CardTitle>{t("saValueChain")}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const defaultActivity = (): ValueChainActivity => ({ relevance: 3, description: "" });
+              const vc: IndustryValueChain = data.valueChain || {
+                primaryActivities: {
+                  inboundLogistics: defaultActivity(), operations: defaultActivity(),
+                  outboundLogistics: defaultActivity(), marketingSales: defaultActivity(), service: defaultActivity(),
+                },
+                supportActivities: {
+                  firmInfrastructure: defaultActivity(), hrManagement: defaultActivity(),
+                  technologyDevelopment: defaultActivity(), procurement: defaultActivity(),
+                },
+                description: "", rationale: "",
+              };
+
+              const updateVc = (updated: IndustryValueChain) => update({ ...data, valueChain: updated });
+
+              const primaryItems: { key: keyof IndustryValueChain["primaryActivities"]; label: string; icon: string }[] = [
+                { key: "inboundLogistics", label: "saVcInboundLogistics", icon: "📦" },
+                { key: "operations", label: "saVcOperations", icon: "🏭" },
+                { key: "outboundLogistics", label: "saVcOutboundLogistics", icon: "🚚" },
+                { key: "marketingSales", label: "saVcMarketingSales", icon: "📢" },
+                { key: "service", label: "saVcService", icon: "🛠️" },
+              ];
+
+              const supportItems: { key: keyof IndustryValueChain["supportActivities"]; label: string; icon: string }[] = [
+                { key: "firmInfrastructure", label: "saVcFirmInfrastructure", icon: "🏢" },
+                { key: "hrManagement", label: "saVcHrManagement", icon: "👥" },
+                { key: "technologyDevelopment", label: "saVcTechnologyDev", icon: "💡" },
+                { key: "procurement", label: "saVcProcurement", icon: "🛒" },
+              ];
+
+              return (
+                <>
+                  {/* Visual Value Chain Arrow */}
+                  <div>
+                    <Label className="text-sm font-semibold mb-3 block">{t("saVcPrimary")}</Label>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      {primaryItems.map(({ key, label, icon }, i) => {
+                        const activity = vc.primaryActivities[key];
+                        const relColor = activity.relevance <= 2 ? "border-muted" : activity.relevance <= 3 ? "border-yellow-500/50" : "border-green-500/50";
+                        return (
+                          <div key={key} className="flex-1 flex items-stretch">
+                            <div className={`flex-1 rounded-lg border-2 ${relColor} p-3 bg-card space-y-2`}>
+                              <div className="text-center text-sm font-medium">{icon} {t(label as any)}</div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">{t("saVcRelevance")}:</span>
+                                <Slider min={1} max={5} step={1} value={[activity.relevance]}
+                                  onValueChange={([v]) => updateVc({ ...vc, primaryActivities: { ...vc.primaryActivities, [key]: { ...activity, relevance: v } } })}
+                                  disabled={readonly} className="flex-1" />
+                                <span className="text-xs font-bold w-5 text-right">{activity.relevance}</span>
+                              </div>
+                              <Textarea value={activity.description}
+                                onChange={(e) => updateVc({ ...vc, primaryActivities: { ...vc.primaryActivities, [key]: { ...activity, description: e.target.value } } })}
+                                placeholder={`${t(label as any)}...`} disabled={readonly} rows={2} className="text-xs" />
+                            </div>
+                            {i < primaryItems.length - 1 && (
+                              <div className="hidden sm:flex items-center px-1 text-muted-foreground text-lg">→</div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-semibold mb-3 block">{t("saVcSupport")}</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {supportItems.map(({ key, label, icon }) => {
+                        const activity = vc.supportActivities[key];
+                        const relColor = activity.relevance <= 2 ? "border-muted" : activity.relevance <= 3 ? "border-yellow-500/50" : "border-green-500/50";
+                        return (
+                          <div key={key} className={`rounded-lg border-2 ${relColor} p-3 bg-card space-y-2`}>
+                            <div className="text-sm font-medium">{icon} {t(label as any)}</div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">{t("saVcRelevance")}:</span>
+                              <Slider min={1} max={5} step={1} value={[activity.relevance]}
+                                onValueChange={([v]) => updateVc({ ...vc, supportActivities: { ...vc.supportActivities, [key]: { ...activity, relevance: v } } })}
+                                disabled={readonly} className="flex-1" />
+                              <span className="text-xs font-bold w-5 text-right">{activity.relevance}</span>
+                            </div>
+                            <Textarea value={activity.description}
+                              onChange={(e) => updateVc({ ...vc, supportActivities: { ...vc.supportActivities, [key]: { ...activity, description: e.target.value } } })}
+                              placeholder={`${t(label as any)}...`} disabled={readonly} rows={2} className="text-xs" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={vc.description} onChange={(e) => updateVc({ ...vc, description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={vc.rationale} onChange={(e) => updateVc({ ...vc, rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
           </CardContent>
         </Card>
       </TabsContent>
