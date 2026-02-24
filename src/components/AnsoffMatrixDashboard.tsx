@@ -8,12 +8,12 @@ interface Props {
 }
 
 const POSITION_MAP: Record<string, { col: number; row: number }> = {
-  market_penetration: { col: 0, row: 0 },
-  product_development: { col: 1, row: 0 },
-  "product-development": { col: 1, row: 0 },
-  market_development: { col: 0, row: 1 },
-  "market-development": { col: 0, row: 1 },
-  diversification: { col: 1, row: 1 },
+  market_penetration: { col: 0, row: 1 },
+  product_development: { col: 1, row: 1 },
+  "product-development": { col: 1, row: 1 },
+  market_development: { col: 0, row: 0 },
+  "market-development": { col: 0, row: 0 },
+  diversification: { col: 1, row: 0 },
 };
 
 const QUADRANT_COLORS = [
@@ -39,10 +39,10 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
   }, [opportunities]);
 
   const labels = [
-    t("saAnsoffMarketPenetration"),
-    t("saAnsoffProductDevelopment"),
     t("saAnsoffMarketDevelopment"),
     t("saAnsoffDiversification"),
+    t("saAnsoffMarketPenetration"),
+    t("saAnsoffProductDevelopment"),
   ];
 
   if (opportunities.length === 0) return null;
@@ -61,9 +61,9 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
           {t("saNewProduct")}
         </div>
 
-        {/* Row 1: Existing Market */}
+        {/* Row 1: New Market */}
         <div className="text-[10px] sm:text-xs font-medium text-muted-foreground flex items-center pr-1.5 [writing-mode:vertical-lr] rotate-180">
-          {t("saExistingMarket")}
+          {t("saNewMarket")}
         </div>
         {[0, 1].map((idx) => (
           <QuadrantCell
@@ -75,9 +75,9 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
           />
         ))}
 
-        {/* Row 2: New Market */}
+        {/* Row 2: Existing Market */}
         <div className="text-[10px] sm:text-xs font-medium text-muted-foreground flex items-center pr-1.5 [writing-mode:vertical-lr] rotate-180">
-          {t("saNewMarket")}
+          {t("saExistingMarket")}
         </div>
         {[2, 3].map((idx) => (
           <QuadrantCell
