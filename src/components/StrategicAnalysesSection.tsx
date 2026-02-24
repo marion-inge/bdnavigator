@@ -155,15 +155,15 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
             {/* 3x3 Grid */}
             <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 max-w-2xl">
               <div />
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saCompetitiveStrength")}</div>
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
+              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
+              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saCompetitiveStrength")}</div>
               {(["high", "medium", "low"] as const).map((ia) => (
                 <>
                   <div key={`label-${ia}`} className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">
                     {t(ia === "high" ? "saMckHigh" : ia === "medium" ? "saMckMedium" : "saMckLow")} {t("saIndustryAttractiveness")}
                   </div>
-                  {(["high", "medium", "low"] as const).map((cs) => {
+                  {(["low", "medium", "high"] as const).map((cs) => {
                     const pos = `${ia}_${cs}`;
                     const colorMap: Record<string, string> = {
                       high_high: "bg-green-500/20 hover:bg-green-500/30",
