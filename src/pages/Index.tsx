@@ -9,6 +9,7 @@ import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { DashboardOverview } from "@/components/DashboardOverview";
 import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
+import { ThreeHorizonsDashboard } from "@/components/ThreeHorizonsDashboard";
 import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -147,6 +148,8 @@ export default function Index() {
           />
           <AnsoffMatrixDashboard opportunities={opportunities} />
         </div>
+
+        <ThreeHorizonsDashboard opportunities={opportunities} />
 
         {/* Filters */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
