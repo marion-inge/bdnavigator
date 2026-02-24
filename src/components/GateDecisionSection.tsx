@@ -40,7 +40,7 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
   const canDecideGate3 = currentStage === "gate3";
   const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : canDecideGate3 ? "gate3" : null;
 
-  const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "business_case", "gate3", "go_to_market", "implement_review"].includes(currentStage);
+  const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "business_case", "gate3", "implement_review"].includes(currentStage);
 
   // Filter gates to only show those that are before the current stage
   const GATE_STAGE_INDEX: Record<string, number> = {

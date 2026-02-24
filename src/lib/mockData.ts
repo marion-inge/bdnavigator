@@ -403,7 +403,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     geography: "Global (DACH first)",
     technology: "Robotics / Autonomous Systems",
     owner: "Anna Müller",
-    stage: "go_to_market",
+    stage: "implement_review",
     scoring: scoring(5, 4, 4, 5, 1, {
       marketAttractiveness: "Airport operators facing chronic labor shortages globally. Ground handling market €45B.",
       strategicFit: "Combines our robotics and automation capabilities with aviation domain knowledge.",
