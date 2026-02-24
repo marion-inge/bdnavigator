@@ -6,7 +6,6 @@ export type Stage =
   | "gate2"
   | "business_case"
   | "gate3"
-  | "go_to_market"
   | "implement_review"
   | "closed";
 
@@ -602,7 +601,6 @@ export const STAGE_ORDER: Stage[] = [
   "gate2",
   "business_case",
   "gate3",
-  "go_to_market",
   "implement_review",
   "closed",
 ];

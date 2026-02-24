@@ -10,7 +10,7 @@ const STAGE_LABELS: Record<string, string> = {
   gate2: "Gate 2",
   business_case: "Business Case",
   gate3: "Gate 3",
-  go_to_market: "Go-To-Market",
+  
   implement_review: "Umsetzung & Review",
   closed: "Geschlossen",
 };
@@ -279,7 +279,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
   // Summary KPIs
   y = addSectionTitle(doc, y, "Zusammenfassung");
   const active = opportunities.filter(o => o.stage !== "closed").length;
-  const gtm = opportunities.filter(o => o.stage === "go_to_market").length;
+  const gtm = opportunities.filter(o => o.stage === "implement_review").length;
   const avgScore = opportunities.length > 0
     ? (opportunities.reduce((s, o) => s + calculateTotalScore(o.scoring), 0) / opportunities.length).toFixed(1)
     : "—";

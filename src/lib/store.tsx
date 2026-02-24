@@ -115,7 +115,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
           } else if (gate.gate === "gate3") {
-            if (gate.decision === "go") stage = "go_to_market";
+            if (gate.decision === "go") stage = "implement_review";
             else if (gate.decision === "no-go") stage = "closed";
           }
           // Initialize defaults when advancing
