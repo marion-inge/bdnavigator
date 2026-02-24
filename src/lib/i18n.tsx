@@ -438,6 +438,14 @@ const translations = {
     saPosDiffPlaceholder: "Our product is the only one that [key differentiator]...",
     saPosStatement: "Full Positioning Statement",
     saPosStatementPlaceholder: "For [target audience] who [need], [product] is a [category] that [key benefit]. Unlike [alternative], we [differentiator] because [reason to believe].",
+    // Three Horizons of Growth
+    saThreeHorizons: "3 Horizons of Growth",
+    saHorizon1: "Horizon 1 — Core",
+    saHorizon1Desc: "Maintain & defend the core business. Incremental improvements to existing products/markets.",
+    saHorizon2: "Horizon 2 — Emerging",
+    saHorizon2Desc: "Nurture emerging businesses. New capabilities that extend current business model.",
+    saHorizon3: "Horizon 3 — Future",
+    saHorizon3Desc: "Create viable future options. Exploratory ventures, new markets, disruptive innovation.",
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Competitor Landscape",
     dsRelatedAnalyses: "Related Strategic Analyses",
@@ -1203,6 +1211,14 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     saPosDiffPlaceholder: "Unser Produkt ist das einzige, das [Hauptdifferenzierung]...",
     saPosStatement: "Vollständige Positionierungsaussage",
     saPosStatementPlaceholder: "Für [Zielgruppe], die [Bedürfnis], ist [Produkt] eine [Kategorie], die [Hauptnutzen]. Im Gegensatz zu [Alternative] bieten wir [Differenzierung], weil [Reason to Believe].",
+    // Three Horizons of Growth
+    saThreeHorizons: "3 Horizons of Growth",
+    saHorizon1: "Horizont 1 — Kerngeschäft",
+    saHorizon1Desc: "Kerngeschäft erhalten & verteidigen. Inkrementelle Verbesserungen bestehender Produkte/Märkte.",
+    saHorizon2: "Horizont 2 — Aufstrebend",
+    saHorizon2Desc: "Aufstrebende Geschäftsfelder fördern. Neue Fähigkeiten, die das aktuelle Geschäftsmodell erweitern.",
+    saHorizon3: "Horizont 3 — Zukunft",
+    saHorizon3Desc: "Zukunftsfähige Optionen schaffen. Explorative Vorhaben, neue Märkte, disruptive Innovation.",
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Wettbewerbslandschaft",
     dsRelatedAnalyses: "Relevante strategische Analysen",

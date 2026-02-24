@@ -6,7 +6,8 @@ import type { TranslationKey } from "@/lib/i18n";
 export type StrategicAnalysisTab =
   | "ansoff" | "bcg" | "mckinsey" | "swot" | "pestel" | "porter"
   | "valueChain" | "custSeg" | "compAnalysis" | "custInt"
-  | "bizModel" | "leanCanvas" | "vpc" | "cba" | "tcm" | "positioning";
+  | "bizModel" | "leanCanvas" | "vpc" | "cba" | "tcm" | "positioning"
+  | "threeHorizons";
 
 interface AnalysisLink {
   tab: StrategicAnalysisTab;

@@ -386,6 +386,7 @@ export interface StrategicAnalyses {
   customerBenefitAnalysis?: CustomerBenefitAnalysis;
   threeCircleModel?: ThreeCircleModel;
   positioningStatement?: PositioningStatement;
+  threeHorizons?: { horizon: string; description: string; rationale: string };
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -442,6 +443,7 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
       competitiveAlternative: "", differentiator: "", statement: "",
       description: "", rationale: "",
     },
+    threeHorizons: { horizon: "", description: "", rationale: "" },
   };
 }
 

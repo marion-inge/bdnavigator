@@ -47,6 +47,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
         <TabsTrigger value="cba" className="text-xs sm:text-sm">{t("saCba")}</TabsTrigger>
         <TabsTrigger value="tcm" className="text-xs sm:text-sm">{t("saTcm")}</TabsTrigger>
         <TabsTrigger value="positioning" className="text-xs sm:text-sm">{t("saPos")}</TabsTrigger>
+        <TabsTrigger value="threeHorizons" className="text-xs sm:text-sm">{t("saThreeHorizons" as any)}</TabsTrigger>
       </TabsList>
 
       {/* Ansoff Matrix */}
@@ -966,6 +967,44 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
                   <div className="space-y-3">
                     <div><Label>{t("saDescription")}</Label><Textarea value={pos.description} onChange={e => updatePos({ description: e.target.value })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                     <div><Label>{t("saRationale")}</Label><Textarea value={pos.rationale} onChange={e => updatePos({ rationale: e.target.value })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                  </div>
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      </TabsContent>
+      {/* Three Horizons of Growth */}
+      <TabsContent value="threeHorizons">
+        <Card>
+          <CardHeader><CardTitle>{t("saThreeHorizons" as any)}</CardTitle></CardHeader>
+          <CardContent className="space-y-6">
+            {(() => {
+              const th = data.threeHorizons || { horizon: "", description: "", rationale: "" };
+              const horizons = [
+                { value: "horizon1", label: t("saHorizon1" as any), desc: t("saHorizon1Desc" as any), color: "bg-blue-500/20 hover:bg-blue-500/30 border-blue-500/40" },
+                { value: "horizon2", label: t("saHorizon2" as any), desc: t("saHorizon2Desc" as any), color: "bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/40" },
+                { value: "horizon3", label: t("saHorizon3" as any), desc: t("saHorizon3Desc" as any), color: "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/40" },
+              ];
+              return (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
+                    {horizons.map((h) => (
+                      <button
+                        key={h.value}
+                        type="button"
+                        disabled={readonly}
+                        onClick={() => update({ ...data, threeHorizons: { ...th, horizon: h.value } })}
+                        className={`p-4 rounded-md border text-left transition-colors ${th.horizon === h.value ? "ring-2 ring-primary bg-primary/20 text-foreground border-primary" : `${h.color} text-muted-foreground`}`}
+                      >
+                        <div className="text-sm font-semibold mb-1">{h.label}</div>
+                        <div className="text-xs">{h.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="space-y-3">
+                    <div><Label>{t("saDescription")}</Label><Textarea value={th.description} onChange={e => update({ ...data, threeHorizons: { ...th, description: e.target.value } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label>{t("saRationale")}</Label><Textarea value={th.rationale} onChange={e => update({ ...data, threeHorizons: { ...th, rationale: e.target.value } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
                   </div>
                 </>
               );
