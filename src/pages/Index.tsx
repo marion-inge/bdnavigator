@@ -96,35 +96,36 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary shrink-0">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-card-foreground">{t("appTitle")}</h1>
-              <p className="text-xs text-muted-foreground">{t("appSlogan")}</p>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-xl font-bold text-card-foreground truncate">{t("appTitle")}</h1>
+              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{t("appSlogan")}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <Button
               variant="outline"
               size="icon"
+              className="h-8 w-8 sm:h-9 sm:w-9"
               onClick={() => {
                 localStorage.removeItem("bd-pipeline-opportunities");
                 window.location.reload();
               }}
               title="Reset Data"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => exportDashboardPdf(opportunities)} className="gap-1.5" title="PDF Export">
-              <FileDown className="h-4 w-4" />
-              <span className="hidden sm:inline">PDF</span>
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => exportDashboardPdf(opportunities)} title="PDF Export">
+              <FileDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">PDF</span>
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/guide")} className="gap-1.5">
-              <BookOpen className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("guideLink")}</span>
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
+              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
             </Button>
             <LanguageSwitch />
             <NewOpportunityDialog />
@@ -165,7 +166,7 @@ export default function Index() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
             <Select value={stageFilter} onValueChange={setStageFilter}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder={t("allStages")} />
@@ -234,7 +235,44 @@ export default function Index() {
             <p className="text-muted-foreground">{t("noOpportunities")}</p>
           </div>
         ) : (
-          <div className="rounded-lg border border-border bg-card overflow-x-auto">
+          <>
+          {/* Mobile: Card layout */}
+          <div className="space-y-3 sm:hidden">
+            {filtered.map((opp) => {
+              const roughScore = calculateTotalScore(opp.scoring);
+              const ds = opp.detailedScoring;
+              const detailedScore = ds
+                ? Math.round(
+                    ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
+                  ) / 10
+                : null;
+              return (
+                <div
+                  key={opp.id}
+                  onClick={() => navigate(`/opportunity/${opp.id}`)}
+                  className="rounded-lg border border-border bg-card p-4 cursor-pointer hover:bg-muted/30 transition-colors space-y-2"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-medium text-card-foreground text-sm">{opp.title}</span>
+                    <StageBadge stage={opp.stage} />
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                    {opp.industry && <span>{opp.industry}</span>}
+                    {opp.geography && <span>{opp.geography}</span>}
+                    {opp.owner && <span>{opp.owner}</span>}
+                  </div>
+                  <div className="flex gap-4 text-xs">
+                    <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
+                    {detailedScore !== null && (
+                      <span className="text-muted-foreground">{t("detailedScoring")}: <span className="font-semibold text-primary">{detailedScore.toFixed(1)}</span></span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {/* Desktop: Table layout */}
+          <div className="rounded-lg border border-border bg-card overflow-x-auto hidden sm:block">
             <table className="w-full min-w-[900px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
@@ -290,6 +328,7 @@ export default function Index() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </main>
     </div>
