@@ -48,7 +48,7 @@ export function PipelineFunnel({ data, activeStage, onStageClick }: PipelineFunn
               onClick={() => onStageClick?.(item.stage)}
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
-              className="relative flex items-center justify-center py-2 rounded-sm cursor-pointer transition-all duration-200"
+              className="relative flex items-center justify-center py-1.5 sm:py-2 rounded-sm cursor-pointer transition-all duration-200"
               style={{
                 width: `${widthPercent}%`,
                 backgroundColor: STAGE_COLORS[idx % STAGE_COLORS.length],
@@ -57,10 +57,10 @@ export function PipelineFunnel({ data, activeStage, onStageClick }: PipelineFunn
                 minHeight: 36,
               }}
             >
-              <span className="text-sm font-bold text-white drop-shadow-sm">
+              <span className="text-xs sm:text-sm font-bold text-white drop-shadow-sm">
                 {item.count}
               </span>
-              <span className="ml-2 text-xs text-white/85 drop-shadow-sm hidden sm:inline">
+              <span className="ml-1.5 sm:ml-2 text-[10px] sm:text-xs text-white/85 drop-shadow-sm truncate max-w-[80px] sm:max-w-none">
                 {item.label}
               </span>
             </div>
