@@ -121,22 +121,22 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saRelativeMarketShare")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saRelativeMarketShare")}</div>
               <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckHigh")} {t("saMarketGrowth")}</div>
-              <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "star" } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "star" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
-                ⭐ {t("saBcgStar")}
-              </button>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "question_mark" } })}
                 className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "question_mark" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 ❓ {t("saBcgQuestionMark")}
               </button>
-              <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckLow")} {t("saMarketGrowth")}</div>
-              <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "cash_cow" } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "cash_cow" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
-                🐄 {t("saBcgCashCow")}
+              <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "star" } })}
+                className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "star" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                ⭐ {t("saBcgStar")}
               </button>
+              <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckLow")} {t("saMarketGrowth")}</div>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "dog" } })}
                 className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "dog" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 🐕 {t("saBcgDog")}
+              </button>
+              <button type="button" disabled={readonly} onClick={() => update({ ...data, bcg: { ...data.bcg, position: "cash_cow" } })}
+                className={`p-4 rounded-md border text-sm font-medium transition-colors ${data.bcg.position === "cash_cow" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                🐄 {t("saBcgCashCow")}
               </button>
             </div>
             <div className="space-y-3">
