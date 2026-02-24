@@ -8,6 +8,7 @@ import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { DashboardOverview } from "@/components/DashboardOverview";
+import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
 import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -138,11 +139,14 @@ export default function Index() {
 
         <DashboardOverview opportunities={opportunities} />
 
-        <PipelineFunnel
-          data={funnelData}
-          activeStage={stageFilter}
-          onStageClick={(stage) => setStageFilter(stageFilter === stage ? "all" : stage)}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <PipelineFunnel
+            data={funnelData}
+            activeStage={stageFilter}
+            onStageClick={(stage) => setStageFilter(stageFilter === stage ? "all" : stage)}
+          />
+          <AnsoffMatrixDashboard opportunities={opportunities} />
+        </div>
 
         {/* Filters */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
