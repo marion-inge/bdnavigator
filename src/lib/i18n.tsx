@@ -772,6 +772,17 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     irCompleted: "completed",
     irNotes: "Additional Notes",
     irNotesPlaceholder: "Additional observations, risks, or notes...",
+    // Files
+    filesTitle: "Files & Attachments",
+    filesUpload: "Upload File",
+    filesEmpty: "No files uploaded yet.",
+    filesDelete: "Delete",
+    filesDownload: "Download",
+    filesComment: "Comment",
+    filesCommentPlaceholder: "Add a comment...",
+    filesSave: "Save",
+    filesUploading: "Uploading...",
+    filesMaxSize: "Max. 20 MB per file",
   },
   de: {
     appTitle: "NOVI",
@@ -1527,6 +1538,17 @@ guideRI_s5: "Sehr hohes Risiko; feindliches regulatorisches Umfeld; Durchbruch-T
     irCompleted: "erledigt",
     irNotes: "Zusätzliche Notizen",
     irNotesPlaceholder: "Weitere Beobachtungen, Risiken oder Notizen...",
+    // Files
+    filesTitle: "Dateien & Anhänge",
+    filesUpload: "Datei hochladen",
+    filesEmpty: "Noch keine Dateien hochgeladen.",
+    filesDelete: "Löschen",
+    filesDownload: "Herunterladen",
+    filesComment: "Kommentar",
+    filesCommentPlaceholder: "Kommentar hinzufügen...",
+    filesSave: "Speichern",
+    filesUploading: "Wird hochgeladen...",
+    filesMaxSize: "Max. 20 MB pro Datei",
   },
 } as const;
 
