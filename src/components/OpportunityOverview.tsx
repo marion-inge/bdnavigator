@@ -131,16 +131,52 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
         )}
       </div>
 
-      {/* AI Assessment */}
-      {opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0 && (
-        <AIAssessment
-          scoring={opp.scoring}
-          answers={opp.roughScoringAnswers}
-          title={opp.title}
-          description={opp.description}
-          basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
-        />
-      )}
+      {/* AI Assessment — use Business Plan scoring if available, otherwise Idea Scoring */}
+      {(() => {
+        const hasDetailedScoring = opp.detailedScoring && STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("detailed_scoring");
+        const hasIdeaScoring = opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0;
+
+        if (hasDetailedScoring) {
+          const ds = opp.detailedScoring!;
+          const dsScoring: typeof opp.scoring = {
+            marketAttractiveness: { id: "marketAttractiveness", score: ds.marketAttractiveness.score, comment: "" },
+            strategicFit: { id: "strategicFit", score: ds.strategicFit.score, comment: "" },
+            feasibility: { id: "feasibility", score: ds.feasibility.score, comment: "" },
+            commercialViability: { id: "commercialViability", score: ds.commercialViability.score, comment: "" },
+            risk: { id: "risk", score: ds.risk.score, comment: "" },
+          };
+          const dsAnswers: Record<string, number> = {
+            ds_market: ds.marketAttractiveness.score,
+            ds_strategic: ds.strategicFit.score,
+            ds_feasibility: ds.feasibility.score,
+            ds_commercial: ds.commercialViability.score,
+            ds_risk: ds.risk.score,
+          };
+          return (
+            <AIAssessment
+              scoring={dsScoring}
+              answers={dsAnswers}
+              title={opp.title}
+              description={opp.description}
+              basis={language === "de" ? "Business Plan Scoring" : "Business Plan Scoring"}
+            />
+          );
+        }
+
+        if (hasIdeaScoring) {
+          return (
+            <AIAssessment
+              scoring={opp.scoring}
+              answers={opp.roughScoringAnswers!}
+              title={opp.title}
+              description={opp.description}
+              basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
+            />
+          );
+        }
+
+        return null;
+      })()}
 
       {/* Bottom Row: Gate History + Business Case Summary */}
       <div className="grid gap-4 md:grid-cols-2">
