@@ -18,7 +18,6 @@ export function ProcessOverview() {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h3 className="text-base font-bold text-card-foreground">{t("homeProcessTitle")}</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">{t("homeProcessSub")}</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
