@@ -55,32 +55,62 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
       <div className="grid gap-4 md:grid-cols-3">
         {/* Score Hero */}
         <div className="rounded-xl border border-border bg-card p-6 flex flex-col items-center justify-center text-center">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Idea Score</span>
-          <div className="relative">
-            <svg viewBox="0 0 120 120" className="w-28 h-28">
-              <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
-              <circle
-                cx="60" cy="60" r="52"
-                fill="none"
-                stroke={totalScore >= 3.5 ? "hsl(145, 55%, 40%)" : totalScore >= 2.5 ? "hsl(38, 90%, 50%)" : "hsl(0, 65%, 50%)"}
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray={`${(totalScore / 5) * 327} 327`}
-                transform="rotate(-90 60 60)"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={`text-3xl font-bold ${scoreColor}`}>{totalScore.toFixed(1)}</span>
-              <span className="text-[10px] text-muted-foreground">/ 5.0</span>
+          <div className={`flex items-center gap-6 ${detailedAvg !== null ? "w-full justify-around" : ""}`}>
+            {/* Idea Score */}
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Idea Score</span>
+              <div className="relative">
+                <svg viewBox="0 0 120 120" className={detailedAvg !== null ? "w-20 h-20" : "w-28 h-28"}>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
+                  <circle
+                    cx="60" cy="60" r="52"
+                    fill="none"
+                    stroke={totalScore >= 3.5 ? "hsl(145, 55%, 40%)" : totalScore >= 2.5 ? "hsl(38, 90%, 50%)" : "hsl(0, 65%, 50%)"}
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray={`${(totalScore / 5) * 327} 327`}
+                    transform="rotate(-90 60 60)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className={`${detailedAvg !== null ? "text-xl" : "text-3xl"} font-bold ${scoreColor}`}>{totalScore.toFixed(1)}</span>
+                  <span className="text-[9px] text-muted-foreground">/ 5.0</span>
+                </div>
+              </div>
+              <span className={`text-xs font-medium mt-1 ${scoreColor}`}>{scoreLabel}</span>
             </div>
+
+            {/* Business Plan Score */}
+            {detailedAvg !== null && (() => {
+              const bpColor = detailedAvg >= 3.5 ? "text-[hsl(var(--success))]" : detailedAvg >= 2.5 ? "text-[hsl(var(--warning))]" : "text-destructive";
+              const bpStroke = detailedAvg >= 3.5 ? "hsl(145, 55%, 40%)" : detailedAvg >= 2.5 ? "hsl(38, 90%, 50%)" : "hsl(0, 65%, 50%)";
+              const bpLabel = detailedAvg >= 3.5 ? t("scoreHigh") : detailedAvg >= 2.5 ? t("scoreMedium") : t("scoreLow");
+              return (
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Business Plan</span>
+                  <div className="relative">
+                    <svg viewBox="0 0 120 120" className="w-20 h-20">
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
+                      <circle
+                        cx="60" cy="60" r="52"
+                        fill="none"
+                        stroke={bpStroke}
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        strokeDasharray={`${(detailedAvg / 5) * 327} 327`}
+                        transform="rotate(-90 60 60)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`text-xl font-bold ${bpColor}`}>{detailedAvg.toFixed(1)}</span>
+                      <span className="text-[9px] text-muted-foreground">/ 5.0</span>
+                    </div>
+                  </div>
+                  <span className={`text-xs font-medium mt-1 ${bpColor}`}>{bpLabel}</span>
+                </div>
+              );
+            })()}
           </div>
-          <span className={`text-sm font-medium mt-2 ${scoreColor}`}>{scoreLabel}</span>
-          {detailedAvg !== null && (
-            <div className="mt-3 pt-3 border-t border-border w-full">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Business Plan Score</span>
-              <p className="text-lg font-bold text-primary">{detailedAvg.toFixed(1)} <span className="text-xs text-muted-foreground font-normal">/ 5.0</span></p>
-            </div>
-          )}
         </div>
 
         {/* Description & Meta */}
