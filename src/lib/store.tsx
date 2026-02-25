@@ -1,10 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import { Opportunity, createDefaultScoring, createDefaultDetailedScoring, createDefaultBusinessCase, GateRecord, Stage, Scoring, DetailedScoring, BusinessCase, STAGE_ORDER } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
+import { supabase } from "@/integrations/supabase/client";
 
 interface StoreContextType {
   opportunities: Opportunity[];
-  addOpportunity: (opp: Omit<Opportunity, "id" | "scoring" | "gates" | "createdAt" | "stage">) => Opportunity;
+  loading: boolean;
+  addOpportunity: (opp: Omit<Opportunity, "id" | "scoring" | "gates" | "createdAt" | "stage">) => Promise<Opportunity>;
   updateOpportunity: (id: string, updates: Partial<Opportunity>) => void;
   deleteOpportunity: (id: string) => void;
   getOpportunity: (id: string) => Opportunity | undefined;
@@ -19,58 +21,112 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
-const STORAGE_KEY = "bd-pipeline-opportunities";
+// ── DB helpers ──────────────────────────────────────────────────────
 
-function loadOpportunities(): Opportunity[] {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (data) {
-      const parsed: Opportunity[] = JSON.parse(data);
-      // Migrate: merge strategicAnalyses from mock data if missing in stored data
-      const mockMap = new Map(MOCK_OPPORTUNITIES.map((m) => [m.id, m]));
-      const migrated = parsed.map((o) => {
-        const mock = mockMap.get(o.id);
-        if (!mock?.strategicAnalyses) return o;
-        if (!o.strategicAnalyses) {
-          return { ...o, strategicAnalyses: mock.strategicAnalyses };
-        }
-        // Always sync threeHorizons and ansoff from mock if mock has values
-        const sa = { ...o.strategicAnalyses };
-        let updated = false;
-        if (mock.strategicAnalyses.threeHorizons?.horizon) {
-          sa.threeHorizons = mock.strategicAnalyses.threeHorizons;
-          updated = true;
-        }
-        if (mock.strategicAnalyses.ansoff?.position && !sa.ansoff?.position) {
-          sa.ansoff = mock.strategicAnalyses.ansoff;
-          updated = true;
-        }
-        return updated ? { ...o, strategicAnalyses: sa } : o;
-      });
-      saveOpportunities(migrated);
-      return migrated;
-    }
-    saveOpportunities(MOCK_OPPORTUNITIES);
-    return [...MOCK_OPPORTUNITIES];
-  } catch {
+function oppToRow(o: Opportunity) {
+  return {
+    id: o.id,
+    title: o.title,
+    description: o.description,
+    industry: o.industry,
+    geography: o.geography,
+    technology: o.technology,
+    owner: o.owner,
+    stage: o.stage,
+    scoring: o.scoring as any,
+    detailed_scoring: o.detailedScoring ?? null,
+    business_case: o.businessCase ?? null,
+    strategic_analyses: o.strategicAnalyses ?? null,
+    go_to_market_plan: o.goToMarketPlan ?? null,
+    implement_review: o.implementReview ?? null,
+    rough_scoring_answers: o.roughScoringAnswers ?? null,
+    rough_scoring_comments: o.roughScoringComments ?? null,
+    gates: o.gates as any,
+    created_at: o.createdAt,
+  };
+}
+
+function rowToOpp(r: any): Opportunity {
+  return {
+    id: r.id,
+    title: r.title,
+    description: r.description ?? "",
+    industry: r.industry ?? "",
+    geography: r.geography ?? "",
+    technology: r.technology ?? "",
+    owner: r.owner ?? "",
+    stage: r.stage as Stage,
+    scoring: r.scoring as Scoring,
+    detailedScoring: r.detailed_scoring ?? undefined,
+    businessCase: r.business_case ?? undefined,
+    strategicAnalyses: r.strategic_analyses ?? undefined,
+    goToMarketPlan: r.go_to_market_plan ?? undefined,
+    implementReview: r.implement_review ?? undefined,
+    roughScoringAnswers: r.rough_scoring_answers ?? undefined,
+    roughScoringComments: r.rough_scoring_comments ?? undefined,
+    gates: (r.gates as GateRecord[]) ?? [],
+    createdAt: r.created_at,
+  };
+}
+
+async function fetchOpportunities(): Promise<Opportunity[]> {
+  const { data, error } = await (supabase as any)
+    .from("opportunities")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch opportunities:", error);
     return [];
   }
+  return (data ?? []).map(rowToOpp);
 }
 
-function saveOpportunities(opps: Opportunity[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(opps));
+async function upsertOpportunity(opp: Opportunity) {
+  const { error } = await (supabase as any)
+    .from("opportunities")
+    .upsert(oppToRow(opp), { onConflict: "id" });
+
+  if (error) console.error("Failed to upsert opportunity:", error);
 }
+
+async function deleteOpportunityFromDb(id: string) {
+  const { error } = await (supabase as any)
+    .from("opportunities")
+    .delete()
+    .eq("id", id);
+
+  if (error) console.error("Failed to delete opportunity:", error);
+}
+
+// ── Provider ────────────────────────────────────────────────────────
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>(loadOpportunities);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const persist = useCallback((opps: Opportunity[]) => {
-    setOpportunities(opps);
-    saveOpportunities(opps);
+  // Load from DB on mount, fall back to mock if empty
+  useEffect(() => {
+    fetchOpportunities().then((dbOpps) => {
+      if (dbOpps.length > 0) {
+        setOpportunities(dbOpps);
+      } else {
+        // Show mock data as fallback (not persisted to DB)
+        setOpportunities([...MOCK_OPPORTUNITIES]);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  const updateLocal = useCallback((updater: (prev: Opportunity[]) => Opportunity[]) => {
+    setOpportunities((prev) => {
+      const next = updater(prev);
+      return next;
+    });
   }, []);
 
   const addOpportunity = useCallback(
-    (opp: Omit<Opportunity, "id" | "scoring" | "gates" | "createdAt" | "stage">) => {
+    async (opp: Omit<Opportunity, "id" | "scoring" | "gates" | "createdAt" | "stage">) => {
       const newOpp: Opportunity = {
         ...opp,
         id: crypto.randomUUID(),
@@ -79,25 +135,31 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         gates: [],
         createdAt: new Date().toISOString(),
       };
-      const updated = [...opportunities, newOpp];
-      persist(updated);
+      updateLocal((prev) => [...prev, newOpp]);
+      await upsertOpportunity(newOpp);
       return newOpp;
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const updateOpportunity = useCallback(
     (id: string, updates: Partial<Opportunity>) => {
-      persist(opportunities.map((o) => (o.id === id ? { ...o, ...updates } : o)));
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, ...updates } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const deleteOpportunity = useCallback(
     (id: string) => {
-      persist(opportunities.filter((o) => o.id !== id));
+      updateLocal((prev) => prev.filter((o) => o.id !== id));
+      deleteOpportunityFromDb(id);
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const getOpportunity = useCallback(
@@ -107,29 +169,44 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const updateScoring = useCallback(
     (id: string, scoring: Scoring) => {
-      persist(opportunities.map((o) => (o.id === id ? { ...o, scoring } : o)));
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, scoring } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const updateDetailedScoring = useCallback(
     (id: string, detailedScoring: DetailedScoring) => {
-      persist(opportunities.map((o) => (o.id === id ? { ...o, detailedScoring } : o)));
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, detailedScoring } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const updateBusinessCase = useCallback(
     (id: string, businessCase: BusinessCase) => {
-      persist(opportunities.map((o) => (o.id === id ? { ...o, businessCase } : o)));
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, businessCase } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const addGateDecision = useCallback(
     (id: string, gate: GateRecord) => {
-      persist(
-        opportunities.map((o) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => {
           if (o.id !== id) return o;
           const gates = [...o.gates, gate];
           let stage: Stage = o.stage;
@@ -140,7 +217,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
           }
-          // Initialize defaults when advancing
           const updates: Partial<Opportunity> = { gates, stage };
           if (stage === "detailed_scoring" && !o.detailedScoring) {
             updates.detailedScoring = createDefaultDetailedScoring();
@@ -149,36 +225,45 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             updates.businessCase = createDefaultBusinessCase();
           }
           return { ...o, ...updates };
-        })
-      );
+        });
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const updateGateDecision = useCallback(
     (oppId: string, gateId: string, updates: Partial<GateRecord>) => {
-      persist(
-        opportunities.map((o) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => {
           if (o.id !== oppId) return o;
           const gates = o.gates.map((g) => (g.id === gateId ? { ...g, ...updates } : g));
           return { ...o, gates };
-        })
-      );
+        });
+        const updated = next.find((o) => o.id === oppId);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const deleteGateDecision = useCallback(
     (oppId: string, gateId: string) => {
-      persist(
-        opportunities.map((o) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => {
           if (o.id !== oppId) return o;
           const gates = o.gates.filter((g) => g.id !== gateId);
           return { ...o, gates };
-        })
-      );
+        });
+        const updated = next.find((o) => o.id === oppId);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   const GATE_STAGE_INDEX: Record<string, number> = {
@@ -188,28 +273,30 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const revertStage = useCallback(
     (id: string) => {
-      persist(
-        opportunities.map((o) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => {
           if (o.id !== id) return o;
           const idx = STAGE_ORDER.indexOf(o.stage);
           if (idx <= 0) return o;
           const prevStage = STAGE_ORDER[idx - 1];
           const prevIdx = idx - 1;
-          // Remove gate decisions that are at or beyond the new stage
           const gates = o.gates.filter((g) => {
             const gateIdx = GATE_STAGE_INDEX[g.gate];
             return gateIdx !== undefined && gateIdx < prevIdx;
           });
           return { ...o, stage: prevStage, gates };
-        })
-      );
+        });
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
     },
-    [opportunities, persist]
+    [updateLocal]
   );
 
   return (
     <StoreContext.Provider
-      value={{ opportunities, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
+      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
     >
       {children}
     </StoreContext.Provider>

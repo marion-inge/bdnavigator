@@ -18,7 +18,7 @@ import { Search, TrendingUp, RotateCcw, X, BookOpen, FileDown } from "lucide-rea
 import { exportDashboardPdf } from "@/lib/pdfExport";
 
 export default function Index() {
-  const { opportunities } = useStore();
+  const { opportunities, loading } = useStore();
   const { t } = useI18n();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -113,8 +113,9 @@ export default function Index() {
               variant="outline"
               size="icon"
               className="h-8 w-8 sm:h-9 sm:w-9"
-              onClick={() => {
-                localStorage.removeItem("bd-pipeline-opportunities");
+              onClick={async () => {
+                const { supabase } = await import("@/integrations/supabase/client");
+                await (supabase as any).from("opportunities").delete().neq("id", "00000000-0000-0000-0000-000000000000");
                 window.location.reload();
               }}
               title="Reset Data"
@@ -136,6 +137,12 @@ export default function Index() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+        ) : (
+        <>
         <ProcessOverview />
 
         <DashboardOverview opportunities={opportunities} />
@@ -336,6 +343,8 @@ export default function Index() {
             </table>
           </div>
           </>
+        )}
+        </>
         )}
       </main>
     </div>
