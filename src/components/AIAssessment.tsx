@@ -15,9 +15,10 @@ interface AIAssessmentProps {
   answers: Record<string, number>;
   title?: string;
   description?: string;
+  basis?: string;
 }
 
-export function AIAssessment({ scoring, answers, title, description }: AIAssessmentProps) {
+export function AIAssessment({ scoring, answers, title, description, basis }: AIAssessmentProps) {
   const { language } = useI18n();
   const [result, setResult] = useState<AIAssessmentResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -93,6 +94,11 @@ export function AIAssessment({ scoring, answers, title, description }: AIAssessm
           <h3 className="font-semibold text-card-foreground">
             {language === "de" ? "KI-Einschätzung" : "AI Assessment"}
           </h3>
+          {basis && (
+            <span className="text-[10px] text-muted-foreground">
+              {language === "de" ? "Basis" : "Based on"}: {basis}
+            </span>
+          )}
         </div>
         <span
           className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold"

@@ -21,7 +21,7 @@ interface OpportunityOverviewProps {
 
 
 export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: OpportunityOverviewProps) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const totalScore = calculateTotalScore(opp.scoring);
 
   const canMoveToRoughScoring = opp.stage === "idea";
@@ -138,6 +138,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
           answers={opp.roughScoringAnswers}
           title={opp.title}
           description={opp.description}
+          basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
         />
       )}
 
