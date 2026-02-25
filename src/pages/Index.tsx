@@ -14,7 +14,8 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, TrendingUp, RotateCcw, X, BookOpen, FileDown } from "lucide-react";
+import { Search, RotateCcw, X, BookOpen, FileDown } from "lucide-react";
+import noviLogo from "@/assets/novi-logo.png";
 import { exportDashboardPdf } from "@/lib/pdfExport";
 
 export default function Index() {
@@ -100,9 +101,7 @@ export default function Index() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary shrink-0">
-              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
-            </div>
+            <img src={noviLogo} alt="NOVI" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0" />
             <div className="min-w-0">
               <h1 className="text-lg sm:text-2xl font-extrabold text-card-foreground tracking-tight truncate">{t("appTitle")}</h1>
               <p className="text-xs sm:text-sm text-muted-foreground font-medium truncate">{t("appSlogan")}</p>
@@ -245,7 +244,7 @@ export default function Index() {
         {/* Table */}
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <TrendingUp className="h-12 w-12 text-muted-foreground/40 mb-4" />
+            <img src={noviLogo} alt="NOVI" className="h-12 w-12 opacity-40 mb-4" />
             <p className="text-muted-foreground">{t("noOpportunities")}</p>
           </div>
         ) : (
