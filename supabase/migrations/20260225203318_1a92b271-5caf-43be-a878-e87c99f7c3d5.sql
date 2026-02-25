@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX ai_assessments_opportunity_basis_idx ON public.ai_assessments (opportunity_id, basis);

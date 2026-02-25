@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Scoring } from "@/lib/types";
 import {
   generateAssessment,
+  saveAssessment,
+  loadAssessment,
   AIAssessmentResult,
   getRatingLabel,
   getRatingColor,
@@ -16,13 +18,26 @@ interface AIAssessmentProps {
   title?: string;
   description?: string;
   basis?: string;
+  opportunityId: string;
 }
 
-export function AIAssessment({ scoring, answers, title, description, basis }: AIAssessmentProps) {
+export function AIAssessment({ scoring, answers, title, description, basis, opportunityId }: AIAssessmentProps) {
   const { language } = useI18n();
   const [result, setResult] = useState<AIAssessmentResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const effectiveBasis = basis || "idea_scoring";
+
+  // Load persisted assessment on mount
+  useEffect(() => {
+    loadAssessment(opportunityId, effectiveBasis)
+      .then((saved) => {
+        if (saved) setResult(saved);
+      })
+      .finally(() => setInitialLoading(false));
+  }, [opportunityId, effectiveBasis]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -36,12 +51,22 @@ export function AIAssessment({ scoring, answers, title, description, basis }: AI
         language: language as "en" | "de",
       });
       setResult(assessment);
+      // Persist to database
+      await saveAssessment(opportunityId, effectiveBasis, assessment);
     } catch (e) {
       setError(language === "de" ? "Fehler bei der Analyse. Bitte erneut versuchen." : "Error generating assessment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <div className="rounded-lg border border-dashed border-border bg-card/50 p-6 flex items-center justify-center">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!result) {
     return (

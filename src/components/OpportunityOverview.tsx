@@ -251,6 +251,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
               title={opp.title}
               description={opp.description}
               basis={language === "de" ? "Business Plan Scoring" : "Business Plan Scoring"}
+              opportunityId={opp.id}
             />
           );
         }
@@ -263,6 +264,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
               title={opp.title}
               description={opp.description}
               basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
+              opportunityId={opp.id}
             />
           );
         }
