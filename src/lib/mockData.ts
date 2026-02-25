@@ -511,7 +511,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     gates: [
       { id: "g-005a", gate: "gate1", decision: "go", comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
       { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
-      { id: "g-005c", gate: "gate3", decision: "go", comment: "Business case compelling — 180% ROI. Handing off to product management for launch Q1 2026.", decider: "Dr. Claudia Weiss", date: "2025-12-10T14:00:00Z" },
+      
     ],
     roughScoringAnswers: {
       ma_market_size: 5, ma_growth_rate: 5, ma_customer_demand: 5, ma_competition: 5, ma_accessibility: 4,

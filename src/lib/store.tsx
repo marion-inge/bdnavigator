@@ -114,9 +114,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           } else if (gate.gate === "gate2") {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
-          } else if (gate.gate === "gate3") {
-            if (gate.decision === "go") stage = "implement_review";
-            else if (gate.decision === "no-go") stage = "closed";
           }
           // Initialize defaults when advancing
           const updates: Partial<Opportunity> = { gates, stage };
@@ -162,7 +159,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const GATE_STAGE_INDEX: Record<string, number> = {
     gate1: STAGE_ORDER.indexOf("gate1"),
     gate2: STAGE_ORDER.indexOf("gate2"),
-    gate3: STAGE_ORDER.indexOf("gate3"),
   };
 
   const revertStage = useCallback(

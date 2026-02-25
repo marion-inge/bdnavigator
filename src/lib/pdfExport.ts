@@ -8,9 +8,7 @@ const STAGE_LABELS: Record<string, string> = {
   gate1: "Gate 1",
   detailed_scoring: "Detail-Scoring",
   gate2: "Gate 2",
-  business_case: "Business Case",
-  gate3: "Gate 3",
-  
+  business_case: "Umsetzungs- und GTM-Plan",
   implement_review: "Umsetzung & Review",
   closed: "Geschlossen",
 };
