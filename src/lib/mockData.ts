@@ -382,7 +382,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     strategicAnalyses: {
       ...createDefaultStrategicAnalyses(),
       ansoff: { position: "diversification", description: "New IoT/ML product for the new wind energy market.", rationale: "We have industrial IoT capabilities but the offshore wind energy sector is a new market for us, making this a diversification play." },
-      threeHorizons: { horizon: "horizon2", description: "Predictive maintenance for wind turbines extends our IoT platform into a high-growth renewable energy market.", rationale: "Emerging business with transferable technology. Revenue expected within 2-3 years." },
+      threeHorizons: { horizon: "horizon3", description: "Predictive maintenance for wind turbines is a future-oriented diversification into a new energy market.", rationale: "Requires new market entry and domain expertise. Still in rough scoring — long-term bet with 5+ year horizon." },
     },
     gates: [],
     createdAt: "2025-12-01T09:00:00Z",
@@ -797,7 +797,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     strategicAnalyses: {
       ...createDefaultStrategicAnalyses(),
       ansoff: { position: "product-development", description: "New cobot welding product for existing maritime/shipbuilding customers.", rationale: "Shipyards are part of our existing maritime customer base. The welding cobot is a new product combining robotics and maritime expertise." },
-      threeHorizons: { horizon: "horizon1", description: "Welding cobots for shipyards directly serve and strengthen our core maritime business.", rationale: "Builds on two existing divisions (robotics + maritime). Near-term revenue potential with proven demand from existing customers like Meyer Werft." },
+      threeHorizons: { horizon: "horizon2", description: "Welding cobots for shipyards is an emerging opportunity combining robotics and maritime expertise.", rationale: "Still in detailed scoring with prototype phase. Revenue expected in 2-3 years as product matures and shipyard trials complete." },
     },
     createdAt: "2025-10-20T13:00:00Z",
   },
