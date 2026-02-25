@@ -7,7 +7,7 @@ import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
 import { DetailedScoringSection } from "@/components/DetailedScoringSection";
-import { BusinessCaseSection } from "@/components/BusinessCaseSection";
+
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { GoToMarketSection } from "@/components/GoToMarketSection";
@@ -209,18 +209,11 @@ export default function OpportunityDetail() {
               />
             )}
             {activeTab === "business_case" && (
-              <div className="space-y-8">
-                <BusinessCaseSection
-                  businessCase={opp.businessCase}
-                  onSave={(bc) => updateBusinessCase(opp.id, bc)}
-                  readonly={opp.stage === "closed"}
-                />
-                <GoToMarketSection
-                  goToMarketPlan={opp.goToMarketPlan}
-                  onSave={(plan) => updateOpportunity(opp.id, { goToMarketPlan: plan })}
-                  readonly={opp.stage === "closed"}
-                />
-              </div>
+              <GoToMarketSection
+                goToMarketPlan={opp.goToMarketPlan}
+                onSave={(plan) => updateOpportunity(opp.id, { goToMarketPlan: plan })}
+                readonly={opp.stage === "closed"}
+              />
             )}
             {activeTab === "implement_review" && (
               <ImplementReviewSection
