@@ -66,6 +66,61 @@ export function getRatingColor(rating: AIAssessmentResult["overallRating"]): str
   }
 }
 
+// ─── Database Persistence ────────────────────────────────────────────
+
+export async function saveAssessment(
+  opportunityId: string,
+  basis: string,
+  result: AIAssessmentResult
+): Promise<void> {
+  const { supabase } = await import("@/integrations/supabase/client");
+
+  const { error } = await (supabase as any).from("ai_assessments").upsert(
+    {
+      opportunity_id: opportunityId,
+      basis,
+      summary: result.summary,
+      strengths: result.strengths,
+      weaknesses: result.weaknesses,
+      next_steps: result.nextSteps,
+      pitfalls: result.pitfalls,
+      overall_rating: result.overallRating,
+    },
+    { onConflict: "opportunity_id,basis" }
+  );
+
+  if (error) {
+    console.error("Failed to save assessment:", error);
+  }
+}
+
+export async function loadAssessment(
+  opportunityId: string,
+  basis: string
+): Promise<AIAssessmentResult | null> {
+  const { supabase } = await import("@/integrations/supabase/client");
+
+  const { data, error } = await (supabase as any)
+    .from("ai_assessments")
+    .select("*")
+    .eq("opportunity_id", opportunityId)
+    .eq("basis", basis)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return {
+    summary: data.summary,
+    strengths: data.strengths,
+    weaknesses: data.weaknesses,
+    nextSteps: data.next_steps,
+    pitfalls: data.pitfalls,
+    overallRating: data.overall_rating,
+  };
+}
+
 // ─── Public API ──────────────────────────────────────────────────────
 
 /**
