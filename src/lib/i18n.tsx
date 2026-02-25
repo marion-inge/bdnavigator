@@ -4,7 +4,7 @@ export type Language = "en" | "de";
 
 const translations = {
   en: {
-    appTitle: "BD Navigator",
+    appTitle: "NOVI",
     appSlogan: "Where Bold Ideas Meet Smart Decisions",
     opportunities: "Opportunities",
     newOpportunity: "New Opportunity",
@@ -774,7 +774,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     irNotesPlaceholder: "Additional observations, risks, or notes...",
   },
   de: {
-    appTitle: "BD Navigator",
+    appTitle: "NOVI",
     appSlogan: "Wo mutige Ideen auf kluge Entscheidungen treffen",
     opportunities: "Opportunities",
     newOpportunity: "Neues Opportunity",
