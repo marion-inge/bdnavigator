@@ -99,13 +99,13 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary shrink-0">
-              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary shrink-0">
+              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-xl font-bold text-card-foreground truncate">{t("appTitle")}</h1>
-              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{t("appSlogan")}</p>
+              <h1 className="text-lg sm:text-2xl font-extrabold text-card-foreground tracking-tight truncate">{t("appTitle")}</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium truncate">{t("appSlogan")}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
