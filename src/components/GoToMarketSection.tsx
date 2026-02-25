@@ -11,6 +11,7 @@ import { Plus, Trash2, Rocket } from "lucide-react";
 
 import { PilotCustomerGtmSection } from "./gtm/PilotCustomerGtmSection";
 import { LeadGenerationSection } from "./gtm/LeadGenerationSection";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   goToMarketPlan?: GoToMarketPlan;
@@ -20,9 +21,11 @@ interface Props {
 
 const defaultLeadGen: LeadGenerationData = { channels: [], activities: [], pipelineNotes: "" };
 
-export function GoToMarketSection({ goToMarketPlan, onSave, readonly }: Props) {
+export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<GoToMarketPlan>(goToMarketPlan || createDefaultGoToMarketPlan());
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const update = (updated: GoToMarketPlan) => {
     setData(updated);
@@ -50,6 +53,7 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly }: Props) {
   ];
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-2">
         <Rocket className="h-5 w-5 text-primary" />
@@ -169,5 +173,6 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly }: Props) {
         readonly={readonly}
       />
     </div>
+    </EditableSection>
   );
 }

@@ -10,6 +10,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   Radar, ResponsiveContainer, Legend, Tooltip,
 } from "recharts";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -26,7 +27,7 @@ const DEFAULT_DIMENSIONS: AlignmentDimension[] = [
   { key: "channelFit", label: "sfDimChannel", current: 3, required: 4 },
 ];
 
-export function StrategicFitTab({ scoring, onUpdate, readonly }: Props) {
+export function StrategicFitTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState({
     ...scoring.strategicFit,
@@ -36,6 +37,8 @@ export function StrategicFitTab({ scoring, onUpdate, readonly }: Props) {
     capabilityGaps: scoring.strategicFit.capabilityGaps ?? [],
   });
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const updateField = <K extends keyof typeof local>(field: K, value: typeof local[K]) => {
     setLocal((prev) => ({ ...prev, [field]: value }));
@@ -117,6 +120,7 @@ export function StrategicFitTab({ scoring, onUpdate, readonly }: Props) {
   };
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-6">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -444,11 +448,7 @@ export function StrategicFitTab({ scoring, onUpdate, readonly }: Props) {
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

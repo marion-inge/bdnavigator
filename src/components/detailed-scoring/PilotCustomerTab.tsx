@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -28,10 +29,12 @@ const statusConfig: Record<PilotContactStatus, { label: string; color: string }>
   loi_confirmed: { label: "LoI / Confirmed", color: "bg-green-500/15 text-green-700 dark:text-green-400" },
 };
 
-export function PilotCustomerTab({ scoring, onUpdate, readonly }: Props) {
+export function PilotCustomerTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState<PilotCustomerData>(scoring.pilotCustomer || defaultPilotData);
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const save = (updated: PilotCustomerData) => {
     setLocal(updated);
@@ -76,6 +79,7 @@ export function PilotCustomerTab({ scoring, onUpdate, readonly }: Props) {
   }, {} as Record<string, number>);
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -218,11 +222,7 @@ export function PilotCustomerTab({ scoring, onUpdate, readonly }: Props) {
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

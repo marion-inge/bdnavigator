@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Building2 } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -23,10 +24,12 @@ const defaultOrgReadiness: OrganisationalReadiness = {
   details: "",
 };
 
-export function OrganisationalReadinessTab({ scoring, onUpdate, readonly }: Props) {
+export function OrganisationalReadinessTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState<OrganisationalReadiness>(scoring.organisationalReadiness || defaultOrgReadiness);
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const updateField = (field: keyof OrganisationalReadiness, value: string | number) => {
     setLocal((prev) => ({ ...prev, [field]: value }));
@@ -60,6 +63,7 @@ export function OrganisationalReadinessTab({ scoring, onUpdate, readonly }: Prop
   ];
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -126,11 +130,7 @@ export function OrganisationalReadinessTab({ scoring, onUpdate, readonly }: Prop
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

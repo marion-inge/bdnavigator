@@ -98,3 +98,35 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
+
+/* Display mode: disabled fields appear as plain text */
+.display-mode input:disabled,
+.display-mode textarea:disabled {
+  border-color: transparent !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  cursor: default !important;
+  resize: none !important;
+  -webkit-text-fill-color: hsl(var(--card-foreground)) !important;
+  box-shadow: none !important;
+}
+
+.display-mode input[type="number"]:disabled {
+  -moz-appearance: textfield;
+}
+
+.display-mode input[type="number"]:disabled::-webkit-inner-spin-button,
+.display-mode input[type="number"]:disabled::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.display-mode button[role="combobox"]:disabled {
+  border-color: transparent !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+.display-mode button[role="combobox"]:disabled svg {
+  display: none;
+}
