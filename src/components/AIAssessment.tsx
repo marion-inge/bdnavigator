@@ -75,7 +75,7 @@ export function AIAssessment({ scoring, answers, title, description, basis }: AI
           </Button>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <p className="text-[10px] text-muted-foreground mt-1">
-            {language === "de" ? "Mock-Modus – wird später durch LLM ersetzt" : "Mock mode – will be replaced by LLM later"}
+            Powered by Lovable AI
           </p>
         </div>
       </div>
@@ -181,7 +181,7 @@ export function AIAssessment({ scoring, answers, title, description, basis }: AI
       {/* Footer */}
       <div className="flex items-center justify-between pt-2 border-t border-border">
         <p className="text-[10px] text-muted-foreground">
-          {language === "de" ? "Mock-Modus – wird später durch LLM ersetzt" : "Mock mode – will be replaced by LLM later"}
+          Powered by Lovable AI
         </p>
         <Button variant="outline" size="sm" onClick={handleGenerate} disabled={loading}>
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : (
