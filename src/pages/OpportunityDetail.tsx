@@ -93,32 +93,29 @@ export default function OpportunityDetail() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border bg-card shrink-0">
-        <div className="px-4 sm:px-6 xl:px-8 py-4 flex items-center justify-between max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-3">
-            {/* Hamburger – only on mobile */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
-              <Menu className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-lg font-bold text-card-foreground leading-tight">{opp.title}</h1>
-              <div className="flex items-center gap-3 mt-0.5">
-                <StageBadge stage={opp.stage} />
-                {opp.industry && <span className="text-sm text-muted-foreground hidden sm:inline">{opp.industry}</span>}
-              </div>
+        <div className="px-4 sm:px-6 xl:px-8 py-3 sm:py-4 max-w-[1600px] mx-auto space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+              <Button variant="ghost" size="icon" className="md:hidden h-8 w-8 shrink-0" onClick={() => setSidebarOpen(true)}>
+                <Menu className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate("/")}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <StageBadge stage={opp.stage} />
+              {opp.industry && <span className="text-xs text-muted-foreground hidden sm:inline">{opp.industry}</span>}
+            </div>
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+              <LanguageSwitch />
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => exportOpportunityPdf(opp)} title="PDF Export">
+                <FileDown className="h-3.5 w-3.5" />
+              </Button>
+              <Button variant="outline" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={handleDelete}>
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <LanguageSwitch />
-            <Button variant="outline" size="icon" onClick={() => exportOpportunityPdf(opp)} title="PDF Export">
-              <FileDown className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={handleDelete} className="text-destructive hover:bg-destructive/10">
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+          <h1 className="text-sm sm:text-lg font-bold text-card-foreground leading-tight pl-0 sm:pl-[76px] md:pl-[44px]">{opp.title}</h1>
         </div>
       </header>
 
