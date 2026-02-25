@@ -4,14 +4,16 @@ import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
 import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuestions";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, MessageSquare } from "lucide-react";
 import { AIAssessment } from "@/components/AIAssessment";
 
 interface RoughScoringWizardProps {
   scoring: Scoring;
-  onSave: (scoring: Scoring, answers: Record<string, number>) => void;
+  onSave: (scoring: Scoring, answers: Record<string, number>, comments: Record<string, string>) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
+  initialComments?: Record<string, string>;
   startWithSummary?: boolean;
 }
 
@@ -38,7 +40,7 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, startWithSummary }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, startWithSummary }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
@@ -48,12 +50,14 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
     if (initialAnswers && Object.keys(initialAnswers).length > 0) {
       return { ...initialAnswers };
     }
-    // Pre-fill from existing scoring
     const initial: Answers = {};
     for (const q of allQuestions) {
       initial[q.id] = scoring[q.category].score;
     }
     return initial;
+  });
+  const [comments, setComments] = useState<Record<string, string>>(() => {
+    return initialComments && Object.keys(initialComments).length > 0 ? { ...initialComments } : {};
   });
   const [showSummary, setShowSummary] = useState(!!startWithSummary);
 
@@ -98,7 +102,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
 
   const handleSave = () => {
     const newScoring = answersToScoring(answers, allQuestions, scoring);
-    onSave(newScoring, answers);
+    onSave(newScoring, answers, comments);
   };
 
   const handleReset = () => {
@@ -153,22 +157,30 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                 {/* Individual question scores */}
                 <div className="space-y-1">
                   {questions.map((q) => (
-                    <div key={q.id} className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground truncate mr-2">{q.question[language]}</span>
-                      <div className="flex items-center gap-1 shrink-0">
-                        {[1, 2, 3, 4, 5].map((val) => (
-                          <div
-                            key={val}
-                            className={`w-6 h-6 rounded text-xs font-semibold flex items-center justify-center ${
-                              answers[q.id] === val
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary/50 text-muted-foreground"
-                            }`}
-                          >
-                            {val}
-                          </div>
-                        ))}
+                    <div key={q.id} className="space-y-1">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground truncate mr-2">{q.question[language]}</span>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {[1, 2, 3, 4, 5].map((val) => (
+                            <div
+                              key={val}
+                              className={`w-6 h-6 rounded text-xs font-semibold flex items-center justify-center ${
+                                answers[q.id] === val
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-secondary/50 text-muted-foreground"
+                              }`}
+                            >
+                              {val}
+                            </div>
+                          ))}
+                        </div>
                       </div>
+                      {comments[q.id] && (
+                        <div className="flex items-start gap-1.5 ml-1 pb-1">
+                          <MessageSquare className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                          <p className="text-xs text-muted-foreground italic">{comments[q.id]}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -313,6 +325,24 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
               </div>
             </button>
           ))}
+        </div>
+
+        {/* Comment field */}
+        <div className="mt-4 pt-3 border-t border-border">
+          <div className="flex items-center gap-1.5 mb-2">
+            <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+            <label className="text-xs font-medium text-muted-foreground">
+              {language === "de" ? "Kommentar (optional)" : "Comment (optional)"}
+            </label>
+          </div>
+          <Textarea
+            value={comments[currentQuestion.id] || ""}
+            onChange={(e) => setComments((prev) => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+            placeholder={language === "de" ? "Begründung, Notizen, Anmerkungen..." : "Rationale, notes, remarks..."}
+            disabled={readonly}
+            rows={2}
+            className="text-sm resize-none"
+          />
         </div>
       </div>
 
