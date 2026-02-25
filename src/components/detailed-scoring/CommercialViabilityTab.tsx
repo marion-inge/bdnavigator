@@ -9,6 +9,7 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine, Legend, ComposedChart, Line
 } from "recharts";
 import { DollarSign, TrendingUp, Target, BarChart3 } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -16,7 +17,7 @@ interface Props {
   readonly?: boolean;
 }
 
-export function CommercialViabilityTab({ scoring, onUpdate, readonly }: Props) {
+export function CommercialViabilityTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const defaultProjections = [
     { year: 1, revenue: 0, costs: 0 },
@@ -34,6 +35,8 @@ export function CommercialViabilityTab({ scoring, onUpdate, readonly }: Props) {
     breakEvenUnits: scoring.commercialViability.breakEvenUnits ?? 0,
   });
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const updateField = <K extends keyof typeof local>(field: K, value: typeof local[K]) => {
     setLocal((prev) => ({ ...prev, [field]: value }));
@@ -98,6 +101,7 @@ export function CommercialViabilityTab({ scoring, onUpdate, readonly }: Props) {
   const avgMargin5Y = totalRevenue5Y > 0 ? Math.round((totalProfit5Y / totalRevenue5Y) * 100) : 0;
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-6">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -340,11 +344,7 @@ export function CommercialViabilityTab({ scoring, onUpdate, readonly }: Props) {
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

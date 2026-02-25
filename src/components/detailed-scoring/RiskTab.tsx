@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, Plus, Trash2, Shield } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -30,13 +31,15 @@ const CATEGORY_BORDER: Record<RiskItem["category"], string> = {
   financial: "border-pink-400",
 };
 
-export function RiskTab({ scoring, onUpdate, readonly }: Props) {
+export function RiskTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState({
     ...scoring.risk,
     riskItems: scoring.risk.riskItems ?? [],
   });
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const updateField = <K extends keyof typeof local>(field: K, value: typeof local[K]) => {
     setLocal((prev) => ({ ...prev, [field]: value }));
@@ -111,6 +114,7 @@ export function RiskTab({ scoring, onUpdate, readonly }: Props) {
   const lowRisks = local.riskItems.filter((r) => r.probability * r.impact < 8).length;
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-6">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -417,11 +421,7 @@ export function RiskTab({ scoring, onUpdate, readonly }: Props) {
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

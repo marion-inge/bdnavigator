@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, RefreshCw } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   implementReview?: ImplementReview;
@@ -16,9 +17,11 @@ interface Props {
   readonly?: boolean;
 }
 
-export function ImplementReviewSection({ implementReview, onSave, readonly }: Props) {
+export function ImplementReviewSection({ implementReview, onSave, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<ImplementReview>(implementReview || createDefaultImplementReview());
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const update = (updated: ImplementReview) => {
     setData(updated);
@@ -45,6 +48,7 @@ export function ImplementReviewSection({ implementReview, onSave, readonly }: Pr
   ];
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-2">
         <RefreshCw className="h-5 w-5 text-primary" />
@@ -157,5 +161,6 @@ export function ImplementReviewSection({ implementReview, onSave, readonly }: Pr
         </CardContent>
       </Card>
     </div>
+    </EditableSection>
   );
 }

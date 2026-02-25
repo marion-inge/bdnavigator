@@ -10,6 +10,7 @@ import {
   LineChart, Line, Legend,
 } from "recharts";
 import { TrendingUp, Globe, Target, Plus, Trash2 } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -19,10 +20,12 @@ interface Props {
 
 const DEFAULT_PROJECTIONS = [1,2,3,4,5].map((y) => ({ year: y, value: 0 }));
 
-export function MarketAttractivenessTab({ scoring, onUpdate, readonly }: Props) {
+export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const update = (field: keyof typeof local.analysis, value: string) => {
     setLocal((prev) => ({ ...prev, analysis: { ...prev.analysis, [field]: value } }));
@@ -147,6 +150,7 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly }: Props) 
     v >= 1000 ? `€${(v / 1000).toFixed(1)}B` : `€${v}M`;
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -399,11 +403,7 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly }: Props) 
         </div>
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

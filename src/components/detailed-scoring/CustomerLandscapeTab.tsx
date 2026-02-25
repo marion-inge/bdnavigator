@@ -8,6 +8,7 @@ import {
   PieChart, Pie, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 import { Users, Plus, Trash2 } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -23,10 +24,12 @@ const PIE_COLORS = [
   "hsl(var(--accent))",
 ];
 
-export function CustomerLandscapeTab({ scoring, onUpdate, readonly }: Props) {
+export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const update = (field: keyof typeof local.analysis, value: string) => {
     setLocal((prev) => ({ ...prev, analysis: { ...prev.analysis, [field]: value } }));
@@ -61,6 +64,7 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly }: Props) {
   };
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
       {/* Header */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -147,11 +151,7 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly }: Props) {
         </div>
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }

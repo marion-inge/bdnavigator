@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, MapPin } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
@@ -19,9 +20,11 @@ interface Props {
   defaultTab?: string;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, defaultTab }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const update = (updated: StrategicAnalyses) => {
     setData(updated);
@@ -29,6 +32,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
   };
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
     <Tabs defaultValue={defaultTab || "ansoff"} key={defaultTab} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="ansoff" className="text-xs sm:text-sm">{t("saAnsoff")}</TabsTrigger>
@@ -1013,5 +1017,6 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly, 
         </Card>
       </TabsContent>
     </Tabs>
+    </EditableSection>
   );
 }

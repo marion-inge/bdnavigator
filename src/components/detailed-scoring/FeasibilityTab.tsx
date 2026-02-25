@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wrench, Plus, Trash2, CheckCircle2, Clock, AlertCircle, Circle } from "lucide-react";
+import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
   scoring: DetailedScoring;
@@ -25,7 +26,7 @@ const TRL_DESCRIPTIONS: Record<number, { en: string; de: string }> = {
   9: { en: "Actual system proven in operational environment", de: "System im Betriebseinsatz bewährt" },
 };
 
-export function FeasibilityTab({ scoring, onUpdate, readonly }: Props) {
+export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t, language } = useI18n();
   const [local, setLocal] = useState({
     ...scoring.feasibility,
@@ -33,6 +34,8 @@ export function FeasibilityTab({ scoring, onUpdate, readonly }: Props) {
     milestones: scoring.feasibility.milestones ?? [],
   });
   const [dirty, setDirty] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
 
   const updateField = <K extends keyof typeof local>(field: K, value: typeof local[K]) => {
     setLocal((prev) => ({ ...prev, [field]: value }));
@@ -117,6 +120,7 @@ export function FeasibilityTab({ scoring, onUpdate, readonly }: Props) {
   );
 
   return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-6">
       {/* Header with Score */}
       <div className="rounded-xl border-2 border-border bg-card p-6">
@@ -333,11 +337,7 @@ export function FeasibilityTab({ scoring, onUpdate, readonly }: Props) {
         />
       </div>
 
-      {!readonly && (
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={!dirty}>{t("save")}</Button>
-        </div>
-      )}
     </div>
+    </EditableSection>
   );
 }
