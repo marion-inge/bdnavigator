@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, BookOpen, Shield, Users, Target } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 
 export default function ProcessGuide() {
   const navigate = useNavigate();
@@ -34,25 +34,6 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{t("guideProcessTitle")}</h2>
           <p className="text-muted-foreground leading-relaxed">{t("guideProcessDesc")}</p>
           <StageFlowDiagram t={t} />
-        </section>
-
-        {/* Gate Deciders */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideGateDeciders")}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideGateDecidersDesc")}</p>
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              { gate: "G1", icon: <Target className="h-5 w-5" />, text: t("guideGate1Decider"), color: "border-l-amber-400" },
-              { gate: "G2", icon: <Users className="h-5 w-5" />, text: t("guideGate2Decider"), color: "border-l-amber-500" },
-            ].map(({ gate, icon, text, color }) => (
-              <Card key={gate} className={`border-l-4 ${color}`}>
-                <CardContent className="pt-4 flex items-start gap-3">
-                  <div className="mt-0.5 text-amber-600">{icon}</div>
-                  <p className="text-sm text-muted-foreground">{text}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </section>
 
         {/* Stages Detail */}
@@ -466,19 +447,18 @@ function StageFlowDiagram({ t }: { t: (k: string) => string }) {
   const stages = [
     { key: "idea", color: "bg-blue-500" },
     { key: "rough_scoring", color: "bg-indigo-500" },
-    { key: "gate1", color: "bg-amber-500", decider: "Dir. BD" },
+    { key: "gate1", color: "bg-amber-500" },
     { key: "detailed_scoring", color: "bg-purple-500" },
-    { key: "gate2", color: "bg-amber-500", decider: "BU-Mgr/MD" },
+    { key: "gate2", color: "bg-amber-500" },
     { key: "business_case", color: "bg-teal-500" },
     { key: "implement_review", color: "bg-orange-500" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {stages.map(({ key, color, decider }, i) => (
+      {stages.map(({ key, color }, i) => (
         <div key={key} className="flex items-center gap-2">
-          <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap flex flex-col items-center`}>
+          <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap`}>
             <span>{t(`stage_${key}`)}</span>
-            {decider && <span className="text-[10px] opacity-80 font-normal">{decider}</span>}
           </div>
           {i < stages.length - 1 && <span className="text-muted-foreground text-lg">→</span>}
         </div>
