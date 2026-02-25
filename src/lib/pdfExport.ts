@@ -4,9 +4,9 @@ import { Opportunity, calculateTotalScore, STAGE_ORDER } from "./types";
 
 const STAGE_LABELS: Record<string, string> = {
   idea: "Idee",
-  rough_scoring: "Grobes Scoring",
+  rough_scoring: "Idea Scoring",
   gate1: "Gate 1",
-  detailed_scoring: "Detail-Scoring",
+  detailed_scoring: "Business Plan",
   gate2: "Gate 2",
   business_case: "Umsetzungs- und GTM-Plan",
   implement_review: "Umsetzung & Review",
@@ -66,7 +66,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
   const doc = new jsPDF();
   const pw = doc.internal.pageSize.getWidth();
 
-  addHeader(doc, `BD Navigator – ${opp.title}`);
+  addHeader(doc, `NOVI – ${opp.title}`);
 
   let y = 38;
 
@@ -93,7 +93,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
 
   // Rough Scoring
   y += 4;
-  y = addSectionTitle(doc, y, "Grobes Scoring");
+  y = addSectionTitle(doc, y, "Idea Scoring");
   const roughScore = calculateTotalScore(opp.scoring);
 
   autoTable(doc, {
@@ -117,7 +117,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
   const ds = opp.detailedScoring;
   if (ds) {
     y += 4;
-    y = addSectionTitle(doc, y, "Detail-Scoring");
+    y = addSectionTitle(doc, y, "Business Plan");
     const detailedTotal = Math.round(((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10) / 10;
 
     autoTable(doc, {
@@ -135,7 +135,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
       margin: { left: 14 },
     });
     y = (doc as any).lastAutoTable.finalY + 4;
-    y = addKeyValue(doc, y, "Detail-Gesamtbewertung", detailedTotal.toFixed(1) + " / 5.0");
+    y = addKeyValue(doc, y, "Business-Plan-Gesamtbewertung", detailedTotal.toFixed(1) + " / 5.0");
 
     // TAM/SAM
     const ma = ds.marketAttractiveness.analysis;
@@ -256,7 +256,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `BD Navigator – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
+      `NOVI – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
@@ -270,7 +270,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
   const doc = new jsPDF({ orientation: "landscape" });
   const pw = doc.internal.pageSize.getWidth();
 
-  addHeader(doc, "BD Navigator – Pipeline-Übersicht");
+  addHeader(doc, "NOVI – Pipeline-Übersicht");
 
   let y = 38;
 
@@ -284,7 +284,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
 
   y = addKeyValue(doc, y, "Gesamt-Opportunities", String(opportunities.length));
   y = addKeyValue(doc, y, "Aktiv", String(active));
-  y = addKeyValue(doc, y, "Go-To-Market", String(gtm));
+  y = addKeyValue(doc, y, "In Umsetzung", String(gtm));
   y = addKeyValue(doc, y, "Durchschnittlicher Score", avgScore);
 
   // Stage distribution
@@ -311,7 +311,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
 
   autoTable(doc, {
     startY: y,
-    head: [["Titel", "Phase", "Branche", "Geografie", "Technologie", "Verantwortl.", "Rough Score", "Detail Score", "Payback"]],
+    head: [["Titel", "Phase", "Branche", "Geografie", "Technologie", "Verantwortl.", "Idea Score", "BP Score", "Payback"]],
     body: opportunities
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map(opp => {
@@ -348,10 +348,10 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `BD Navigator – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
+      `NOVI – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
 
-  doc.save(`BD_Navigator_Pipeline_${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`NOVI_Pipeline_${new Date().toISOString().slice(0, 10)}.pdf`);
 }
