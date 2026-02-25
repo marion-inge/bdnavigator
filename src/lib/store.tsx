@@ -24,7 +24,32 @@ const STORAGE_KEY = "bd-pipeline-opportunities";
 function loadOpportunities(): Opportunity[] {
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed: Opportunity[] = JSON.parse(data);
+      // Migrate: merge strategicAnalyses from mock data if missing in stored data
+      const mockMap = new Map(MOCK_OPPORTUNITIES.map((m) => [m.id, m]));
+      const migrated = parsed.map((o) => {
+        const mock = mockMap.get(o.id);
+        if (!mock?.strategicAnalyses) return o;
+        if (!o.strategicAnalyses) {
+          return { ...o, strategicAnalyses: mock.strategicAnalyses };
+        }
+        // Always sync threeHorizons and ansoff from mock if mock has values
+        const sa = { ...o.strategicAnalyses };
+        let updated = false;
+        if (mock.strategicAnalyses.threeHorizons?.horizon) {
+          sa.threeHorizons = mock.strategicAnalyses.threeHorizons;
+          updated = true;
+        }
+        if (mock.strategicAnalyses.ansoff?.position && !sa.ansoff?.position) {
+          sa.ansoff = mock.strategicAnalyses.ansoff;
+          updated = true;
+        }
+        return updated ? { ...o, strategicAnalyses: sa } : o;
+      });
+      saveOpportunities(migrated);
+      return migrated;
+    }
     saveOpportunities(MOCK_OPPORTUNITIES);
     return [...MOCK_OPPORTUNITIES];
   } catch {
