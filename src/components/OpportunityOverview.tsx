@@ -3,12 +3,9 @@ import { useI18n } from "@/lib/i18n";
 import { Opportunity, calculateTotalScore, STAGE_ORDER, SCORING_WEIGHTS } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { StageTimeline } from "@/components/StageTimeline";
+import { AIAssessment } from "@/components/AIAssessment";
 import { Button } from "@/components/ui/button";
 import { Stage } from "@/lib/types";
-import {
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, Cell,
-} from "recharts";
 import {
   Globe, Cpu, User, Calendar, FileText, CheckCircle2, Clock,
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
@@ -22,13 +19,6 @@ interface OpportunityOverviewProps {
 
 // (STAGE_PROGRESS moved to StageTimeline component)
 
-const CRITERION_COLORS: Record<string, string> = {
-  marketAttractiveness: "hsl(200, 60%, 45%)",
-  strategicFit: "hsl(260, 45%, 55%)",
-  feasibility: "hsl(170, 50%, 40%)",
-  commercialViability: "hsl(38, 90%, 50%)",
-  risk: "hsl(0, 65%, 50%)",
-};
 
 export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: OpportunityOverviewProps) {
   const { t } = useI18n();
@@ -40,27 +30,9 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
   const canMoveToImplementReview = opp.stage === "business_case";
   const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToImplementReview;
 
-  // Radar data
-  const radarData = useMemo(() => {
-    const keys = ["marketAttractiveness", "strategicFit", "feasibility", "commercialViability", "risk"] as const;
-    return keys.map((key) => ({
-      criterion: t(key),
-      score: key === "risk" ? 6 - opp.scoring[key].score : opp.scoring[key].score,
-      fullMark: 5,
-    }));
-  }, [opp.scoring, t]);
+  // Radar data (kept for potential future use)
 
-  // Bar chart for scoring breakdown
-  const barData = useMemo(() => {
-    const keys = ["marketAttractiveness", "strategicFit", "feasibility", "commercialViability", "risk"] as const;
-    return keys.map((key) => ({
-      key,
-      label: t(key),
-      score: opp.scoring[key].score,
-      adjusted: key === "risk" ? 6 - opp.scoring[key].score : opp.scoring[key].score,
-      weight: SCORING_WEIGHTS[key],
-    }));
-  }, [opp.scoring, t]);
+
 
   // Detailed scoring average
   const detailedAvg = useMemo(() => {
@@ -159,39 +131,15 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
         )}
       </div>
 
-      {/* Charts Row: Radar + Scoring Bars */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Radar */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("scoringRadar")}</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <RadarChart data={radarData} outerRadius={75}>
-              <PolarGrid stroke="hsl(220, 15%, 88%)" />
-              <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} />
-              <PolarRadiusAxis domain={[0, 5]} tick={false} axisLine={false} />
-              <Radar dataKey="score" stroke="hsl(215, 50%, 30%)" fill="hsl(215, 50%, 30%)" fillOpacity={0.2} strokeWidth={2} />
-              <Tooltip contentStyle={{ backgroundColor: "hsl(0,0%,100%)", border: "1px solid hsl(220,15%,88%)", borderRadius: "8px", fontSize: "12px" }} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Scoring Breakdown */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("ovScoringBreakdown")}</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={barData} layout="vertical" margin={{ top: 0, right: 10, bottom: 0, left: 0 }}>
-              <XAxis type="number" domain={[0, 5]} tick={{ fontSize: 10, fill: "hsl(220,10%,50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="label" tick={{ fontSize: 10, fill: "hsl(220,10%,50%)" }} axisLine={false} tickLine={false} width={110} />
-              <Tooltip contentStyle={{ backgroundColor: "hsl(0,0%,100%)", border: "1px solid hsl(220,15%,88%)", borderRadius: "8px", fontSize: "12px" }} />
-              <Bar dataKey="adjusted" radius={[0, 4, 4, 0]} maxBarSize={20}>
-                {barData.map((entry) => (
-                  <Cell key={entry.key} fill={CRITERION_COLORS[entry.key]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {/* AI Assessment */}
+      {opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0 && (
+        <AIAssessment
+          scoring={opp.scoring}
+          answers={opp.roughScoringAnswers}
+          title={opp.title}
+          description={opp.description}
+        />
+      )}
 
       {/* Bottom Row: Gate History + Business Case Summary */}
       <div className="grid gap-4 md:grid-cols-2">
