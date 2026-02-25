@@ -1,10 +1,14 @@
+// Stage identifiers – UI labels differ from code names:
+//   "rough_scoring"    → UI: "Idea Scoring"
+//   "detailed_scoring" → UI: "Business Plan"
+//   "business_case"    → UI: "Implementation and GTM Plan"
 export type Stage =
   | "idea"
-  | "rough_scoring"
+  | "rough_scoring"       // UI: Idea Scoring
   | "gate1"
-  | "detailed_scoring"
+  | "detailed_scoring"    // UI: Business Plan
   | "gate2"
-  | "business_case"
+  | "business_case"       // UI: Implementation and GTM Plan
   | "implement_review"
   | "closed";
 
@@ -499,14 +503,14 @@ export interface Opportunity {
   technology: string;
   owner: string;
   stage: Stage;
-  scoring: Scoring;
-  detailedScoring?: DetailedScoring;
-  businessCase?: BusinessCase;
+  scoring: Scoring;                                  // UI: Idea Scoring data
+  detailedScoring?: DetailedScoring;                 // UI: Business Plan data
+  businessCase?: BusinessCase;                       // UI: Implementation and GTM Plan data
   strategicAnalyses?: StrategicAnalyses;
   goToMarketPlan?: GoToMarketPlan;
   implementReview?: ImplementReview;
-  roughScoringAnswers?: Record<string, number>;
-  roughScoringComments?: Record<string, string>;
+  roughScoringAnswers?: Record<string, number>;      // UI: Idea Scoring wizard answers
+  roughScoringComments?: Record<string, string>;     // UI: Idea Scoring wizard comments
   gates: GateRecord[];
   createdAt: string;
 }

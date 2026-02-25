@@ -54,6 +54,9 @@
     --sidebar-border: 215 40% 35%;
     --sidebar-ring: 200 60% 55%;
 
+    /* Stage colors – CSS var names use legacy identifiers, UI labels differ:
+       rough-scoring → "Idea Scoring", detailed-scoring → "Business Plan",
+       business-case → "Implementation and GTM Plan" */
     --stage-idea: 215 50% 30%;
     --stage-rough-scoring: 200 60% 45%;
     --stage-gate1: 38 90% 50%;

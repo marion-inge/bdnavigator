@@ -22,6 +22,10 @@ interface StoreContextType {
 const StoreContext = createContext<StoreContextType | null>(null);
 
 // ── DB helpers ──────────────────────────────────────────────────────
+// NOTE: DB column names use legacy identifiers that differ from UI labels:
+//   rough_scoring_answers / rough_scoring_comments → UI: "Idea Scoring"
+//   detailed_scoring → UI: "Business Plan"
+//   business_case → UI: "Implementation and GTM Plan"
 
 function oppToRow(o: Opportunity) {
   return {
