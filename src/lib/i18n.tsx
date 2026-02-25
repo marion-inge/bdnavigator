@@ -5,7 +5,7 @@ export type Language = "en" | "de";
 const translations = {
   en: {
     appTitle: "NOVI",
-    appSlogan: "Where Bold Ideas Meet Smart Decisions",
+    appSlogan: "How Ideas Become Business",
     opportunities: "Opportunities",
     newOpportunity: "New Opportunity",
     title: "Title",
@@ -775,7 +775,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
   },
   de: {
     appTitle: "NOVI",
-    appSlogan: "Wo mutige Ideen auf kluge Entscheidungen treffen",
+    appSlogan: "Wie Ideen zu Geschäft werden",
     opportunities: "Opportunities",
     newOpportunity: "Neues Opportunity",
     title: "Titel",
