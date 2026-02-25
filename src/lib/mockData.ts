@@ -1,4 +1,4 @@
-import { Opportunity, Scoring, GateRecord, Stage, DetailedScoring, BusinessCase } from "./types";
+import { Opportunity, Scoring, GateRecord, Stage, DetailedScoring, BusinessCase, createDefaultStrategicAnalyses } from "./types";
 
 function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, comments: Record<string, string>): Scoring {
   return {
@@ -138,6 +138,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     },
     strategicAnalyses: {
       ansoff: { position: "product-development", description: "New product (autonomous navigation) for existing market (maritime operators).", rationale: "We are offering a fundamentally new capability to our existing maritime customer base. Not entering new markets." },
+      threeHorizons: { horizon: "horizon2", description: "AI-driven autonomous navigation is an emerging capability extending our existing maritime portfolio into next-gen digitalization.", rationale: "Not yet core revenue but builds on existing customer relationships. 3-5 year commercialization horizon." },
       bcg: { position: "star", description: "High growth autonomous shipping market with growing market share through differentiation.", rationale: "18% CAGR market growth combined with our increasing traction (LOIs, pilot partners) positions this as a Star." },
       mckinsey: { position: "invest", description: "High industry attractiveness (regulated, growing) with strong competitive position (AI-first, low retrofit cost).", rationale: "Strong on both axes: market is large and growing, our differentiation is defensible through technology and partnerships." },
       swot: {
@@ -347,6 +348,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         notes: "DB Regio is primary pilot target — Bavarian government subsidies make economics work. SNCF requires French certification path which adds complexity. BLS is a stretch target for Swiss market validation.",
       },
     },
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "product-development", description: "New hydrogen powertrain product for existing rail operator customers.", rationale: "We serve the rail market today with powertrain engineering. Hydrogen fuel cells are a new product for our existing customer base." },
+      threeHorizons: { horizon: "horizon2", description: "Hydrogen rail is an emerging growth area leveraging our powertrain expertise into green mobility.", rationale: "Market driven by EU Green Deal mandates. Significant revenue expected in 3-5 years as subsidies and hydrogen supply mature." },
+    },
     gates: [],
     createdAt: "2025-10-05T14:20:00Z",
   },
@@ -373,6 +379,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       cv_revenue_model: 4, cv_margins: 5, cv_scalability: 4, cv_payback: 3,
       ri_market_risk: 2, ri_technical_risk: 2, ri_execution_risk: 2, ri_financial_risk: 1,
     },
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "diversification", description: "New IoT/ML product for the new wind energy market.", rationale: "We have industrial IoT capabilities but the offshore wind energy sector is a new market for us, making this a diversification play." },
+      threeHorizons: { horizon: "horizon2", description: "Predictive maintenance for wind turbines extends our IoT platform into a high-growth renewable energy market.", rationale: "Emerging business with transferable technology. Revenue expected within 2-3 years." },
+    },
     gates: [],
     createdAt: "2025-12-01T09:00:00Z",
   },
@@ -392,6 +403,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       commercialViability: "High unit price (€200K+) but low volume (50-100 units/year). Long procurement cycles offset by multi-year contracts.",
       risk: "Long procurement cycles (3-5 years). Export control restrictions limit addressable markets. TRL currently at 3.",
     }),
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "market-development", description: "Existing underwater sensor technology applied to new NATO defense market.", rationale: "We leverage our sonar and acoustic expertise from the naval division into a new defense/UUV customer segment." },
+      threeHorizons: { horizon: "horizon3", description: "Defense-grade underwater comms is a future-oriented, long-term bet on UUV and NATO modernization.", rationale: "3-5 year procurement cycles and TRL 3 place this firmly in Horizon 3. Potential is high but timeline is long." },
+    },
     gates: [],
     createdAt: "2026-01-10T11:00:00Z",
   },
@@ -522,6 +538,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     },
     strategicAnalyses: {
       ansoff: { position: "diversification", description: "New product (ground robotics) in new market (aviation). Related diversification through robotics expertise.", rationale: "While robotics is our core, aviation ground handling is a new market segment for us. This is a related diversification leveraging existing tech capabilities." },
+      threeHorizons: { horizon: "horizon2", description: "Aviation ground robotics is an emerging business leveraging core robotics capabilities in a new high-growth market.", rationale: "First revenues achieved through pilot. Scaling to significant revenue in 2-3 years. Clear path from emerging to core." },
       bcg: { position: "star", description: "Rapidly growing market (12% CAGR) with strong competitive position (only DO-178C certified solution).", rationale: "Market growing fast with labor shortage as structural driver. Our aviation certification moat gives us a defensible position." },
       mckinsey: { position: "invest", description: "Highly attractive industry (structural demand, high barriers) with strong competitive position (certification, pilot success).", rationale: "Top-right quadrant: industry is growing and sticky, our position is differentiated and proven." },
       swot: {
@@ -655,6 +672,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       cv_revenue_model: 2, cv_margins: 2, cv_scalability: 3, cv_payback: 2,
       ri_market_risk: 4, ri_technical_risk: 3, ri_execution_risk: 4, ri_financial_risk: 4,
     },
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "diversification", description: "New drone inspection service for the new rail infrastructure market.", rationale: "Drone operations is a new capability for us, and rail infrastructure inspection is a new market — classic diversification." },
+      threeHorizons: { horizon: "horizon3", description: "Drone-based rail inspection was an exploratory Horizon 3 idea — killed at Gate 1 due to low strategic fit.", rationale: "Would have required building entirely new capabilities in a market dominated by established players." },
+    },
     createdAt: "2025-11-01T10:00:00Z",
   },
   {
@@ -772,6 +794,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       cv_revenue_model: 4, cv_margins: 4, cv_scalability: 3, cv_payback: 4,
       ri_market_risk: 2, ri_technical_risk: 3, ri_execution_risk: 2, ri_financial_risk: 2,
     },
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "product-development", description: "New cobot welding product for existing maritime/shipbuilding customers.", rationale: "Shipyards are part of our existing maritime customer base. The welding cobot is a new product combining robotics and maritime expertise." },
+      threeHorizons: { horizon: "horizon1", description: "Welding cobots for shipyards directly serve and strengthen our core maritime business.", rationale: "Builds on two existing divisions (robotics + maritime). Near-term revenue potential with proven demand from existing customers like Meyer Werft." },
+    },
     createdAt: "2025-10-20T13:00:00Z",
   },
   {
@@ -880,6 +907,11 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         stakeholders: "BASF (pilot site), EPEX SPOT (market access), TenneT (grid operator), BDEW (industry association).",
         details: "Competent team but significant domain knowledge gap. Success depends on hiring key energy trading expertise quickly.",
       },
+    },
+    strategicAnalyses: {
+      ...createDefaultStrategicAnalyses(),
+      ansoff: { position: "diversification", description: "New AI energy management product for the new industrial energy storage market.", rationale: "Energy storage optimization is a new market requiring new domain expertise (energy trading), even though our IoT platform provides a technology foundation." },
+      threeHorizons: { horizon: "horizon2", description: "Smart grid battery management extends our IoT platform into the fast-growing energy sector.", rationale: "25% CAGR market with transferable technology. Revenue expected within 2-3 years but requires significant domain capability build-up." },
     },
     gates: [],
     createdAt: "2025-12-15T08:00:00Z",
