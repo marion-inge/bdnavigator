@@ -4,7 +4,7 @@ const STAGES = [
   { key: "idea", icon: "💡", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
   { key: "rough_scoring", icon: "📊", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
   { key: "detailed_scoring", icon: "🔍", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
-  { key: "business_case", icon: "💼", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
+  { key: "business_case", icon: "💼", gateAfter: false, color: "bg-[hsl(var(--stage-business-case))]" },
   { key: "implement_review", icon: "🔄", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
 
@@ -69,7 +69,7 @@ export function ProcessOverview() {
                         <span className="text-[8px] text-[hsl(var(--warning))]/80 font-medium">Gate</span>
                       </div>
                       <span className="text-[8px] text-muted-foreground mt-0.5 leading-tight text-center whitespace-nowrap">
-                        {currentGate === 1 ? "Dir. BD" : currentGate === 2 ? "BU-Mgr/MD" : "EVP"}
+                        {currentGate === 1 ? "Dir. BD" : "BU-Mgr/MD"}
                       </span>
                     </div>
                     <div className="w-3 h-[2px] bg-[hsl(var(--warning))]/50" />

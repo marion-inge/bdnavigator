@@ -5,7 +5,6 @@ export type Stage =
   | "detailed_scoring"
   | "gate2"
   | "business_case"
-  | "gate3"
   | "implement_review"
   | "closed";
 
@@ -200,7 +199,7 @@ export interface BusinessCase {
 
 export interface GateRecord {
   id: string;
-  gate: "gate1" | "gate2" | "gate3";
+  gate: "gate1" | "gate2";
   decision: GateDecision;
   comment: string;
   decider: string;
@@ -600,7 +599,6 @@ export const STAGE_ORDER: Stage[] = [
   "detailed_scoring",
   "gate2",
   "business_case",
-  "gate3",
   "implement_review",
   "closed",
 ];

@@ -59,7 +59,7 @@ export default function OpportunityDetail() {
     overview:            "rough_scoring",
     scoring:             "gate1",
     detailed_scoring:    "gate2",
-    business_case:       "gate3",
+    business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
     strategic_analyses:  "implement_review",

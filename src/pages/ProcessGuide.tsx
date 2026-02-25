@@ -40,11 +40,10 @@ export default function ProcessGuide() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t("guideGateDeciders")}</h2>
           <p className="text-muted-foreground leading-relaxed">{t("guideGateDecidersDesc")}</p>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             {[
               { gate: "G1", icon: <Target className="h-5 w-5" />, text: t("guideGate1Decider"), color: "border-l-amber-400" },
               { gate: "G2", icon: <Users className="h-5 w-5" />, text: t("guideGate2Decider"), color: "border-l-amber-500" },
-              { gate: "G3", icon: <Shield className="h-5 w-5" />, text: t("guideGate3Decider"), color: "border-l-amber-600" },
             ].map(({ gate, icon, text, color }) => (
               <Card key={gate} className={`border-l-4 ${color}`}>
                 <CardContent className="pt-4 flex items-start gap-3">
@@ -67,8 +66,6 @@ export default function ProcessGuide() {
               { stage: "detailed_scoring" as const, icon: "🔍", descKey: "guideStage_detailed_scoring" as const },
               { stage: "gate2" as const, icon: "🚪", descKey: "guideStage_gate2" as const },
               { stage: "business_case" as const, icon: "💼", descKey: "guideStage_business_case" as const },
-              { stage: "gate3" as const, icon: "🚪", descKey: "guideStage_gate3" as const },
-              { stage: "go_to_market" as const, icon: "🚀", descKey: "guideStage_go_to_market" as const },
               { stage: "implement_review" as const, icon: "🔄", descKey: "guideStage_implement_review" as const },
             ] as const).map(({ stage, icon, descKey }) => (
               <Card key={stage}>
@@ -473,8 +470,6 @@ function StageFlowDiagram({ t }: { t: (k: string) => string }) {
     { key: "detailed_scoring", color: "bg-purple-500" },
     { key: "gate2", color: "bg-amber-500", decider: "BU-Mgr/MD" },
     { key: "business_case", color: "bg-teal-500" },
-    { key: "gate3", color: "bg-amber-500", decider: "EVP" },
-    { key: "go_to_market", color: "bg-green-500" },
     { key: "implement_review", color: "bg-orange-500" },
   ];
   return (
