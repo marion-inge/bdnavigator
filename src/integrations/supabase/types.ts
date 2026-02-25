@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_assessments: {
+        Row: {
+          basis: string
+          created_at: string
+          id: string
+          next_steps: Json
+          opportunity_id: string
+          overall_rating: string
+          pitfalls: Json
+          strengths: Json
+          summary: string
+          weaknesses: Json
+        }
+        Insert: {
+          basis?: string
+          created_at?: string
+          id?: string
+          next_steps?: Json
+          opportunity_id: string
+          overall_rating: string
+          pitfalls?: Json
+          strengths?: Json
+          summary: string
+          weaknesses?: Json
+        }
+        Update: {
+          basis?: string
+          created_at?: string
+          id?: string
+          next_steps?: Json
+          opportunity_id?: string
+          overall_rating?: string
+          pitfalls?: Json
+          strengths?: Json
+          summary?: string
+          weaknesses?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
