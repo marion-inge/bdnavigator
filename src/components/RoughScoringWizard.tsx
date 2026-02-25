@@ -5,6 +5,7 @@ import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuest
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw } from "lucide-react";
+import { AIAssessment } from "@/components/AIAssessment";
 
 interface RoughScoringWizardProps {
   scoring: Scoring;
@@ -199,6 +200,12 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
             )}
           </div>
         </div>
+
+        {/* AI Assessment */}
+        <AIAssessment
+          scoring={resultScoring}
+          answers={answers}
+        />
       </div>
     );
   }
