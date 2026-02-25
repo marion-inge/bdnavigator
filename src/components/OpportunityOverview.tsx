@@ -55,7 +55,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
       <div className="grid gap-4 md:grid-cols-3">
         {/* Score Hero */}
         <div className="rounded-xl border border-border bg-card p-6 flex flex-col items-center justify-center text-center">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("totalScore")}</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Idea Score</span>
           <div className="relative">
             <svg viewBox="0 0 120 120" className="w-28 h-28">
               <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
@@ -77,7 +77,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
           <span className={`text-sm font-medium mt-2 ${scoreColor}`}>{scoreLabel}</span>
           {detailedAvg !== null && (
             <div className="mt-3 pt-3 border-t border-border w-full">
-              <span className="text-xs text-muted-foreground">{t("detailedScoring")}</span>
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Business Plan Score</span>
               <p className="text-lg font-bold text-primary">{detailedAvg.toFixed(1)} <span className="text-xs text-muted-foreground font-normal">/ 5.0</span></p>
             </div>
           )}
