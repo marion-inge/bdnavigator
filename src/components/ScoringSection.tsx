@@ -11,8 +11,10 @@ interface ScoringProps {
   scoring: Scoring;
   onSave: (scoring: Scoring) => void;
   onSaveAnswers?: (answers: Record<string, number>) => void;
+  onSaveComments?: (comments: Record<string, string>) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
+  initialComments?: Record<string, string>;
   showResults?: boolean;
 }
 
@@ -24,7 +26,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSave, onSaveAnswers, readonly, initialAnswers, showResults }: ScoringProps) {
+export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments, readonly, initialAnswers, initialComments, showResults }: ScoringProps) {
   const { t, language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
   const [dirty, setDirty] = useState(false);
@@ -43,7 +45,7 @@ export function ScoringSection({ scoring, onSave, onSaveAnswers, readonly, initi
     setDirty(false);
   };
 
-  const handleWizardSave = (newScoring: Scoring, answers: Record<string, number>) => {
+  const handleWizardSave = (newScoring: Scoring, answers: Record<string, number>, comments: Record<string, string>) => {
     // Preserve comments from local state
     const merged: Scoring = { ...newScoring };
     for (const key of criteriaKeys) {
@@ -52,6 +54,7 @@ export function ScoringSection({ scoring, onSave, onSaveAnswers, readonly, initi
     setLocal(merged);
     onSave(merged);
     onSaveAnswers?.(answers);
+    onSaveComments?.(comments);
     setDirty(false);
   };
 
@@ -93,6 +96,7 @@ export function ScoringSection({ scoring, onSave, onSaveAnswers, readonly, initi
           onSave={handleWizardSave}
           readonly={readonly}
           initialAnswers={initialAnswers}
+          initialComments={initialComments}
           startWithSummary={showResults}
         />
       ) : (

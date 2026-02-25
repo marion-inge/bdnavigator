@@ -506,6 +506,7 @@ export interface Opportunity {
   goToMarketPlan?: GoToMarketPlan;
   implementReview?: ImplementReview;
   roughScoringAnswers?: Record<string, number>;
+  roughScoringComments?: Record<string, string>;
   gates: GateRecord[];
   createdAt: string;
 }
