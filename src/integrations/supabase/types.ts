@@ -116,6 +116,39 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunity_files: {
+        Row: {
+          comment: string
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string
+          opportunity_id: string
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          opportunity_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          opportunity_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

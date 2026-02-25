@@ -12,12 +12,13 @@ import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { GoToMarketSection } from "@/components/GoToMarketSection";
 import { ImplementReviewSection } from "@/components/ImplementReviewSection";
+import { FileAttachments } from "@/components/FileAttachments";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown, RefreshCw } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown, RefreshCw, Paperclip } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 
-type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses";
+type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -63,6 +64,7 @@ export default function OpportunityDetail() {
     implement_review:    "closed",
     gates:               "implement_review",
     strategic_analyses:  "implement_review",
+    files:               "closed",
   };
   const tabCurrentStage: Record<TabKey, Stage | ""> = {
     overview:           "idea",
@@ -72,6 +74,7 @@ export default function OpportunityDetail() {
     implement_review:   "implement_review",
     gates:              "gate1",
     strategic_analyses: "",
+    files:              "",
   };
 
   const isTabDone = (key: TabKey) =>
@@ -87,6 +90,7 @@ export default function OpportunityDetail() {
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
     { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
     { key: "strategic_analyses",  label: t("saTab"),             icon: <LineChart className="h-4 w-4" /> },
+    { key: "files",               label: t("filesTitle"),        icon: <Paperclip className="h-4 w-4" /> },
   ];
 
   return (
@@ -239,6 +243,9 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 defaultTab={saDefaultTab}
               />
+            )}
+            {activeTab === "files" && (
+              <FileAttachments opportunityId={opp.id} />
             )}
           </div>
         </main>
