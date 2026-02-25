@@ -197,6 +197,7 @@ export default function OpportunityDetail() {
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
                 showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring")}
+                opportunityId={opp.id}
               />
             )}
             {activeTab === "detailed_scoring" && (

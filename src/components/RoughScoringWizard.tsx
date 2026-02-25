@@ -15,6 +15,7 @@ interface RoughScoringWizardProps {
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
   startWithSummary?: boolean;
+  opportunityId?: string;
 }
 
 type Answers = Record<string, number>;
@@ -40,7 +41,7 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, startWithSummary }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, startWithSummary, opportunityId }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
@@ -217,6 +218,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
         <AIAssessment
           scoring={resultScoring}
           answers={answers}
+          opportunityId={opportunityId || "draft"}
         />
       </div>
     );

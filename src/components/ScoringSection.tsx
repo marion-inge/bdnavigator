@@ -16,6 +16,7 @@ interface ScoringProps {
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
   showResults?: boolean;
+  opportunityId?: string;
 }
 
 const criteriaKeys: (keyof Scoring)[] = [
@@ -26,7 +27,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments, readonly, initialAnswers, initialComments, showResults }: ScoringProps) {
+export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments, readonly, initialAnswers, initialComments, showResults, opportunityId }: ScoringProps) {
   const { t, language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
   const [dirty, setDirty] = useState(false);
@@ -98,6 +99,7 @@ export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments,
           initialAnswers={initialAnswers}
           initialComments={initialComments}
           startWithSummary={showResults}
+          opportunityId={opportunityId}
         />
       ) : (
         <>
