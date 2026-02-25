@@ -1,28 +1,43 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Opportunity, calculateTotalScore, STAGE_ORDER, SCORING_WEIGHTS } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { StageTimeline } from "@/components/StageTimeline";
 import { AIAssessment } from "@/components/AIAssessment";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Stage } from "@/lib/types";
 import {
   Globe, Cpu, User, Calendar, FileText, CheckCircle2, Clock,
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
-  DollarSign, Target, ChevronRight,
+  DollarSign, Target, ChevronRight, Pencil, Check, X,
 } from "lucide-react";
 
 interface OpportunityOverviewProps {
   opportunity: Opportunity;
   onAdvanceStage: (stage: Stage) => void;
+  onUpdate?: (updates: Partial<Opportunity>) => void;
 }
 
 // (STAGE_PROGRESS moved to StageTimeline component)
 
 
-export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: OpportunityOverviewProps) {
+export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate }: OpportunityOverviewProps) {
   const { t, language } = useI18n();
   const totalScore = calculateTotalScore(opp.scoring);
+  const [editing, setEditing] = useState(false);
+  const [editData, setEditData] = useState({ title: opp.title, description: opp.description, industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner });
+
+  const startEdit = () => {
+    setEditData({ title: opp.title, description: opp.description, industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner });
+    setEditing(true);
+  };
+  const cancelEdit = () => setEditing(false);
+  const saveEdit = () => {
+    onUpdate?.(editData);
+    setEditing(false);
+  };
 
   const canMoveToRoughScoring = opp.stage === "idea";
   const canMoveToGate1 = opp.stage === "rough_scoring";
@@ -115,15 +130,62 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage }: Opport
 
         {/* Description & Meta */}
         <div className="md:col-span-2 rounded-xl border border-border bg-card p-5 space-y-4">
-          <div>
-            <p className="text-sm text-card-foreground leading-relaxed">{opp.description || "—"}</p>
+          <div className="flex items-center justify-between">
+            {editing ? (
+              <div className="space-y-2 flex-1">
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("title")}</label>
+                <Input value={editData.title} onChange={(e) => setEditData(d => ({ ...d, title: e.target.value }))} />
+              </div>
+            ) : (
+              <p className="text-sm text-card-foreground leading-relaxed flex-1">{opp.description || "—"}</p>
+            )}
+            {onUpdate && !editing && (
+              <Button variant="ghost" size="icon" onClick={startEdit} className="shrink-0 ml-2">
+                <Pencil className="h-3.5 w-3.5" />
+              </Button>
+            )}
+            {editing && (
+              <div className="flex gap-1 ml-2 shrink-0">
+                <Button variant="ghost" size="icon" onClick={cancelEdit}><X className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" onClick={saveEdit} disabled={!editData.title.trim()}><Check className="h-4 w-4 text-[hsl(var(--success))]" /></Button>
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <MetaItem icon={<FileText className="h-3.5 w-3.5" />} label={t("industry")} value={opp.industry} />
-            <MetaItem icon={<Globe className="h-3.5 w-3.5" />} label={t("geography")} value={opp.geography} />
-            <MetaItem icon={<Cpu className="h-3.5 w-3.5" />} label={t("technology")} value={opp.technology} />
-            <MetaItem icon={<User className="h-3.5 w-3.5" />} label={t("owner")} value={opp.owner} />
-          </div>
+          {editing ? (
+            <>
+              <div>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("description")}</label>
+                <Textarea value={editData.description} onChange={(e) => setEditData(d => ({ ...d, description: e.target.value }))} rows={3} className="mt-1" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("industry")}</label>
+                  <Input value={editData.industry} onChange={(e) => setEditData(d => ({ ...d, industry: e.target.value }))} className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("geography")}</label>
+                  <Input value={editData.geography} onChange={(e) => setEditData(d => ({ ...d, geography: e.target.value }))} className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("technology")}</label>
+                  <Input value={editData.technology} onChange={(e) => setEditData(d => ({ ...d, technology: e.target.value }))} className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("owner")}</label>
+                  <Input value={editData.owner} onChange={(e) => setEditData(d => ({ ...d, owner: e.target.value }))} className="mt-1" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <MetaItem icon={<FileText className="h-3.5 w-3.5" />} label={t("industry")} value={opp.industry} />
+                <MetaItem icon={<Globe className="h-3.5 w-3.5" />} label={t("geography")} value={opp.geography} />
+                <MetaItem icon={<Cpu className="h-3.5 w-3.5" />} label={t("technology")} value={opp.technology} />
+                <MetaItem icon={<User className="h-3.5 w-3.5" />} label={t("owner")} value={opp.owner} />
+              </div>
+            </>
+          )}
           <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
             <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {t("createdAt")}: {new Date(opp.createdAt).toLocaleDateString()}</span>
           </div>
