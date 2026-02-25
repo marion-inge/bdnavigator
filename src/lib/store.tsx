@@ -105,14 +105,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load from DB on mount, fall back to mock if empty
+  // Load from DB on mount; seed mock data if empty
   useEffect(() => {
-    fetchOpportunities().then((dbOpps) => {
+    fetchOpportunities().then(async (dbOpps) => {
       if (dbOpps.length > 0) {
         setOpportunities(dbOpps);
       } else {
-        // Show mock data as fallback (not persisted to DB)
-        setOpportunities([...MOCK_OPPORTUNITIES]);
+        // Seed mock data into DB on first start
+        const mocks = [...MOCK_OPPORTUNITIES];
+        setOpportunities(mocks);
+        for (const opp of mocks) {
+          await upsertOpportunity(opp);
+        }
+        console.log("Seeded", mocks.length, "mock opportunities into DB");
       }
       setLoading(false);
     });
