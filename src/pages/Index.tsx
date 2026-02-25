@@ -105,7 +105,7 @@ export default function Index() {
             </div>
             <div className="min-w-0">
               <h1 className="text-base sm:text-xl font-bold text-card-foreground truncate">{t("appTitle")}</h1>
-              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{t("appSlogan")}</p>
+              
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
