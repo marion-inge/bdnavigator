@@ -264,7 +264,6 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
               comments={opp.roughScoringComments}
               title={opp.title}
               description={opp.description}
-              basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
               opportunityId={opp.id}
             />
           );
