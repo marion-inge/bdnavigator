@@ -15,13 +15,14 @@ import { Sparkles, TrendingUp, AlertTriangle, ArrowRight, Shield, Loader2 } from
 interface AIAssessmentProps {
   scoring: Scoring;
   answers: Record<string, number>;
+  comments?: Record<string, string>;
   title?: string;
   description?: string;
   basis?: string;
   opportunityId: string;
 }
 
-export function AIAssessment({ scoring, answers, title, description, basis, opportunityId }: AIAssessmentProps) {
+export function AIAssessment({ scoring, answers, comments, title, description, basis, opportunityId }: AIAssessmentProps) {
   const { language } = useI18n();
   const [result, setResult] = useState<AIAssessmentResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ export function AIAssessment({ scoring, answers, title, description, basis, oppo
     try {
       const assessment = await generateAssessment({
         answers,
+        comments,
         scoring,
         title,
         description,

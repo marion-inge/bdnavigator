@@ -29,6 +29,7 @@ export interface AIAssessmentResult {
 
 interface AssessmentInput {
   answers: Record<string, number>;
+  comments?: Record<string, string>;
   scoring: Scoring;
   title?: string;
   description?: string;
@@ -130,10 +131,19 @@ export async function loadAssessment(
 export async function generateAssessment(input: AssessmentInput): Promise<AIAssessmentResult> {
   const { supabase } = await import("@/integrations/supabase/client");
 
+  // Build question texts map from scoring questions
+  const { ROUGH_SCORING_QUESTIONS } = await import("./roughScoringQuestions");
+  const questionTexts: Record<string, { en: string; de: string }> = {};
+  for (const q of ROUGH_SCORING_QUESTIONS) {
+    questionTexts[q.id] = q.question;
+  }
+
   const { data, error } = await supabase.functions.invoke("ai-assessment", {
     body: {
       scoring: input.scoring,
       answers: input.answers,
+      comments: input.comments || {},
+      questionTexts,
       title: input.title,
       description: input.description,
       language: input.language,

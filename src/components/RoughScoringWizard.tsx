@@ -224,6 +224,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
         <AIAssessment
           scoring={resultScoring}
           answers={answers}
+          comments={comments}
           opportunityId={opportunityId || "draft"}
         />
       </div>

@@ -15,33 +15,43 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { scoring, answers, title, description, language } = await req.json();
+    const { scoring, answers, comments, questionTexts, title, description, language } = await req.json();
 
     // Build a detailed prompt with all scoring data
     const scoringInfo = Object.entries(scoring as Record<string, { score: number; confidence: string }>)
       .map(([key, val]) => `- ${key}: Score ${val.score}/5 (Confidence: ${val.confidence})`)
       .join("\n");
 
+    // Build rich answers section with question texts and user comments
+    const lang = language === "de" ? "German" : "English";
+    const langKey = language === "de" ? "de" : "en";
+
     const answersInfo = Object.entries(answers as Record<string, number>)
-      .map(([key, val]) => `- ${key}: ${val}/5`)
+      .map(([key, val]) => {
+        const qText = questionTexts?.[key]?.[langKey] || key;
+        const comment = comments?.[key];
+        let line = `- ${qText}: ${val}/5`;
+        if (comment) {
+          line += `\n  User comment: "${comment}"`;
+        }
+        return line;
+      })
       .join("\n");
 
-    const lang = language === "de" ? "German" : "English";
-
-    const systemPrompt = `You are a business innovation analyst. Analyze innovation opportunities and provide structured assessments. Always respond in ${lang}.`;
+    const systemPrompt = `You are a senior business innovation analyst with deep expertise in technology commercialization, market analysis, and corporate strategy. Analyze innovation opportunities thoroughly and provide structured, actionable assessments. Pay special attention to the user's own comments and rationale on each criterion – they contain valuable domain knowledge and context. Always respond in ${lang}.`;
 
     const userPrompt = `Analyze this innovation opportunity and provide a structured assessment.
 
 ${title ? `Title: ${title}` : ""}
 ${description ? `Description: ${description}` : ""}
 
-Scoring Summary:
+Category Scores (weighted averages):
 ${scoringInfo}
 
-Individual Answers:
+Detailed Criterion Ratings and User Comments:
 ${answersInfo}
 
-Provide your assessment using the suggest_assessment tool.`;
+Based on the scores AND the user's own comments, provide your assessment using the suggest_assessment tool. Reference specific criteria and user comments in your analysis where relevant.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

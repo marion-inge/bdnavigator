@@ -261,6 +261,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
             <AIAssessment
               scoring={opp.scoring}
               answers={opp.roughScoringAnswers!}
+              comments={opp.roughScoringComments}
               title={opp.title}
               description={opp.description}
               basis={language === "de" ? "Idea Scoring (Fragenkatalog)" : "Idea Scoring (Questionnaire)"}
