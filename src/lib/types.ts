@@ -139,6 +139,22 @@ export interface PilotCustomerData {
   notes: string;
 }
 
+export interface PortfolioFitDimension {
+  key: string;
+  label: string;
+  score: number; // 1-5
+  notes: string;
+}
+
+export interface PortfolioFitData {
+  score: number; // 1-5 overall
+  dimensions: PortfolioFitDimension[];
+  cannibalizationRisk: string;
+  crossSellingPotential: string;
+  sharedResources: string;
+  notes: string;
+}
+
 export interface PilotAgreement {
   id: string;
   customerName: string;
@@ -189,6 +205,7 @@ export interface DetailedScoring {
   competitorLandscape?: { score: number; analysis: DetailedMarketAnalysis };
   organisationalReadiness?: OrganisationalReadiness;
   pilotCustomer?: PilotCustomerData;
+  portfolioFit?: PortfolioFitData;
 }
 
 export interface BusinessCase {

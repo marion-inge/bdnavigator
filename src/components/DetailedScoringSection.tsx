@@ -12,6 +12,7 @@ import { CompetitorLandscapeTab } from "./detailed-scoring/CompetitorLandscapeTa
 import { CustomerLandscapeTab } from "./detailed-scoring/CustomerLandscapeTab";
 import { OrganisationalReadinessTab } from "./detailed-scoring/OrganisationalReadinessTab";
 import { PilotCustomerTab } from "./detailed-scoring/PilotCustomerTab";
+import { PortfolioFitTab } from "./detailed-scoring/PortfolioFitTab";
 import { RelatedAnalyses, type StrategicAnalysisTab } from "./detailed-scoring/RelatedAnalyses";
 
 interface Props {
@@ -38,6 +39,7 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         <TabsTrigger value="customer" className="text-xs sm:text-sm">{t("maCustomerLandscape")}</TabsTrigger>
         <TabsTrigger value="competitor" className="text-xs sm:text-sm">{t("dsCompetitorLandscape")}</TabsTrigger>
         <TabsTrigger value="strategic" className="text-xs sm:text-sm">{t("strategicFit")}</TabsTrigger>
+        <TabsTrigger value="portfolioFit" className="text-xs sm:text-sm">{t("dsPortfolioFit" as any)}</TabsTrigger>
         <TabsTrigger value="feasibility" className="text-xs sm:text-sm">{t("feasibility")}</TabsTrigger>
         <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
         <TabsTrigger value="commercial" className="text-xs sm:text-sm">{t("commercialViability")}</TabsTrigger>
@@ -74,6 +76,13 @@ export function DetailedScoringSection({ detailedScoring, onSave, readonly, onNa
         <div className="space-y-4">
           <RelatedAnalyses scoringTab="strategic" onNavigate={onNavigateToAnalysis} />
           <StrategicFitTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
+        </div>
+      </TabsContent>
+
+      <TabsContent value="portfolioFit">
+        <div className="space-y-4">
+          <RelatedAnalyses scoringTab="portfolioFit" onNavigate={onNavigateToAnalysis} />
+          <PortfolioFitTab scoring={scoring} onUpdate={handleUpdate} readonly={readonly} />
         </div>
       </TabsContent>
 
