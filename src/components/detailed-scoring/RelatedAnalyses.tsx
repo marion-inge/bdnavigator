@@ -44,6 +44,12 @@ export const ANALYSIS_MAPPING: Record<string, AnalysisLink[]> = {
     { tab: "valueChain", labelKey: "saValueChain" },
     { tab: "swot", labelKey: "saSwot" },
   ],
+  portfolioFit: [
+    { tab: "ansoff", labelKey: "saAnsoff" },
+    { tab: "bcg", labelKey: "saBcg" },
+    { tab: "mckinsey", labelKey: "saMckinsey" },
+    { tab: "valueChain", labelKey: "saValueChain" },
+  ],
   commercial: [
     { tab: "bizModel", labelKey: "saBizModel" },
     { tab: "leanCanvas", labelKey: "saLeanCanvas" },
