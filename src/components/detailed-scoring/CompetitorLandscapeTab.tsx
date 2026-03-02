@@ -35,7 +35,12 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [selectedForRadar, setSelectedForRadar] = useState<Set<number>>(new Set());
+  const [selectedForRadar, setSelectedForRadar] = useState<Set<number>>(() => {
+    const entries = scoring.marketAttractiveness?.analysis?.competitorEntries || [];
+    const indices = new Set<number>();
+    entries.forEach((c, i) => { if (c.name) indices.add(i); });
+    return indices;
+  });
   const readonly = propReadonly || !editing;
 
   const dimLabels: Record<DimensionKey, string> = {
