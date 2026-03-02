@@ -34,10 +34,17 @@ export interface CustomerSegment {
   description: string;
 }
 
+export interface CompetitorDimensionRating {
+  dimension: string; // e.g. "price", "techFeatures", "reach", "brandAwareness", "history", "usps"
+  score: number; // 1-5
+  comment: string;
+}
+
 export interface CompetitorEntry {
   name: string;
   marketShare: number; // percentage
   threatLevel: number; // 1-5
+  dimensionRatings?: CompetitorDimensionRating[];
 }
 
 export interface GeographicalRegion {
