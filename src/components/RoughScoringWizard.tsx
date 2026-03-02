@@ -89,6 +89,9 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
+      // Auto-save when reaching the results page
+      const newScoring = answersToScoring(answers, allQuestions, scoring);
+      onSave(newScoring, answers, comments);
       setShowSummary(true);
     }
   };
@@ -108,6 +111,14 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
 
   const handleReset = () => {
     setCurrentIndex(0);
+    setAnswers(() => {
+      const initial: Answers = {};
+      for (const q of allQuestions) {
+        initial[q.id] = 0;
+      }
+      return initial;
+    });
+    setComments({});
     setShowSummary(false);
   };
 
@@ -205,12 +216,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
               <ChevronLeft className="h-4 w-4 mr-1" />
               {t("back")}
             </Button>
-            {!readonly && (
-              <Button onClick={handleSave}>
-                <CheckCircle2 className="h-4 w-4 mr-1" />
-                {t("save")}
-              </Button>
-            )}
+            {/* Save button removed – scoring is auto-saved */}
           </div>
         </div>
 
