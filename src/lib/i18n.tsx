@@ -447,6 +447,16 @@ const translations = {
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Competitor Landscape",
     dsRelatedAnalyses: "Related Strategic Analyses",
+    clRadarTitle: "Competitor Strength Profile",
+    clDimPrice: "Price",
+    clDimTechFeatures: "Technical Features",
+    clDimReach: "Reach / Distribution",
+    clDimBrandAwareness: "Brand Awareness",
+    clDimHistory: "Track Record / History",
+    clDimUsps: "USPs / Differentiation",
+    clDimComment: "Comment",
+    clSelectCompetitors: "Select competitors to compare",
+    clNoRatings: "Rate competitors on each dimension to see the spider chart.",
     // Organisational Readiness (Detailed Scoring)
     dsOrgReadiness: "Organisational Readiness",
     dsOrCulture: "Culture & Change Readiness",
@@ -1244,6 +1254,16 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     // Competitor Landscape (Detailed Scoring)
     dsCompetitorLandscape: "Wettbewerbslandschaft",
     dsRelatedAnalyses: "Relevante strategische Analysen",
+    clRadarTitle: "Wettbewerber-Stärkenprofil",
+    clDimPrice: "Preis",
+    clDimTechFeatures: "Technische Features",
+    clDimReach: "Reichweite / Distribution",
+    clDimBrandAwareness: "Bekanntheit",
+    clDimHistory: "Track Record / Historie",
+    clDimUsps: "USPs / Differenzierung",
+    clDimComment: "Kommentar",
+    clSelectCompetitors: "Wettbewerber zum Vergleich auswählen",
+    clNoRatings: "Bewerten Sie Wettbewerber auf jeder Dimension, um das Spiderchart zu sehen.",
     // Organisational Readiness (Detailed Scoring)
     dsOrgReadiness: "Organisatorische Bereitschaft",
     dsOrCulture: "Kultur & Veränderungsbereitschaft",
