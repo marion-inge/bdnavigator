@@ -18,6 +18,14 @@ interface RoughScoringWizardProps {
   initialSources?: Record<string, string[]>;
   startWithSummary?: boolean;
   opportunityId?: string;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  opportunitySolutionDescription?: string;
+  opportunityIndustry?: string;
+  opportunityGeography?: string;
+  opportunityTechnology?: string;
+  opportunityIdeaBringer?: string;
+  opportunityOwner?: string;
 }
 
 type Answers = Record<string, number>;
@@ -43,7 +51,7 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
@@ -237,6 +245,14 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
           scoring={resultScoring}
           answers={answers}
           comments={comments}
+          title={opportunityTitle}
+          description={opportunityDescription}
+          solutionDescription={opportunitySolutionDescription}
+          industry={opportunityIndustry}
+          geography={opportunityGeography}
+          technology={opportunityTechnology}
+          ideaBringer={opportunityIdeaBringer}
+          owner={opportunityOwner}
           opportunityId={opportunityId || "draft"}
         />
       </div>

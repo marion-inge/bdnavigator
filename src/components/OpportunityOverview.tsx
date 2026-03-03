@@ -284,6 +284,12 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
               answers={dsAnswers}
               title={opp.title}
               description={opp.description}
+              solutionDescription={opp.solutionDescription}
+              industry={opp.industry}
+              geography={opp.geography}
+              technology={opp.technology}
+              ideaBringer={opp.ideaBringer}
+              owner={opp.owner}
               basis={language === "de" ? "Business Plan Scoring" : "Business Plan Scoring"}
               opportunityId={opp.id}
             />
@@ -298,6 +304,12 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
               comments={opp.roughScoringComments}
               title={opp.title}
               description={opp.description}
+              solutionDescription={opp.solutionDescription}
+              industry={opp.industry}
+              geography={opp.geography}
+              technology={opp.technology}
+              ideaBringer={opp.ideaBringer}
+              owner={opp.owner}
               opportunityId={opp.id}
             />
           );

@@ -15,7 +15,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { scoring, answers, comments, questionTexts, title, description, language } = await req.json();
+    const { scoring, answers, comments, questionTexts, title, description, solutionDescription, industry, geography, technology, ideaBringer, owner, language } = await req.json();
 
     // Build a detailed prompt with all scoring data
     const scoringInfo = Object.entries(scoring as Record<string, { score: number; confidence: string }>)
@@ -40,10 +40,20 @@ serve(async (req) => {
 
     const systemPrompt = `You are a senior business innovation analyst with deep expertise in technology commercialization, market analysis, and corporate strategy. Analyze innovation opportunities thoroughly and provide structured, actionable assessments. Pay special attention to the user's own comments and rationale on each criterion – they contain valuable domain knowledge and context. Always respond in ${lang}.`;
 
+    const metadataLines = [
+      title ? `Title: ${title}` : "",
+      description ? `Problem Description: ${description}` : "",
+      solutionDescription ? `Solution Idea & Differentiator: ${solutionDescription}` : "",
+      industry ? `Industry: ${industry}` : "",
+      geography ? `Target Geography: ${geography}` : "",
+      technology ? `Technology: ${technology}` : "",
+      ideaBringer ? `Initiator: ${ideaBringer}` : "",
+      owner ? `BD Team Owner: ${owner}` : "",
+    ].filter(Boolean).join("\n");
+
     const userPrompt = `Analyze this innovation opportunity and provide a structured assessment.
 
-${title ? `Title: ${title}` : ""}
-${description ? `Description: ${description}` : ""}
+${metadataLines}
 
 Category Scores (weighted averages):
 ${scoringInfo}
@@ -51,7 +61,7 @@ ${scoringInfo}
 Detailed Criterion Ratings and User Comments:
 ${answersInfo}
 
-Based on the scores AND the user's own comments, provide your assessment using the suggest_assessment tool. Reference specific criteria and user comments in your analysis where relevant.`;
+Based on the scores, the opportunity context, AND the user's own comments, provide your assessment using the suggest_assessment tool. Reference specific criteria, user comments, and the opportunity metadata (industry, geography, technology, solution approach) in your analysis where relevant.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

@@ -205,6 +205,14 @@ export default function OpportunityDetail() {
                 initialSources={opp.roughScoringSources}
                 showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring") && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
+                opportunityTitle={opp.title}
+                opportunityDescription={opp.description}
+                opportunitySolutionDescription={opp.solutionDescription}
+                opportunityIndustry={opp.industry}
+                opportunityGeography={opp.geography}
+                opportunityTechnology={opp.technology}
+                opportunityIdeaBringer={opp.ideaBringer}
+                opportunityOwner={opp.owner}
               />
             )}
             {activeTab === "detailed_scoring" && (

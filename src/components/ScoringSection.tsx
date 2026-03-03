@@ -19,6 +19,14 @@ interface ScoringProps {
   initialSources?: Record<string, string[]>;
   showResults?: boolean;
   opportunityId?: string;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  opportunitySolutionDescription?: string;
+  opportunityIndustry?: string;
+  opportunityGeography?: string;
+  opportunityTechnology?: string;
+  opportunityIdeaBringer?: string;
+  opportunityOwner?: string;
 }
 
 const criteriaKeys: (keyof Scoring)[] = [
@@ -29,7 +37,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId }: ScoringProps) {
+export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
   const { language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
 
@@ -53,6 +61,14 @@ export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, i
         initialSources={initialSources}
         startWithSummary={showResults}
         opportunityId={opportunityId}
+        opportunityTitle={opportunityTitle}
+        opportunityDescription={opportunityDescription}
+        opportunitySolutionDescription={opportunitySolutionDescription}
+        opportunityIndustry={opportunityIndustry}
+        opportunityGeography={opportunityGeography}
+        opportunityTechnology={opportunityTechnology}
+        opportunityIdeaBringer={opportunityIdeaBringer}
+        opportunityOwner={opportunityOwner}
       />
     </div>
   );
