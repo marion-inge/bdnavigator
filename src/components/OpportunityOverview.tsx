@@ -138,7 +138,10 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
                 <Input value={editData.title} onChange={(e) => setEditData(d => ({ ...d, title: e.target.value }))} />
               </div>
             ) : (
-              <p className="text-sm text-card-foreground leading-relaxed flex-1">{opp.description || "—"}</p>
+              <div className="flex-1">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t("description")}</span>
+                <p className="text-sm text-card-foreground leading-relaxed mt-0.5">{opp.description || "—"}</p>
+              </div>
             )}
             {onUpdate && !editing && (
               <Button variant="ghost" size="icon" onClick={startEdit} className="shrink-0 ml-2">
@@ -187,9 +190,10 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
             </>
           ) : (
             <>
-              {opp.solutionDescription && (
-                <p className="text-sm text-muted-foreground leading-relaxed">{opp.solutionDescription}</p>
-              )}
+              <div>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t("solutionDescription")}</span>
+                <p className="text-sm text-card-foreground leading-relaxed mt-0.5">{opp.solutionDescription || "—"}</p>
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <MetaItem icon={<FileText className="h-3.5 w-3.5" />} label={t("industry")} value={opp.industry} />
                 <MetaItem icon={<Globe className="h-3.5 w-3.5" />} label={t("geography")} value={opp.geography} />
