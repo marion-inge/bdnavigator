@@ -302,7 +302,7 @@ export default function Index() {
                   {assessments[opp.id] && (
                     <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
                       <Sparkles className="h-3 w-3 shrink-0 mt-0.5" style={{ color: getRatingColor(assessments[opp.id].overallRating as any) }} />
-                      <span className="line-clamp-2">{assessments[opp.id].summary}</span>
+                      <span>{assessments[opp.id].summary}</span>
                     </div>
                   )}
                 </div>
@@ -355,7 +355,7 @@ export default function Index() {
                         {assessment ? (
                           <div className="flex items-start gap-1.5">
                             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: getRatingColor(assessment.overallRating as any) }} />
-                            <span className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{assessment.summary}</span>
+                            <span className="text-xs text-muted-foreground leading-relaxed">{assessment.summary}</span>
                           </div>
                         ) : (
                           <span className="text-xs text-muted-foreground/50">—</span>
