@@ -63,6 +63,7 @@ export type Database = {
           geography: string
           go_to_market_plan: Json | null
           id: string
+          idea_bringer: string
           implement_review: Json | null
           industry: string
           owner: string
@@ -70,6 +71,7 @@ export type Database = {
           rough_scoring_comments: Json | null
           rough_scoring_sources: Json | null
           scoring: Json
+          solution_description: string
           stage: string
           strategic_analyses: Json | null
           technology: string
@@ -84,6 +86,7 @@ export type Database = {
           geography?: string
           go_to_market_plan?: Json | null
           id?: string
+          idea_bringer?: string
           implement_review?: Json | null
           industry?: string
           owner?: string
@@ -91,6 +94,7 @@ export type Database = {
           rough_scoring_comments?: Json | null
           rough_scoring_sources?: Json | null
           scoring?: Json
+          solution_description?: string
           stage?: string
           strategic_analyses?: Json | null
           technology?: string
@@ -105,6 +109,7 @@ export type Database = {
           geography?: string
           go_to_market_plan?: Json | null
           id?: string
+          idea_bringer?: string
           implement_review?: Json | null
           industry?: string
           owner?: string
@@ -112,6 +117,7 @@ export type Database = {
           rough_scoring_comments?: Json | null
           rough_scoring_sources?: Json | null
           scoring?: Json
+          solution_description?: string
           stage?: string
           strategic_analyses?: Json | null
           technology?: string

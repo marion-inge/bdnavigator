@@ -1,0 +1,2 @@
+ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS solution_description text NOT NULL DEFAULT '';
+ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS idea_bringer text NOT NULL DEFAULT '';
