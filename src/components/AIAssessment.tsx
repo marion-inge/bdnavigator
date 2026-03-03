@@ -18,11 +18,17 @@ interface AIAssessmentProps {
   comments?: Record<string, string>;
   title?: string;
   description?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
+  ideaBringer?: string;
+  owner?: string;
   basis?: string;
   opportunityId: string;
 }
 
-export function AIAssessment({ scoring, answers, comments, title, description, basis, opportunityId }: AIAssessmentProps) {
+export function AIAssessment({ scoring, answers, comments, title, description, solutionDescription, industry, geography, technology, ideaBringer, owner, basis, opportunityId }: AIAssessmentProps) {
   const { language } = useI18n();
   const [result, setResult] = useState<AIAssessmentResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -50,6 +56,12 @@ export function AIAssessment({ scoring, answers, comments, title, description, b
         scoring,
         title,
         description,
+        solutionDescription,
+        industry,
+        geography,
+        technology,
+        ideaBringer,
+        owner,
         language: language as "en" | "de",
       });
       setResult(assessment);

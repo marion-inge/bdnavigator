@@ -33,6 +33,12 @@ interface AssessmentInput {
   scoring: Scoring;
   title?: string;
   description?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
+  ideaBringer?: string;
+  owner?: string;
   language: "en" | "de";
 }
 
@@ -146,6 +152,12 @@ export async function generateAssessment(input: AssessmentInput): Promise<AIAsse
       questionTexts,
       title: input.title,
       description: input.description,
+      solutionDescription: input.solutionDescription,
+      industry: input.industry,
+      geography: input.geography,
+      technology: input.technology,
+      ideaBringer: input.ideaBringer,
+      owner: input.owner,
       language: input.language,
     },
   });
