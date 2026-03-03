@@ -11,7 +11,7 @@ import { Stage } from "@/lib/types";
 import {
   Globe, Cpu, User, Calendar, FileText, CheckCircle2, Clock,
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
-  DollarSign, Target, ChevronRight, Pencil, Check, X, BarChart2,
+  DollarSign, Target, ChevronRight, ChevronLeft, Pencil, Check, X, BarChart2,
 } from "lucide-react";
 
 interface OpportunityOverviewProps {
@@ -19,12 +19,13 @@ interface OpportunityOverviewProps {
   onAdvanceStage: (stage: Stage) => void;
   onUpdate?: (updates: Partial<Opportunity>) => void;
   onStartScoring?: () => void;
+  onRevertStage?: () => void;
 }
 
 // (STAGE_PROGRESS moved to StageTimeline component)
 
 
-export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate, onStartScoring }: OpportunityOverviewProps) {
+export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate, onStartScoring, onRevertStage }: OpportunityOverviewProps) {
   const { t, language } = useI18n();
   const totalScore = calculateTotalScore(opp.scoring);
   const [editing, setEditing] = useState(false);
@@ -45,6 +46,7 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
   const canMoveToGate2 = opp.stage === "detailed_scoring";
   const canMoveToImplementReview = opp.stage === "business_case";
   const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToImplementReview;
+  const canRevert = onRevertStage && STAGE_ORDER.indexOf(opp.stage) > 0 && opp.stage !== "closed";
 
   // Radar data (kept for potential future use)
 
@@ -214,8 +216,14 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
         <h3 className="text-sm font-semibold text-card-foreground mb-4">{t("ovStageProgress")}</h3>
         <StageTimeline currentStage={opp.stage} />
         {/* Action Button */}
-        {hasAction && (
+        {(hasAction || canRevert) && (
           <div className="mt-4 pt-3 border-t border-border flex items-center gap-3">
+            {canRevert && (
+              <Button size="sm" variant="outline" onClick={onRevertStage} className="gap-1.5">
+                <ChevronLeft className="h-3.5 w-3.5" /> {language === "de" ? "Zurückstufen" : "Revert Stage"}
+              </Button>
+            )}
+            <div className="flex-1" />
             {canMoveToRoughScoring && (
               <Button size="sm" onClick={() => onAdvanceStage("rough_scoring")} className="gap-1.5">
                 {t("moveToRoughScoring")} <ChevronRight className="h-3.5 w-3.5" />
