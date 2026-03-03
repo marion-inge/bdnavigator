@@ -186,7 +186,7 @@ export default function OpportunityDetail() {
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 py-6">
             {activeTab === "overview" && (
-              <OpportunityOverview opportunity={opp} onAdvanceStage={handleAdvanceStage} onUpdate={(updates) => updateOpportunity(opp.id, updates)} />
+              <OpportunityOverview opportunity={opp} onAdvanceStage={handleAdvanceStage} onUpdate={(updates) => updateOpportunity(opp.id, updates)} onStartScoring={() => setActiveTab("scoring")} />
             )}
             {activeTab === "scoring" && (
               <ScoringSection
@@ -197,7 +197,7 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
-                showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring")}
+                showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring") && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
               />
             )}
