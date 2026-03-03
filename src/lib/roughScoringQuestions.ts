@@ -212,6 +212,10 @@ export const ROUGH_SCORING_QUESTIONS: ScoringQuestion[] = [
       en: "What is the realistic time-to-market?",
       de: "Was ist die realistische Time-to-Market?",
     },
+    commentHint: {
+      en: "Focus on the full development and launch timeline – not on first customer validation (covered under Pilot Validation).",
+      de: "Fokus auf den gesamten Entwicklungs- und Launchzeitraum – nicht auf die erste Kundenvalidierung (siehe Pilotkunden-Frage).",
+    },
     descriptions: {
       1: { en: "More than 5 years; highly uncertain timeline", de: "Mehr als 5 Jahre; sehr unsicherer Zeitrahmen" },
       2: { en: "3–5 years; significant development phases ahead", de: "3–5 Jahre; erhebliche Entwicklungsphasen voraus" },
