@@ -4,6 +4,7 @@ export interface ScoringQuestion {
   id: string;
   category: keyof Scoring;
   question: { en: string; de: string };
+  commentHint?: { en: string; de: string };
   descriptions: {
     1: { en: string; de: string };
     2: { en: string; de: string };
@@ -21,6 +22,10 @@ export const ROUGH_SCORING_QUESTIONS: ScoringQuestion[] = [
     question: {
       en: "How large is the total addressable market (TAM)?",
       de: "Wie groß ist der gesamte adressierbare Markt (TAM)?",
+    },
+    commentHint: {
+      en: "Please specify the TAM definition: geography, customer segments, industries, use cases, etc.",
+      de: "Bitte TAM-Definition angeben: Geografie, Kundensegmente, Branchen, Anwendungsfälle etc.",
     },
     descriptions: {
       1: { en: "Very small (<€1M), niche with limited potential", de: "Sehr klein (<1 Mio. €), Nische mit begrenztem Potenzial" },
