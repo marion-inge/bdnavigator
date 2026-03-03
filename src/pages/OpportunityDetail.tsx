@@ -191,10 +191,14 @@ export default function OpportunityDetail() {
             {activeTab === "scoring" && (
               <ScoringSection
                 scoring={opp.scoring}
-                onSave={(scoring) => updateScoring(opp.id, scoring)}
-                onSaveAnswers={(answers) => updateOpportunity(opp.id, { roughScoringAnswers: answers })}
-                onSaveComments={(comments) => updateOpportunity(opp.id, { roughScoringComments: comments })}
-                onSaveSources={(sources) => updateOpportunity(opp.id, { roughScoringSources: sources })}
+                onSaveAll={({ scoring, answers, comments, sources }) => {
+                  updateOpportunity(opp.id, {
+                    scoring,
+                    roughScoringAnswers: answers,
+                    roughScoringComments: comments,
+                    roughScoringSources: sources,
+                  });
+                }}
                 readonly={opp.stage === "closed"}
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}

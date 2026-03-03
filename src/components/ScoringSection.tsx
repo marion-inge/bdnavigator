@@ -7,10 +7,12 @@ import { RoughScoringWizard } from "@/components/RoughScoringWizard";
 
 interface ScoringProps {
   scoring: Scoring;
-  onSave: (scoring: Scoring) => void;
-  onSaveAnswers?: (answers: Record<string, number>) => void;
-  onSaveComments?: (comments: Record<string, string>) => void;
-  onSaveSources?: (sources: Record<string, string[]>) => void;
+  onSaveAll: (data: {
+    scoring: Scoring;
+    answers: Record<string, number>;
+    comments: Record<string, string>;
+    sources: Record<string, string[]>;
+  }) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
@@ -27,7 +29,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments, onSaveSources, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId }: ScoringProps) {
+export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId }: ScoringProps) {
   const { language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
 
@@ -37,10 +39,7 @@ export function ScoringSection({ scoring, onSave, onSaveAnswers, onSaveComments,
       merged[key] = { ...newScoring[key], comment: local[key].comment };
     }
     setLocal(merged);
-    onSave(merged);
-    onSaveAnswers?.(answers);
-    onSaveComments?.(comments);
-    onSaveSources?.(sources);
+    onSaveAll({ scoring: merged, answers, comments, sources });
   };
 
   return (
