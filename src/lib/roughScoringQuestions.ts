@@ -28,11 +28,11 @@ export const ROUGH_SCORING_QUESTIONS: ScoringQuestion[] = [
       de: "Bitte TAM-Definition angeben: Geografie, Kundensegmente, Branchen, Anwendungsfälle etc.",
     },
     descriptions: {
-      1: { en: "Very small (<€1M), niche with limited potential", de: "Sehr klein (<1 Mio. €), Nische mit begrenztem Potenzial" },
-      2: { en: "Small (€1–10M), limited growth opportunities", de: "Klein (1–10 Mio. €), begrenzte Wachstumschancen" },
-      3: { en: "Medium (€10–50M), moderate growth potential", de: "Mittel (10–50 Mio. €), moderates Wachstumspotenzial" },
-      4: { en: "Large (€50–200M), strong growth trajectory", de: "Groß (50–200 Mio. €), starke Wachstumsdynamik" },
-      5: { en: "Very large (>€200M), rapidly expanding market", de: "Sehr groß (>200 Mio. €), schnell wachsender Markt" },
+      1: { en: "Very small (<€1M), niche market", de: "Sehr klein (<1 Mio. €), Nischenmarkt" },
+      2: { en: "Small (€1–10M), limited market", de: "Klein (1–10 Mio. €), begrenzter Markt" },
+      3: { en: "Medium (€10–50M), solid market size", de: "Mittel (10–50 Mio. €), solide Marktgröße" },
+      4: { en: "Large (€50–200M), significant market", de: "Groß (50–200 Mio. €), signifikanter Markt" },
+      5: { en: "Very large (>€200M), massive market", de: "Sehr groß (>200 Mio. €), sehr großer Markt" },
     },
   },
   {
