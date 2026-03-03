@@ -194,9 +194,11 @@ export default function OpportunityDetail() {
                 onSave={(scoring) => updateScoring(opp.id, scoring)}
                 onSaveAnswers={(answers) => updateOpportunity(opp.id, { roughScoringAnswers: answers })}
                 onSaveComments={(comments) => updateOpportunity(opp.id, { roughScoringComments: comments })}
+                onSaveSources={(sources) => updateOpportunity(opp.id, { roughScoringSources: sources })}
                 readonly={opp.stage === "closed"}
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
+                initialSources={opp.roughScoringSources}
                 showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring") && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
               />

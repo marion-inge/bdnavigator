@@ -535,6 +535,7 @@ export interface Opportunity {
   implementReview?: ImplementReview;
   roughScoringAnswers?: Record<string, number>;      // UI: Idea Scoring wizard answers
   roughScoringComments?: Record<string, string>;     // UI: Idea Scoring wizard comments
+  roughScoringSources?: Record<string, string[]>;    // UI: Idea Scoring wizard source links
   gates: GateRecord[];
   createdAt: string;
 }

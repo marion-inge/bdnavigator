@@ -68,6 +68,7 @@ export type Database = {
           owner: string
           rough_scoring_answers: Json | null
           rough_scoring_comments: Json | null
+          rough_scoring_sources: Json | null
           scoring: Json
           stage: string
           strategic_analyses: Json | null
@@ -88,6 +89,7 @@ export type Database = {
           owner?: string
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
+          rough_scoring_sources?: Json | null
           scoring?: Json
           stage?: string
           strategic_analyses?: Json | null
@@ -108,6 +110,7 @@ export type Database = {
           owner?: string
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
+          rough_scoring_sources?: Json | null
           scoring?: Json
           stage?: string
           strategic_analyses?: Json | null

@@ -5,15 +5,17 @@ import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuest
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, MessageSquare } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, MessageSquare, LinkIcon, Plus, X } from "lucide-react";
 import { AIAssessment } from "@/components/AIAssessment";
+import { Input } from "@/components/ui/input";
 
 interface RoughScoringWizardProps {
   scoring: Scoring;
-  onSave: (scoring: Scoring, answers: Record<string, number>, comments: Record<string, string>) => void;
+  onSave: (scoring: Scoring, answers: Record<string, number>, comments: Record<string, string>, sources: Record<string, string[]>) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
+  initialSources?: Record<string, string[]>;
   startWithSummary?: boolean;
   opportunityId?: string;
 }
@@ -41,7 +43,7 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, startWithSummary, opportunityId }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
@@ -59,6 +61,9 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
   });
   const [comments, setComments] = useState<Record<string, string>>(() => {
     return initialComments && Object.keys(initialComments).length > 0 ? { ...initialComments } : {};
+  });
+  const [sources, setSources] = useState<Record<string, string[]>>(() => {
+    return initialSources && Object.keys(initialSources).length > 0 ? { ...initialSources } : {};
   });
   const [showSummary, setShowSummary] = useState(!!startWithSummary);
 
@@ -94,7 +99,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
     } else {
       // Auto-save when reaching the results page
       const newScoring = answersToScoring(answers, allQuestions, scoring);
-      onSave(newScoring, answers, comments);
+      onSave(newScoring, answers, comments, sources);
       setShowSummary(true);
     }
   };
@@ -109,7 +114,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
 
   const handleSave = () => {
     const newScoring = answersToScoring(answers, allQuestions, scoring);
-    onSave(newScoring, answers, comments);
+    onSave(newScoring, answers, comments, sources);
   };
 
   const handleReset = () => {
@@ -122,6 +127,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
       return initial;
     });
     setComments({});
+    setSources({});
     setShowSummary(false);
   };
 
@@ -194,6 +200,18 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                         <div className="flex items-start gap-1.5 ml-1 pb-1">
                           <MessageSquare className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
                           <p className="text-xs text-muted-foreground italic">{comments[q.id]}</p>
+                        </div>
+                      )}
+                      {sources[q.id] && sources[q.id].length > 0 && (
+                        <div className="flex items-start gap-1.5 ml-1 pb-1">
+                          <LinkIcon className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                            {sources[q.id].filter(Boolean).map((url, i) => (
+                              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline truncate max-w-[200px]">
+                                {url}
+                              </a>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -368,6 +386,60 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
               {language === "de" ? "Bitte Kommentar hinzufügen" : "Please add a comment"}
             </p>
           )}
+        </div>
+
+        {/* Sources */}
+        <div className="mt-3 pt-3 border-t border-border">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" />
+              <label className="text-xs font-medium text-muted-foreground">
+                {language === "de" ? "Quellen" : "Sources"}
+              </label>
+            </div>
+            {!readonly && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={() => setSources((prev) => ({
+                  ...prev,
+                  [currentQuestion.id]: [...(prev[currentQuestion.id] || []), ""],
+                }))}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                {language === "de" ? "Link hinzufügen" : "Add link"}
+              </Button>
+            )}
+          </div>
+          {(sources[currentQuestion.id] || []).map((url, idx) => (
+            <div key={idx} className="flex items-center gap-1.5 mb-1.5">
+              <Input
+                value={url}
+                onChange={(e) => {
+                  const updated = [...(sources[currentQuestion.id] || [])];
+                  updated[idx] = e.target.value;
+                  setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                }}
+                placeholder="https://..."
+                disabled={readonly}
+                className="text-xs h-7"
+              />
+              {!readonly && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 shrink-0"
+                  onClick={() => {
+                    const updated = (sources[currentQuestion.id] || []).filter((_, i) => i !== idx);
+                    setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
