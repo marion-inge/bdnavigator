@@ -20,8 +20,8 @@ export const ROUGH_SCORING_QUESTIONS: ScoringQuestion[] = [
     id: "ma_market_size",
     category: "marketAttractiveness",
     question: {
-      en: "How large is the total addressable market (TAM)?",
-      de: "Wie groß ist der gesamte adressierbare Markt (TAM)?",
+      en: "How large is the total addressable market (TAM) right now?",
+      de: "Wie groß ist der gesamte adressierbare Markt (TAM) aktuell?",
     },
     commentHint: {
       en: "Please specify the TAM definition: geography, customer segments, industries, use cases, etc.",
