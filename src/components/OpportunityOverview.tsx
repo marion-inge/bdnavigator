@@ -28,10 +28,10 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
   const { t, language } = useI18n();
   const totalScore = calculateTotalScore(opp.scoring);
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ title: opp.title, description: opp.description, industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner });
+  const [editData, setEditData] = useState({ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription ?? "", industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner, ideaBringer: opp.ideaBringer ?? "" });
 
   const startEdit = () => {
-    setEditData({ title: opp.title, description: opp.description, industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner });
+    setEditData({ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription ?? "", industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner, ideaBringer: opp.ideaBringer ?? "" });
     setEditing(true);
   };
   const cancelEdit = () => setEditing(false);
@@ -158,7 +158,11 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
                 <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("description")}</label>
                 <Textarea value={editData.description} onChange={(e) => setEditData(d => ({ ...d, description: e.target.value }))} rows={3} className="mt-1" />
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("solutionDescription")}</label>
+                <Textarea value={editData.solutionDescription} onChange={(e) => setEditData(d => ({ ...d, solutionDescription: e.target.value }))} rows={3} className="mt-1" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("industry")}</label>
                   <Input value={editData.industry} onChange={(e) => setEditData(d => ({ ...d, industry: e.target.value }))} className="mt-1" />
@@ -172,6 +176,10 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
                   <Input value={editData.technology} onChange={(e) => setEditData(d => ({ ...d, technology: e.target.value }))} className="mt-1" />
                 </div>
                 <div>
+                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("ideaBringer")}</label>
+                  <Input value={editData.ideaBringer} onChange={(e) => setEditData(d => ({ ...d, ideaBringer: e.target.value }))} className="mt-1" />
+                </div>
+                <div>
                   <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{t("owner")}</label>
                   <Input value={editData.owner} onChange={(e) => setEditData(d => ({ ...d, owner: e.target.value }))} className="mt-1" />
                 </div>
@@ -179,10 +187,14 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
             </>
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {opp.solutionDescription && (
+                <p className="text-sm text-muted-foreground leading-relaxed">{opp.solutionDescription}</p>
+              )}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <MetaItem icon={<FileText className="h-3.5 w-3.5" />} label={t("industry")} value={opp.industry} />
                 <MetaItem icon={<Globe className="h-3.5 w-3.5" />} label={t("geography")} value={opp.geography} />
                 <MetaItem icon={<Cpu className="h-3.5 w-3.5" />} label={t("technology")} value={opp.technology} />
+                <MetaItem icon={<User className="h-3.5 w-3.5" />} label={t("ideaBringer")} value={opp.ideaBringer} />
                 <MetaItem icon={<User className="h-3.5 w-3.5" />} label={t("owner")} value={opp.owner} />
               </div>
             </>

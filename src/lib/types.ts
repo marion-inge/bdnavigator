@@ -522,10 +522,12 @@ export interface Opportunity {
   id: string;
   title: string;
   description: string;
+  solutionDescription?: string;
   industry: string;
   geography: string;
   technology: string;
   owner: string;
+  ideaBringer?: string;
   stage: Stage;
   scoring: Scoring;                                  // UI: Idea Scoring data
   detailedScoring?: DetailedScoring;                 // UI: Business Plan data

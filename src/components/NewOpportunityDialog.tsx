@@ -19,20 +19,33 @@ export function NewOpportunityDialog() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [solutionDescription, setSolutionDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [geography, setGeography] = useState("");
   const [technology, setTechnology] = useState("");
   const [owner, setOwner] = useState("");
+  const [ideaBringer, setIdeaBringer] = useState("");
 
   const handleCreate = () => {
     if (!title.trim()) return;
-    addOpportunity({ title: title.trim(), description, industry, geography, technology, owner });
+    addOpportunity({
+      title: title.trim(),
+      description,
+      solutionDescription,
+      industry,
+      geography,
+      technology,
+      owner,
+      ideaBringer,
+    });
     setTitle("");
     setDescription("");
+    setSolutionDescription("");
     setIndustry("");
     setGeography("");
     setTechnology("");
     setOwner("");
+    setIdeaBringer("");
     setOpen(false);
   };
 
@@ -44,7 +57,7 @@ export function NewOpportunityDialog() {
           {t("newOpportunity")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("newOpportunity")}</DialogTitle>
         </DialogHeader>
@@ -56,6 +69,10 @@ export function NewOpportunityDialog() {
           <div>
             <label className="text-sm font-medium text-foreground mb-1.5 block">{t("description")}</label>
             <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">{t("solutionDescription")}</label>
+            <Textarea value={solutionDescription} onChange={(e) => setSolutionDescription(e.target.value)} rows={3} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -71,9 +88,13 @@ export function NewOpportunityDialog() {
               <Input value={technology} onChange={(e) => setTechnology(e.target.value)} placeholder="e.g. AI, Robotics" />
             </div>
             <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("owner")}</label>
-              <Input value={owner} onChange={(e) => setOwner(e.target.value)} />
+              <label className="text-sm font-medium text-foreground mb-1.5 block">{t("ideaBringer")}</label>
+              <Input value={ideaBringer} onChange={(e) => setIdeaBringer(e.target.value)} />
             </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">{t("owner")}</label>
+            <Input value={owner} onChange={(e) => setOwner(e.target.value)} />
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline" onClick={() => setOpen(false)}>
