@@ -203,7 +203,7 @@ export default function OpportunityDetail() {
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
                 initialSources={opp.roughScoringSources}
-                showResults={STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf("rough_scoring") && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
+                showResults={!!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
                 opportunityTitle={opp.title}
                 opportunityDescription={opp.description}
