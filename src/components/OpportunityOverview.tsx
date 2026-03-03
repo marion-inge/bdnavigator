@@ -11,19 +11,20 @@ import { Stage } from "@/lib/types";
 import {
   Globe, Cpu, User, Calendar, FileText, CheckCircle2, Clock,
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
-  DollarSign, Target, ChevronRight, Pencil, Check, X,
+  DollarSign, Target, ChevronRight, Pencil, Check, X, BarChart2,
 } from "lucide-react";
 
 interface OpportunityOverviewProps {
   opportunity: Opportunity;
   onAdvanceStage: (stage: Stage) => void;
   onUpdate?: (updates: Partial<Opportunity>) => void;
+  onStartScoring?: () => void;
 }
 
 // (STAGE_PROGRESS moved to StageTimeline component)
 
 
-export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate }: OpportunityOverviewProps) {
+export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate, onStartScoring }: OpportunityOverviewProps) {
   const { t, language } = useI18n();
   const totalScore = calculateTotalScore(opp.scoring);
   const [editing, setEditing] = useState(false);
@@ -222,6 +223,27 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
           </div>
         )}
       </div>
+
+      {/* CTA: Start Idea Scoring if not done yet */}
+      {(!opp.roughScoringAnswers || Object.keys(opp.roughScoringAnswers).length === 0) && onStartScoring && (
+        <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 p-6 flex flex-col items-center text-center gap-3">
+          <BarChart2 className="h-8 w-8 text-primary/60" />
+          <div>
+            <h3 className="text-sm font-semibold text-card-foreground">
+              {language === "de" ? "Idea Scoring starten" : "Start Idea Scoring"}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              {language === "de"
+                ? "Bewerten Sie diese Idee anhand von 21 Kriterien, um eine fundierte Einschätzung zu erhalten."
+                : "Evaluate this idea across 21 criteria to get a well-founded assessment."}
+            </p>
+          </div>
+          <Button size="sm" onClick={onStartScoring} className="gap-1.5 mt-1">
+            {language === "de" ? "Questionnaire starten" : "Start Questionnaire"}
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      )}
 
       {/* AI Assessment — use Business Plan scoring if available, otherwise Idea Scoring */}
       {(() => {
