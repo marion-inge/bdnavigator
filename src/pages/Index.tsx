@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
@@ -14,13 +14,15 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X, BookOpen, FileDown } from "lucide-react";
+import { Search, RotateCcw, X, BookOpen, FileDown, Sparkles } from "lucide-react";
+import { getRatingColor } from "@/lib/aiAssessmentService";
+import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
 import { exportDashboardPdf } from "@/lib/pdfExport";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
@@ -28,7 +30,24 @@ export default function Index() {
   const [geographyFilter, setGeographyFilter] = useState<string>("all");
   const [technologyFilter, setTechnologyFilter] = useState<string>("all");
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
+  const [assessments, setAssessments] = useState<Record<string, { summary: string; overallRating: string }>>({});
 
+  // Fetch all AI assessments in bulk
+  useEffect(() => {
+    if (opportunities.length === 0) return;
+    (supabase as any)
+      .from("ai_assessments")
+      .select("opportunity_id, summary, overall_rating, basis")
+      .eq("basis", "idea_scoring")
+      .then(({ data }: any) => {
+        if (!data) return;
+        const map: Record<string, { summary: string; overallRating: string }> = {};
+        for (const row of data) {
+          map[row.opportunity_id] = { summary: row.summary, overallRating: row.overall_rating };
+        }
+        setAssessments(map);
+      });
+  }, [opportunities]);
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of STAGE_ORDER) counts[s] = 0;
@@ -280,24 +299,30 @@ export default function Index() {
                       <span className="text-muted-foreground">{t("detailedScoring")}: <span className="font-semibold text-primary">{detailedScore.toFixed(1)}</span></span>
                     )}
                   </div>
+                  {assessments[opp.id] && (
+                    <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
+                      <Sparkles className="h-3 w-3 shrink-0 mt-0.5" style={{ color: getRatingColor(assessments[opp.id].overallRating as any) }} />
+                      <span className="line-clamp-2">{assessments[opp.id].summary}</span>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
           {/* Desktop: Table layout */}
           <div className="rounded-lg border border-border bg-card overflow-x-auto hidden sm:block">
-            <table className="w-full min-w-[900px]">
+            <table className="w-full min-w-[1100px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("geography")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("technology")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[280px]">
+                    <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{language === "de" ? "KI-Empfehlung" : "AI Recommendation"}</span>
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("detailedScoring")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("paybackPeriod")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -310,6 +335,7 @@ export default function Index() {
                       ) / 10
                     : null;
                   const payback = opp.businessCase?.paybackPeriod;
+                  const assessment = assessments[opp.id];
                   return (
                     <tr
                       key={opp.id}
@@ -319,21 +345,26 @@ export default function Index() {
                       <td className="px-4 py-3">
                         <span className="font-medium text-card-foreground">{opp.title}</span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.geography || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.technology || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
                       <td className="px-4 py-3">
                         <StageBadge stage={opp.stage} />
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
+                      <td className="px-4 py-3">
+                        {assessment ? (
+                          <div className="flex items-start gap-1.5">
+                            <Sparkles className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: getRatingColor(assessment.overallRating as any) }} />
+                            <span className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{assessment.summary}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground/50">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{detailedScore !== null ? detailedScore.toFixed(1) : "—"}</span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-card-foreground">{payback ? `${payback} mo` : "—"}</span>
                       </td>
                     </tr>
                   );
