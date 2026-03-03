@@ -119,15 +119,6 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
 
   const handleReset = () => {
     setCurrentIndex(0);
-    setAnswers(() => {
-      const initial: Answers = {};
-      for (const q of allQuestions) {
-        initial[q.id] = 0;
-      }
-      return initial;
-    });
-    setComments({});
-    setSources({});
     setShowSummary(false);
   };
 
