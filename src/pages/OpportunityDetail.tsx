@@ -82,9 +82,12 @@ export default function OpportunityDetail() {
   const isTabCurrent = (key: TabKey) =>
     tabCurrentStage[key] !== "" && opp.stage === tabCurrentStage[key];
 
-  const navItems: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+  const hasCompletedScoring = !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0;
+  const totalScore = hasCompletedScoring ? calculateTotalScore(opp.scoring) : null;
+
+  const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
-    { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" /> },
+    { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
     { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
@@ -172,7 +175,12 @@ export default function OpportunityDetail() {
                   {done && !isActive ? <CheckCircle2 className="h-4 w-4" /> : item.icon}
                 </span>
                 <span className="flex-1 leading-tight">{item.label}</span>
-                {current && !isActive && (
+                {item.badge && (
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary"}`}>
+                    {item.badge}
+                  </span>
+                )}
+                {current && !isActive && !item.badge && (
                   <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
                 )}
                 {isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />}
