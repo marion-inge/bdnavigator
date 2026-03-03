@@ -45,6 +45,7 @@ function oppToRow(o: Opportunity) {
     implement_review: o.implementReview ?? null,
     rough_scoring_answers: o.roughScoringAnswers ?? null,
     rough_scoring_comments: o.roughScoringComments ?? null,
+    rough_scoring_sources: o.roughScoringSources ?? null,
     gates: o.gates as any,
     created_at: o.createdAt,
   };
@@ -68,6 +69,7 @@ function rowToOpp(r: any): Opportunity {
     implementReview: r.implement_review ?? undefined,
     roughScoringAnswers: r.rough_scoring_answers ?? undefined,
     roughScoringComments: r.rough_scoring_comments ?? undefined,
+    roughScoringSources: r.rough_scoring_sources ?? undefined,
     gates: (r.gates as GateRecord[]) ?? [],
     createdAt: r.created_at,
   };
