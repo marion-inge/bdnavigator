@@ -235,6 +235,25 @@ export const ROUGH_SCORING_QUESTIONS: ScoringQuestion[] = [
       5: { en: "Fully self-sufficient; no critical external dependencies", de: "Vollständig autark; keine kritischen externen Abhängigkeiten" },
     },
   },
+  {
+    id: "fe_pilot_validation",
+    category: "feasibility",
+    question: {
+      en: "How quickly can we validate the idea with a real customer?",
+      de: "Wie schnell können wir die Idee mit einem realen Kunden validieren?",
+    },
+    commentHint: {
+      en: "Think about access to potential pilot customers, existing relationships, or beta programs – not about full market launch.",
+      de: "Denke an Zugang zu potenziellen Pilotkunden, bestehende Beziehungen oder Beta-Programme – nicht an den vollen Marktstart.",
+    },
+    descriptions: {
+      1: { en: "No customer access; target segment unknown or unreachable", de: "Kein Kundenzugang; Zielsegment unbekannt oder unerreichbar" },
+      2: { en: "Potential customers identified but no relationship; long sales cycle expected", de: "Potenzielle Kunden identifiziert aber keine Beziehung; langer Vertriebszyklus erwartet" },
+      3: { en: "Some existing customer relationships in the target segment; pilot possible with effort", de: "Einige bestehende Kundenbeziehungen im Zielsegment; Pilot mit Aufwand möglich" },
+      4: { en: "Strong customer relationships; interested parties already signaled willingness", de: "Starke Kundenbeziehungen; Interessenten haben bereits Bereitschaft signalisiert" },
+      5: { en: "Pilot customer ready; concrete interest or agreement already in place", de: "Pilotkunde bereit; konkretes Interesse oder Vereinbarung bereits vorhanden" },
+    },
+  },
 
   // === Commercial Viability (4 questions) ===
   {
