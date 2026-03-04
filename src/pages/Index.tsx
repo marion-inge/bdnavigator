@@ -14,11 +14,12 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X, BookOpen, FileDown, Sparkles } from "lucide-react";
+import { Search, RotateCcw, X, BookOpen, FileDown, Sparkles, ClipboardList } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
 import { exportDashboardPdf } from "@/lib/pdfExport";
+import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
@@ -143,6 +144,10 @@ export default function Index() {
             <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => exportDashboardPdf(opportunities)} title="PDF Export">
               <FileDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline ml-1.5">PDF</span>
+            </Button>
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => exportQuestionnairePdf()} title="Fragenkatalog PDF">
+              <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">Fragebogen</span>
             </Button>
             <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
               <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
