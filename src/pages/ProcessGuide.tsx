@@ -408,7 +408,7 @@ export default function ProcessGuide() {
             <CardContent className="pt-6 space-y-4">
               <p className="text-sm text-muted-foreground">{t("guideFormulaDesc")}</p>
               <div className="rounded-lg bg-muted p-4 font-mono text-sm">
-                Total = (MA×3 + SF×3 + FE×2 + CV×2 + (6−RI)×1) / 11
+                Total = (MA×3 + SF×1 + FE×2 + CV×2 + (6−RI)×1) / 9
               </div>
               <Table>
                 <TableHeader>
@@ -421,7 +421,7 @@ export default function ProcessGuide() {
                 <TableBody>
                   {[
                     { cat: t("marketAttractiveness"), w: 3, note: t("guideWeightNote_MA") },
-                    { cat: t("strategicFit"), w: 3, note: t("guideWeightNote_SF") },
+                    { cat: t("strategicFit"), w: 1, note: t("guideWeightNote_SF") },
                     { cat: t("feasibility"), w: 2, note: t("guideWeightNote_FE") },
                     { cat: t("commercialViability"), w: 2, note: t("guideWeightNote_CV") },
                     { cat: t("risk"), w: 1, note: t("guideWeightNote_RI") },
