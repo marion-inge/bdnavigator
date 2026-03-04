@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, MessageSquare, LinkIcon, Plus, X } from "lucide-react";
 import { AIAssessment } from "@/components/AIAssessment";
 import { Input } from "@/components/ui/input";
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
 
 interface RoughScoringWizardProps {
   scoring: Scoring;
@@ -134,6 +135,32 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
   const totalScore = calculateTotalScore(resultScoring);
 
   if (showSummary) {
+    const categoryAverages = categorizedQuestions.map(({ category, questions }) => {
+      const catAnswered = questions.filter((q) => answers[q.id] > 0);
+      const avg = catAnswered.length > 0
+        ? catAnswered.reduce((sum, q) => sum + answers[q.id], 0) / catAnswered.length
+        : 0;
+      return { category, avg: Math.round(avg * 10) / 10, finalScore: Math.round(avg), answered: catAnswered.length, total: questions.length };
+    });
+
+    const radarData = categoryAverages.map(({ category, avg }) => ({
+      criterion: categoryLabels[category][language],
+      score: category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg,
+      fullMark: 5,
+    }));
+
+    const getScoreColor = (score: number) => {
+      if (score >= 4) return "text-green-600 dark:text-green-400";
+      if (score >= 3) return "text-yellow-600 dark:text-yellow-400";
+      return "text-red-600 dark:text-red-400";
+    };
+
+    const getScoreBg = (score: number) => {
+      if (score >= 4) return "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800";
+      if (score >= 3) return "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800";
+      return "bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-800";
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -143,14 +170,64 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
           <Progress value={100} className="w-48 h-2" />
         </div>
 
+        {/* Total Score + Spider Chart at top */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          {/* Total Score Card */}
+          <div className={`rounded-xl border-2 p-6 text-center flex flex-col justify-center ${getScoreBg(totalScore)}`}>
+            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+              {t("totalScore")}
+            </span>
+            <p className={`text-5xl font-bold mt-2 ${getScoreColor(totalScore)}`}>{totalScore.toFixed(1)}</p>
+            <p className="text-sm text-muted-foreground mt-1">/ 5.0</p>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleReset}>
+                <RotateCcw className="h-4 w-4 mr-1" />
+                {language === "de" ? "Nochmal" : "Restart"}
+              </Button>
+              <Button variant="outline" size="sm" onClick={handlePrevious}>
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                {t("back")}
+              </Button>
+            </div>
+          </div>
+
+          {/* Spider/Radar Chart */}
+          <div className="rounded-lg border border-border bg-card p-4">
+            <h4 className="font-semibold text-card-foreground mb-2 text-sm">
+              {language === "de" ? "Kategorie-Übersicht" : "Category Overview"}
+            </h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <RadarChart data={radarData}>
+                <PolarGrid stroke="hsl(var(--border))" />
+                <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fontSize: 10 }} />
+                <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} strokeWidth={2} />
+              </RadarChart>
+            </ResponsiveContainer>
+            <p className="text-xs text-muted-foreground text-center mt-1">
+              {language === "de" ? "Risiko ist invertiert (5 = niedrig)" : "Risk is inverted (5 = low)"}
+            </p>
+          </div>
+        </div>
+
+        {/* Category Score Cards */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {categoryAverages.map(({ category, avg, finalScore }) => {
+            const displayScore = category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg;
+            return (
+              <div key={category} className={`rounded-lg border p-3 text-center ${getScoreBg(displayScore)}`}>
+                <p className="text-xs font-medium text-muted-foreground">{categoryLabels[category][language]}</p>
+                <p className={`text-2xl font-bold mt-1 ${getScoreColor(displayScore)}`}>{finalScore}</p>
+                <p className="text-xs text-muted-foreground">Ø {avg} · {SCORING_WEIGHTS[category]}x</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Detailed category breakdown */}
         <div className="grid gap-4">
           {categorizedQuestions.map(({ category, questions }) => {
-            const catAnswered = questions.filter((q) => answers[q.id] > 0);
-            const avg = catAnswered.length > 0
-              ? catAnswered.reduce((sum, q) => sum + answers[q.id], 0) / catAnswered.length
-              : 0;
-            const roundedAvg = Math.round(avg * 10) / 10;
-            const finalScore = Math.round(avg);
+            const catData = categoryAverages.find(c => c.category === category)!;
 
             return (
               <div key={category} className="rounded-lg border border-border bg-card p-4">
@@ -160,7 +237,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                       {categoryLabels[category][language]}
                     </h4>
                     <p className="text-xs text-muted-foreground">
-                      {language === "de" ? `${catAnswered.length}/${questions.length} beantwortet` : `${catAnswered.length}/${questions.length} answered`}
+                      {language === "de" ? `${catData.answered}/${catData.total} beantwortet` : `${catData.answered}/${catData.total} answered`}
                       {" · "}
                       {language === "de" ? "Gewicht" : "Weight"}: {SCORING_WEIGHTS[category]}
                       {category === "risk" && (
@@ -169,8 +246,8 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs text-muted-foreground">{language === "de" ? "Ø" : "Avg"} {roundedAvg}</span>
-                    <p className="text-2xl font-bold text-primary">{finalScore}</p>
+                    <span className="text-xs text-muted-foreground">{language === "de" ? "Ø" : "Avg"} {catData.avg}</span>
+                    <p className="text-2xl font-bold text-primary">{catData.finalScore}</p>
                   </div>
                 </div>
 
@@ -219,25 +296,6 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
               </div>
             );
           })}
-        </div>
-
-        {/* Total Score */}
-        <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
-          <div>
-            <span className="text-sm font-medium text-muted-foreground">{t("totalScore")}</span>
-            <p className="text-3xl font-bold text-primary">{totalScore.toFixed(1)}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-1" />
-              {language === "de" ? "Nochmal" : "Restart"}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handlePrevious}>
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              {t("back")}
-            </Button>
-            {/* Save button removed – scoring is auto-saved */}
-          </div>
         </div>
 
         {/* AI Assessment */}
