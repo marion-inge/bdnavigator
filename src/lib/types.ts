@@ -544,7 +544,7 @@ export interface Opportunity {
 
 export const SCORING_WEIGHTS: Record<keyof Scoring, number> = {
   marketAttractiveness: 3,
-  strategicFit: 3,
+  strategicFit: 1,
   feasibility: 2,
   commercialViability: 2,
   risk: 1,
