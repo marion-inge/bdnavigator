@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring } from "@/lib/types";
+import { DetailedScoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
 
 interface Props {
@@ -17,13 +17,15 @@ export function ScoringOverviewTab({ scoring }: Props) {
     { criterion: t("risk"), score: 6 - scoring.risk.score, fullMark: 5 },
   ];
 
-  const totalScore =
-    (scoring.marketAttractiveness.score * 3 +
-      scoring.strategicFit.score * 3 +
-      scoring.feasibility.score * 2 +
-      scoring.commercialViability.score * 2 +
-      (6 - scoring.risk.score) * 1) /
-    11;
+  // Use shared calculateTotalScore to stay consistent with weights
+  const scoringAsCriteria = {
+    marketAttractiveness: { id: "marketAttractiveness", score: scoring.marketAttractiveness.score, comment: "" },
+    strategicFit: { id: "strategicFit", score: scoring.strategicFit.score, comment: "" },
+    feasibility: { id: "feasibility", score: scoring.feasibility.score, comment: "" },
+    commercialViability: { id: "commercialViability", score: scoring.commercialViability.score, comment: "" },
+    risk: { id: "risk", score: scoring.risk.score, comment: "" },
+  };
+  const totalScore = calculateTotalScore(scoringAsCriteria);
 
   const getScoreColor = (score: number) => {
     if (score >= 4) return "text-green-600 dark:text-green-400";
@@ -38,11 +40,11 @@ export function ScoringOverviewTab({ scoring }: Props) {
   };
 
   const criteria = [
-    { key: "marketAttractiveness" as const, score: scoring.marketAttractiveness.score, weight: 3 },
-    { key: "strategicFit" as const, score: scoring.strategicFit.score, weight: 3 },
-    { key: "feasibility" as const, score: scoring.feasibility.score, weight: 2 },
-    { key: "commercialViability" as const, score: scoring.commercialViability.score, weight: 2 },
-    { key: "risk" as const, score: scoring.risk.score, weight: 1, inverted: true },
+    { key: "marketAttractiveness" as const, score: scoring.marketAttractiveness.score, weight: SCORING_WEIGHTS.marketAttractiveness },
+    { key: "strategicFit" as const, score: scoring.strategicFit.score, weight: SCORING_WEIGHTS.strategicFit },
+    { key: "feasibility" as const, score: scoring.feasibility.score, weight: SCORING_WEIGHTS.feasibility },
+    { key: "commercialViability" as const, score: scoring.commercialViability.score, weight: SCORING_WEIGHTS.commercialViability },
+    { key: "risk" as const, score: scoring.risk.score, weight: SCORING_WEIGHTS.risk, inverted: true },
   ];
 
   return (
