@@ -233,7 +233,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-09-20T08:30:00Z",
   },
   {
-    id: "opp-002",
+    id: "a0000001-0002-4000-8000-000000000002",
     title: "Hydrogen Fuel Cell Integration for Regional Rail",
     description: "Retrofit solution for diesel regional trains with hydrogen fuel cell powertrains. Targeting European operators with aging fleets under decarbonization mandates.",
     industry: "Rail",
