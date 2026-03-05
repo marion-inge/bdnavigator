@@ -133,6 +133,12 @@ export default function Index() {
               size="icon"
               className="h-8 w-8 sm:h-9 sm:w-9"
               onClick={async () => {
+                const confirmed = window.confirm(
+                  language === "de"
+                    ? "⚠️ Achtung: Alle Opportunities werden unwiderruflich gelöscht und durch die Demo-Daten ersetzt. Fortfahren?"
+                    : "⚠️ Warning: All opportunities will be permanently deleted and replaced with demo data. Continue?"
+                );
+                if (!confirmed) return;
                 const { supabase } = await import("@/integrations/supabase/client");
                 await (supabase as any).from("opportunities").delete().neq("id", "00000000-0000-0000-0000-000000000000");
                 window.location.reload();
