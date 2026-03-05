@@ -647,7 +647,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-05-15T07:30:00Z",
   },
   {
-    id: "opp-006",
+    id: "a0000001-0006-4000-8000-000000000006",
     title: "Rail Track Inspection Drone Service",
     description: "Drone-based visual and thermal inspection service for railway infrastructure. Subscription model targeting European rail operators.",
     industry: "Rail",
