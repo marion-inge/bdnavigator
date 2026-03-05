@@ -802,7 +802,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-10-20T13:00:00Z",
   },
   {
-    id: "opp-008",
+    id: "a0000001-0008-4000-8000-000000000008",
     title: "Smart Grid Battery Management System",
     description: "Software platform for optimizing battery storage dispatch in industrial microgrids. AI-based forecasting for peak shaving and grid services revenue.",
     industry: "Energy",
