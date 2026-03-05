@@ -388,7 +388,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-12-01T09:00:00Z",
   },
   {
-    id: "opp-004",
+    id: "a0000001-0004-4000-8000-000000000004",
     title: "Defense-Grade Underwater Communication System",
     description: "Acoustic modem for NATO-standard submarine communication. Ultra-low latency, encrypted data links for unmanned underwater vehicles (UUVs).",
     industry: "Defense",
