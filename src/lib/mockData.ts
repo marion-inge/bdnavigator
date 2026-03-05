@@ -12,7 +12,7 @@ function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, com
 
 export const MOCK_OPPORTUNITIES: Opportunity[] = [
   {
-    id: "opp-001",
+    id: "a0000001-0001-4000-8000-000000000001",
     title: "Autonomous Navigation Module for Container Ships",
     description: "Development of an AI-driven navigation assistance module targeting mid-size container vessels. Leverages existing sensor technology and partners with classification societies for certification.",
     industry: "Maritime",
@@ -233,7 +233,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-09-20T08:30:00Z",
   },
   {
-    id: "opp-002",
+    id: "a0000001-0002-4000-8000-000000000002",
     title: "Hydrogen Fuel Cell Integration for Regional Rail",
     description: "Retrofit solution for diesel regional trains with hydrogen fuel cell powertrains. Targeting European operators with aging fleets under decarbonization mandates.",
     industry: "Rail",
@@ -357,7 +357,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-10-05T14:20:00Z",
   },
   {
-    id: "opp-003",
+    id: "a0000001-0003-4000-8000-000000000003",
     title: "Predictive Maintenance Platform for Wind Turbines",
     description: "Cloud-based vibration analytics platform for offshore wind turbine gearboxes. Uses edge sensors and ML models to predict failures 6 weeks in advance.",
     industry: "Energy",
@@ -388,7 +388,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-12-01T09:00:00Z",
   },
   {
-    id: "opp-004",
+    id: "a0000001-0004-4000-8000-000000000004",
     title: "Defense-Grade Underwater Communication System",
     description: "Acoustic modem for NATO-standard submarine communication. Ultra-low latency, encrypted data links for unmanned underwater vehicles (UUVs).",
     industry: "Defense",
@@ -412,7 +412,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2026-01-10T11:00:00Z",
   },
   {
-    id: "opp-005",
+    id: "a0000001-0005-4000-8000-000000000005",
     title: "Aviation Ground Support Robotics",
     description: "Autonomous baggage handling and pushback robots for airport ramp operations. Reduces turnaround time by 20% and eliminates common ground damage incidents.",
     industry: "Aviation",
@@ -647,7 +647,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-05-15T07:30:00Z",
   },
   {
-    id: "opp-006",
+    id: "a0000001-0006-4000-8000-000000000006",
     title: "Rail Track Inspection Drone Service",
     description: "Drone-based visual and thermal inspection service for railway infrastructure. Subscription model targeting European rail operators.",
     industry: "Rail",
@@ -680,7 +680,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-11-01T10:00:00Z",
   },
   {
-    id: "opp-007",
+    id: "a0000001-0007-4000-8000-000000000007",
     title: "Collaborative Welding Robot for Shipyards",
     description: "Lightweight cobot solution for automated welding in confined ship compartments. Reduces manual welding hours by 40%.",
     industry: "Shipbuilding",
@@ -802,7 +802,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-10-20T13:00:00Z",
   },
   {
-    id: "opp-008",
+    id: "a0000001-0008-4000-8000-000000000008",
     title: "Smart Grid Battery Management System",
     description: "Software platform for optimizing battery storage dispatch in industrial microgrids. AI-based forecasting for peak shaving and grid services revenue.",
     industry: "Energy",
@@ -917,7 +917,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-12-15T08:00:00Z",
   },
   {
-    id: "opp-009",
+    id: "a0000001-0009-4000-8000-000000000009",
     title: "H2 Quality Measurement for H2 Production Environments",
     description: "Inline gas analysis system for monitoring hydrogen purity (ISO 14687) in electrolysis and reforming plants. Real-time measurement of trace impurities (CO, CO₂, O₂, H₂O, N₂, CH₄, NH₃, sulfur compounds) to ensure fuel-cell-grade hydrogen quality at the point of production.",
     industry: "Energy / Hydrogen",
