@@ -680,7 +680,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-11-01T10:00:00Z",
   },
   {
-    id: "opp-007",
+    id: "a0000001-0007-4000-8000-000000000007",
     title: "Collaborative Welding Robot for Shipyards",
     description: "Lightweight cobot solution for automated welding in confined ship compartments. Reduces manual welding hours by 40%.",
     industry: "Shipbuilding",
