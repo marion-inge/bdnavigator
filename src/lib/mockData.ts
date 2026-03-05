@@ -12,7 +12,7 @@ function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, com
 
 export const MOCK_OPPORTUNITIES: Opportunity[] = [
   {
-    id: "opp-001",
+    id: "a0000001-0001-4000-8000-000000000001",
     title: "Autonomous Navigation Module for Container Ships",
     description: "Development of an AI-driven navigation assistance module targeting mid-size container vessels. Leverages existing sensor technology and partners with classification societies for certification.",
     industry: "Maritime",
