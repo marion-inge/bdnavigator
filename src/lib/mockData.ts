@@ -412,7 +412,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2026-01-10T11:00:00Z",
   },
   {
-    id: "opp-005",
+    id: "a0000001-0005-4000-8000-000000000005",
     title: "Aviation Ground Support Robotics",
     description: "Autonomous baggage handling and pushback robots for airport ramp operations. Reduces turnaround time by 20% and eliminates common ground damage incidents.",
     industry: "Aviation",
