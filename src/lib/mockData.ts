@@ -357,7 +357,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-10-05T14:20:00Z",
   },
   {
-    id: "opp-003",
+    id: "a0000001-0003-4000-8000-000000000003",
     title: "Predictive Maintenance Platform for Wind Turbines",
     description: "Cloud-based vibration analytics platform for offshore wind turbine gearboxes. Uses edge sensors and ML models to predict failures 6 weeks in advance.",
     industry: "Energy",
