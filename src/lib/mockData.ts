@@ -917,7 +917,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     createdAt: "2025-12-15T08:00:00Z",
   },
   {
-    id: "opp-009",
+    id: "a0000001-0009-4000-8000-000000000009",
     title: "H2 Quality Measurement for H2 Production Environments",
     description: "Inline gas analysis system for monitoring hydrogen purity (ISO 14687) in electrolysis and reforming plants. Real-time measurement of trace impurities (CO, CO₂, O₂, H₂O, N₂, CH₄, NH₃, sulfur compounds) to ensure fuel-cell-grade hydrogen quality at the point of production.",
     industry: "Energy / Hydrogen",
