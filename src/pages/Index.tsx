@@ -366,7 +366,7 @@ export default function Index() {
                       <td className="px-4 py-3">
                         {assessment ? (
                           <div className="flex items-start gap-1.5">
-                            <Sparkles className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: getRatingColor(assessment.overallRating as any) }} />
+                            <img src={idaRobot} alt="IDA" className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                             <span className="text-xs text-muted-foreground leading-relaxed">{assessment.summary}</span>
                           </div>
                         ) : (
