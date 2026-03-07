@@ -14,8 +14,9 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X, BookOpen, FileDown, Sparkles, ClipboardList } from "lucide-react";
+import { Search, RotateCcw, X, BookOpen, FileDown, ClipboardList } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
+import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
 import { exportDashboardPdf } from "@/lib/pdfExport";
@@ -312,7 +313,7 @@ export default function Index() {
                   </div>
                   {assessments[opp.id] && (
                     <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
-                      <Sparkles className="h-3 w-3 shrink-0 mt-0.5" style={{ color: getRatingColor(assessments[opp.id].overallRating as any) }} />
+                      <img src={idaRobot} alt="IDA" className="h-3 w-3 shrink-0 mt-0.5" />
                       <span>{assessments[opp.id].summary}</span>
                     </div>
                   )}
@@ -329,7 +330,7 @@ export default function Index() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[280px]">
-                    <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{language === "de" ? "KI-Empfehlung" : "AI Recommendation"}</span>
+                    <span className="flex items-center gap-1"><img src={idaRobot} alt="IDA" className="h-3 w-3" />{language === "de" ? "IDAs Empfehlung" : "IDA's Recommendation"}</span>
                   </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
@@ -365,7 +366,7 @@ export default function Index() {
                       <td className="px-4 py-3">
                         {assessment ? (
                           <div className="flex items-start gap-1.5">
-                            <Sparkles className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: getRatingColor(assessment.overallRating as any) }} />
+                            <img src={idaRobot} alt="IDA" className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                             <span className="text-xs text-muted-foreground leading-relaxed">{assessment.summary}</span>
                           </div>
                         ) : (

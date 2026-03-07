@@ -10,7 +10,8 @@ import {
   getRatingColor,
 } from "@/lib/aiAssessmentService";
 import { Button } from "@/components/ui/button";
-import { Sparkles, TrendingUp, AlertTriangle, ArrowRight, Shield, Loader2 } from "lucide-react";
+import { TrendingUp, AlertTriangle, ArrowRight, Shield, Loader2 } from "lucide-react";
+import idaRobot from "@/assets/ida-robot.png";
 
 interface AIAssessmentProps {
   scoring: Scoring;
@@ -68,7 +69,7 @@ export function AIAssessment({ scoring, answers, comments, title, description, s
       // Persist to database
       await saveAssessment(opportunityId, effectiveBasis, assessment);
     } catch (e) {
-      setError(language === "de" ? "Fehler bei der Analyse. Bitte erneut versuchen." : "Error generating assessment. Please try again.");
+      setError(language === "de" ? "IDA konnte die Analyse nicht abschließen. Bitte erneut versuchen." : "IDA could not complete the analysis. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -86,36 +87,31 @@ export function AIAssessment({ scoring, answers, comments, title, description, s
     return (
       <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
         <div className="flex flex-col items-center text-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-primary" />
-          </div>
+          <img src={idaRobot} alt="IDA" className="w-16 h-16" />
           <div>
             <h3 className="font-semibold text-card-foreground">
-              {language === "de" ? "KI-Einschätzung" : "AI Assessment"}
+              IDA – Intelligent Data Analyst
             </h3>
             <p className="text-sm text-muted-foreground mt-1 max-w-md">
               {language === "de"
-                ? "Erhalte eine automatische Bewertung deiner Idee mit Stärken, Schwächen, nächsten Schritten und möglichen Stolpersteinen."
-                : "Get an automatic evaluation of your idea with strengths, weaknesses, next steps, and potential pitfalls."}
+                ? "Hallo! Ich bin IDA, dein intelligenter Daten-Analyst. Ich bewerte deine Idee und liefere dir Stärken, Schwächen, nächste Schritte und mögliche Stolpersteine."
+                : "Hi! I'm IDA, your Intelligent Data Analyst. I'll evaluate your idea and provide strengths, weaknesses, next steps, and potential pitfalls."}
             </p>
           </div>
           <Button onClick={handleGenerate} disabled={loading} className="mt-2">
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                {language === "de" ? "Analysiere..." : "Analyzing..."}
+                {language === "de" ? "IDA analysiert..." : "IDA is analyzing..."}
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4 mr-2" />
-                {language === "de" ? "Einschätzung generieren" : "Generate Assessment"}
+                <img src={idaRobot} alt="" className="h-4 w-4 mr-2" />
+                {language === "de" ? "IDA fragen" : "Ask IDA"}
               </>
             )}
           </Button>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <p className="text-[10px] text-muted-foreground mt-1">
-            Powered by Lovable AI
-          </p>
         </div>
       </div>
     );
@@ -129,9 +125,9 @@ export function AIAssessment({ scoring, answers, comments, title, description, s
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
+          <img src={idaRobot} alt="IDA" className="h-6 w-6" />
           <h3 className="font-semibold text-card-foreground">
-            {language === "de" ? "KI-Einschätzung" : "AI Assessment"}
+            {language === "de" ? "IDAs Einschätzung" : "IDA's Assessment"}
           </h3>
           {basis && (
             <span className="text-[10px] text-muted-foreground">
@@ -219,14 +215,17 @@ export function AIAssessment({ scoring, answers, comments, title, description, s
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-2 border-t border-border">
-        <p className="text-[10px] text-muted-foreground">
-          Powered by Lovable AI
-        </p>
+        <div className="flex items-center gap-1.5">
+          <img src={idaRobot} alt="IDA" className="h-4 w-4" />
+          <p className="text-[10px] text-muted-foreground">
+            IDA – Intelligent Data Analyst
+          </p>
+        </div>
         <Button variant="outline" size="sm" onClick={handleGenerate} disabled={loading}>
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : (
             <>
-              <Sparkles className="h-3 w-3 mr-1" />
-              {language === "de" ? "Neu generieren" : "Regenerate"}
+              <img src={idaRobot} alt="" className="h-3 w-3 mr-1" />
+              {language === "de" ? "Neu analysieren" : "Re-analyze"}
             </>
           )}
         </Button>
