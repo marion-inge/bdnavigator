@@ -313,7 +313,7 @@ export default function Index() {
                   </div>
                   {assessments[opp.id] && (
                     <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
-                      <Sparkles className="h-3 w-3 shrink-0 mt-0.5" style={{ color: getRatingColor(assessments[opp.id].overallRating as any) }} />
+                      <img src={idaRobot} alt="IDA" className="h-3 w-3 shrink-0 mt-0.5" />
                       <span>{assessments[opp.id].summary}</span>
                     </div>
                   )}
