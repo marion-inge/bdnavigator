@@ -15,7 +15,7 @@ import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { FileAttachments } from "@/components/FileAttachments";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, Menu, X, FileDown, RefreshCw, Paperclip } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 
 type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
@@ -24,10 +24,15 @@ export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
+  const [bpExpanded, setBpExpanded] = useState(false);
+  const [bpMainTab, setBpMainTab] = useState("combined");
+  const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
+
+  const bp = (en: string, de: string) => language === "de" ? de : en;
 
   // Scroll to top when opportunity changes
   useEffect(() => {
@@ -59,8 +64,6 @@ export default function OpportunityDetail() {
     navigate("/");
   };
 
-  // Map each nav item to the stage threshold that marks it as "completed"
-  
   const tabStageThreshold: Record<TabKey, Stage> = {
     overview:            "rough_scoring",
     scoring:             "gate1",
@@ -89,6 +92,70 @@ export default function OpportunityDetail() {
 
   const hasCompletedScoring = !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0;
   const totalScore = hasCompletedScoring ? calculateTotalScore(opp.scoring) : null;
+
+  // Business Plan sub-navigation structure
+  const bpSubNav = [
+    {
+      key: "combined",
+      label: bp("Overview", "Übersicht"),
+      icon: <BarChart2 className="h-3 w-3" />,
+    },
+    {
+      key: "tam",
+      label: "TAM",
+      icon: <Globe className="h-3 w-3" />,
+      children: [
+        { key: "tam-overview", label: bp("Overview", "Übersicht") },
+        { key: "tam-market", label: bp("Market Data", "Marktdaten") },
+        { key: "tam-research", label: bp("Market Research", "Marktforschung") },
+        { key: "tam-pestel", label: "PESTEL" },
+        { key: "tam-valuechain", label: bp("Value Chain", "Wertschöpfungskette") },
+        { key: "tam-porter", label: "Porter's" },
+        { key: "tam-swot", label: "SWOT" },
+      ],
+    },
+    {
+      key: "sam",
+      label: "SAM",
+      icon: <Target className="h-3 w-3" />,
+      children: [
+        { key: "sam-overview", label: bp("Overview", "Übersicht") },
+        { key: "sam-customers", label: bp("Customer Landscape", "Kundenlandschaft") },
+        { key: "sam-strategic", label: bp("Strategic Fit", "Strateg. Fit") },
+        { key: "sam-portfolio", label: "Portfolio Fit" },
+        { key: "sam-feasibility", label: bp("Feasibility", "Machbarkeit") },
+        { key: "sam-org", label: bp("Org Readiness", "Org. Readiness") },
+        { key: "sam-risk", label: bp("Risk", "Risiko") },
+        { key: "sam-models", label: bp("Models", "Modelle") },
+      ],
+    },
+    {
+      key: "som",
+      label: "SOM",
+      icon: <TrendingUp className="h-3 w-3" />,
+      children: [
+        { key: "som-overview", label: bp("Overview", "Übersicht") },
+        { key: "som-competitor", label: bp("Competitors", "Wettbewerb") },
+        { key: "som-pricing", label: "Pricing" },
+        { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
+        { key: "som-models", label: bp("Models", "Modelle") },
+      ],
+    },
+    {
+      key: "others",
+      label: bp("Others", "Sonstige"),
+      icon: <FolderOpen className="h-3 w-3" />,
+    },
+  ];
+
+  const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
+
+  const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
+    setActiveTab("detailed_scoring");
+    setBpMainTab(mainTab);
+    setBpSubTab(subTab);
+    setSidebarOpen(false);
+  };
 
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -143,7 +210,7 @@ export default function OpportunityDetail() {
 
         {/* Vertical Sidebar Nav */}
         <aside className={`
-          fixed top-0 left-0 h-full z-40 w-64 bg-card border-r border-border flex flex-col py-4 gap-0.5 px-3 transition-transform duration-200 ease-in-out
+          fixed top-0 left-0 h-full z-40 w-64 bg-card border-r border-border flex flex-col py-4 gap-0.5 px-3 transition-transform duration-200 ease-in-out overflow-y-auto
           md:static md:h-auto md:translate-x-0 md:z-auto md:w-60 md:shrink-0
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}>
@@ -162,34 +229,120 @@ export default function OpportunityDetail() {
             const isActive = activeTab === item.key;
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
+            const isBpItem = item.key === "detailed_scoring";
+
             return (
-              <button
-                key={item.key}
-                onClick={() => { setActiveTab(item.key); setSidebarOpen(false); if (item.key !== "strategic_analyses") setSaDefaultTab(undefined); }}
-                className={`
-                  w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors
-                  ${isActive
-                    ? "bg-primary text-primary-foreground"
-                    : done
-                    ? "text-card-foreground hover:bg-muted"
-                    : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
-                  }
-                `}
-              >
-                <span className={`shrink-0 ${isActive ? "text-primary-foreground" : done ? "text-[hsl(var(--success))]" : "text-muted-foreground"}`}>
-                  {done && !isActive ? <CheckCircle2 className="h-4 w-4" /> : item.icon}
-                </span>
-                <span className="flex-1 leading-tight">{item.label}</span>
-                {item.badge && (
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary"}`}>
-                    {item.badge}
+              <div key={item.key}>
+                <button
+                  onClick={() => {
+                    setActiveTab(item.key);
+                    setSidebarOpen(false);
+                    if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
+                    if (isBpItem) {
+                      setBpExpanded(!bpExpanded);
+                    } else {
+                      setBpExpanded(false);
+                    }
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors
+                    ${isActive
+                      ? "bg-primary text-primary-foreground"
+                      : done
+                      ? "text-card-foreground hover:bg-muted"
+                      : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                    }
+                  `}
+                >
+                  <span className={`shrink-0 ${isActive ? "text-primary-foreground" : done ? "text-[hsl(var(--success))]" : "text-muted-foreground"}`}>
+                    {done && !isActive ? <CheckCircle2 className="h-4 w-4" /> : item.icon}
                   </span>
+                  <span className="flex-1 leading-tight">{item.label}</span>
+                  {item.badge && (
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary"}`}>
+                      {item.badge}
+                    </span>
+                  )}
+                  {current && !isActive && !item.badge && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
+                  )}
+                  {isBpItem ? (
+                    bpExpanded && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                  ) : (
+                    isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                  )}
+                </button>
+
+                {/* Business Plan Sub-Navigation */}
+                {isBpItem && bpExpanded && isActive && (
+                  <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                    {bpSubNav.map((section) => {
+                      const isSectionActive = bpMainTab === section.key && !section.children;
+                      const hasChildren = !!section.children;
+                      const isSectionExpanded = expandedBpSection === section.key;
+                      const isChildActive = hasChildren && section.children!.some(c => bpMainTab === section.key && bpSubTab === c.key);
+
+                      return (
+                        <div key={section.key}>
+                          <button
+                            onClick={() => {
+                              if (hasChildren) {
+                                setExpandedBpSection(isSectionExpanded ? null : section.key);
+                                // Navigate to first child
+                                if (!isSectionExpanded) {
+                                  handleBpSubNavClick(section.key, section.children![0].key);
+                                }
+                              } else {
+                                handleBpSubNavClick(section.key);
+                                setExpandedBpSection(null);
+                              }
+                            }}
+                            className={`
+                              w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
+                              ${(isSectionActive || isChildActive)
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                              }
+                            `}
+                          >
+                            <span className="shrink-0">{section.icon}</span>
+                            <span className="flex-1">{section.label}</span>
+                            {hasChildren && (
+                              isSectionExpanded
+                                ? <ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
+                                : <ChevronRight className="h-3 w-3 shrink-0 opacity-50" />
+                            )}
+                          </button>
+
+                          {/* Sub-tab children */}
+                          {hasChildren && isSectionExpanded && (
+                            <div className="ml-4 pl-2 border-l border-border/50 space-y-0.5 mt-0.5">
+                              {section.children!.map((child) => {
+                                const isSubActive = bpMainTab === section.key && bpSubTab === child.key;
+                                return (
+                                  <button
+                                    key={child.key}
+                                    onClick={() => handleBpSubNavClick(section.key, child.key)}
+                                    className={`
+                                      w-full text-left px-2 py-1 rounded text-[11px] transition-colors
+                                      ${isSubActive
+                                        ? "bg-primary/10 text-primary font-medium"
+                                        : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                                      }
+                                    `}
+                                  >
+                                    {child.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
-                {current && !isActive && !item.badge && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
-                )}
-                {isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />}
-              </button>
+              </div>
             );
           })}
         </aside>
@@ -239,6 +392,12 @@ export default function OpportunityDetail() {
                   setSaDefaultTab(analysisTab);
                   setActiveTab("strategic_analyses");
                 }}
+                activeMainTab={bpMainTab}
+                activeSubTab={bpSubTab}
+                onTabChange={(mainTab, subTab) => {
+                  setBpMainTab(mainTab);
+                  setBpSubTab(subTab);
+                }}
               />
             )}
             {activeTab === "business_case" && (
@@ -278,6 +437,18 @@ export default function OpportunityDetail() {
             )}
           </div>
         </main>
+      </div>
+    </div>
+  );
+}
+
+function MetaItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-1.5">
+      <span className="text-muted-foreground mt-0.5 shrink-0">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider leading-none mb-0.5">{label}</p>
+        <p className="text-xs font-medium text-card-foreground truncate">{value || "—"}</p>
       </div>
     </div>
   );
