@@ -109,7 +109,7 @@ const translations = {
     competitorsPlaceholder: "List key competitors, their solutions, and market position...",
     competitivePositionPlaceholder: "Describe your competitive advantages and differentiation...",
     // Market Attractiveness sections
-    maMarketPotential: "Market Potential",
+    maMarketPotential: "Market Data",
     maCustomerLandscape: "Customer Landscape",
     maCompetitorLandscape: "Competitor Landscape",
     maGeographicalFocus: "Geographical Focus",
@@ -918,7 +918,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     customerRelationshipPlaceholder: "Beschreiben Sie bestehende Beziehungen, Partnerschaften, LOIs oder Pilotprogramme...",
     competitorsPlaceholder: "Listen Sie die wichtigsten Wettbewerber, deren Lösungen und Marktposition auf...",
     competitivePositionPlaceholder: "Beschreiben Sie Ihre Wettbewerbsvorteile und Differenzierung...",
-    maMarketPotential: "Marktpotenzial",
+    maMarketPotential: "Marktdaten",
     maCustomerLandscape: "Kundenlandschaft",
     maCompetitorLandscape: "Wettbewerbslandschaft",
     maGeographicalFocus: "Geographischer Fokus",
