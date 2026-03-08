@@ -327,6 +327,17 @@ export default function OpportunityDetail() {
                         </button>
                       );
                     })}
+                    {/* Questionnaire PDF Export */}
+                    <button
+                      onClick={() => {
+                        exportQuestionnairePdf();
+                        setSidebarOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                    >
+                      <ClipboardList className="h-3 w-3 shrink-0" />
+                      <span className="flex-1">{bp("Questionnaire (PDF)", "Fragebogen (PDF)")}</span>
+                    </button>
                   </div>
                 )}
 
