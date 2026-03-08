@@ -117,19 +117,6 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
-      {/* Header with Score */}
-      <div className="rounded-xl border-2 border-border bg-card p-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${getScoreColor(local.score)}`} />
-            <div>
-              <h3 className="text-xl font-bold text-card-foreground">{t("marketAttractiveness")}</h3>
-              <p className="text-sm text-muted-foreground">{getScoreLabel(local.score)}</p>
-            </div>
-          </div>
-          <ScoreButtons />
-        </div>
-      </div>
 
       {/* ─── SECTION 1: Marktpotenzial ─── */}
       <div className="rounded-xl border border-border bg-card p-6 space-y-6">
