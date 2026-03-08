@@ -19,8 +19,7 @@ import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
-import { Globe, Target, TrendingUp, BarChart3, FolderOpen, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
 
 export type StrategicAnalysisTab = string;
 
@@ -30,31 +29,10 @@ interface Props {
   onSaveDetailed: (ds: DetailedScoring) => void;
   onSaveStrategic: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
-  onNavigateToAnalysis?: (analysisTab: StrategicAnalysisTab) => void;
   activeMainTab?: string;
   activeSubTab?: string;
   onTabChange?: (mainTab: string, subTab?: string) => void;
 }
-
-function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
-  name: string; description: string; tabKey: string; onNavigate?: (tab: string) => void; icon?: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border p-3 flex items-center justify-between gap-3 hover:bg-muted/50 transition-colors">
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm text-foreground">{icon && <span className="mr-1.5">{icon}</span>}{name}</p>
-        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{description}</p>
-      </div>
-      {onNavigate && (
-        <Button size="sm" variant="outline" onClick={() => onNavigate(tabKey)} className="shrink-0 gap-1">
-          <ExternalLink className="h-3 w-3" />
-          Open
-        </Button>
-      )}
-    </div>
-  );
-}
-
 export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis, activeMainTab, activeSubTab, onTabChange }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
