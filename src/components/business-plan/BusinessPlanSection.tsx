@@ -216,7 +216,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="som-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
-            <TabsTrigger value="som-pricing" className="text-xs">{bp("Pricing", "Pricing")}</TabsTrigger>
+            
             <TabsTrigger value="som-pilot" className="text-xs">{bp("Pilot & Leads", "Pilot & Leads")}</TabsTrigger>
             <TabsTrigger value="som-vpc" className="text-xs">VPC</TabsTrigger>
             <TabsTrigger value="som-cba" className="text-xs">{bp("Customer Benefit", "Kundennutzen")}</TabsTrigger>
