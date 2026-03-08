@@ -243,5 +243,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ Others ═══ */}
     </Tabs>
+    </div>
   );
 }
