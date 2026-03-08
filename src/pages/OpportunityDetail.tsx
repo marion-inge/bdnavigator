@@ -397,6 +397,14 @@ export default function OpportunityDetail() {
                 opportunityOwner={opp.owner}
               />
             )}
+            {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
+              <StrategicAnalysesSection
+                strategicAnalyses={opp.strategicAnalyses}
+                onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
+                readonly={opp.stage === "closed"}
+                defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
+              />
+            )}
             {activeTab === "detailed_scoring" && (
               <BusinessPlanSection
                 detailedScoring={opp.detailedScoring}

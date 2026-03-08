@@ -248,20 +248,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       </TabsContent>
 
       {/* ═══ Others ═══ */}
-      <TabsContent value="others">
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-lg font-bold text-foreground mb-1">{bp("Other Strategic Models", "Sonstige strategische Modelle")}</h2>
-            <p className="text-sm text-muted-foreground">{bp("Strategic frameworks not directly assignable to TAM, SAM, or SOM.", "Strategische Frameworks, die nicht direkt TAM, SAM oder SOM zuordenbar sind.")}</p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <ModelLinkCard name={bp("Ansoff Matrix", "Ansoff-Matrix")} description={bp("Growth strategy classification: market penetration, product/market development, diversification. Helps decide the overall strategic approach for the opportunity.", "Wachstumsstrategien: Marktdurchdringung, Produkt-/Marktentwicklung, Diversifikation. Hilft bei der strategischen Gesamtausrichtung.")} tabKey="ansoff" onNavigate={onNavigateToAnalysis} icon="📊" />
-            <ModelLinkCard name={bp("BCG Matrix", "BCG-Matrix")} description={bp("Portfolio analysis by market share and growth rate: Star, Cash Cow, Question Mark, Dog. Useful for portfolio prioritization.", "Portfolio-Analyse nach Marktanteil und Wachstum: Star, Cash Cow, Fragezeichen, Armer Hund. Nützlich für Portfolio-Priorisierung.")} tabKey="bcg" onNavigate={onNavigateToAnalysis} icon="⭐" />
-            <ModelLinkCard name={bp("McKinsey Matrix", "McKinsey-Matrix")} description={bp("9-cell matrix: industry attractiveness vs. competitive strength. Guides investment decisions and resource allocation.", "9-Felder-Matrix: Branchenattraktivität vs. Wettbewerbsstärke. Leitet Investitionsentscheidungen und Ressourcenallokation.")} tabKey="mckinsey" onNavigate={onNavigateToAnalysis} icon="📈" />
-            <ModelLinkCard name={bp("3 Horizons of Growth", "3 Horizonte des Wachstums")} description={bp("Horizon 1 (core), Horizon 2 (emerging), Horizon 3 (future). Classifies the opportunity in the innovation pipeline timeline.", "Horizont 1 (Kern), Horizont 2 (aufstrebend), Horizont 3 (Zukunft). Ordnet die Opportunity in der Innovationspipeline-Timeline ein.")} tabKey="threeHorizons" onNavigate={onNavigateToAnalysis} icon="🌅" />
-          </div>
-        </div>
-      </TabsContent>
     </Tabs>
   );
 }
