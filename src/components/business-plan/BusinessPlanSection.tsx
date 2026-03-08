@@ -84,24 +84,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
         <AgentPanel context={agentContext} sectionLabel="Business Plan" />
       </div>
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
-      <TabsList className="flex-wrap h-auto gap-1 p-1">
-        <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
-          <BarChart3 className="h-3.5 w-3.5" />
-          {bp("Overview", "Übersicht")}
-        </TabsTrigger>
-        <TabsTrigger value="tam" className="text-xs sm:text-sm gap-1.5">
-          <Globe className="h-3.5 w-3.5" />
-          TAM
-        </TabsTrigger>
-        <TabsTrigger value="sam" className="text-xs sm:text-sm gap-1.5">
-          <Target className="h-3.5 w-3.5" />
-          SAM
-        </TabsTrigger>
-        <TabsTrigger value="som" className="text-xs sm:text-sm gap-1.5">
-          <TrendingUp className="h-3.5 w-3.5" />
-          SOM
-        </TabsTrigger>
-      </TabsList>
 
       {/* Combined Overview */}
       <TabsContent value="combined">
@@ -111,14 +93,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
         <Tabs value={getSubTab("tam", "tam-overview")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
-          <TabsList className="flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="tam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
-            <TabsTrigger value="tam-research" className="text-xs">{bp("Market Research", "Marktforschung")}</TabsTrigger>
-            <TabsTrigger value="tam-pestel" className="text-xs">PESTEL</TabsTrigger>
-            <TabsTrigger value="tam-valuechain" className="text-xs">{bp("Value Chain", "Wertschöpfungskette")}</TabsTrigger>
-            <TabsTrigger value="tam-porter" className="text-xs">Porter's</TabsTrigger>
-            <TabsTrigger value="tam-swot" className="text-xs">SWOT</TabsTrigger>
-          </TabsList>
           <TabsContent value="tam-overview">
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
@@ -143,21 +117,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
         <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
-          <TabsList className="flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="sam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
-            <TabsTrigger value="sam-customers" className="text-xs">{bp("Customer Landscape", "Kundenlandschaft")}</TabsTrigger>
-            <TabsTrigger value="sam-strategic" className="text-xs">{bp("Strategic Fit", "Strateg. Fit")}</TabsTrigger>
-            <TabsTrigger value="sam-portfolio" className="text-xs">{bp("Portfolio Fit", "Portfolio Fit")}</TabsTrigger>
-            <TabsTrigger value="sam-feasibility" className="text-xs">{bp("Feasibility", "Machbarkeit")}</TabsTrigger>
-            <TabsTrigger value="sam-org" className="text-xs">{bp("Org Readiness", "Org. Readiness")}</TabsTrigger>
-            <TabsTrigger value="sam-risk" className="text-xs">{bp("Risk", "Risiko")}</TabsTrigger>
-            <TabsTrigger value="sam-segmentation" className="text-xs">{bp("Segmentation", "Segmentierung")}</TabsTrigger>
-            <TabsTrigger value="sam-interviews" className="text-xs">{bp("Interviews", "Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-affiliate" className="text-xs">{bp("Affiliate Interviews", "Affiliate-Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-bu" className="text-xs">{bp("BU Interviews", "BU-Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-bmc" className="text-xs">BMC</TabsTrigger>
-            <TabsTrigger value="sam-lean" className="text-xs">Lean Canvas</TabsTrigger>
-          </TabsList>
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
@@ -203,17 +162,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
         <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
-          <TabsList className="flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="som-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
-            <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
-            
-            <TabsTrigger value="som-pilot" className="text-xs">{bp("Pilot & Leads", "Pilot & Leads")}</TabsTrigger>
-            <TabsTrigger value="som-vpc" className="text-xs">VPC</TabsTrigger>
-            <TabsTrigger value="som-cba" className="text-xs">{bp("Customer Benefit", "Kundennutzen")}</TabsTrigger>
-            <TabsTrigger value="som-threecircles" className="text-xs">{bp("Three Circles", "Drei Kreise")}</TabsTrigger>
-            <TabsTrigger value="som-positioning" className="text-xs">{bp("Positioning", "Positionierung")}</TabsTrigger>
-            <TabsTrigger value="som-landscape" className="text-xs">{bp("Pos. Landscape", "Pos. Landschaft")}</TabsTrigger>
-          </TabsList>
           <TabsContent value="som-overview">
             <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
