@@ -263,6 +263,7 @@ export default function OpportunityDetail() {
                     setActiveTab(item.key);
                     setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
+                    if (isScoringItem) setForceWizardMode(false);
                     if (isBpItem) {
                       setBpExpanded(!bpExpanded);
                       setScoringExpanded(false);
