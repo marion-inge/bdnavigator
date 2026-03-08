@@ -15,8 +15,9 @@ import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { FileAttachments } from "@/components/FileAttachments";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
+import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
 type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
@@ -326,6 +327,17 @@ export default function OpportunityDetail() {
                         </button>
                       );
                     })}
+                    {/* Questionnaire PDF Export */}
+                    <button
+                      onClick={() => {
+                        exportQuestionnairePdf();
+                        setSidebarOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                    >
+                      <ClipboardList className="h-3 w-3 shrink-0" />
+                      <span className="flex-1">{bp("Questionnaire (PDF)", "Fragebogen (PDF)")}</span>
+                    </button>
                   </div>
                 )}
 
