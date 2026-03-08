@@ -32,27 +32,12 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
     setDirty(true);
   };
 
-  const updateScore = (score: number) => {
-    setLocal((prev) => ({ ...prev, score }));
-    setDirty(true);
-  };
 
   const handleSave = () => {
     onUpdate({ ...scoring, marketAttractiveness: local });
     setDirty(false);
   };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
-
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
 
   // CAGR helper
   const calcCagr = (projections: MarketYearValue[]): number | null => {
@@ -118,24 +103,8 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   };
 
 
-  const ScoreButtons = () => (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((val) => (
-        <button
-          key={val}
-          disabled={readonly}
-          onClick={() => updateScore(val)}
-          className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
-            local.score === val
-              ? "bg-primary text-primary-foreground shadow-md scale-110"
-              : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
-          } ${readonly ? "cursor-default" : "cursor-pointer"}`}
-        >
-          {val}
-        </button>
-      ))}
-    </div>
-  );
+
+
 
   const SectionHeader = ({ icon: Icon, title }: { icon: React.ElementType; title: string }) => (
     <div className="flex items-center gap-2 mb-4">
@@ -152,19 +121,6 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
-      {/* Header with Score */}
-      <div className="rounded-xl border-2 border-border bg-card p-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${getScoreColor(local.score)}`} />
-            <div>
-              <h3 className="text-xl font-bold text-card-foreground">{t("marketAttractiveness")}</h3>
-              <p className="text-sm text-muted-foreground">{getScoreLabel(local.score)}</p>
-            </div>
-          </div>
-          <ScoreButtons />
-        </div>
-      </div>
 
       {/* ─── SECTION 1: Marktpotenzial ─── */}
       <div className="rounded-xl border border-border bg-card p-6 space-y-6">

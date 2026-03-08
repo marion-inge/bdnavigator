@@ -67,17 +67,8 @@ export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Pr
     updateField("milestones", local.milestones.filter((_, i) => i !== index));
   };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
 
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
+
 
   const getTrlColor = (trl: number) => {
     if (trl >= 7) return "text-green-600 dark:text-green-400";
@@ -122,34 +113,6 @@ export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Pr
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-6">
-      {/* Header with Score */}
-      <div className="rounded-xl border-2 border-border bg-card p-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${getScoreColor(local.score)}`} />
-            <div>
-              <h3 className="text-xl font-bold text-card-foreground">{t("feasibility")}</h3>
-              <p className="text-sm text-muted-foreground">{getScoreLabel(local.score)}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((val) => (
-              <button
-                key={val}
-                disabled={readonly}
-                onClick={() => updateField("score", val)}
-                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
-                  local.score === val
-                    ? "bg-primary text-primary-foreground shadow-md scale-110"
-                    : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
-                } ${readonly ? "cursor-default" : "cursor-pointer"}`}
-              >
-                {val}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* TRL Assessment */}
       <div className="rounded-lg border-2 border-border bg-card p-6 space-y-5">
