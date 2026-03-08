@@ -109,7 +109,7 @@ const translations = {
     competitorsPlaceholder: "List key competitors, their solutions, and market position...",
     competitivePositionPlaceholder: "Describe your competitive advantages and differentiation...",
     // Market Attractiveness sections
-    maMarketPotential: "Market Potential",
+    maMarketPotential: "Market Data",
     maCustomerLandscape: "Customer Landscape",
     maCompetitorLandscape: "Competitor Landscape",
     maGeographicalFocus: "Geographical Focus",
