@@ -29,6 +29,11 @@ export default function OpportunityDetail() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
 
+  // Scroll to top when opportunity changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   const opp = getOpportunity(id!);
   if (!opp) {
     return (
