@@ -131,10 +131,6 @@ export default function Index() {
               <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
             </Button>
-            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
-              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
-            </Button>
             <LanguageSwitch />
             <NewOpportunityDialog />
           </div>

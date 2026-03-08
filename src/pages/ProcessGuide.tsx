@@ -3,13 +3,14 @@ import { useI18n } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip } from "lucide-react";
+import idaRobot from "@/assets/ida-robot.png";
+import markRobot from "@/assets/mark-robot.png";
 
 export default function ProcessGuide() {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { language } = useI18n();
+  const bp = (en: string, de: string) => language === "de" ? de : en;
 
   return (
     <div className="min-h-screen bg-background">
@@ -21,7 +22,7 @@ export default function ProcessGuide() {
             </Button>
             <div className="flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-primary" />
-              <h1 className="text-xl font-bold text-card-foreground">{t("guideTitle")}</h1>
+              <h1 className="text-xl font-bold text-card-foreground">{bp("Tool Guide", "Tool-Leitfaden")}</h1>
             </div>
           </div>
           <LanguageSwitch />
@@ -29,436 +30,265 @@ export default function ProcessGuide() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-8 space-y-10">
-        {/* Stage Gate Process Overview */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideProcessTitle")}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideProcessDesc")}</p>
-          <StageFlowDiagram t={t} />
+
+        {/* Introduction */}
+        <section className="space-y-3">
+          <h2 className="text-2xl font-bold text-foreground">{bp("What is the BD Navigator?", "Was ist der BD Navigator?")}</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            {bp(
+              "The BD Navigator is a structured tool for evaluating, developing, and tracking new business ideas from initial concept through to market implementation. It guides teams through a Stage Gate process with integrated scoring, market analysis, and AI-powered insights.",
+              "Der BD Navigator ist ein strukturiertes Tool zur Bewertung, Entwicklung und Nachverfolgung neuer Geschäftsideen – vom ersten Konzept bis zur Markteinführung. Er führt Teams durch einen Stage-Gate-Prozess mit integriertem Scoring, Marktanalyse und KI-gestützten Einblicken."
+            )}
+          </p>
         </section>
 
-        {/* Stages Detail */}
+        {/* Stage Gate Process */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideStagesTitle")}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{bp("Stage Gate Process", "Stage-Gate-Prozess")}</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            {bp(
+              "Each idea progresses through defined stages. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
+              "Jede Idee durchläuft definierte Phasen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
+            )}
+          </p>
+          <StageFlowDiagram bp={bp} />
+        </section>
+
+        {/* Tool Sections */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{bp("Tool Sections", "Tool-Bereiche")}</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {([
-              { stage: "idea" as const, icon: "💡", descKey: "guideStage_idea" as const },
-              { stage: "rough_scoring" as const, icon: "📊", descKey: "guideStage_rough_scoring" as const },
-              { stage: "gate1" as const, icon: "🚪", descKey: "guideStage_gate1" as const },
-              { stage: "detailed_scoring" as const, icon: "🔍", descKey: "guideStage_detailed_scoring" as const },
-              { stage: "gate2" as const, icon: "🚪", descKey: "guideStage_gate2" as const },
-              { stage: "business_case" as const, icon: "💼", descKey: "guideStage_business_case" as const },
-              { stage: "implement_review" as const, icon: "🔄", descKey: "guideStage_implement_review" as const },
-            ] as const).map(({ stage, icon, descKey }) => (
-              <Card key={stage}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {t(`stage_${stage}`)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{t(descKey)}</p>
-                </CardContent>
-              </Card>
-            ))}
+
+            <FeatureCard
+              icon={<LayoutDashboard className="h-5 w-5 text-primary" />}
+              title={bp("Overview", "Übersicht")}
+              description={bp(
+                "The idea overview shows all key metadata at a glance: title, problem description, solution idea, industry, geography, technology, initiator, and BD team owner. It also displays the current stage, scoring results, and AI assessment summary.",
+                "Die Ideenübersicht zeigt alle wichtigen Metadaten auf einen Blick: Titel, Problembeschreibung, Lösungsidee, Branche, Geografie, Technologie, Initiator und BD-Team-Owner. Außerdem werden aktuelle Phase, Scoring-Ergebnisse und KI-Assessment-Zusammenfassung angezeigt."
+              )}
+            />
+
+            <FeatureCard
+              icon={<BarChart2 className="h-5 w-5 text-primary" />}
+              title={bp("Idea Scoring", "Ideen-Scoring")}
+              description={bp(
+                "A structured questionnaire with 22 questions across 5 categories (Market Attractiveness, Strategic Fit, Feasibility, Commercial Viability, Risk). Each answer is scored 1–5 and weighted to produce an overall idea score. Sources and comments can be added per question.",
+                "Ein strukturierter Fragebogen mit 22 Fragen in 5 Kategorien (Marktattraktivität, Strategischer Fit, Machbarkeit, Kommerzielle Tragfähigkeit, Risiko). Jede Antwort wird 1–5 bewertet und gewichtet, um einen Gesamtscore zu errechnen. Quellen und Kommentare können pro Frage hinzugefügt werden."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Globe className="h-5 w-5 text-primary" />}
+              title={bp("Business Plan — TAM", "Business Plan — TAM")}
+              description={bp(
+                "Total Addressable Market analysis. Includes Market Research, PESTEL analysis, Value Chain analysis, Porter's Five Forces, and SWOT. Quantifies the overall market opportunity with market size estimates by region and year.",
+                "Gesamtmarktanalyse (Total Addressable Market). Beinhaltet Marktforschung, PESTEL-Analyse, Wertschöpfungskettenanalyse, Porter's Five Forces und SWOT. Quantifiziert die Gesamtmarktchance mit Marktgrößenschätzungen nach Region und Jahr."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Target className="h-5 w-5 text-primary" />}
+              title={bp("Business Plan — SAM", "Business Plan — SAM")}
+              description={bp(
+                "Serviceable Addressable Market. Includes Customer Landscape, Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk assessment, Customer Segmentation, Interviews (Customer, Affiliate, BU), Business Model Canvas, and Lean Canvas.",
+                "Bedienbarer Markt (Serviceable Addressable Market). Beinhaltet Kundenlandschaft, Strategischer Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risikobewertung, Kundensegmentierung, Interviews (Kunden, Affiliate, BU), Business Model Canvas und Lean Canvas."
+              )}
+            />
+
+            <FeatureCard
+              icon={<TrendingUp className="h-5 w-5 text-primary" />}
+              title={bp("Business Plan — SOM", "Business Plan — SOM")}
+              description={bp(
+                "Serviceable Obtainable Market. Includes Competitor Landscape (with Spider Chart), Pilot Customers & Leads, Value Proposition Canvas, Customer Benefit Analysis, Three Circles Model, Positioning Strategy, and Positioning Landscape.",
+                "Erreichbarer Markt (Serviceable Obtainable Market). Beinhaltet Wettbewerbslandschaft (mit Spider-Chart), Pilotkunden & Leads, Value Proposition Canvas, Kundennutzenanalyse, Drei-Kreise-Modell, Positionierungsstrategie und Positionierungslandschaft."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Briefcase className="h-5 w-5 text-primary" />}
+              title={bp("Implementation & GTM Plan", "Umsetzungs- & GTM-Plan")}
+              description={bp(
+                "Go-to-Market strategy planning with target segments, channels, pricing, key partners, and KPIs. Includes pilot customer management, lead generation tracking, business case financials, and commercial viability assessment.",
+                "Go-to-Market-Strategieplanung mit Zielsegmenten, Kanälen, Preisgestaltung, Schlüsselpartnern und KPIs. Beinhaltet Pilotkunden-Management, Lead-Generierungs-Tracking, Business-Case-Finanzen und kommerzielle Tragfähigkeitsbewertung."
+              )}
+            />
+
+            <FeatureCard
+              icon={<RefreshCw className="h-5 w-5 text-primary" />}
+              title={bp("Implement & Review", "Umsetzung & Review")}
+              description={bp(
+                "Track implementation progress with status updates, progress notes, lessons learned, next steps, and a customizable checklist. Monitor the transition from planning to execution.",
+                "Verfolgen Sie den Umsetzungsfortschritt mit Statusupdates, Fortschrittsnotizen, Lessons Learned, nächsten Schritten und einer anpassbaren Checkliste. Überwachen Sie den Übergang von Planung zu Umsetzung."
+              )}
+            />
+
+            <FeatureCard
+              icon={<GitMerge className="h-5 w-5 text-primary" />}
+              title={bp("Stage Gates", "Stage Gates")}
+              description={bp(
+                "Gate decisions document Go/No-Go/Hold decisions with rationale, date, and conditions. Gates control progression between stages and can be edited or reverted.",
+                "Gate-Entscheidungen dokumentieren Go/No-Go/Hold-Entscheidungen mit Begründung, Datum und Bedingungen. Gates steuern den Fortschritt zwischen Phasen und können bearbeitet oder rückgängig gemacht werden."
+              )}
+            />
+
+            <FeatureCard
+              icon={<LineChart className="h-5 w-5 text-primary" />}
+              title={bp("Strategic Analyses", "Strategische Analysen")}
+              description={bp(
+                "Portfolio-level strategic tools: Ansoff Matrix (growth strategies), BCG Matrix (market share vs. growth), McKinsey/GE Matrix (industry attractiveness vs. competitive strength), and Three Horizons Model (innovation pipeline).",
+                "Strategische Portfolio-Tools: Ansoff-Matrix (Wachstumsstrategien), BCG-Matrix (Marktanteil vs. Wachstum), McKinsey/GE-Matrix (Branchenattraktivität vs. Wettbewerbsstärke) und Drei-Horizonte-Modell (Innovationspipeline)."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Paperclip className="h-5 w-5 text-primary" />}
+              title={bp("File Attachments", "Dateianhänge")}
+              description={bp(
+                "Upload and manage documents related to each idea. Add comments to files for context. Supports all common file formats.",
+                "Laden Sie Dokumente zu jeder Idee hoch und verwalten Sie diese. Fügen Sie Kommentare zu Dateien für Kontext hinzu. Unterstützt alle gängigen Dateiformate."
+              )}
+            />
           </div>
         </section>
 
-        {/* Detailed Scoring Dimensions */}
+        {/* AI Agents */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideDetailedTitle")}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideDetailedDesc")}</p>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { key: "market", icon: "📈", titleKey: "guideDS_market", descKey: "guideDS_marketDesc" },
-              { key: "customer", icon: "👥", titleKey: "guideDS_customer", descKey: "guideDS_customerDesc" },
-              { key: "competitor", icon: "🛡️", titleKey: "guideDS_competitor", descKey: "guideDS_competitorDesc" },
-              { key: "strategic", icon: "🧭", titleKey: "guideDS_strategic", descKey: "guideDS_strategicDesc" },
-              { key: "feasibility", icon: "⚙️", titleKey: "guideDS_feasibility", descKey: "guideDS_feasibilityDesc" },
-              { key: "orgReadiness", icon: "🏢", titleKey: "guideDS_orgReadiness", descKey: "guideDS_orgReadinessDesc" },
-              { key: "commercial", icon: "💰", titleKey: "guideDS_commercial", descKey: "guideDS_commercialDesc" },
-              { key: "risk", icon: "⚠️", titleKey: "guideDS_risk", descKey: "guideDS_riskDesc" },
-              { key: "pilotCustomer", icon: "🤝", titleKey: "guideDS_pilotCustomer", descKey: "guideDS_pilotCustomerDesc" },
-            ].map(({ key, icon, titleKey, descKey }) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {t(titleKey as any)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{t(descKey as any)}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <h2 className="text-2xl font-bold text-foreground">{bp("AI Agents", "KI-Agenten")}</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            {bp(
+              "Two AI agents are embedded throughout the tool to support your analysis work:",
+              "Zwei KI-Agenten sind im gesamten Tool eingebettet, um Ihre Analysearbeit zu unterstützen:"
+            )}
+          </p>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="border-2 border-agent-ida/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-3">
+                  <img src={idaRobot} alt="IDA" className="h-10 w-10 rounded-full" />
+                  <div>
+                    <span className="text-agent-ida font-bold">IDA</span>
+                    <span className="text-muted-foreground text-sm ml-2">{bp("Internal Data Analyst", "Interne Datenanalystin")}</span>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {bp(
+                    "IDA analyzes the data already entered in the tool. She finds connections between sections, identifies strengths and weaknesses, highlights gaps, gives recommendations, and summarizes your progress. She works exclusively with internal data — nothing external.",
+                    "IDA analysiert die bereits im Tool eingegebenen Daten. Sie findet Verbindungen zwischen Bereichen, identifiziert Stärken und Schwächen, zeigt Lücken auf, gibt Empfehlungen und fasst Ihren Fortschritt zusammen. Sie arbeitet ausschließlich mit internen Daten — nichts Externes."
+                  )}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-agent-mark/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-3">
+                  <img src={markRobot} alt="Mark" className="h-10 w-10 rounded-full" />
+                  <div>
+                    <span className="text-agent-mark font-bold">Mark</span>
+                    <span className="text-muted-foreground text-sm ml-2">{bp("Market Researcher", "Marktforscher")}</span>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {bp(
+                    "Mark is your market research assistant. He suggests improvements based on market best practices, points out relevant industry trends and benchmarks, and recommends external research directions. Web search integration coming soon.",
+                    "Mark ist Ihr Marktforschungsassistent. Er schlägt Verbesserungen basierend auf Markt-Best-Practices vor, weist auf relevante Branchentrends und Benchmarks hin und empfiehlt externe Forschungsrichtungen. Web-Suchintegration kommt bald."
+                  )}
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        {/* Scoring Categories */}
+        {/* Idea Scoring Formula */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideScoringTitle")}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideScoringDesc")}</p>
-
-          <Tabs defaultValue="marketAttractiveness" className="space-y-4">
-            <TabsList className="flex-wrap h-auto gap-1 p-1">
-              <TabsTrigger value="marketAttractiveness" className="text-xs sm:text-sm">{t("marketAttractiveness")}</TabsTrigger>
-              <TabsTrigger value="customerLandscape" className="text-xs sm:text-sm">{t("maCustomerLandscape")}</TabsTrigger>
-              <TabsTrigger value="competitorLandscape" className="text-xs sm:text-sm">{t("dsCompetitorLandscape")}</TabsTrigger>
-              <TabsTrigger value="strategicFit" className="text-xs sm:text-sm">{t("strategicFit")}</TabsTrigger>
-              <TabsTrigger value="feasibility" className="text-xs sm:text-sm">{t("feasibility")}</TabsTrigger>
-              <TabsTrigger value="orgReadiness" className="text-xs sm:text-sm">{t("dsOrgReadiness")}</TabsTrigger>
-              <TabsTrigger value="commercialViability" className="text-xs sm:text-sm">{t("commercialViability")}</TabsTrigger>
-              <TabsTrigger value="risk" className="text-xs sm:text-sm">{t("risk")}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="marketAttractiveness">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("marketAttractiveness")}
-                weight={3}
-                description={t("guideMA_desc")}
-                subcategories={[
-                  { name: t("guideMA_sub1"), desc: t("guideMA_sub1_desc") },
-                  { name: t("guideMA_sub2"), desc: t("guideMA_sub2_desc") },
-                  { name: t("guideMA_sub3"), desc: t("guideMA_sub3_desc") },
-                  { name: t("guideMA_sub4"), desc: t("guideMA_sub4_desc") },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideMA_s1") },
-                  { score: 2, label: t("guideMA_s2") },
-                  { score: 3, label: t("guideMA_s3") },
-                  { score: 4, label: t("guideMA_s4") },
-                  { score: 5, label: t("guideMA_s5") },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="customerLandscape">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("maCustomerLandscape")}
-                weight={3}
-                description={t("guideCL_desc" as any)}
-                subcategories={[
-                  { name: t("guideCL_sub1" as any), desc: t("guideCL_sub1_desc" as any) },
-                  { name: t("guideCL_sub2" as any), desc: t("guideCL_sub2_desc" as any) },
-                  { name: t("guideCL_sub3" as any), desc: t("guideCL_sub3_desc" as any) },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideCL_s1" as any) },
-                  { score: 2, label: t("guideCL_s2" as any) },
-                  { score: 3, label: t("guideCL_s3" as any) },
-                  { score: 4, label: t("guideCL_s4" as any) },
-                  { score: 5, label: t("guideCL_s5" as any) },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="competitorLandscape">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("dsCompetitorLandscape")}
-                weight={3}
-                description={t("guideCompL_desc" as any)}
-                subcategories={[
-                  { name: t("guideCompL_sub1" as any), desc: t("guideCompL_sub1_desc" as any) },
-                  { name: t("guideCompL_sub2" as any), desc: t("guideCompL_sub2_desc" as any) },
-                  { name: t("guideCompL_sub3" as any), desc: t("guideCompL_sub3_desc" as any) },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideCompL_s1" as any) },
-                  { score: 2, label: t("guideCompL_s2" as any) },
-                  { score: 3, label: t("guideCompL_s3" as any) },
-                  { score: 4, label: t("guideCompL_s4" as any) },
-                  { score: 5, label: t("guideCompL_s5" as any) },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="strategicFit">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("strategicFit")}
-                weight={3}
-                description={t("guideSF_desc")}
-                subcategories={[
-                  { name: t("guideSF_sub1"), desc: t("guideSF_sub1_desc") },
-                  { name: t("guideSF_sub2"), desc: t("guideSF_sub2_desc") },
-                  { name: t("guideSF_sub3"), desc: t("guideSF_sub3_desc") },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideSF_s1") },
-                  { score: 2, label: t("guideSF_s2") },
-                  { score: 3, label: t("guideSF_s3") },
-                  { score: 4, label: t("guideSF_s4") },
-                  { score: 5, label: t("guideSF_s5") },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="feasibility">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("feasibility")}
-                weight={2}
-                description={t("guideFE_desc")}
-                subcategories={[
-                  { name: t("guideFE_sub1"), desc: t("guideFE_sub1_desc") },
-                  { name: t("guideFE_sub2"), desc: t("guideFE_sub2_desc") },
-                  { name: t("guideFE_sub3"), desc: t("guideFE_sub3_desc") },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideFE_s1") },
-                  { score: 2, label: t("guideFE_s2") },
-                  { score: 3, label: t("guideFE_s3") },
-                  { score: 4, label: t("guideFE_s4") },
-                  { score: 5, label: t("guideFE_s5") },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="orgReadiness">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("dsOrgReadiness")}
-                weight={2}
-                description={t("guideOR_desc" as any)}
-                subcategories={[
-                  { name: t("guideOR_sub1" as any), desc: t("guideOR_sub1_desc" as any) },
-                  { name: t("guideOR_sub2" as any), desc: t("guideOR_sub2_desc" as any) },
-                  { name: t("guideOR_sub3" as any), desc: t("guideOR_sub3_desc" as any) },
-                  { name: t("guideOR_sub4" as any), desc: t("guideOR_sub4_desc" as any) },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideOR_s1" as any) },
-                  { score: 2, label: t("guideOR_s2" as any) },
-                  { score: 3, label: t("guideOR_s3" as any) },
-                  { score: 4, label: t("guideOR_s4" as any) },
-                  { score: 5, label: t("guideOR_s5" as any) },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="commercialViability">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("commercialViability")}
-                weight={2}
-                description={t("guideCV_desc")}
-                subcategories={[
-                  { name: t("guideCV_sub1"), desc: t("guideCV_sub1_desc") },
-                  { name: t("guideCV_sub2"), desc: t("guideCV_sub2_desc") },
-                  { name: t("guideCV_sub3"), desc: t("guideCV_sub3_desc") },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideCV_s1") },
-                  { score: 2, label: t("guideCV_s2") },
-                  { score: 3, label: t("guideCV_s3") },
-                  { score: 4, label: t("guideCV_s4") },
-                  { score: 5, label: t("guideCV_s5") },
-                ]}
-              />
-            </TabsContent>
-
-            <TabsContent value="risk">
-              <ScoringCategoryDetail
-                t={t}
-                title={t("risk")}
-                weight={1}
-                description={t("guideRI_desc")}
-                inverted
-                subcategories={[
-                  { name: t("guideRI_sub1"), desc: t("guideRI_sub1_desc") },
-                  { name: t("guideRI_sub2"), desc: t("guideRI_sub2_desc") },
-                  { name: t("guideRI_sub3"), desc: t("guideRI_sub3_desc") },
-                ]}
-                scoringTable={[
-                  { score: 1, label: t("guideRI_s1") },
-                  { score: 2, label: t("guideRI_s2") },
-                  { score: 3, label: t("guideRI_s3") },
-                  { score: 4, label: t("guideRI_s4") },
-                  { score: 5, label: t("guideRI_s5") },
-                ]}
-              />
-            </TabsContent>
-          </Tabs>
-        </section>
-
-        {/* Strategic Analyses */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideStrategicTitle")}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideStrategicDesc")}</p>
-
-          {/* Group: Market & Strategy */}
-          <h3 className="text-lg font-semibold text-foreground mt-6">Market & Strategy</h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { key: "ansoff", icon: "📐", title: t("saAnsoff"), desc: t("guideAnsoffDesc") },
-              { key: "bcg", icon: "🐄", title: t("saBcg"), desc: t("guideBcgDesc") },
-              { key: "mckinsey", icon: "📊", title: t("saMckinsey"), desc: t("guideMckinseyDesc") },
-              { key: "swot", icon: "⚡", title: t("saSwot"), desc: t("guideSwotDesc") },
-              { key: "pestel", icon: "🌍", title: t("saPestel"), desc: t("guidePestelDesc") },
-              { key: "porter", icon: "⚔️", title: t("saPorter"), desc: t("guidePorterDesc") },
-              { key: "valueChain", icon: "🔗", title: t("saValueChain"), desc: t("guideValueChainDesc") },
-            ].map(({ key, icon, title, desc }) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Group: Market Research */}
-          <h3 className="text-lg font-semibold text-foreground mt-6">Market Research</h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { key: "custSeg", icon: "🎯", title: t("saCustSeg"), desc: t("guideCustSegDesc" as any) },
-              { key: "compAnalysis", icon: "🏆", title: t("saCompAnalysis"), desc: t("guideCompAnalysisDesc" as any) },
-              { key: "custInt", icon: "🎤", title: t("saCustInt"), desc: t("guideCustIntDesc" as any) },
-            ].map(({ key, icon, title, desc }) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Group: Business Modelling */}
-          <h3 className="text-lg font-semibold text-foreground mt-6">Business Modelling</h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { key: "bizModel", icon: "🏗️", title: t("saBizModel"), desc: t("guideBizModelDesc" as any) },
-              { key: "leanCanvas", icon: "📋", title: t("saLeanCanvas"), desc: t("guideLeanCanvasDesc" as any) },
-              { key: "vpc", icon: "💎", title: t("saVpc"), desc: t("guideVpcDesc" as any) },
-              { key: "cba", icon: "🎁", title: t("saCba"), desc: t("guideCbaDesc" as any) },
-            ].map(({ key, icon, title, desc }) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Group: Competitive Positioning */}
-          <h3 className="text-lg font-semibold text-foreground mt-6">Competitive Positioning</h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { key: "tcm", icon: "⭕", title: t("saTcm"), desc: t("guideTcmDesc" as any) },
-              { key: "pos", icon: "📍", title: t("saPos"), desc: t("guidePosDesc" as any) },
-            ].map(({ key, icon, title, desc }) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Go-to-Market Features */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideGtmTitle" as any)}</h2>
-          <p className="text-muted-foreground leading-relaxed">{t("guideGtmDesc" as any)}</p>
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              { icon: "🚀", titleKey: "guideGtmStrategy", descKey: "guideGtmStrategyDesc" },
-              { icon: "🤝", titleKey: "guideGtmPilot", descKey: "guideGtmPilotDesc" },
-              { icon: "🎯", titleKey: "guideGtmLeadGen", descKey: "guideGtmLeadGenDesc" },
-            ].map(({ icon, titleKey, descKey }) => (
-              <Card key={titleKey}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{icon}</span> {t(titleKey as any)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{t(descKey as any)}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Weighted Score Formula */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{t("guideFormulaTitle")}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{bp("Idea Scoring Formula", "Ideen-Scoring-Formel")}</h2>
           <Card>
             <CardContent className="pt-6 space-y-4">
-              <p className="text-sm text-muted-foreground">{t("guideFormulaDesc")}</p>
+              <p className="text-sm text-muted-foreground">
+                {bp(
+                  "The Idea Score is calculated as a weighted average across 5 categories. Risk is inverted (subtracted from 6) so that higher risk lowers the score.",
+                  "Der Ideen-Score wird als gewichteter Durchschnitt über 5 Kategorien berechnet. Risiko ist invertiert (wird von 6 subtrahiert), sodass höheres Risiko den Score senkt."
+                )}
+              </p>
               <div className="rounded-lg bg-muted p-4 font-mono text-sm">
                 Total = (MA×3 + SF×1 + FE×2 + CV×2 + (6−RI)×1) / 9
               </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("guideCategory")}</TableHead>
-                    <TableHead className="text-center">{t("guideWeight")}</TableHead>
-                    <TableHead>{t("guideNote")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {[
-                    { cat: t("marketAttractiveness"), w: 3, note: t("guideWeightNote_MA") },
-                    { cat: t("strategicFit"), w: 1, note: t("guideWeightNote_SF") },
-                    { cat: t("feasibility"), w: 2, note: t("guideWeightNote_FE") },
-                    { cat: t("commercialViability"), w: 2, note: t("guideWeightNote_CV") },
-                    { cat: t("risk"), w: 1, note: t("guideWeightNote_RI") },
-                  ].map(({ cat, w, note }) => (
-                    <TableRow key={cat}>
-                      <TableCell className="font-medium">{cat}</TableCell>
-                      <TableCell className="text-center">{w}</TableCell>
-                      <TableCell className="text-muted-foreground text-sm">{note}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                {[
+                  { abbr: "MA", name: bp("Market Attractiveness", "Marktattraktivität"), w: 3 },
+                  { abbr: "SF", name: bp("Strategic Fit", "Strategischer Fit"), w: 1 },
+                  { abbr: "FE", name: bp("Feasibility", "Machbarkeit"), w: 2 },
+                  { abbr: "CV", name: bp("Commercial Viability", "Kommerzielle Tragfähigkeit"), w: 2 },
+                  { abbr: "RI", name: bp("Risk (inverted)", "Risiko (invertiert)"), w: 1 },
+                ].map(({ abbr, name, w }) => (
+                  <div key={abbr} className="rounded-md border border-border p-2">
+                    <span className="font-bold text-primary">{abbr}</span>
+                    <span className="text-muted-foreground ml-1">×{w}</span>
+                    <p className="text-xs text-muted-foreground mt-0.5">{name}</p>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </section>
+
+        {/* Dashboard Features */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{bp("Dashboard Features", "Dashboard-Funktionen")}</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            <FeatureCard
+              icon={<span className="text-lg">📊</span>}
+              title={bp("Pipeline Funnel", "Pipeline-Trichter")}
+              description={bp(
+                "Visual funnel showing how many ideas are in each stage of the process.",
+                "Visueller Trichter, der zeigt, wie viele Ideen sich in jeder Prozessphase befinden."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">🔍</span>}
+              title={bp("Filters & Search", "Filter & Suche")}
+              description={bp(
+                "Filter ideas by stage, industry, geography, technology, and owner. Full-text search across all fields.",
+                "Filtern Sie Ideen nach Phase, Branche, Geografie, Technologie und Owner. Volltextsuche über alle Felder."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">📈</span>}
+              title={bp("Strategic Dashboards", "Strategische Dashboards")}
+              description={bp(
+                "Portfolio-level views with Ansoff Matrix, BCG Matrix, McKinsey Matrix, and Three Horizons Model across all ideas.",
+                "Portfolio-Ansichten mit Ansoff-Matrix, BCG-Matrix, McKinsey-Matrix und Drei-Horizonte-Modell über alle Ideen."
+              )}
+            />
+          </div>
+        </section>
+
       </main>
     </div>
   );
 }
 
 /* Stage flow visual */
-function StageFlowDiagram({ t }: { t: (k: string) => string }) {
+function StageFlowDiagram({ bp }: { bp: (en: string, de: string) => string }) {
   const stages = [
-    { key: "idea", color: "bg-blue-500" },
-    { key: "rough_scoring", color: "bg-indigo-500" },
-    { key: "gate1", color: "bg-amber-500" },
-    { key: "detailed_scoring", color: "bg-purple-500" },
-    { key: "gate2", color: "bg-amber-500" },
-    { key: "business_case", color: "bg-teal-500" },
-    { key: "implement_review", color: "bg-orange-500" },
+    { label: bp("Idea Entry", "Ideeneingabe"), color: "bg-stage-idea" },
+    { label: bp("Idea Scoring", "Ideen-Scoring"), color: "bg-stage-rough-scoring" },
+    { label: "Gate 1", color: "bg-stage-gate1" },
+    { label: bp("Business Plan", "Business Plan"), color: "bg-stage-detailed-scoring" },
+    { label: "Gate 2", color: "bg-stage-gate2" },
+    { label: bp("GTM Plan", "GTM-Plan"), color: "bg-stage-business-case" },
+    { label: bp("Implement & Review", "Umsetzung & Review"), color: "bg-stage-implement-review" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {stages.map(({ key, color }, i) => (
-        <div key={key} className="flex items-center gap-2">
+      {stages.map(({ label, color }, i) => (
+        <div key={label} className="flex items-center gap-2">
           <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap`}>
-            <span>{t(`stage_${key}`)}</span>
+            {label}
           </div>
           {i < stages.length - 1 && <span className="text-muted-foreground text-lg">→</span>}
         </div>
@@ -467,79 +297,17 @@ function StageFlowDiagram({ t }: { t: (k: string) => string }) {
   );
 }
 
-/* Reusable scoring category detail with table */
-function ScoringCategoryDetail({
-  t,
-  title,
-  weight,
-  description,
-  subcategories,
-  scoringTable,
-  inverted,
-}: {
-  t: (k: string) => string;
-  title: string;
-  weight: number;
-  description: string;
-  subcategories: { name: string; desc: string }[];
-  scoringTable: { score: number; label: string }[];
-  inverted?: boolean;
-}) {
-  const scoreColors = inverted
-    ? ["bg-green-500/20 text-green-700", "bg-green-500/10 text-green-600", "bg-yellow-500/15 text-yellow-700", "bg-orange-500/15 text-orange-700", "bg-red-500/20 text-red-700"]
-    : ["bg-red-500/20 text-red-700", "bg-orange-500/15 text-orange-700", "bg-yellow-500/15 text-yellow-700", "bg-green-500/10 text-green-600", "bg-green-500/20 text-green-700"];
-
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>{title}</span>
-          <span className="text-sm font-normal text-muted-foreground">{t("guideWeight")}: {weight}</span>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          {icon}
+          {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-
-        {subcategories.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold mb-3">{t("guideSubcategories")}</h4>
-            <div className="space-y-2">
-              {subcategories.map(({ name, desc }) => (
-                <div key={name} className="rounded-md border border-border p-3">
-                  <span className="font-medium text-sm">{name}</span>
-                  <p className="text-xs text-muted-foreground mt-1">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div>
-          <h4 className="text-sm font-semibold mb-3">{t("guideScoringTable")}</h4>
-          {inverted && (
-            <p className="text-xs text-muted-foreground mb-2 italic">{t("guideRiskInverted")}</p>
-          )}
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-20 text-center">{t("score")}</TableHead>
-                <TableHead>{t("guideDefinition")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {scoringTable.map(({ score, label }, i) => (
-                <TableRow key={score}>
-                  <TableCell className="text-center">
-                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${scoreColors[i]}`}>
-                      {score}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-sm">{label}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
   );
