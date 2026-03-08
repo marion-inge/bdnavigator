@@ -229,9 +229,11 @@ export default function OpportunityDetail() {
               />
             )}
             {activeTab === "detailed_scoring" && (
-              <DetailedScoringSection
+              <BusinessPlanSection
                 detailedScoring={opp.detailedScoring}
-                onSave={(ds) => updateDetailedScoring(opp.id, ds)}
+                strategicAnalyses={opp.strategicAnalyses}
+                onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
+                onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 onNavigateToAnalysis={(analysisTab) => {
                   setSaDefaultTab(analysisTab);
