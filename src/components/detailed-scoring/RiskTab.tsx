@@ -73,20 +73,8 @@ export function RiskTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
     updateField("riskItems", local.riskItems.filter((_, i) => i !== index));
   };
 
-  const isRisk = true;
-  const getScoreColor = (s: number) => {
-    const effective = 6 - s;
-    if (effective >= 4) return "bg-green-500";
-    if (effective >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
 
-  const getScoreLabel = (s: number) => {
-    const effective = 6 - s;
-    if (effective >= 4) return t("scoreHigh");
-    if (effective >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
+
 
   // Risk matrix: 5×5 grid, probability (y) × impact (x)
   // Color zones: green (low), yellow (medium), red (high)
