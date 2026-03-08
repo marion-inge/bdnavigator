@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, STAGE_ORDER } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, STAGE_ORDER, DetailedScoring } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
@@ -141,7 +141,7 @@ export default function OpportunityDetail() {
       children: [
         { key: "som-overview", label: bp("Overview", "Übersicht") },
         { key: "som-competitor", label: bp("Competitors", "Wettbewerb") },
-        { key: "som-pricing", label: "Pricing" },
+        
         { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
         { key: "som-vpc", label: "VPC" },
         { key: "som-cba", label: bp("Customer Benefit", "Kundennutzen") },
@@ -414,6 +414,10 @@ export default function OpportunityDetail() {
                 goToMarketPlan={opp.goToMarketPlan}
                 onSave={(plan) => updateOpportunity(opp.id, { goToMarketPlan: plan })}
                 readonly={opp.stage === "closed"}
+                businessCase={opp.businessCase}
+                onSaveBusinessCase={(bc) => updateBusinessCase(opp.id, bc)}
+                detailedScoring={opp.detailedScoring}
+                onSaveDetailedScoring={(ds) => updateDetailedScoring(opp.id, ds)}
               />
             )}
             {activeTab === "implement_review" && (
