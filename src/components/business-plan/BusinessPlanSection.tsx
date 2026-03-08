@@ -13,7 +13,7 @@ import { OrganisationalReadinessTab } from "@/components/detailed-scoring/Organi
 import { RiskTab } from "@/components/detailed-scoring/RiskTab";
 import { CustomerLandscapeTab } from "@/components/detailed-scoring/CustomerLandscapeTab";
 import { CompetitorLandscapeTab } from "@/components/detailed-scoring/CompetitorLandscapeTab";
-import { CommercialViabilityTab } from "@/components/detailed-scoring/CommercialViabilityTab";
+
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
 
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";

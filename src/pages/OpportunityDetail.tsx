@@ -414,6 +414,10 @@ export default function OpportunityDetail() {
                 goToMarketPlan={opp.goToMarketPlan}
                 onSave={(plan) => updateOpportunity(opp.id, { goToMarketPlan: plan })}
                 readonly={opp.stage === "closed"}
+                businessCase={opp.businessCase}
+                onSaveBusinessCase={(bc) => updateBusinessCase(opp.id, bc)}
+                detailedScoring={opp.detailedScoring}
+                onSaveDetailedScoring={(ds) => updateDetailedScoring(opp.id, ds)}
               />
             )}
             {activeTab === "implement_review" && (
