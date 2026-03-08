@@ -2,8 +2,6 @@ import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { CombinedOverview } from "./CombinedOverview";
 import { TamOverview } from "./TamOverview";
 import { SamOverview } from "./SamOverview";
@@ -18,7 +16,11 @@ import { CompetitorLandscapeTab } from "@/components/detailed-scoring/Competitor
 import { CommercialViabilityTab } from "@/components/detailed-scoring/CommercialViabilityTab";
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
 import { MarketAttractivenessTab } from "@/components/detailed-scoring/MarketAttractivenessTab";
+import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
+import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
+import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3, FolderOpen, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export type StrategicAnalysisTab = string;
 
@@ -55,11 +57,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
+  const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
   const handleUpdateScoring = (updated: DetailedScoring) => {
     setScoring(updated);
     onSaveDetailed(updated);
   };
+
+  const handleUpdateSa = (updated: StrategicAnalyses) => {
+    setSaData(updated);
+    onSaveStrategic(updated);
+  };
+
+  const saProps = { strategicAnalyses: saData, onSave: handleUpdateSa, readonly };
 
   return (
     <Tabs defaultValue="combined" className="space-y-6">
@@ -88,15 +98,16 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* Combined Overview */}
       <TabsContent value="combined">
-        <CombinedOverview scoring={scoring} />
+        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly} />
       </TabsContent>
 
-      {/* TAM Section */}
+      {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
         <Tabs defaultValue="tam-overview" className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="tam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="tam-market" className="text-xs">{bp("Market Data", "Marktdaten")}</TabsTrigger>
+            <TabsTrigger value="tam-research" className="text-xs">{bp("Market Research", "Marktforschung")}</TabsTrigger>
             <TabsTrigger value="tam-pestel" className="text-xs">PESTEL</TabsTrigger>
             <TabsTrigger value="tam-valuechain" className="text-xs">{bp("Value Chain", "Wertschöpfungskette")}</TabsTrigger>
             <TabsTrigger value="tam-porter" className="text-xs">Porter's</TabsTrigger>
@@ -108,22 +119,25 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="tam-market">
             <MarketAttractivenessTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
+          <TabsContent value="tam-research">
+            <EmbeddedMarketResearch {...saProps} />
+          </TabsContent>
           <TabsContent value="tam-pestel">
-            <ModelLinkCard name="PESTEL" description={bp("Political, economic, social, technological, environmental, legal factors affecting the total market.", "Politische, ökonomische, soziale, technologische, ökologische, rechtliche Faktoren.")} tabKey="pestel" onNavigate={onNavigateToAnalysis} icon="🏛️" />
+            <EmbeddedPestel {...saProps} />
           </TabsContent>
           <TabsContent value="tam-valuechain">
-            <ModelLinkCard name={bp("Industry Value Chain", "Branchen-Wertschöpfungskette")} description={bp("Position in the value chain, relevant actors, margin attractiveness.", "Position in der Wertschöpfungskette, relevante Akteure, Margenattraktivität.")} tabKey="valueChain" onNavigate={onNavigateToAnalysis} icon="🔗" />
+            <EmbeddedValueChain {...saProps} />
           </TabsContent>
           <TabsContent value="tam-porter">
-            <ModelLinkCard name="Porter's Five Forces" description={bp("Competitive rivalry, threat of new entrants/substitutes, bargaining power of buyers/suppliers.", "Wettbewerbsrivalität, Bedrohung durch neue Marktteilnehmer/Substitute, Verhandlungsmacht.")} tabKey="porter" onNavigate={onNavigateToAnalysis} icon="⚔️" />
+            <EmbeddedPorter {...saProps} />
           </TabsContent>
           <TabsContent value="tam-swot">
-            <ModelLinkCard name="SWOT" description={bp("Strengths/weaknesses to address the total market, opportunities/risks from market development.", "Stärken/Schwächen zur Adressierung des Gesamtmarktes, Chancen/Risiken aus der Marktentwicklung.")} tabKey="swot" onNavigate={onNavigateToAnalysis} icon="📊" />
+            <EmbeddedSwot {...saProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
 
-      {/* SAM Section */}
+      {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
         <Tabs defaultValue="sam-overview" className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
@@ -158,20 +172,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="sam-models">
-            <div className="space-y-3">
-              <h3 className="font-semibold text-foreground">{bp("SAM Supporting Models", "SAM-Unterstützende Modelle")}</h3>
-              <div className="grid gap-2 md:grid-cols-2">
-                <ModelLinkCard name={bp("Customer Segmentation", "Kundensegmentierung")} description={bp("Segmentation by customer groups, use cases, size, maturity.", "Segmentierung nach Kundengruppen, Use Cases, Größe, Reifegrad.")} tabKey="custSeg" onNavigate={onNavigateToAnalysis} icon="👥" />
-                <ModelLinkCard name={bp("Customer Interviews", "Kundeninterviews")} description={bp("Interview guides, key quotes, insights, quantified hypotheses.", "Interviewleitfäden, zentrale Zitate, Insights, quantifizierte Hypothesen.")} tabKey="custInt" onNavigate={onNavigateToAnalysis} icon="🎤" />
-                <ModelLinkCard name={bp("Business Model Canvas", "Business Model Canvas")} description={bp("Full business model canvas for the serviceable market.", "Vollständiges Business Model Canvas für den adressierbaren Markt.")} tabKey="bizModel" onNavigate={onNavigateToAnalysis} icon="📐" />
-                <ModelLinkCard name="Lean Canvas" description={bp("Problem-solution fit focused template for the SAM.", "Problem-Solution-Fit-Template für den SAM.")} tabKey="leanCanvas" onNavigate={onNavigateToAnalysis} icon="📝" />
-              </div>
+            <div className="space-y-6">
+              <EmbeddedCustomerSegmentation {...saProps} />
+              <EmbeddedCustomerInterviews {...saProps} />
+              <EmbeddedInternalAffiliateInterviews {...saProps} />
+              <EmbeddedInternalBUInterviews {...saProps} />
+              <EmbeddedBMC {...saProps} />
+              <EmbeddedLeanCanvas {...saProps} />
             </div>
           </TabsContent>
         </Tabs>
       </TabsContent>
 
-      {/* SOM Section */}
+      {/* ═══ SOM ═══ */}
       <TabsContent value="som">
         <Tabs defaultValue="som-overview" className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
@@ -194,20 +207,18 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="som-models">
-            <div className="space-y-3">
-              <h3 className="font-semibold text-foreground">{bp("SOM Supporting Models", "SOM-Unterstützende Modelle")}</h3>
-              <div className="grid gap-2 md:grid-cols-2">
-                <ModelLinkCard name={bp("Value Proposition Canvas", "Value Proposition Canvas")} description={bp("Customer jobs, pains, gains vs. our value profile.", "Kundenaufgaben, Pains, Gains vs. unser Wertprofil.")} tabKey="vpc" onNavigate={onNavigateToAnalysis} icon="💎" />
-                <ModelLinkCard name={bp("Customer Benefit Analysis", "Kundennutzenanalyse")} description={bp("Functional, emotional, social, self-expressive benefits.", "Funktionaler, emotionaler, sozialer, selbstdarstellender Nutzen.")} tabKey="cba" onNavigate={onNavigateToAnalysis} icon="🎯" />
-                <ModelLinkCard name={bp("Three Circle Model", "Drei-Kreise-Modell")} description={bp("Our value vs. competitor value vs. customer needs — differentiation.", "Unser Wert vs. Wettbewerberwert vs. Kundenbedürfnisse — Differenzierung.")} tabKey="tcm" onNavigate={onNavigateToAnalysis} icon="⭕" />
-                <ModelLinkCard name={bp("Positioning Statement", "Positionierungsaussage")} description={bp("Target audience, category, key benefit, differentiator.", "Zielgruppe, Kategorie, Hauptnutzen, Differenzierung.")} tabKey="positioning" onNavigate={onNavigateToAnalysis} icon="📍" />
-              </div>
+            <div className="space-y-6">
+              <EmbeddedVPC {...saProps} />
+              <EmbeddedCBA {...saProps} />
+              <EmbeddedThreeCircles {...saProps} />
+              <EmbeddedPositioning {...saProps} />
+              <EmbeddedPositioningLandscape {...saProps} />
             </div>
           </TabsContent>
         </Tabs>
       </TabsContent>
 
-      {/* Others */}
+      {/* ═══ Others ═══ */}
       <TabsContent value="others">
         <div className="space-y-4">
           <div>
@@ -215,10 +226,10 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <p className="text-sm text-muted-foreground">{bp("Strategic frameworks not directly assignable to TAM, SAM, or SOM.", "Strategische Frameworks, die nicht direkt TAM, SAM oder SOM zuordenbar sind.")}</p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
-            <ModelLinkCard name={bp("Ansoff Matrix", "Ansoff-Matrix")} description={bp("Growth strategy classification: market penetration, product/market development, diversification.", "Wachstumsstrategien: Marktdurchdringung, Produkt-/Marktentwicklung, Diversifikation.")} tabKey="ansoff" onNavigate={onNavigateToAnalysis} icon="📊" />
-            <ModelLinkCard name={bp("BCG Matrix", "BCG-Matrix")} description={bp("Portfolio analysis by market share and growth rate: Star, Cash Cow, Question Mark, Dog.", "Portfolio-Analyse nach Marktanteil und Wachstum: Star, Cash Cow, Fragezeichen, Armer Hund.")} tabKey="bcg" onNavigate={onNavigateToAnalysis} icon="⭐" />
-            <ModelLinkCard name={bp("McKinsey Matrix", "McKinsey-Matrix")} description={bp("9-cell matrix: industry attractiveness vs. competitive strength.", "9-Felder-Matrix: Branchenattraktivität vs. Wettbewerbsstärke.")} tabKey="mckinsey" onNavigate={onNavigateToAnalysis} icon="📈" />
-            <ModelLinkCard name={bp("3 Horizons of Growth", "3 Horizonte des Wachstums")} description={bp("Horizon 1 (core), Horizon 2 (emerging), Horizon 3 (future) classification.", "Horizont 1 (Kern), Horizont 2 (aufstrebend), Horizont 3 (Zukunft) Einordnung.")} tabKey="threeHorizons" onNavigate={onNavigateToAnalysis} icon="🌅" />
+            <ModelLinkCard name={bp("Ansoff Matrix", "Ansoff-Matrix")} description={bp("Growth strategy classification: market penetration, product/market development, diversification. Helps decide the overall strategic approach for the opportunity.", "Wachstumsstrategien: Marktdurchdringung, Produkt-/Marktentwicklung, Diversifikation. Hilft bei der strategischen Gesamtausrichtung.")} tabKey="ansoff" onNavigate={onNavigateToAnalysis} icon="📊" />
+            <ModelLinkCard name={bp("BCG Matrix", "BCG-Matrix")} description={bp("Portfolio analysis by market share and growth rate: Star, Cash Cow, Question Mark, Dog. Useful for portfolio prioritization.", "Portfolio-Analyse nach Marktanteil und Wachstum: Star, Cash Cow, Fragezeichen, Armer Hund. Nützlich für Portfolio-Priorisierung.")} tabKey="bcg" onNavigate={onNavigateToAnalysis} icon="⭐" />
+            <ModelLinkCard name={bp("McKinsey Matrix", "McKinsey-Matrix")} description={bp("9-cell matrix: industry attractiveness vs. competitive strength. Guides investment decisions and resource allocation.", "9-Felder-Matrix: Branchenattraktivität vs. Wettbewerbsstärke. Leitet Investitionsentscheidungen und Ressourcenallokation.")} tabKey="mckinsey" onNavigate={onNavigateToAnalysis} icon="📈" />
+            <ModelLinkCard name={bp("3 Horizons of Growth", "3 Horizonte des Wachstums")} description={bp("Horizon 1 (core), Horizon 2 (emerging), Horizon 3 (future). Classifies the opportunity in the innovation pipeline timeline.", "Horizont 1 (Kern), Horizont 2 (aufstrebend), Horizont 3 (Zukunft). Ordnet die Opportunity in der Innovationspipeline-Timeline ein.")} tabKey="threeHorizons" onNavigate={onNavigateToAnalysis} icon="🌅" />
           </div>
         </div>
       </TabsContent>

@@ -1,17 +1,24 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, MarketYearValue, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
-import type { SomOverviewData } from "@/lib/businessPlanTypes";
+import { DetailedScoring, MarketYearValue, SCORING_WEIGHTS, calculateTotalScore, StrategicAnalyses } from "@/lib/types";
+import type { SomOverviewData, CombinedInterpretation } from "@/lib/businessPlanTypes";
 import { createDefaultSomOverview } from "@/lib/businessPlanTypes";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { EditableSection } from "@/components/EditableSection";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from "recharts";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { TrendingUp, Globe, Target } from "lucide-react";
+import { TrendingUp, Globe, Target, Map } from "lucide-react";
 
 interface Props {
   scoring: DetailedScoring;
+  strategicAnalyses?: StrategicAnalyses;
+  onSaveStrategic?: (sa: StrategicAnalyses) => void;
+  readonly?: boolean;
 }
 
 function calcCagr(values: MarketYearValue[]): string {
@@ -30,7 +37,14 @@ function formatValue(v: number): string {
   return `€${v}`;
 }
 
-export function CombinedOverview({ scoring }: Props) {
+const defaultInterpretation: CombinedInterpretation = {
+  overallPotential: "",
+  samDevelopment: "",
+  somDevelopment: "",
+  gapsAndLevers: "",
+};
+
+export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, readonly: propReadonly }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -39,7 +53,24 @@ export function CombinedOverview({ scoring }: Props) {
   const somData: SomOverviewData = (scoring as any).somOverview || createDefaultSomOverview();
   const somProj = somData.projections || [];
 
-  // Build chart data
+  // Interpretation state
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
+  const storedInterp: CombinedInterpretation = (scoring as any).combinedInterpretation || defaultInterpretation;
+  const [interp, setInterp] = useState<CombinedInterpretation>(storedInterp);
+
+  // Geographic data aggregation
+  const tamRegions = (scoring as any).tamOverview?.geographicalRegions || [];
+  const samRegions = (scoring as any).samOverview?.geographicalRegions || [];
+  const somRegions = somData.geographicalRegions || [];
+
+  const allRegionNames = [...new Set([
+    ...tamRegions.map((r: any) => r.region),
+    ...samRegions.map((r: any) => r.region),
+    ...somRegions.map((r: any) => r.region),
+  ])].filter(Boolean);
+
+  // Chart data
   const years = [1, 2, 3, 4, 5];
   const chartData = years.map(y => ({
     year: `${bp("Year", "Jahr")} ${y}`,
@@ -53,7 +84,7 @@ export function CombinedOverview({ scoring }: Props) {
   const hasSomData = somProj.some(p => p.value > 0);
   const hasAnyData = hasTamData || hasSamData || hasSomData;
 
-  // Scoring overview
+  // Scoring
   const scoringAsCriteria = {
     marketAttractiveness: { id: "marketAttractiveness", score: scoring.marketAttractiveness.score, comment: "" },
     strategicFit: { id: "strategicFit", score: scoring.strategicFit.score, comment: "" },
@@ -198,10 +229,10 @@ export function CombinedOverview({ scoring }: Props) {
         </CardContent>
       </Card>
 
-      {/* Interpretation */}
+      {/* Auto-Calculated Insights */}
       <Card>
         <CardHeader>
-          <CardTitle>{bp("Key Insights", "Wesentliche Erkenntnisse")}</CardTitle>
+          <CardTitle>{bp("Auto-Calculated Insights", "Automatisch berechnete Insights")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           {hasTamData && hasSamData && (
@@ -217,13 +248,75 @@ export function CombinedOverview({ scoring }: Props) {
             )}</p>
           )}
           {!hasAnyData && (
-            <p>{bp(
-              "Fill in TAM, SAM, and SOM projections in the respective overview pages to see insights here.",
-              "Füllen Sie die TAM-, SAM- und SOM-Projektionen in den jeweiligen Übersichtsseiten aus, um hier Erkenntnisse zu sehen.",
-            )}</p>
+            <p>{bp("Fill in TAM, SAM, and SOM projections to see insights.", "Füllen Sie TAM-, SAM- und SOM-Projektionen aus, um Insights zu sehen.")}</p>
           )}
         </CardContent>
       </Card>
+
+      {/* Editable Interpretation */}
+      <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
+        <Card>
+          <CardHeader>
+            <CardTitle>📝 {bp("Interpretation & Key Takeaways", "Interpretation & Kernaussagen")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>{bp("How does the overall potential develop?", "Wie entwickelt sich das Gesamtpotenzial?")}</Label>
+              <Textarea value={interp.overallPotential} onChange={e => setInterp(prev => ({ ...prev, overallPotential: e.target.value }))} placeholder={bp("Describe the TAM trajectory, growth outlook, market dynamics...", "Beschreiben Sie die TAM-Entwicklung, Wachstumsausblick, Marktdynamik...")} disabled={readonly} rows={3} />
+            </div>
+            <div>
+              <Label>{bp("How does the addressable portion (SAM) develop?", "Wie entwickelt sich der adressierbare Teil (SAM)?")}</Label>
+              <Textarea value={interp.samDevelopment} onChange={e => setInterp(prev => ({ ...prev, samDevelopment: e.target.value }))} placeholder={bp("SAM trajectory, expansion opportunities, limitations...", "SAM-Entwicklung, Expansionsmöglichkeiten, Limitierungen...")} disabled={readonly} rows={3} />
+            </div>
+            <div>
+              <Label>{bp("How does the obtainable portion (SOM) develop?", "Wie entwickelt sich der gewinnbare Teil (SOM)?")}</Label>
+              <Textarea value={interp.somDevelopment} onChange={e => setInterp(prev => ({ ...prev, somDevelopment: e.target.value }))} placeholder={bp("SOM trajectory, realistic win rates, competitive positioning...", "SOM-Entwicklung, realistische Gewinnraten, Wettbewerbspositionierung...")} disabled={readonly} rows={3} />
+            </div>
+            <div>
+              <Label>{bp("Where are the biggest gaps and levers?", "Wo liegen die größten Gaps und Hebel?")}</Label>
+              <Textarea value={interp.gapsAndLevers} onChange={e => setInterp(prev => ({ ...prev, gapsAndLevers: e.target.value }))} placeholder={bp("Gap between SAM and SOM, key levers to close it, required investments...", "Gap zwischen SAM und SOM, Schlüsselhebel, erforderliche Investitionen...")} disabled={readonly} rows={3} />
+            </div>
+          </CardContent>
+        </Card>
+      </EditableSection>
+
+      {/* Geographic Detail */}
+      {allRegionNames.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Map className="h-4 w-4" /> {bp("Geographic Breakdown", "Geografische Aufschlüsselung")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{bp("Region", "Region")}</TableHead>
+                  <TableHead className="text-center">{bp("TAM Size", "TAM-Größe")}</TableHead>
+                  <TableHead className="text-center">{bp("SAM Size", "SAM-Größe")}</TableHead>
+                  <TableHead className="text-center">{bp("SOM Size", "SOM-Größe")}</TableHead>
+                  <TableHead>{bp("Notes", "Anmerkungen")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allRegionNames.map((region: string) => {
+                  const tamR = tamRegions.find((r: any) => r.region === region);
+                  const samR = samRegions.find((r: any) => r.region === region);
+                  const somR = somRegions.find((r: any) => r.region === region);
+                  return (
+                    <TableRow key={region}>
+                      <TableCell className="font-medium">{region}</TableCell>
+                      <TableCell className="text-center text-blue-600 dark:text-blue-400">{tamR?.marketSize || "–"}</TableCell>
+                      <TableCell className="text-center text-emerald-600 dark:text-emerald-400">{samR?.marketSize || "–"}</TableCell>
+                      <TableCell className="text-center text-amber-600 dark:text-amber-400">{somR?.marketSize || "–"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{tamR?.notes || samR?.notes || somR?.notes || "–"}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
