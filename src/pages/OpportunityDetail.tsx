@@ -328,15 +328,16 @@ export default function OpportunityDetail() {
                         </button>
                       );
                     })}
-                    {/* Questionnaire */}
+                    {/* Questionnaire Wizard */}
                     <button
                       onClick={() => {
+                        setForceWizardMode(true);
                         setActiveTab("scoring");
                         setSidebarOpen(false);
                       }}
                       className={`
                         w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
-                        ${activeTab === "scoring"
+                        ${activeTab === "scoring" && forceWizardMode
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
                         }
