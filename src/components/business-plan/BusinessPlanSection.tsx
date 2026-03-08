@@ -218,7 +218,11 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
             <TabsTrigger value="som-pricing" className="text-xs">{bp("Pricing", "Pricing")}</TabsTrigger>
             <TabsTrigger value="som-pilot" className="text-xs">{bp("Pilot & Leads", "Pilot & Leads")}</TabsTrigger>
-            <TabsTrigger value="som-models" className="text-xs">{bp("Models", "Modelle")}</TabsTrigger>
+            <TabsTrigger value="som-vpc" className="text-xs">VPC</TabsTrigger>
+            <TabsTrigger value="som-cba" className="text-xs">{bp("Customer Benefit", "Kundennutzen")}</TabsTrigger>
+            <TabsTrigger value="som-threecircles" className="text-xs">{bp("Three Circles", "Drei Kreise")}</TabsTrigger>
+            <TabsTrigger value="som-positioning" className="text-xs">{bp("Positioning", "Positionierung")}</TabsTrigger>
+            <TabsTrigger value="som-landscape" className="text-xs">{bp("Pos. Landscape", "Pos. Landschaft")}</TabsTrigger>
           </TabsList>
           <TabsContent value="som-overview">
             <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -232,14 +236,20 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="som-pilot">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="som-models">
-            <div className="space-y-6">
-              <EmbeddedVPC {...saProps} />
-              <EmbeddedCBA {...saProps} />
-              <EmbeddedThreeCircles {...saProps} />
-              <EmbeddedPositioning {...saProps} />
-              <EmbeddedPositioningLandscape {...saProps} />
-            </div>
+          <TabsContent value="som-vpc">
+            <EmbeddedVPC {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-cba">
+            <EmbeddedCBA {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-threecircles">
+            <EmbeddedThreeCircles {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-positioning">
+            <EmbeddedPositioning {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-landscape">
+            <EmbeddedPositioningLandscape {...saProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
