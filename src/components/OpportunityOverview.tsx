@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { Opportunity, calculateTotalScore, STAGE_ORDER, SCORING_WEIGHTS } from "@/lib/types";
+import { Opportunity, STAGE_ORDER } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
 import { StageTimeline } from "@/components/StageTimeline";
 import { AIAssessment } from "@/components/AIAssessment";
@@ -27,7 +27,6 @@ interface OpportunityOverviewProps {
 
 export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate, onStartScoring, onRevertStage }: OpportunityOverviewProps) {
   const { t, language } = useI18n();
-  const totalScore = calculateTotalScore(opp.scoring);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription ?? "", industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner, ideaBringer: opp.ideaBringer ?? "" });
 
@@ -48,91 +47,12 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
   const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToImplementReview;
   const canRevert = onRevertStage && STAGE_ORDER.indexOf(opp.stage) > 0 && opp.stage !== "closed";
 
-  // Radar data (kept for potential future use)
-
-
-
-  // Detailed scoring average
-  const detailedAvg = useMemo(() => {
-    if (!opp.detailedScoring) return null;
-    const ds = opp.detailedScoring;
-    return Math.round(
-      ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
-    ) / 10;
-  }, [opp.detailedScoring]);
-
-  // Stage progress (timeline now handled by StageTimeline component)
-
-  // Score color
-  const scoreColor = totalScore >= 3.5 ? "text-[hsl(var(--success))]" : totalScore >= 2.5 ? "text-[hsl(var(--warning))]" : "text-destructive";
-  const scoreLabel = totalScore >= 3.5 ? t("scoreHigh") : totalScore >= 2.5 ? t("scoreMedium") : t("scoreLow");
 
   return (
     <div className="space-y-5">
-      {/* Top Row: Score Hero + Meta Info */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {/* Score Hero */}
-        <div className="rounded-xl border border-border bg-card p-6 flex flex-col items-center justify-center text-center">
-          <div className={`flex items-center gap-6 ${detailedAvg !== null ? "w-full justify-around" : ""}`}>
-            {/* Idea Score */}
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Idea Score</span>
-              <div className="relative">
-                <svg viewBox="0 0 120 120" className={detailedAvg !== null ? "w-20 h-20" : "w-28 h-28"}>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
-                  <circle
-                    cx="60" cy="60" r="52"
-                    fill="none"
-                    stroke={totalScore >= 3.5 ? "hsl(145, 55%, 40%)" : totalScore >= 2.5 ? "hsl(38, 90%, 50%)" : "hsl(0, 65%, 50%)"}
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray={`${(totalScore / 5) * 327} 327`}
-                    transform="rotate(-90 60 60)"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className={`${detailedAvg !== null ? "text-xl" : "text-3xl"} font-bold ${scoreColor}`}>{totalScore.toFixed(1)}</span>
-                  <span className="text-[9px] text-muted-foreground">/ 5.0</span>
-                </div>
-              </div>
-              <span className={`text-xs font-medium mt-1 ${scoreColor}`}>{scoreLabel}</span>
-            </div>
-
-            {/* Business Plan Score */}
-            {detailedAvg !== null && (() => {
-              const bpColor = detailedAvg >= 3.5 ? "text-[hsl(var(--success))]" : detailedAvg >= 2.5 ? "text-[hsl(var(--warning))]" : "text-destructive";
-              const bpStroke = detailedAvg >= 3.5 ? "hsl(145, 55%, 40%)" : detailedAvg >= 2.5 ? "hsl(38, 90%, 50%)" : "hsl(0, 65%, 50%)";
-              const bpLabel = detailedAvg >= 3.5 ? t("scoreHigh") : detailedAvg >= 2.5 ? t("scoreMedium") : t("scoreLow");
-              return (
-                <div className="flex flex-col items-center">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Business Plan</span>
-                  <div className="relative">
-                    <svg viewBox="0 0 120 120" className="w-20 h-20">
-                      <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(220, 15%, 90%)" strokeWidth="8" />
-                      <circle
-                        cx="60" cy="60" r="52"
-                        fill="none"
-                        stroke={bpStroke}
-                        strokeWidth="8"
-                        strokeLinecap="round"
-                        strokeDasharray={`${(detailedAvg / 5) * 327} 327`}
-                        transform="rotate(-90 60 60)"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className={`text-xl font-bold ${bpColor}`}>{detailedAvg.toFixed(1)}</span>
-                      <span className="text-[9px] text-muted-foreground">/ 5.0</span>
-                    </div>
-                  </div>
-                  <span className={`text-xs font-medium mt-1 ${bpColor}`}>{bpLabel}</span>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-
-        {/* Description & Meta */}
-        <div className="md:col-span-2 rounded-xl border border-border bg-card p-5 space-y-4">
+      {/* Meta Info */}
+      <div>
+        <div className="rounded-xl border border-border bg-card p-5 space-y-4">
           <div className="flex items-center justify-between">
             {editing ? (
               <div className="space-y-2 flex-1">
