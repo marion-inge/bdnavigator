@@ -433,6 +433,7 @@ export default function OpportunityDetail() {
             )}
             {activeTab === "scoring" && (
               <ScoringSection
+                key={forceWizardMode ? "wizard" : "results"}
                 scoring={opp.scoring}
                 onSaveAll={({ scoring, answers, comments, sources }) => {
                   updateOpportunity(opp.id, {
