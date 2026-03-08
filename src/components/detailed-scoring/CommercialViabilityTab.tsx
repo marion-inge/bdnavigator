@@ -57,17 +57,8 @@ export function CommercialViabilityTab({ scoring, onUpdate, readonly: propReadon
     setDirty(false);
   };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
 
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
+
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000) return `€${(value / 1000000).toFixed(1)}M`;
