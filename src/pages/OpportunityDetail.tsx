@@ -172,10 +172,6 @@ export default function OpportunityDetail() {
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
-    { key: "sa_ansoff",           label: bp("Ansoff Matrix", "Ansoff-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_bcg",              label: bp("BCG Matrix", "BCG-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_mckinsey",         label: bp("McKinsey Matrix", "McKinsey-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_three_horizons",   label: bp("3 Horizons", "3 Horizonte"), icon: <LineChart className="h-4 w-4" /> },
     { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
@@ -183,6 +179,15 @@ export default function OpportunityDetail() {
     { key: "strategic_analyses",  label: t("saTab"),             icon: <LineChart className="h-4 w-4" /> },
     { key: "files",               label: t("filesTitle"),        icon: <Paperclip className="h-4 w-4" /> },
   ];
+
+  const scoringSubItems: { key: TabKey; label: string }[] = [
+    { key: "sa_ansoff",         label: bp("Ansoff Matrix", "Ansoff-Matrix") },
+    { key: "sa_bcg",            label: bp("BCG Matrix", "BCG-Matrix") },
+    { key: "sa_mckinsey",       label: bp("McKinsey Matrix", "McKinsey-Matrix") },
+    { key: "sa_three_horizons", label: bp("3 Horizons", "3 Horizonte") },
+  ];
+
+  const [scoringExpanded, setScoringExpanded] = useState(false);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
