@@ -107,7 +107,6 @@ export default function OpportunityDetail() {
       icon: <Globe className="h-3 w-3" />,
       children: [
         { key: "tam-overview", label: bp("Overview", "Übersicht") },
-        { key: "tam-market", label: bp("Market Data", "Marktdaten") },
         { key: "tam-research", label: bp("Market Research", "Marktforschung") },
         { key: "tam-pestel", label: "PESTEL" },
         { key: "tam-valuechain", label: bp("Value Chain", "Wertschöpfungskette") },
