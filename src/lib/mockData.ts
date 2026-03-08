@@ -539,7 +539,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       commercialViability: "RaaS model: €8K/robot/month. Payback for airports within 18 months. 65% gross margin.",
       risk: "Low technical risk — proven components. Regulatory environment well understood.",
     }),
-    detailedScoring: {
+    detailedScoring: ({
       marketAttractiveness: {
         score: 5,
         analysis: {
