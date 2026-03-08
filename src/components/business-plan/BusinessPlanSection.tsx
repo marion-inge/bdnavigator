@@ -15,7 +15,7 @@ import { CustomerLandscapeTab } from "@/components/detailed-scoring/CustomerLand
 import { CompetitorLandscapeTab } from "@/components/detailed-scoring/CompetitorLandscapeTab";
 import { CommercialViabilityTab } from "@/components/detailed-scoring/CommercialViabilityTab";
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
-import { MarketAttractivenessTab } from "@/components/detailed-scoring/MarketAttractivenessTab";
+
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
