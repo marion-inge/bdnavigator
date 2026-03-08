@@ -67,17 +67,8 @@ export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Pr
     updateField("milestones", local.milestones.filter((_, i) => i !== index));
   };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
 
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
+
 
   const getTrlColor = (trl: number) => {
     if (trl >= 7) return "text-green-600 dark:text-green-400";
