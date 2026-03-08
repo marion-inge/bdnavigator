@@ -480,6 +480,8 @@ export default function OpportunityDetail() {
                   setBpMainTab(mainTab);
                   setBpSubTab(subTab);
                 }}
+                opportunityTitle={opp.title}
+                opportunityDescription={opp.description}
               />
             )}
             {activeTab === "business_case" && (
