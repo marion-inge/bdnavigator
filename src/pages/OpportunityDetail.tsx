@@ -149,7 +149,7 @@ export default function OpportunityDetail() {
     },
   ];
 
-  const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
+
 
   const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
     setActiveTab("detailed_scoring");
