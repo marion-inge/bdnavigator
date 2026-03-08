@@ -27,7 +27,6 @@ interface OpportunityOverviewProps {
 
 export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate, onStartScoring, onRevertStage }: OpportunityOverviewProps) {
   const { t, language } = useI18n();
-  const totalScore = calculateTotalScore(opp.scoring);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription ?? "", industry: opp.industry, geography: opp.geography, technology: opp.technology, owner: opp.owner, ideaBringer: opp.ideaBringer ?? "" });
 
