@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+// i18n context provider
 
 export type Language = "en" | "de";
 
