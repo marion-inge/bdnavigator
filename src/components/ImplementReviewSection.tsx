@@ -48,12 +48,17 @@ export function ImplementReviewSection({ implementReview, onSave, readonly: prop
     { value: "completed", label: t("irStatusCompleted") },
   ];
 
+  const agentContext = { section: "Implement & Review", implementReview: data };
+
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
     <div className="space-y-6">
-      <div className="flex items-center gap-2 mb-2">
-        <RefreshCw className="h-5 w-5 text-primary" />
-        <h2 className="text-xl font-bold text-foreground">{t("irTitle")}</h2>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <RefreshCw className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-bold text-foreground">{t("irTitle")}</h2>
+        </div>
+        <AgentPanel context={agentContext} sectionLabel="Implement & Review" />
       </div>
 
       {/* Status & Review */}
