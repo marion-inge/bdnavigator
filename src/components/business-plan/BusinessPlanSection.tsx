@@ -107,10 +107,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TrendingUp className="h-3.5 w-3.5" />
           SOM
         </TabsTrigger>
-        <TabsTrigger value="others" className="text-xs sm:text-sm gap-1.5">
-          <FolderOpen className="h-3.5 w-3.5" />
-          {bp("Others", "Sonstige")}
-        </TabsTrigger>
       </TabsList>
 
       {/* Combined Overview */}
