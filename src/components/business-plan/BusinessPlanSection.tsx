@@ -69,7 +69,20 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     onTabChange?.(section, subTab);
   };
 
+  const agentContext = {
+    section: "Business Plan",
+    mainTab,
+    opportunityTitle,
+    opportunityDescription,
+    detailedScoring: scoring,
+    strategicAnalyses: saData,
+  };
+
   return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <AgentPanel context={agentContext} sectionLabel="Business Plan" />
+      </div>
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
