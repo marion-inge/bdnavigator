@@ -162,17 +162,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
         <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
-          <TabsList className="flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="som-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
-            <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
-            
-            <TabsTrigger value="som-pilot" className="text-xs">{bp("Pilot & Leads", "Pilot & Leads")}</TabsTrigger>
-            <TabsTrigger value="som-vpc" className="text-xs">VPC</TabsTrigger>
-            <TabsTrigger value="som-cba" className="text-xs">{bp("Customer Benefit", "Kundennutzen")}</TabsTrigger>
-            <TabsTrigger value="som-threecircles" className="text-xs">{bp("Three Circles", "Drei Kreise")}</TabsTrigger>
-            <TabsTrigger value="som-positioning" className="text-xs">{bp("Positioning", "Positionierung")}</TabsTrigger>
-            <TabsTrigger value="som-landscape" className="text-xs">{bp("Pos. Landscape", "Pos. Landschaft")}</TabsTrigger>
-          </TabsList>
           <TabsContent value="som-overview">
             <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
