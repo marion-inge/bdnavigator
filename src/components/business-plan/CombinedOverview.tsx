@@ -83,44 +83,8 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
   const hasSomData = somProj.some(p => p.value > 0);
   const hasAnyData = hasTamData || hasSamData || hasSomData;
 
-  // Scoring
-  const scoringAsCriteria = {
-    marketAttractiveness: { id: "marketAttractiveness", score: scoring.marketAttractiveness.score, comment: "" },
-    strategicFit: { id: "strategicFit", score: scoring.strategicFit.score, comment: "" },
-    feasibility: { id: "feasibility", score: scoring.feasibility.score, comment: "" },
-    commercialViability: { id: "commercialViability", score: scoring.commercialViability.score, comment: "" },
-    risk: { id: "risk", score: scoring.risk.score, comment: "" },
-  };
-  const totalScore = calculateTotalScore(scoringAsCriteria);
-  const radarData = [
-    { criterion: bp("Market Potential", "Marktpotenzial"), score: scoring.marketAttractiveness.score, fullMark: 5 },
-    { criterion: bp("Strategic Fit", "Strateg. Fit"), score: scoring.strategicFit.score, fullMark: 5 },
-    { criterion: bp("Feasibility", "Machbarkeit"), score: scoring.feasibility.score, fullMark: 5 },
-    { criterion: bp("Commercial", "Kommerziell"), score: scoring.commercialViability.score, fullMark: 5 },
-    { criterion: bp("Risk (inv.)", "Risiko (inv.)"), score: 6 - scoring.risk.score, fullMark: 5 },
-  ];
-
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "text-green-600 dark:text-green-400";
-    if (s >= 3) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
-  const getScoreBg = (s: number) => {
-    if (s >= 4) return "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800";
-    if (s >= 3) return "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800";
-    return "bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-800";
-  };
-
   return (
     <div className="space-y-6">
-      {/* Score Summary */}
-      <div className={`rounded-xl border-2 p-6 text-center ${getScoreBg(totalScore)}`}>
-        <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-          {bp("Business Plan Score", "Business Plan Score")}
-        </span>
-        <p className={`text-5xl font-bold mt-2 ${getScoreColor(totalScore)}`}>{totalScore.toFixed(1)}</p>
-        <p className="text-sm text-muted-foreground mt-1">/ 5.0</p>
-      </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
