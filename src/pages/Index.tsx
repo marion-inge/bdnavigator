@@ -14,13 +14,11 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X, BookOpen, FileDown, ClipboardList } from "lucide-react";
+import { Search, X, BookOpen } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
 import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
-import { exportDashboardPdf } from "@/lib/pdfExport";
-import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
@@ -129,32 +127,9 @@ export default function Index() {
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 sm:h-9 sm:w-9"
-              onClick={async () => {
-                const confirmed = window.confirm(
-                  language === "de"
-                    ? "⚠️ Achtung: Alle Opportunities werden unwiderruflich gelöscht und durch die Demo-Daten ersetzt. Fortfahren?"
-                    : "⚠️ Warning: All opportunities will be permanently deleted and replaced with demo data. Continue?"
-                );
-                if (!confirmed) return;
-                const { supabase } = await import("@/integrations/supabase/client");
-                await (supabase as any).from("opportunities").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-                window.location.reload();
-              }}
-              title="Reset Data"
-            >
-              <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => exportDashboardPdf(opportunities)} title="PDF Export">
-              <FileDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline ml-1.5">PDF</span>
-            </Button>
-            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => exportQuestionnairePdf()} title="Fragenkatalog PDF">
-              <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline ml-1.5">Fragebogen</span>
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
+              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
             </Button>
             <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
               <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
