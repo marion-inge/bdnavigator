@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from "recharts";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { TrendingUp, Globe, Target, Map } from "lucide-react";
