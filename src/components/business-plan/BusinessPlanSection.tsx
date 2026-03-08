@@ -31,6 +31,9 @@ interface Props {
   onSaveStrategic: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
   onNavigateToAnalysis?: (analysisTab: StrategicAnalysisTab) => void;
+  activeMainTab?: string;
+  activeSubTab?: string;
+  onTabChange?: (mainTab: string, subTab?: string) => void;
 }
 
 function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
