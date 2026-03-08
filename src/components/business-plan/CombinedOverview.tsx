@@ -111,51 +111,32 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
         </Card>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Area Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{bp("TAM – SAM – SOM Development (5 Years)", "TAM – SAM – SOM Entwicklung (5 Jahre)")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {hasAnyData ? (
-              <ResponsiveContainer width="100%" height={320}>
-                <AreaChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000_000 ? `${(v/1_000_000).toFixed(0)}M` : v >= 1_000 ? `${(v/1_000).toFixed(0)}K` : `${v}`} />
-                  <Tooltip formatter={(v: number) => formatValue(v)} />
-                  <Legend />
-                  <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
-                  <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
-                  <Area type="monotone" dataKey="SOM" stackId="0" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
-                {bp("Enter TAM, SAM, and SOM projections to see the chart.", "Tragen Sie TAM-, SAM- und SOM-Projektionen ein, um die Grafik zu sehen.")}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Scoring Radar */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{bp("Scoring Radar", "Scoring-Radar")}</CardTitle>
-          </CardHeader>
-          <CardContent>
+      {/* Area Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{bp("TAM – SAM – SOM Development (5 Years)", "TAM – SAM – SOM Entwicklung (5 Jahre)")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {hasAnyData ? (
             <ResponsiveContainer width="100%" height={320}>
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fontSize: 10 }} />
-                <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} strokeWidth={2} />
-              </RadarChart>
+              <AreaChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000_000 ? `${(v/1_000_000).toFixed(0)}M` : v >= 1_000 ? `${(v/1_000).toFixed(0)}K` : `${v}`} />
+                <Tooltip formatter={(v: number) => formatValue(v)} />
+                <Legend />
+                <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
+                <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
+                <Area type="monotone" dataKey="SOM" stackId="0" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
+              </AreaChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
+              {bp("Enter TAM, SAM, and SOM projections to see the chart.", "Tragen Sie TAM-, SAM- und SOM-Projektionen ein, um die Grafik zu sehen.")}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Data Table */}
       <Card>
