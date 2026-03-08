@@ -213,6 +213,10 @@ export interface DetailedScoring {
   organisationalReadiness?: OrganisationalReadiness;
   pilotCustomer?: PilotCustomerData;
   portfolioFit?: PortfolioFitData;
+  tamOverview?: import("./businessPlanTypes").TamOverviewData;
+  samOverview?: import("./businessPlanTypes").SamOverviewData;
+  somOverview?: import("./businessPlanTypes").SomOverviewData;
+  combinedInterpretation?: import("./businessPlanTypes").CombinedInterpretation;
 }
 
 export interface BusinessCase {
