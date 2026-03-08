@@ -32,6 +32,7 @@ export default function OpportunityDetail() {
   const [bpMainTab, setBpMainTab] = useState("combined");
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
+  const [scoringExpanded, setScoringExpanded] = useState(false);
 
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -172,10 +173,6 @@ export default function OpportunityDetail() {
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
-    { key: "sa_ansoff",           label: bp("Ansoff Matrix", "Ansoff-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_bcg",              label: bp("BCG Matrix", "BCG-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_mckinsey",         label: bp("McKinsey Matrix", "McKinsey-Matrix"), icon: <LineChart className="h-4 w-4" /> },
-    { key: "sa_three_horizons",   label: bp("3 Horizons", "3 Horizonte"), icon: <LineChart className="h-4 w-4" /> },
     { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
@@ -183,6 +180,14 @@ export default function OpportunityDetail() {
     { key: "strategic_analyses",  label: t("saTab"),             icon: <LineChart className="h-4 w-4" /> },
     { key: "files",               label: t("filesTitle"),        icon: <Paperclip className="h-4 w-4" /> },
   ];
+
+  const scoringSubItems: { key: TabKey; label: string }[] = [
+    { key: "sa_ansoff",         label: bp("Ansoff Matrix", "Ansoff-Matrix") },
+    { key: "sa_bcg",            label: bp("BCG Matrix", "BCG-Matrix") },
+    { key: "sa_mckinsey",       label: bp("McKinsey Matrix", "McKinsey-Matrix") },
+    { key: "sa_three_horizons", label: bp("3 Horizons", "3 Horizonte") },
+  ];
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -242,10 +247,12 @@ export default function OpportunityDetail() {
           </div>
 
           {navItems.map((item) => {
-            const isActive = activeTab === item.key;
+            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
             const isBpItem = item.key === "detailed_scoring";
+            const isScoringItem = item.key === "scoring";
+            const hasExpander = isBpItem || isScoringItem;
 
             return (
               <div key={item.key}>
@@ -256,8 +263,13 @@ export default function OpportunityDetail() {
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
                     if (isBpItem) {
                       setBpExpanded(!bpExpanded);
+                      setScoringExpanded(false);
+                    } else if (isScoringItem) {
+                      setScoringExpanded(!scoringExpanded);
+                      setBpExpanded(false);
                     } else {
                       setBpExpanded(false);
+                      setScoringExpanded(false);
                     }
                   }}
                   className={`
@@ -282,12 +294,40 @@ export default function OpportunityDetail() {
                   {current && !isActive && !item.badge && (
                     <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
                   )}
-                  {isBpItem ? (
-                    bpExpanded && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                  {hasExpander ? (
+                    (isBpItem ? bpExpanded : scoringExpanded) && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   ) : (
                     isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   )}
                 </button>
+
+                {/* Scoring Sub-Navigation (Strategic Models) */}
+                {isScoringItem && scoringExpanded && isActive && (
+                  <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                    {scoringSubItems.map((sub) => {
+                      const isSubActive = activeTab === sub.key;
+                      return (
+                        <button
+                          key={sub.key}
+                          onClick={() => {
+                            setActiveTab(sub.key);
+                            setSidebarOpen(false);
+                          }}
+                          className={`
+                            w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
+                            ${isSubActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                            }
+                          `}
+                        >
+                          <LineChart className="h-3 w-3 shrink-0" />
+                          <span className="flex-1">{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Business Plan Sub-Navigation */}
                 {isBpItem && bpExpanded && isActive && (
