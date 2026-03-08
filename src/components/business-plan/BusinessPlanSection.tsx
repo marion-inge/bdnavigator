@@ -84,24 +84,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
         <AgentPanel context={agentContext} sectionLabel="Business Plan" />
       </div>
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
-      <TabsList className="flex-wrap h-auto gap-1 p-1">
-        <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
-          <BarChart3 className="h-3.5 w-3.5" />
-          {bp("Overview", "Übersicht")}
-        </TabsTrigger>
-        <TabsTrigger value="tam" className="text-xs sm:text-sm gap-1.5">
-          <Globe className="h-3.5 w-3.5" />
-          TAM
-        </TabsTrigger>
-        <TabsTrigger value="sam" className="text-xs sm:text-sm gap-1.5">
-          <Target className="h-3.5 w-3.5" />
-          SAM
-        </TabsTrigger>
-        <TabsTrigger value="som" className="text-xs sm:text-sm gap-1.5">
-          <TrendingUp className="h-3.5 w-3.5" />
-          SOM
-        </TabsTrigger>
-      </TabsList>
 
       {/* Combined Overview */}
       <TabsContent value="combined">
