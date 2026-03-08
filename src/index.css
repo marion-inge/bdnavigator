@@ -67,6 +67,14 @@
     --stage-gtm: 145 55% 40%;
     --stage-implement-review: 30 70% 50%;
     --stage-closed: 220 10% 60%;
+
+    /* Agent colors */
+    --agent-ida: 0 70% 50%;
+    --agent-ida-foreground: 0 0% 100%;
+    --agent-ida-light: 0 70% 95%;
+    --agent-mark: 210 80% 50%;
+    --agent-mark-foreground: 0 0% 100%;
+    --agent-mark-light: 210 80% 95%;
   }
 
   .dark {

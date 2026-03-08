@@ -84,6 +84,14 @@ export default {
           "implement-review": "hsl(var(--stage-implement-review))",
           closed: "hsl(var(--stage-closed))",
         },
+        agent: {
+          ida: "hsl(var(--agent-ida))",
+          "ida-foreground": "hsl(var(--agent-ida-foreground))",
+          "ida-light": "hsl(var(--agent-ida-light))",
+          mark: "hsl(var(--agent-mark))",
+          "mark-foreground": "hsl(var(--agent-mark-foreground))",
+          "mark-light": "hsl(var(--agent-mark-light))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

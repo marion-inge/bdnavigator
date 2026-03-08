@@ -20,6 +20,7 @@ import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, E
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { AgentPanel } from "@/components/agents/AgentPanel";
 
 export type StrategicAnalysisTab = string;
 
@@ -32,8 +33,10 @@ interface Props {
   activeMainTab?: string;
   activeSubTab?: string;
   onTabChange?: (mainTab: string, subTab?: string) => void;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -66,7 +69,20 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     onTabChange?.(section, subTab);
   };
 
+  const agentContext = {
+    section: "Business Plan",
+    mainTab,
+    opportunityTitle,
+    opportunityDescription,
+    detailedScoring: scoring,
+    strategicAnalyses: saData,
+  };
+
   return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <AgentPanel context={agentContext} sectionLabel="Business Plan" />
+      </div>
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
@@ -227,5 +243,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ Others ═══ */}
     </Tabs>
+    </div>
   );
 }
