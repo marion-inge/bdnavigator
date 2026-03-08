@@ -161,7 +161,12 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TabsTrigger value="sam-feasibility" className="text-xs">{bp("Feasibility", "Machbarkeit")}</TabsTrigger>
             <TabsTrigger value="sam-org" className="text-xs">{bp("Org Readiness", "Org. Readiness")}</TabsTrigger>
             <TabsTrigger value="sam-risk" className="text-xs">{bp("Risk", "Risiko")}</TabsTrigger>
-            <TabsTrigger value="sam-models" className="text-xs">{bp("Models", "Modelle")}</TabsTrigger>
+            <TabsTrigger value="sam-segmentation" className="text-xs">{bp("Segmentation", "Segmentierung")}</TabsTrigger>
+            <TabsTrigger value="sam-interviews" className="text-xs">{bp("Interviews", "Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-affiliate" className="text-xs">{bp("Affiliate Interviews", "Affiliate-Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-bu" className="text-xs">{bp("BU Interviews", "BU-Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-bmc" className="text-xs">BMC</TabsTrigger>
+            <TabsTrigger value="sam-lean" className="text-xs">Lean Canvas</TabsTrigger>
           </TabsList>
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -184,15 +189,23 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="sam-risk">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-models">
-            <div className="space-y-6">
-              <EmbeddedCustomerSegmentation {...saProps} />
-              <EmbeddedCustomerInterviews {...saProps} />
-              <EmbeddedInternalAffiliateInterviews {...saProps} />
-              <EmbeddedInternalBUInterviews {...saProps} />
-              <EmbeddedBMC {...saProps} />
-              <EmbeddedLeanCanvas {...saProps} />
-            </div>
+          <TabsContent value="sam-segmentation">
+            <EmbeddedCustomerSegmentation {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-interviews">
+            <EmbeddedCustomerInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-affiliate">
+            <EmbeddedInternalAffiliateInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-bu">
+            <EmbeddedInternalBUInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-bmc">
+            <EmbeddedBMC {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-lean">
+            <EmbeddedLeanCanvas {...saProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
@@ -205,7 +218,11 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
             <TabsTrigger value="som-pricing" className="text-xs">{bp("Pricing", "Pricing")}</TabsTrigger>
             <TabsTrigger value="som-pilot" className="text-xs">{bp("Pilot & Leads", "Pilot & Leads")}</TabsTrigger>
-            <TabsTrigger value="som-models" className="text-xs">{bp("Models", "Modelle")}</TabsTrigger>
+            <TabsTrigger value="som-vpc" className="text-xs">VPC</TabsTrigger>
+            <TabsTrigger value="som-cba" className="text-xs">{bp("Customer Benefit", "Kundennutzen")}</TabsTrigger>
+            <TabsTrigger value="som-threecircles" className="text-xs">{bp("Three Circles", "Drei Kreise")}</TabsTrigger>
+            <TabsTrigger value="som-positioning" className="text-xs">{bp("Positioning", "Positionierung")}</TabsTrigger>
+            <TabsTrigger value="som-landscape" className="text-xs">{bp("Pos. Landscape", "Pos. Landschaft")}</TabsTrigger>
           </TabsList>
           <TabsContent value="som-overview">
             <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -219,14 +236,20 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="som-pilot">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="som-models">
-            <div className="space-y-6">
-              <EmbeddedVPC {...saProps} />
-              <EmbeddedCBA {...saProps} />
-              <EmbeddedThreeCircles {...saProps} />
-              <EmbeddedPositioning {...saProps} />
-              <EmbeddedPositioningLandscape {...saProps} />
-            </div>
+          <TabsContent value="som-vpc">
+            <EmbeddedVPC {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-cba">
+            <EmbeddedCBA {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-threecircles">
+            <EmbeddedThreeCircles {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-positioning">
+            <EmbeddedPositioning {...saProps} />
+          </TabsContent>
+          <TabsContent value="som-landscape">
+            <EmbeddedPositioningLandscape {...saProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
