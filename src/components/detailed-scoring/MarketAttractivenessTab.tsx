@@ -33,6 +33,10 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   };
 
 
+  const handleSave = () => {
+    onUpdate({ ...scoring, marketAttractiveness: local });
+    setDirty(false);
+  };
 
 
   // CAGR helper
