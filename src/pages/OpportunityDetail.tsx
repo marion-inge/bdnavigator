@@ -445,7 +445,7 @@ export default function OpportunityDetail() {
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
                 initialSources={opp.roughScoringSources}
-                showResults={!!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
+                showResults={!forceWizardMode && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
                 opportunityTitle={opp.title}
                 opportunityDescription={opp.description}
