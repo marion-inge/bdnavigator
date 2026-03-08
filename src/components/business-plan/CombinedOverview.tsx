@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, MarketYearValue, SCORING_WEIGHTS, calculateTotalScore, StrategicAnalyses } from "@/lib/types";
+import { DetailedScoring, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import type { SomOverviewData, CombinedInterpretation } from "@/lib/businessPlanTypes";
 import { createDefaultSomOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from "recharts";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { TrendingUp, Globe, Target, Map } from "lucide-react";
@@ -84,44 +83,8 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
   const hasSomData = somProj.some(p => p.value > 0);
   const hasAnyData = hasTamData || hasSamData || hasSomData;
 
-  // Scoring
-  const scoringAsCriteria = {
-    marketAttractiveness: { id: "marketAttractiveness", score: scoring.marketAttractiveness.score, comment: "" },
-    strategicFit: { id: "strategicFit", score: scoring.strategicFit.score, comment: "" },
-    feasibility: { id: "feasibility", score: scoring.feasibility.score, comment: "" },
-    commercialViability: { id: "commercialViability", score: scoring.commercialViability.score, comment: "" },
-    risk: { id: "risk", score: scoring.risk.score, comment: "" },
-  };
-  const totalScore = calculateTotalScore(scoringAsCriteria);
-  const radarData = [
-    { criterion: bp("Market Potential", "Marktpotenzial"), score: scoring.marketAttractiveness.score, fullMark: 5 },
-    { criterion: bp("Strategic Fit", "Strateg. Fit"), score: scoring.strategicFit.score, fullMark: 5 },
-    { criterion: bp("Feasibility", "Machbarkeit"), score: scoring.feasibility.score, fullMark: 5 },
-    { criterion: bp("Commercial", "Kommerziell"), score: scoring.commercialViability.score, fullMark: 5 },
-    { criterion: bp("Risk (inv.)", "Risiko (inv.)"), score: 6 - scoring.risk.score, fullMark: 5 },
-  ];
-
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "text-green-600 dark:text-green-400";
-    if (s >= 3) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
-  const getScoreBg = (s: number) => {
-    if (s >= 4) return "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800";
-    if (s >= 3) return "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800";
-    return "bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-800";
-  };
-
   return (
     <div className="space-y-6">
-      {/* Score Summary */}
-      <div className={`rounded-xl border-2 p-6 text-center ${getScoreBg(totalScore)}`}>
-        <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-          {bp("Business Plan Score", "Business Plan Score")}
-        </span>
-        <p className={`text-5xl font-bold mt-2 ${getScoreColor(totalScore)}`}>{totalScore.toFixed(1)}</p>
-        <p className="text-sm text-muted-foreground mt-1">/ 5.0</p>
-      </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -148,51 +111,32 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
         </Card>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Area Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{bp("TAM – SAM – SOM Development (5 Years)", "TAM – SAM – SOM Entwicklung (5 Jahre)")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {hasAnyData ? (
-              <ResponsiveContainer width="100%" height={320}>
-                <AreaChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000_000 ? `${(v/1_000_000).toFixed(0)}M` : v >= 1_000 ? `${(v/1_000).toFixed(0)}K` : `${v}`} />
-                  <Tooltip formatter={(v: number) => formatValue(v)} />
-                  <Legend />
-                  <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
-                  <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
-                  <Area type="monotone" dataKey="SOM" stackId="0" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
-                {bp("Enter TAM, SAM, and SOM projections to see the chart.", "Tragen Sie TAM-, SAM- und SOM-Projektionen ein, um die Grafik zu sehen.")}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Scoring Radar */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{bp("Scoring Radar", "Scoring-Radar")}</CardTitle>
-          </CardHeader>
-          <CardContent>
+      {/* Area Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{bp("TAM – SAM – SOM Development (5 Years)", "TAM – SAM – SOM Entwicklung (5 Jahre)")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {hasAnyData ? (
             <ResponsiveContainer width="100%" height={320}>
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fontSize: 10 }} />
-                <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} strokeWidth={2} />
-              </RadarChart>
+              <AreaChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000_000 ? `${(v/1_000_000).toFixed(0)}M` : v >= 1_000 ? `${(v/1_000).toFixed(0)}K` : `${v}`} />
+                <Tooltip formatter={(v: number) => formatValue(v)} />
+                <Legend />
+                <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
+                <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
+                <Area type="monotone" dataKey="SOM" stackId="0" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
+              </AreaChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
+              {bp("Enter TAM, SAM, and SOM projections to see the chart.", "Tragen Sie TAM-, SAM- und SOM-Projektionen ein, um die Grafik zu sehen.")}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Data Table */}
       <Card>
