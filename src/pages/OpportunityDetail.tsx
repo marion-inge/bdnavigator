@@ -34,6 +34,7 @@ export default function OpportunityDetail() {
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
   const [scoringExpanded, setScoringExpanded] = useState(false);
+  const [forceWizardMode, setForceWizardMode] = useState(false);
 
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -262,6 +263,7 @@ export default function OpportunityDetail() {
                     setActiveTab(item.key);
                     setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
+                    if (isScoringItem) setForceWizardMode(false);
                     if (isBpItem) {
                       setBpExpanded(!bpExpanded);
                       setScoringExpanded(false);
@@ -327,15 +329,16 @@ export default function OpportunityDetail() {
                         </button>
                       );
                     })}
-                    {/* Questionnaire */}
+                    {/* Questionnaire Wizard */}
                     <button
                       onClick={() => {
+                        setForceWizardMode(true);
                         setActiveTab("scoring");
                         setSidebarOpen(false);
                       }}
                       className={`
                         w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
-                        ${activeTab === "scoring"
+                        ${activeTab === "scoring" && forceWizardMode
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
                         }
@@ -443,7 +446,7 @@ export default function OpportunityDetail() {
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
                 initialSources={opp.roughScoringSources}
-                showResults={!!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
+                showResults={!forceWizardMode && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
                 opportunityId={opp.id}
                 opportunityTitle={opp.title}
                 opportunityDescription={opp.description}
