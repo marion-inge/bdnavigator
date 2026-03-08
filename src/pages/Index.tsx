@@ -14,13 +14,11 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X, BookOpen, FileDown, ClipboardList } from "lucide-react";
+import { Search, X, BookOpen } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
 import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
-import { exportDashboardPdf } from "@/lib/pdfExport";
-import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
