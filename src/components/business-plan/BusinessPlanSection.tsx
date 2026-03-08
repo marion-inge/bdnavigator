@@ -31,6 +31,9 @@ interface Props {
   onSaveStrategic: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
   onNavigateToAnalysis?: (analysisTab: StrategicAnalysisTab) => void;
+  activeMainTab?: string;
+  activeSubTab?: string;
+  onTabChange?: (mainTab: string, subTab?: string) => void;
 }
 
 function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
@@ -52,12 +55,17 @@ function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
   );
 }
 
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis, activeMainTab, activeSubTab, onTabChange }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
+
+  const mainTab = activeMainTab || "combined";
+  const handleMainTabChange = (value: string) => {
+    onTabChange?.(value, undefined);
+  };
 
   const handleUpdateScoring = (updated: DetailedScoring) => {
     setScoring(updated);
@@ -71,8 +79,17 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
   const saProps = { strategicAnalyses: saData, onSave: handleUpdateSa, readonly };
 
+  // Helper for sub-tabs: use activeSubTab if provided, otherwise default
+  const getSubTab = (section: string, defaultVal: string) => {
+    if (activeMainTab === section && activeSubTab) return activeSubTab;
+    return defaultVal;
+  };
+  const handleSubTabChange = (section: string, subTab: string) => {
+    onTabChange?.(section, subTab);
+  };
+
   return (
-    <Tabs defaultValue="combined" className="space-y-6">
+    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
           <BarChart3 className="h-3.5 w-3.5" />
@@ -103,7 +120,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
-        <Tabs defaultValue="tam-overview" className="space-y-4">
+        <Tabs value={getSubTab("tam", "tam-overview")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="tam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="tam-market" className="text-xs">{bp("Market Data", "Marktdaten")}</TabsTrigger>
@@ -139,7 +156,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
-        <Tabs defaultValue="sam-overview" className="space-y-4">
+        <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="sam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="sam-customers" className="text-xs">{bp("Customer Landscape", "Kundenlandschaft")}</TabsTrigger>
@@ -186,7 +203,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
-        <Tabs defaultValue="som-overview" className="space-y-4">
+        <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="som-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
