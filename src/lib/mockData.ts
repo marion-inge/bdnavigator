@@ -614,8 +614,25 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     gates: [
       { id: "g-005a", gate: "gate1", decision: "go", comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
       { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
-      
     ],
+    implementReview: {
+      status: "On Track — Production ramp-up proceeding. Fraport deployment expanding.",
+      progressNotes: "Month 6: Fraport pilot completed successfully with 22% turnaround improvement and zero incidents. Production line at Foxconn operational with first batch of 40 robots delivered. Zurich airport onboarding in progress. Swissport contract negotiations in final stage.",
+      lessonsLearned: "1) Airport ground crew adoption is faster when robots are introduced as 'assistants' rather than 'replacements'. 2) Battery management needs optimization for northern European winter conditions — 15% capacity reduction at -10°C. 3) Integration with SITA BagManager more complex than anticipated — needs dedicated API development.",
+      nextSteps: "1) Complete Zurich airport deployment (10 robots, Q2 2026). 2) Sign Swissport global framework agreement. 3) Begin Nordic airports roadshow (CPH, OSL, ARN). 4) Launch winter battery optimization program. 5) Scale production to 200 robots for Q3/Q4 demand.",
+      reviewDate: "2026-03-01",
+      reviewOutcome: "Positive — all KPIs on track. Recommend accelerating Nordic expansion and increasing production capacity.",
+      notes: "Board review confirmed continued investment. €3M additional budget approved for production scaling. CEO presenting at inter airport Europe 2026 as keynote.",
+      checklist: [
+        { id: "ir-001", text: "Fraport pilot KPIs achieved", done: true },
+        { id: "ir-002", text: "Production line operational", done: true },
+        { id: "ir-003", text: "Zurich deployment started", done: true },
+        { id: "ir-004", text: "Swissport contract signed", done: false },
+        { id: "ir-005", text: "Winter battery optimization", done: false },
+        { id: "ir-006", text: "200-unit production batch", done: false },
+        { id: "ir-007", text: "Nordic roadshow completed", done: false },
+      ],
+    },
     roughScoringAnswers: {
       ma_market_size: 5, ma_growth_rate: 5, ma_customer_demand: 5, ma_competition: 5, ma_accessibility: 4,
       sf_strategy_alignment: 4, sf_competency_match: 5, sf_portfolio_synergy: 4, sf_customer_channel: 3,
