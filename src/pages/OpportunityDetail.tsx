@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
