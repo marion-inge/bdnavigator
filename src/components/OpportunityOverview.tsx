@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Opportunity, STAGE_ORDER } from "@/lib/types";
 import { StageBadge } from "@/components/StageBadge";
