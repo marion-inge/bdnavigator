@@ -307,6 +307,43 @@ export interface CustomerInterviewEntry {
   quotes: string;
 }
 
+export interface InternalInterviewEntry {
+  id: string;
+  date: string;
+  intervieweeName: string;
+  role: string;
+  department: string;
+  keyInsights: string;
+  recommendations: string;
+  quotes: string;
+}
+
+export interface MarketResearchData {
+  secondaryResearch: string;
+  primaryResearch: string;
+  keyFigures: string;
+  methodology: string;
+  centralInsights: string;
+  description: string;
+  rationale: string;
+}
+
+export interface PositioningLandscapeEntry {
+  id: string;
+  name: string;
+  isOurs: boolean;
+  xValue: number;
+  yValue: number;
+}
+
+export interface PositioningLandscapeData {
+  xAxisLabel: string;
+  yAxisLabel: string;
+  entries: PositioningLandscapeEntry[];
+  description: string;
+  rationale: string;
+}
+
 export interface LeanCanvas {
   problem: string;
   solution: string;
