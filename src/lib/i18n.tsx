@@ -1500,7 +1500,7 @@ guideRI_s5: "Sehr hohes Risiko; feindliches regulatorisches Umfeld; Durchbruch-T
     guideWeightNote_FE: "Mittleres Gewicht — muss umsetzbar sein",
     guideWeightNote_CV: "Mittleres Gewicht — muss kommerziell tragfähig sein",
     guideWeightNote_RI: "Niedrigstes Gewicht — invertiert: Score wird von 6 subtrahiert",
-    guideLink: "Prozess-Leitfaden",
+    guideLink: "Tool-Leitfaden",
     ovStageProgress: "Phasenfortschritt",
     ovScoringBreakdown: "Scoring-Aufschlüsselung",
     ovGateHistory: "Gate-Entscheidungshistorie",
