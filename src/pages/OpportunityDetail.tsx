@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
@@ -28,6 +28,11 @@ export default function OpportunityDetail() {
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
+
+  // Scroll to top when opportunity changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   const opp = getOpportunity(id!);
   if (!opp) {
