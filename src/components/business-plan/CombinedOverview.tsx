@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, MarketYearValue, SCORING_WEIGHTS, calculateTotalScore, StrategicAnalyses } from "@/lib/types";
+import { DetailedScoring, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import type { SomOverviewData, CombinedInterpretation } from "@/lib/businessPlanTypes";
 import { createDefaultSomOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
