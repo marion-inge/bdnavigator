@@ -525,10 +525,12 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     id: "a0000001-0005-4000-8000-000000000005",
     title: "Aviation Ground Support Robotics",
     description: "Autonomous baggage handling and pushback robots for airport ramp operations. Reduces turnaround time by 20% and eliminates common ground damage incidents.",
+    solutionDescription: "Fully autonomous ground support robots with DO-178C aviation safety certification. Fleet management via cloud platform. RaaS model (Robot-as-a-Service) at €8K/robot/month. Obstacle avoidance with patented LiDAR/vision fusion. Proven in 6-month Frankfurt pilot with zero incidents.",
     industry: "Aviation",
     geography: "Global (DACH first)",
     technology: "Robotics / Autonomous Systems",
     owner: "Anna Müller",
+    ideaBringer: "Dr. Stefan Kraft",
     stage: "implement_review",
     scoring: scoring(5, 4, 4, 5, 1, {
       marketAttractiveness: "Airport operators facing chronic labor shortages globally. Ground handling market €45B.",
