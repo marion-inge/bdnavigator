@@ -158,11 +158,6 @@ export default function OpportunityDetail() {
         { key: "som-landscape", label: bp("Pos. Landscape", "Pos. Landschaft") },
       ],
     },
-    {
-      key: "others",
-      label: bp("Others", "Sonstige"),
-      icon: <FolderOpen className="h-3 w-3" />,
-    },
   ];
 
 
