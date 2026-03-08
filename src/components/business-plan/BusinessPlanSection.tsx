@@ -19,8 +19,7 @@ import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
-import { Globe, Target, TrendingUp, BarChart3, FolderOpen, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
 
 export type StrategicAnalysisTab = string;
 
@@ -30,32 +29,11 @@ interface Props {
   onSaveDetailed: (ds: DetailedScoring) => void;
   onSaveStrategic: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
-  onNavigateToAnalysis?: (analysisTab: StrategicAnalysisTab) => void;
   activeMainTab?: string;
   activeSubTab?: string;
   onTabChange?: (mainTab: string, subTab?: string) => void;
 }
-
-function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
-  name: string; description: string; tabKey: string; onNavigate?: (tab: string) => void; icon?: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border p-3 flex items-center justify-between gap-3 hover:bg-muted/50 transition-colors">
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm text-foreground">{icon && <span className="mr-1.5">{icon}</span>}{name}</p>
-        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{description}</p>
-      </div>
-      {onNavigate && (
-        <Button size="sm" variant="outline" onClick={() => onNavigate(tabKey)} className="shrink-0 gap-1">
-          <ExternalLink className="h-3 w-3" />
-          Open
-        </Button>
-      )}
-    </div>
-  );
-}
-
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis, activeMainTab, activeSubTab, onTabChange }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -106,10 +84,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
         <TabsTrigger value="som" className="text-xs sm:text-sm gap-1.5">
           <TrendingUp className="h-3.5 w-3.5" />
           SOM
-        </TabsTrigger>
-        <TabsTrigger value="others" className="text-xs sm:text-sm gap-1.5">
-          <FolderOpen className="h-3.5 w-3.5" />
-          {bp("Others", "Sonstige")}
         </TabsTrigger>
       </TabsList>
 
@@ -252,20 +226,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       </TabsContent>
 
       {/* ═══ Others ═══ */}
-      <TabsContent value="others">
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-lg font-bold text-foreground mb-1">{bp("Other Strategic Models", "Sonstige strategische Modelle")}</h2>
-            <p className="text-sm text-muted-foreground">{bp("Strategic frameworks not directly assignable to TAM, SAM, or SOM.", "Strategische Frameworks, die nicht direkt TAM, SAM oder SOM zuordenbar sind.")}</p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <ModelLinkCard name={bp("Ansoff Matrix", "Ansoff-Matrix")} description={bp("Growth strategy classification: market penetration, product/market development, diversification. Helps decide the overall strategic approach for the opportunity.", "Wachstumsstrategien: Marktdurchdringung, Produkt-/Marktentwicklung, Diversifikation. Hilft bei der strategischen Gesamtausrichtung.")} tabKey="ansoff" onNavigate={onNavigateToAnalysis} icon="📊" />
-            <ModelLinkCard name={bp("BCG Matrix", "BCG-Matrix")} description={bp("Portfolio analysis by market share and growth rate: Star, Cash Cow, Question Mark, Dog. Useful for portfolio prioritization.", "Portfolio-Analyse nach Marktanteil und Wachstum: Star, Cash Cow, Fragezeichen, Armer Hund. Nützlich für Portfolio-Priorisierung.")} tabKey="bcg" onNavigate={onNavigateToAnalysis} icon="⭐" />
-            <ModelLinkCard name={bp("McKinsey Matrix", "McKinsey-Matrix")} description={bp("9-cell matrix: industry attractiveness vs. competitive strength. Guides investment decisions and resource allocation.", "9-Felder-Matrix: Branchenattraktivität vs. Wettbewerbsstärke. Leitet Investitionsentscheidungen und Ressourcenallokation.")} tabKey="mckinsey" onNavigate={onNavigateToAnalysis} icon="📈" />
-            <ModelLinkCard name={bp("3 Horizons of Growth", "3 Horizonte des Wachstums")} description={bp("Horizon 1 (core), Horizon 2 (emerging), Horizon 3 (future). Classifies the opportunity in the innovation pipeline timeline.", "Horizont 1 (Kern), Horizont 2 (aufstrebend), Horizont 3 (Zukunft). Ordnet die Opportunity in der Innovationspipeline-Timeline ein.")} tabKey="threeHorizons" onNavigate={onNavigateToAnalysis} icon="🌅" />
-          </div>
-        </div>
-      </TabsContent>
     </Tabs>
   );
 }

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 
-type TabKey = "overview" | "scoring" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -68,6 +68,10 @@ export default function OpportunityDetail() {
   const tabStageThreshold: Record<TabKey, Stage> = {
     overview:            "rough_scoring",
     scoring:             "gate1",
+    sa_ansoff:           "gate1",
+    sa_bcg:              "gate1",
+    sa_mckinsey:         "gate1",
+    sa_three_horizons:   "gate1",
     detailed_scoring:    "gate2",
     business_case:       "implement_review",
     implement_review:    "closed",
@@ -78,6 +82,10 @@ export default function OpportunityDetail() {
   const tabCurrentStage: Record<TabKey, Stage | ""> = {
     overview:           "idea",
     scoring:            "rough_scoring",
+    sa_ansoff:          "",
+    sa_bcg:             "",
+    sa_mckinsey:        "",
+    sa_three_horizons:  "",
     detailed_scoring:   "detailed_scoring",
     business_case:      "business_case",
     implement_review:   "implement_review",
@@ -150,11 +158,6 @@ export default function OpportunityDetail() {
         { key: "som-landscape", label: bp("Pos. Landscape", "Pos. Landschaft") },
       ],
     },
-    {
-      key: "others",
-      label: bp("Others", "Sonstige"),
-      icon: <FolderOpen className="h-3 w-3" />,
-    },
   ];
 
 
@@ -169,6 +172,10 @@ export default function OpportunityDetail() {
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
+    { key: "sa_ansoff",           label: bp("Ansoff Matrix", "Ansoff-Matrix"), icon: <LineChart className="h-4 w-4" /> },
+    { key: "sa_bcg",              label: bp("BCG Matrix", "BCG-Matrix"), icon: <LineChart className="h-4 w-4" /> },
+    { key: "sa_mckinsey",         label: bp("McKinsey Matrix", "McKinsey-Matrix"), icon: <LineChart className="h-4 w-4" /> },
+    { key: "sa_three_horizons",   label: bp("3 Horizons", "3 Horizonte"), icon: <LineChart className="h-4 w-4" /> },
     { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
@@ -390,6 +397,14 @@ export default function OpportunityDetail() {
                 opportunityOwner={opp.owner}
               />
             )}
+            {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
+              <StrategicAnalysesSection
+                strategicAnalyses={opp.strategicAnalyses}
+                onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
+                readonly={opp.stage === "closed"}
+                defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
+              />
+            )}
             {activeTab === "detailed_scoring" && (
               <BusinessPlanSection
                 detailedScoring={opp.detailedScoring}
@@ -397,10 +412,6 @@ export default function OpportunityDetail() {
                 onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
                 onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
-                onNavigateToAnalysis={(analysisTab) => {
-                  setSaDefaultTab(analysisTab);
-                  setActiveTab("strategic_analyses");
-                }}
                 activeMainTab={bpMainTab}
                 activeSubTab={bpSubTab}
                 onTabChange={(mainTab, subTab) => {
