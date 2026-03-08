@@ -834,10 +834,10 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       },
       customerSegmentation: {
         entries: [
-          { id: "cs-005-1", name: "Hub Airport Operators", size: "45%", characteristics: "Major hubs managing own ground handling (>30M PAX). High volume, early adopters, strong budgets.", needs: "Labor shortage solution, turnaround speed, safety compliance", attractiveness: 5 },
-          { id: "cs-005-2", name: "Third-Party Ground Handlers", size: "35%", characteristics: "Companies like Swissport, dnata, SATS. Scale-driven, cost-sensitive, global operations.", needs: "Cost reduction, scalable solution, multi-airport deployment", attractiveness: 4 },
-          { id: "cs-005-3", name: "Regional Airports", size: "15%", characteristics: "Smaller airports (5-15M PAX). Lower volume, longer sales cycles, budget-constrained.", needs: "Affordable entry-level solution, gradual automation", attractiveness: 2 },
-          { id: "cs-005-4", name: "Military/Government", size: "5%", characteristics: "Military airfields. Specialized requirements, long procurement cycles, high security.", needs: "Custom solutions, security clearance, ruggedized equipment", attractiveness: 2 },
+          { id: "cs-005-1", name: "Hub Airport Operators", size: "45%", needs: "Labor shortage solution, turnaround speed, safety compliance", willingnessToPay: "High", priority: "high" },
+          { id: "cs-005-2", name: "Third-Party Ground Handlers", size: "35%", needs: "Cost reduction, scalable solution, multi-airport deployment", willingnessToPay: "Medium", priority: "high" },
+          { id: "cs-005-3", name: "Regional Airports", size: "15%", needs: "Affordable entry-level solution, gradual automation", willingnessToPay: "Low", priority: "low" },
+          { id: "cs-005-4", name: "Military/Government", size: "5%", needs: "Custom solutions, security clearance, ruggedized equipment", willingnessToPay: "High but slow", priority: "low" },
         ],
         description: "Four clear segments with hub operators and third-party handlers as primary targets (80% of addressable market).",
         rationale: "Focus on hub operators first (highest willingness to pay, fastest adoption) then scale through global handlers like Swissport.",
