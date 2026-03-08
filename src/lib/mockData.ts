@@ -876,8 +876,8 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       },
       internalAffiliateInterviews: {
         entries: [
-          { id: "ia-005-1", name: "Dr. Martin Fischer", role: "Head of Warehouse Robotics Division", date: "2025-05-10", keyFindings: "95% of our navigation stack is reusable. Recommends shared software platform to avoid divergence. Concerned about engineering resource sharing — needs clear allocation.", recommendations: "Establish shared platform team. Separate product management. Joint quarterly tech reviews." },
-          { id: "ia-005-2", name: "Lisa Weber", role: "VP Manufacturing Operations", date: "2025-05-15", keyFindings: "Foxconn partnership can scale to 500 robots/year. Assembly line setup takes 4 weeks. Quality control protocols from warehouse robotics transferable.", recommendations: "Pre-book production capacity 6 months ahead. Build buffer stock of 20 units." },
+          { id: "ia-005-1", intervieweeName: "Dr. Martin Fischer", role: "Head of Warehouse Robotics Division", department: "Robotics", date: "2025-05-10", keyInsights: "95% of our navigation stack is reusable. Recommends shared software platform.", recommendations: "Establish shared platform team. Separate product management.", quotes: "The navigation stack is directly applicable to aviation." },
+          { id: "ia-005-2", intervieweeName: "Lisa Weber", role: "VP Manufacturing Operations", department: "Manufacturing", date: "2025-05-15", keyInsights: "Foxconn partnership can scale to 500 robots/year. Assembly line setup takes 4 weeks.", recommendations: "Pre-book production capacity 6 months ahead.", quotes: "Quality control protocols are fully transferable." },
         ],
         description: "Internal affiliates confirm technology reusability and manufacturing scalability. Key concern: resource allocation between warehouse and aviation teams.",
         rationale: "Affiliate interviews validate our technology platform strategy. Clear action needed on shared vs. dedicated engineering resources.",
