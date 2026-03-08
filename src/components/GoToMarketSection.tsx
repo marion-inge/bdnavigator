@@ -67,7 +67,13 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadon
     { key: "kpis", label: t("gtmKpis"), placeholder: t("gtmKpisPlaceholder") },
   ];
 
+  const agentContext = { section: "Go-to-Market Plan", goToMarketPlan: data, businessCase, commercialViability: scoring?.commercialViability };
+
   return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <AgentPanel context={agentContext} sectionLabel={bp("Implementation & GTM Plan", "Umsetzungs- & GTM-Plan")} />
+      </div>
     <Tabs defaultValue="gtm" className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="gtm" className="text-xs sm:text-sm gap-1.5">
