@@ -188,7 +188,6 @@ export default function OpportunityDetail() {
     { key: "sa_three_horizons", label: bp("3 Horizons", "3 Horizonte") },
   ];
 
-  const [scoringExpanded, setScoringExpanded] = useState(false);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
