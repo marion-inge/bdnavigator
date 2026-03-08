@@ -47,24 +47,6 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
   const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToImplementReview;
   const canRevert = onRevertStage && STAGE_ORDER.indexOf(opp.stage) > 0 && opp.stage !== "closed";
 
-  // Radar data (kept for potential future use)
-
-
-
-  // Detailed scoring average
-  const detailedAvg = useMemo(() => {
-    if (!opp.detailedScoring) return null;
-    const ds = opp.detailedScoring;
-    return Math.round(
-      ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
-    ) / 10;
-  }, [opp.detailedScoring]);
-
-  // Stage progress (timeline now handled by StageTimeline component)
-
-  // Score color
-  const scoreColor = totalScore >= 3.5 ? "text-[hsl(var(--success))]" : totalScore >= 2.5 ? "text-[hsl(var(--warning))]" : "text-destructive";
-  const scoreLabel = totalScore >= 3.5 ? t("scoreHigh") : totalScore >= 2.5 ? t("scoreMedium") : t("scoreLow");
 
   return (
     <div className="space-y-5">
