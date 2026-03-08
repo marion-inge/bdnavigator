@@ -117,21 +117,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
         <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
-          <TabsList className="flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="sam-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
-            <TabsTrigger value="sam-customers" className="text-xs">{bp("Customer Landscape", "Kundenlandschaft")}</TabsTrigger>
-            <TabsTrigger value="sam-strategic" className="text-xs">{bp("Strategic Fit", "Strateg. Fit")}</TabsTrigger>
-            <TabsTrigger value="sam-portfolio" className="text-xs">{bp("Portfolio Fit", "Portfolio Fit")}</TabsTrigger>
-            <TabsTrigger value="sam-feasibility" className="text-xs">{bp("Feasibility", "Machbarkeit")}</TabsTrigger>
-            <TabsTrigger value="sam-org" className="text-xs">{bp("Org Readiness", "Org. Readiness")}</TabsTrigger>
-            <TabsTrigger value="sam-risk" className="text-xs">{bp("Risk", "Risiko")}</TabsTrigger>
-            <TabsTrigger value="sam-segmentation" className="text-xs">{bp("Segmentation", "Segmentierung")}</TabsTrigger>
-            <TabsTrigger value="sam-interviews" className="text-xs">{bp("Interviews", "Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-affiliate" className="text-xs">{bp("Affiliate Interviews", "Affiliate-Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-bu" className="text-xs">{bp("BU Interviews", "BU-Interviews")}</TabsTrigger>
-            <TabsTrigger value="sam-bmc" className="text-xs">BMC</TabsTrigger>
-            <TabsTrigger value="sam-lean" className="text-xs">Lean Canvas</TabsTrigger>
-          </TabsList>
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
