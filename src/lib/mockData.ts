@@ -626,6 +626,45 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
         { id: "ri-005-2", name: "Robot malfunction on ramp", category: "technical", probability: 1, impact: 5, mitigation: "Triple-redundant safety systems. 6-month pilot with zero incidents." },
         { id: "ri-005-3", name: "Scaling production", category: "execution", probability: 2, impact: 3, mitigation: "Contract manufacturing partnership with Foxconn. Buffer stock strategy." },
       ] },
+      competitorLandscape: {
+        score: 5,
+        analysis: {
+          tam: "", tamDescription: "", sam: "", samDescription: "",
+          marketGrowthRate: "", targetCustomers: "", customerRelationship: "",
+          competitors: "ThorDrive (US), Gaussian Robotics (China), KUKA (Germany), Manual Operations (incumbent)",
+          competitivePosition: "Only DO-178C certified aviation ground robotics solution globally",
+          competitorEntries: [
+            { name: "ThorDrive", marketShare: 5, threatLevel: 3 },
+            { name: "Gaussian Robotics", marketShare: 10, threatLevel: 2 },
+            { name: "KUKA", marketShare: 15, threatLevel: 2 },
+            { name: "Our Company", marketShare: 8, threatLevel: 0 },
+            { name: "Manual Operations", marketShare: 62, threatLevel: 1 },
+          ],
+          competitorRadarScores: [
+            { name: "Our Company", scores: { price: 3, technicalFeatures: 5, reach: 2, brandAwareness: 2, history: 2, usps: 5 } },
+            { name: "ThorDrive", scores: { price: 4, technicalFeatures: 3, reach: 2, brandAwareness: 1, history: 1, usps: 2 } },
+            { name: "Gaussian Robotics", scores: { price: 5, technicalFeatures: 3, reach: 4, brandAwareness: 3, history: 3, usps: 2 } },
+            { name: "KUKA", scores: { price: 2, technicalFeatures: 4, reach: 5, brandAwareness: 5, history: 5, usps: 1 } },
+          ],
+        },
+      },
+      pilotCustomer: {
+        score: 5,
+        pilotCustomers: [
+          { id: "pc-005-1", name: "Fraport AG", industry: "Aviation", status: "active", feedback: "Exceeded expectations. 22% turnaround improvement in 6 months. Ground crew very positive. Planning expansion to all 4 terminals.", startDate: "2025-06-01", contactPerson: "Klaus Hartmann, VP Ground Operations" },
+          { id: "pc-005-2", name: "Flughafen Zürich AG", industry: "Aviation", status: "planned", feedback: "Impressed by Fraport results. Starting with baggage handling on 2 terminals.", startDate: "2026-04-01", contactPerson: "Dr. Marc Weber, Head Innovation" },
+          { id: "pc-005-3", name: "Swissport International", industry: "Ground Handling", status: "planned", feedback: "Global framework agreement in final negotiation. Munich pilot first, then worldwide rollout.", startDate: "2026-07-01", contactPerson: "Sarah Johnson, Chief Operations Officer" },
+        ],
+        notes: "Fraport is the anchor customer and strongest reference. All subsequent sales conversations start with a Fraport reference visit. Key insight: airports prefer to see live operations, not just presentations.",
+      },
+      portfolioFit: {
+        score: 4,
+        existingProducts: "Industrial warehouse robotics (market leader in DACH), autonomous mobile robots for logistics, robotic welding systems.",
+        synergies: "Core navigation and obstacle avoidance software reused from warehouse robotics. Fleet management platform shared across all robot products. Manufacturing supply chain (Foxconn) serves multiple product lines.",
+        cannibalization: "No cannibalization — aviation is an entirely new market segment. Some engineering resources shared with warehouse robotics team.",
+        strategicValue: "Diversification into high-growth aviation market. Reduces dependency on industrial/logistics segment. Opens door to broader aviation automation (de-icing, cargo, inspection).",
+        notes: "Portfolio fit is strong due to shared technology platform. Main gap is separate sales channel needed for aviation industry. Long-term vision: become the platform for all airport automation.",
+      },
     },
     businessCase: {
       investmentCost: 8000000,
