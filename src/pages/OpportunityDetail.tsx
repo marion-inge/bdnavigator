@@ -412,10 +412,6 @@ export default function OpportunityDetail() {
                 onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
                 onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
-                onNavigateToAnalysis={(analysisTab) => {
-                  setSaDefaultTab(analysisTab);
-                  setActiveTab("strategic_analyses");
-                }}
                 activeMainTab={bpMainTab}
                 activeSubTab={bpSubTab}
                 onTabChange={(mainTab, subTab) => {
