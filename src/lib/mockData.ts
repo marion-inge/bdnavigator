@@ -884,8 +884,8 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       },
       internalBUInterviews: {
         entries: [
-          { id: "ib-005-1", name: "Thomas Richter", role: "BU Lead Industrial Automation", date: "2025-06-01", keyFindings: "Aviation robotics could become larger than industrial within 5 years. Recommends separate P&L by Q3 2026. Sales channel must be independent — different buyers.", recommendations: "Create Aviation Robotics BU. Hire dedicated sales team. Maintain tech platform sharing." },
-          { id: "ib-005-2", name: "Sandra Koch", role: "BU Lead Software & Digital", date: "2025-06-05", keyFindings: "Fleet management platform is the strategic asset. Data from airports could enable predictive maintenance as SaaS product. API economy potential.", recommendations: "Invest in platform architecture. Plan data analytics product for Year 2. Consider open API for airport ecosystem." },
+          { id: "ib-005-1", intervieweeName: "Thomas Richter", role: "BU Lead Industrial Automation", department: "Industrial Automation", date: "2025-06-01", keyInsights: "Aviation robotics could become larger than industrial within 5 years.", recommendations: "Create Aviation Robotics BU. Hire dedicated sales team.", quotes: "This could be bigger than our industrial business in 5 years." },
+          { id: "ib-005-2", intervieweeName: "Sandra Koch", role: "BU Lead Software & Digital", department: "Software & Digital", date: "2025-06-05", keyInsights: "Fleet management platform is the strategic asset. Data analytics as SaaS potential.", recommendations: "Invest in platform architecture. Plan analytics product for Year 2.", quotes: "The data we're collecting is worth more than the robots." },
         ],
         description: "BU leaders see aviation as a high-growth opportunity requiring dedicated organizational structure but shared technology platform.",
         rationale: "BU interviews confirm strategic importance. Clear consensus on separate P&L + shared platform. Data analytics is an untapped revenue stream.",
