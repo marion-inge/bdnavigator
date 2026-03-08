@@ -34,6 +34,7 @@ export default function OpportunityDetail() {
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
   const [scoringExpanded, setScoringExpanded] = useState(false);
+  const [forceWizardMode, setForceWizardMode] = useState(false);
 
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
