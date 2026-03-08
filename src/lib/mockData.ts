@@ -844,9 +844,9 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       },
       competitorAnalysis: {
         entries: [
-          { id: "ca-005-1", name: "ThorDrive", strengths: "Lower price point, US market access, VC-funded agility", weaknesses: "No aviation certification, no live airport deployment, early-stage technology", marketShare: "5%", strategy: "Focus on smaller US regional airports first" },
-          { id: "ca-005-2", name: "Gaussian Robotics", strengths: "Proven outdoor robots, strong Asia-Pacific presence, cost advantage from China manufacturing", weaknesses: "Not aviation-specific, no safety certification, limited apron experience", marketShare: "10%", strategy: "Expanding from outdoor cleaning to logistics" },
-          { id: "ca-005-3", name: "KUKA", strengths: "Global brand, strong industrial robotics portfolio, existing airport relationships (manufacturing)", weaknesses: "No aviation ground handling product, slow to enter new markets, high cost structure", marketShare: "15%", strategy: "Watching market, potential acquisition target for smaller players" },
+          { id: "ca-005-1", name: "ThorDrive", strengths: "Lower price point, US market access, VC-funded agility", weaknesses: "No aviation certification, no live airport deployment", marketShare: "5%", strategy: "Focus on smaller US regional airports first", threatLevel: 3 },
+          { id: "ca-005-2", name: "Gaussian Robotics", strengths: "Proven outdoor robots, strong Asia-Pacific presence", weaknesses: "Not aviation-specific, no safety certification", marketShare: "10%", strategy: "Expanding from outdoor cleaning to logistics", threatLevel: 3 },
+          { id: "ca-005-3", name: "KUKA", strengths: "Global brand, strong industrial robotics portfolio", weaknesses: "No aviation ground handling product, slow to enter new markets", marketShare: "15%", strategy: "Watching market, potential acquisition target", threatLevel: 4 },
         ],
         description: "No direct competitor has aviation certification + live airport deployment. Our moat is strong but must be defended through continued innovation.",
         rationale: "Competitor analysis confirms our first-mover advantage. Key risk is KUKA entering through acquisition of ThorDrive or similar.",
