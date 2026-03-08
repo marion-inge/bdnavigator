@@ -230,9 +230,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="som-competitor">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="som-pricing">
-            <CommercialViabilityTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
-          </TabsContent>
           <TabsContent value="som-pilot">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
