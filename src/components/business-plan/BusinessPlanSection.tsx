@@ -203,7 +203,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
-        <Tabs defaultValue="som-overview" className="space-y-4">
+        <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1 p-1">
             <TabsTrigger value="som-overview" className="text-xs">{bp("Overview", "Übersicht")}</TabsTrigger>
             <TabsTrigger value="som-competitor" className="text-xs">{bp("Competitors", "Wettbewerb")}</TabsTrigger>
