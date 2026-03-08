@@ -699,7 +699,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     guideWeightNote_FE: "Medium weight — must be realizable",
     guideWeightNote_CV: "Medium weight — must be commercially viable",
     guideWeightNote_RI: "Lowest weight — inverted: score is subtracted from 6",
-    guideLink: "Process Guide",
+    guideLink: "Tool Guide",
     ovStageProgress: "Stage Progress",
     ovScoringBreakdown: "Scoring Breakdown",
     ovGateHistory: "Gate Decision History",
