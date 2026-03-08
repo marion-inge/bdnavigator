@@ -68,6 +68,10 @@ export default function OpportunityDetail() {
   const tabStageThreshold: Record<TabKey, Stage> = {
     overview:            "rough_scoring",
     scoring:             "gate1",
+    sa_ansoff:           "gate1",
+    sa_bcg:              "gate1",
+    sa_mckinsey:         "gate1",
+    sa_three_horizons:   "gate1",
     detailed_scoring:    "gate2",
     business_case:       "implement_review",
     implement_review:    "closed",
@@ -78,6 +82,10 @@ export default function OpportunityDetail() {
   const tabCurrentStage: Record<TabKey, Stage | ""> = {
     overview:           "idea",
     scoring:            "rough_scoring",
+    sa_ansoff:          "",
+    sa_bcg:             "",
+    sa_mckinsey:        "",
+    sa_three_horizons:  "",
     detailed_scoring:   "detailed_scoring",
     business_case:      "business_case",
     implement_review:   "implement_review",
