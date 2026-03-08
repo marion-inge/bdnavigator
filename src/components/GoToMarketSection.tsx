@@ -245,5 +245,6 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadon
         </div>
       </TabsContent>
     </Tabs>
+    </div>
   );
 }
