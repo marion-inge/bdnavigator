@@ -161,7 +161,12 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TabsTrigger value="sam-feasibility" className="text-xs">{bp("Feasibility", "Machbarkeit")}</TabsTrigger>
             <TabsTrigger value="sam-org" className="text-xs">{bp("Org Readiness", "Org. Readiness")}</TabsTrigger>
             <TabsTrigger value="sam-risk" className="text-xs">{bp("Risk", "Risiko")}</TabsTrigger>
-            <TabsTrigger value="sam-models" className="text-xs">{bp("Models", "Modelle")}</TabsTrigger>
+            <TabsTrigger value="sam-segmentation" className="text-xs">{bp("Segmentation", "Segmentierung")}</TabsTrigger>
+            <TabsTrigger value="sam-interviews" className="text-xs">{bp("Interviews", "Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-affiliate" className="text-xs">{bp("Affiliate Interviews", "Affiliate-Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-bu" className="text-xs">{bp("BU Interviews", "BU-Interviews")}</TabsTrigger>
+            <TabsTrigger value="sam-bmc" className="text-xs">BMC</TabsTrigger>
+            <TabsTrigger value="sam-lean" className="text-xs">Lean Canvas</TabsTrigger>
           </TabsList>
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -184,15 +189,23 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="sam-risk">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-models">
-            <div className="space-y-6">
-              <EmbeddedCustomerSegmentation {...saProps} />
-              <EmbeddedCustomerInterviews {...saProps} />
-              <EmbeddedInternalAffiliateInterviews {...saProps} />
-              <EmbeddedInternalBUInterviews {...saProps} />
-              <EmbeddedBMC {...saProps} />
-              <EmbeddedLeanCanvas {...saProps} />
-            </div>
+          <TabsContent value="sam-segmentation">
+            <EmbeddedCustomerSegmentation {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-interviews">
+            <EmbeddedCustomerInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-affiliate">
+            <EmbeddedInternalAffiliateInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-bu">
+            <EmbeddedInternalBUInterviews {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-bmc">
+            <EmbeddedBMC {...saProps} />
+          </TabsContent>
+          <TabsContent value="sam-lean">
+            <EmbeddedLeanCanvas {...saProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
