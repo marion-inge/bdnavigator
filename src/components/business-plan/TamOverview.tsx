@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2, TrendingUp, Globe, FileText } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+} from "recharts";
 
 interface Props {
   scoring: DetailedScoring;
@@ -48,6 +50,9 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<TamOverviewData>) => { setLocalOverview(prev => ({ ...prev, ...patch })); markDirty(); };
 
+  const formatM = (v: number) =>
+    v >= 1000 ? `€${(v / 1000).toFixed(1)}B` : `€${v}M`;
+
   const handleSave = () => {
     const updated: any = {
       ...scoring,
@@ -72,7 +77,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
     setLocalRegions(prev => prev.map((r, idx) => idx === i ? { ...r, ...patch } : r)); markDirty();
   };
 
-  const chartData = localProj.map(p => ({ name: `${bp("Y", "J")}${p.year}`, TAM: p.value }));
+  const currentYear = new Date().getFullYear();
+  const chartData = localProj.map(p => ({ name: `${currentYear + p.year - 1}`, TAM: p.value }));
 
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
@@ -94,8 +100,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
             <div className="grid grid-cols-5 gap-2">
               {localProj.map((p, i) => (
                 <div key={i}>
-                  <Label className="text-xs">{bp("Year", "Jahr")} {p.year}</Label>
-                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="€" />
+                  <Label className="text-xs">{bp("Year", "Jahr")} {p.year} ({currentYear + p.year - 1})</Label>
+                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="M€" />
                 </div>
               ))}
             </div>
@@ -111,8 +117,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="name" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                  <Tooltip />
+                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={formatM} />
+                  <Tooltip formatter={(v: number) => [formatM(v), "TAM"]} />
                   <Bar dataKey="TAM" fill="hsl(210, 80%, 55%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -170,7 +176,37 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
               {!readonly && <Button size="sm" variant="outline" onClick={addRegion}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add Region", "Region hinzufügen")}</Button>}
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Radar chart for 3+ regions */}
+            {localRegions.length >= 3 && localRegions.some(r => r.region) && (
+              <div className="rounded-lg border border-border bg-background/50 p-4">
+                <ResponsiveContainer width="100%" height={280}>
+                  <RadarChart data={localRegions.filter(r => r.region).map(r => ({ region: r.region, potential: r.potential }))}>
+                    <PolarGrid stroke="hsl(var(--border))" />
+                    <PolarAngleAxis dataKey="region" tick={{ fontSize: 12, fill: "hsl(var(--foreground))" }} />
+                    <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    <Radar name={bp("Regional Potential", "Regionales Potenzial")} dataKey="potential" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} strokeWidth={2} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Bar chart for 1-2 regions */}
+            {localRegions.length > 0 && localRegions.length < 3 && localRegions.some(r => r.region) && (
+              <div className="rounded-lg border border-border bg-background/50 p-4">
+                <ResponsiveContainer width="100%" height={160}>
+                  <BarChart data={localRegions.filter(r => r.region)} margin={{ left: 10, right: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="region" tick={{ fontSize: 12, fill: "hsl(var(--foreground))" }} />
+                    <YAxis domain={[0, 5]} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+                    <Bar dataKey="potential" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} barSize={40} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
             {localRegions.length === 0 ? (
               <p className="text-sm text-muted-foreground">{bp("No regions defined. Add regions to break down TAM by geography.", "Keine Regionen definiert. Fügen Sie Regionen hinzu, um den TAM geografisch aufzuschlüsseln.")}</p>
             ) : (
@@ -180,9 +216,22 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
                     <div className="flex items-center gap-2">
                       <Input value={r.region} onChange={e => updateRegion(i, { region: e.target.value })} placeholder={bp("Region name", "Regionsname")} disabled={readonly} className="flex-1" />
                       <Input value={r.marketSize} onChange={e => updateRegion(i, { marketSize: e.target.value })} placeholder={bp("Market Size", "Marktgröße")} disabled={readonly} className="w-32" />
-                      <div className="flex items-center gap-1 w-28">
+                      <div className="flex items-center gap-1">
                         <Label className="text-xs whitespace-nowrap">{bp("Potential", "Potenzial")}:</Label>
-                        <Input type="number" min={1} max={5} value={r.potential} onChange={e => updateRegion(i, { potential: Number(e.target.value) })} disabled={readonly} className="w-14" />
+                        {[1, 2, 3, 4, 5].map((val) => (
+                          <button
+                            key={val}
+                            disabled={readonly}
+                            onClick={() => updateRegion(i, { potential: val })}
+                            className={`w-7 h-7 rounded text-xs font-bold transition-all ${
+                              r.potential === val
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "bg-muted text-muted-foreground hover:bg-accent"
+                            } ${readonly ? "cursor-default" : "cursor-pointer"}`}
+                          >
+                            {val}
+                          </button>
+                        ))}
                       </div>
                       {!readonly && <Button size="icon" variant="ghost" onClick={() => removeRegion(i)} className="h-8 w-8 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>}
                     </div>
