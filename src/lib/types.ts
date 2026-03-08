@@ -450,6 +450,10 @@ export interface StrategicAnalyses {
   threeCircleModel?: ThreeCircleModel;
   positioningStatement?: PositioningStatement;
   threeHorizons?: { horizon: string; description: string; rationale: string };
+  internalAffiliateInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
+  internalBUInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
+  positioningLandscape?: PositioningLandscapeData;
+  marketResearch?: MarketResearchData;
 }
 
 function createDefaultPorter(): PortersFiveForces {
