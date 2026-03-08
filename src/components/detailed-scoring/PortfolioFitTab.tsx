@@ -60,17 +60,8 @@ export function PortfolioFitTab({ scoring, onUpdate, readonly: propReadonly }: P
     updateField("dimensions", dims);
   };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
 
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
+
 
   const avgScore = local.dimensions.length > 0
     ? Math.round((local.dimensions.reduce((s, d) => s + d.score, 0) / local.dimensions.length) * 10) / 10
