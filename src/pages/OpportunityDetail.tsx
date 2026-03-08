@@ -6,7 +6,7 @@ import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefault
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
-import { DetailedScoringSection } from "@/components/DetailedScoringSection";
+import { BusinessPlanSection } from "@/components/business-plan/BusinessPlanSection";
 
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
@@ -229,9 +229,11 @@ export default function OpportunityDetail() {
               />
             )}
             {activeTab === "detailed_scoring" && (
-              <DetailedScoringSection
+              <BusinessPlanSection
                 detailedScoring={opp.detailedScoring}
-                onSave={(ds) => updateDetailedScoring(opp.id, ds)}
+                strategicAnalyses={opp.strategicAnalyses}
+                onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
+                onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 onNavigateToAnalysis={(analysisTab) => {
                   setSaDefaultTab(analysisTab);
