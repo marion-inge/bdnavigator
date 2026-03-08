@@ -6,7 +6,7 @@ import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefault
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
-import { DetailedScoringSection } from "@/components/DetailedScoringSection";
+import { BusinessPlanSection } from "@/components/business-plan/BusinessPlanSection";
 
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
