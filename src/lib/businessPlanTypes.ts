@@ -79,6 +79,13 @@ export function createDefaultSomOverview(): SomOverviewData {
     marketShareVsSam: "", growthRate: "", visibilityRate: "",
     salesCapacity: "", pipeline: "", licenseToOperate: "",
     salesCapacityScenario: "", marketingBudgetScenario: "", positioningScenario: "",
-    geographicalRegions: [],
+  geographicalRegions: [],
   };
+}
+
+export interface CombinedInterpretation {
+  overallPotential: string;
+  samDevelopment: string;
+  somDevelopment: string;
+  gapsAndLevers: string;
 }

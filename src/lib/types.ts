@@ -307,6 +307,43 @@ export interface CustomerInterviewEntry {
   quotes: string;
 }
 
+export interface InternalInterviewEntry {
+  id: string;
+  date: string;
+  intervieweeName: string;
+  role: string;
+  department: string;
+  keyInsights: string;
+  recommendations: string;
+  quotes: string;
+}
+
+export interface MarketResearchData {
+  secondaryResearch: string;
+  primaryResearch: string;
+  keyFigures: string;
+  methodology: string;
+  centralInsights: string;
+  description: string;
+  rationale: string;
+}
+
+export interface PositioningLandscapeEntry {
+  id: string;
+  name: string;
+  isOurs: boolean;
+  xValue: number;
+  yValue: number;
+}
+
+export interface PositioningLandscapeData {
+  xAxisLabel: string;
+  yAxisLabel: string;
+  entries: PositioningLandscapeEntry[];
+  description: string;
+  rationale: string;
+}
+
 export interface LeanCanvas {
   problem: string;
   solution: string;
@@ -413,6 +450,10 @@ export interface StrategicAnalyses {
   threeCircleModel?: ThreeCircleModel;
   positioningStatement?: PositioningStatement;
   threeHorizons?: { horizon: string; description: string; rationale: string };
+  internalAffiliateInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
+  internalBUInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
+  positioningLandscape?: PositioningLandscapeData;
+  marketResearch?: MarketResearchData;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -470,6 +511,10 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
       description: "", rationale: "",
     },
     threeHorizons: { horizon: "", description: "", rationale: "" },
+    internalAffiliateInterviews: { entries: [], description: "", rationale: "" },
+    internalBUInterviews: { entries: [], description: "", rationale: "" },
+    positioningLandscape: { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" },
+    marketResearch: { secondaryResearch: "", primaryResearch: "", keyFigures: "", methodology: "", centralInsights: "", description: "", rationale: "" },
   };
 }
 
