@@ -32,27 +32,8 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
     setDirty(true);
   };
 
-  const updateScore = (score: number) => {
-    setLocal((prev) => ({ ...prev, score }));
-    setDirty(true);
-  };
 
-  const handleSave = () => {
-    onUpdate({ ...scoring, marketAttractiveness: local });
-    setDirty(false);
-  };
 
-  const getScoreColor = (s: number) => {
-    if (s >= 4) return "bg-green-500";
-    if (s >= 3) return "bg-yellow-500";
-    return "bg-red-500";
-  };
-
-  const getScoreLabel = (s: number) => {
-    if (s >= 4) return t("scoreHigh");
-    if (s >= 3) return t("scoreMedium");
-    return t("scoreLow");
-  };
 
   // CAGR helper
   const calcCagr = (projections: MarketYearValue[]): number | null => {
