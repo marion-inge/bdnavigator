@@ -33,8 +33,10 @@ interface Props {
   activeMainTab?: string;
   activeSubTab?: string;
   onTabChange?: (mainTab: string, subTab?: string) => void;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
