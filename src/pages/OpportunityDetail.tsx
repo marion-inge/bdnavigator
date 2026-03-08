@@ -31,6 +31,7 @@ export default function OpportunityDetail() {
   const [bpExpanded, setBpExpanded] = useState(false);
   const [bpMainTab, setBpMainTab] = useState("combined");
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
+  const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
 
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
