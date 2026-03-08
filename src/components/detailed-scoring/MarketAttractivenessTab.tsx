@@ -99,24 +99,8 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   };
 
 
-  const ScoreButtons = () => (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((val) => (
-        <button
-          key={val}
-          disabled={readonly}
-          onClick={() => updateScore(val)}
-          className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
-            local.score === val
-              ? "bg-primary text-primary-foreground shadow-md scale-110"
-              : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
-          } ${readonly ? "cursor-default" : "cursor-pointer"}`}
-        >
-          {val}
-        </button>
-      ))}
-    </div>
-  );
+
+
 
   const SectionHeader = ({ icon: Icon, title }: { icon: React.ElementType; title: string }) => (
     <div className="flex items-center gap-2 mb-4">
