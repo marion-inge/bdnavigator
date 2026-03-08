@@ -55,12 +55,17 @@ function ModelLinkCard({ name, description, tabKey, onNavigate, icon }: {
   );
 }
 
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, onNavigateToAnalysis, activeMainTab, activeSubTab, onTabChange }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
+
+  const mainTab = activeMainTab || "combined";
+  const handleMainTabChange = (value: string) => {
+    onTabChange?.(value, undefined);
+  };
 
   const handleUpdateScoring = (updated: DetailedScoring) => {
     setScoring(updated);
@@ -74,8 +79,17 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
   const saProps = { strategicAnalyses: saData, onSave: handleUpdateSa, readonly };
 
+  // Helper for sub-tabs: use activeSubTab if provided, otherwise default
+  const getSubTab = (section: string, defaultVal: string) => {
+    if (activeMainTab === section && activeSubTab) return activeSubTab;
+    return defaultVal;
+  };
+  const handleSubTabChange = (section: string, subTab: string) => {
+    onTabChange?.(section, subTab);
+  };
+
   return (
-    <Tabs defaultValue="combined" className="space-y-6">
+    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="combined" className="text-xs sm:text-sm gap-1.5">
           <BarChart3 className="h-3.5 w-3.5" />
