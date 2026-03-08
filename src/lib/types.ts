@@ -511,6 +511,10 @@ export function createDefaultStrategicAnalyses(): StrategicAnalyses {
       description: "", rationale: "",
     },
     threeHorizons: { horizon: "", description: "", rationale: "" },
+    internalAffiliateInterviews: { entries: [], description: "", rationale: "" },
+    internalBUInterviews: { entries: [], description: "", rationale: "" },
+    positioningLandscape: { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" },
+    marketResearch: { secondaryResearch: "", primaryResearch: "", keyFigures: "", methodology: "", centralInsights: "", description: "", rationale: "" },
   };
 }
 
