@@ -7,9 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  LineChart, Line, Legend,
 } from "recharts";
-import { TrendingUp, Globe, Target, Plus, Trash2 } from "lucide-react";
+import { TrendingUp, Globe, Plus, Trash2 } from "lucide-react";
 import { EditableSection } from "@/components/EditableSection";
 
 interface Props {
@@ -32,12 +31,10 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
     setDirty(true);
   };
 
-
   const handleSave = () => {
     onUpdate({ ...scoring, marketAttractiveness: local });
     setDirty(false);
   };
-
 
   // CAGR helper
   const calcCagr = (projections: MarketYearValue[]): number | null => {
@@ -53,32 +50,25 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
   const tamProjections: MarketYearValue[] = local.analysis.tamProjections?.length
     ? local.analysis.tamProjections
     : DEFAULT_PROJECTIONS;
-  const samProjections: MarketYearValue[] = local.analysis.samProjections?.length
-    ? local.analysis.samProjections
-    : DEFAULT_PROJECTIONS;
 
   const tamCagr = calcCagr(tamProjections);
-  const samCagr = calcCagr(samProjections);
 
   const currentYear = new Date().getFullYear();
-  const chartData = tamProjections.map((t, i) => ({
+  const chartData = tamProjections.map((t) => ({
     label: `${currentYear + t.year - 1}`,
     TAM: t.value || null,
-    SAM: samProjections[i]?.value || null,
   }));
 
-  const hasChartData = chartData.some((d) => (d.TAM ?? 0) > 0 || (d.SAM ?? 0) > 0);
+  const hasChartData = chartData.some((d) => (d.TAM ?? 0) > 0);
 
-  const updateProjection = (type: "tam" | "sam", idx: number, value: number) => {
+  const updateProjection = (idx: number, value: number) => {
     setLocal((prev) => {
-      const key = type === "tam" ? "tamProjections" : "samProjections";
-      const projs = [...((prev.analysis[key] as MarketYearValue[]) || DEFAULT_PROJECTIONS)];
+      const projs = [...((prev.analysis.tamProjections as MarketYearValue[]) || DEFAULT_PROJECTIONS)];
       projs[idx] = { ...projs[idx], value };
-      return { ...prev, analysis: { ...prev.analysis, [key]: projs } };
+      return { ...prev, analysis: { ...prev.analysis, tamProjections: projs } };
     });
     setDirty(true);
   };
-
 
   // Geographical regions
   const regions = local.analysis.geographicalRegions || [];
@@ -102,10 +92,6 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
     setDirty(true);
   };
 
-
-
-
-
   const SectionHeader = ({ icon: Icon, title }: { icon: React.ElementType; title: string }) => (
     <div className="flex items-center gap-2 mb-4">
       <div className="p-2 rounded-lg bg-primary/10">
@@ -122,13 +108,13 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
 
-      {/* ─── SECTION 1: Marktpotenzial ─── */}
+      {/* ─── SECTION 1: Market Data ─── */}
       <div className="rounded-xl border border-border bg-card p-6 space-y-6">
         <SectionHeader icon={TrendingUp} title={t("maMarketPotential")} />
 
-        {/* CAGR badges */}
-        <div className="flex flex-wrap gap-3">
-          {tamCagr !== null && (
+        {/* CAGR badge */}
+        {tamCagr !== null && (
+          <div className="flex flex-wrap gap-3">
             <div className="flex items-center gap-2 rounded-lg border border-border bg-primary/5 px-4 py-2">
               <TrendingUp className="h-4 w-4 text-primary" />
               <span className="text-xs text-muted-foreground font-medium">{t("maTamCagr")}:</span>
@@ -136,24 +122,15 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
                 {tamCagr >= 0 ? "+" : ""}{tamCagr}% p.a.
               </span>
             </div>
-          )}
-          {samCagr !== null && (
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-primary/5 px-4 py-2">
-              <Target className="h-4 w-4 text-primary" />
-              <span className="text-xs text-muted-foreground font-medium">{t("maSamCagr")}:</span>
-              <span className={`text-sm font-bold ${samCagr >= 0 ? "text-green-600 dark:text-green-400" : "text-destructive"}`}>
-                {samCagr >= 0 ? "+" : ""}{samCagr}% p.a.
-              </span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 5-year line chart */}
+        {/* 5-year bar chart */}
         {hasChartData && (
           <div className="rounded-lg border border-border bg-background/50 p-4">
             <h4 className="font-semibold text-sm text-muted-foreground mb-3">{t("maProjectionsChart")}</h4>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={chartData} margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="label" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
                 <YAxis
@@ -165,106 +142,48 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
                   formatter={(value: number, name: string) => [formatM(value), name]}
                   contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
                 />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="TAM"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2.5}
-                  dot={{ r: 4, fill: "hsl(var(--primary))" }}
-                  connectNulls
-                />
-                <Line
-                  type="monotone"
-                  dataKey="SAM"
-                  stroke="hsl(var(--primary) / 0.5)"
-                  strokeWidth={2.5}
-                  strokeDasharray="6 3"
-                  dot={{ r: 4, fill: "hsl(var(--primary) / 0.5)" }}
-                  connectNulls
-                />
-              </LineChart>
+                <Bar dataKey="TAM" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         )}
 
-        {/* 5-year input rows for TAM & SAM */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* TAM */}
-          <div className="space-y-3">
-            <h4 className="font-semibold text-card-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" />
-              {t("tam")}
-            </h4>
-            <p className="text-xs text-muted-foreground">{t("maYearProjections")}</p>
-            <div className="space-y-2">
-              {tamProjections.map((proj, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground w-16 shrink-0">
-                    {t("maYearLabel")} {proj.year} ({currentYear + proj.year - 1})
-                  </span>
-                  <Input
-                    type="number"
-                    value={proj.value || ""}
-                    onChange={(e) => updateProjection("tam", idx, parseFloat(e.target.value) || 0)}
-                    disabled={readonly}
-                    placeholder="M€"
-                    className="text-sm"
-                  />
-                  {proj.value > 0 && (
-                    <span className="text-xs text-muted-foreground shrink-0 w-16 text-right">{formatM(proj.value)}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            <h5 className="text-xs font-medium text-muted-foreground mt-1">{t("maTamDescription")}</h5>
-            <Textarea
-              value={local.analysis.tamDescription}
-              onChange={(e) => update("tamDescription", e.target.value)}
-              disabled={readonly}
-              rows={3}
-              className="text-sm resize-none"
-              placeholder={t("maTamDescPlaceholder")}
-            />
+        {/* 5-year TAM input */}
+        <div className="space-y-3">
+          <h4 className="font-semibold text-card-foreground flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            {t("tam")}
+          </h4>
+          <p className="text-xs text-muted-foreground">{t("maYearProjections")}</p>
+          <div className="space-y-2">
+            {tamProjections.map((proj, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground w-16 shrink-0">
+                  {t("maYearLabel")} {proj.year} ({currentYear + proj.year - 1})
+                </span>
+                <Input
+                  type="number"
+                  value={proj.value || ""}
+                  onChange={(e) => updateProjection(idx, parseFloat(e.target.value) || 0)}
+                  disabled={readonly}
+                  placeholder="M€"
+                  className="text-sm"
+                />
+                {proj.value > 0 && (
+                  <span className="text-xs text-muted-foreground shrink-0 w-16 text-right">{formatM(proj.value)}</span>
+                )}
+              </div>
+            ))}
           </div>
-
-          {/* SAM */}
-          <div className="space-y-3">
-            <h4 className="font-semibold text-card-foreground flex items-center gap-2">
-              <Target className="h-4 w-4 text-primary" />
-              {t("sam")}
-            </h4>
-            <p className="text-xs text-muted-foreground">{t("maYearProjections")}</p>
-            <div className="space-y-2">
-              {samProjections.map((proj, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground w-16 shrink-0">
-                    {t("maYearLabel")} {proj.year} ({currentYear + proj.year - 1})
-                  </span>
-                  <Input
-                    type="number"
-                    value={proj.value || ""}
-                    onChange={(e) => updateProjection("sam", idx, parseFloat(e.target.value) || 0)}
-                    disabled={readonly}
-                    placeholder="M€"
-                    className="text-sm"
-                  />
-                  {proj.value > 0 && (
-                    <span className="text-xs text-muted-foreground shrink-0 w-16 text-right">{formatM(proj.value)}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            <h5 className="text-xs font-medium text-muted-foreground mt-1">{t("maSamDescription")}</h5>
-            <Textarea
-              value={local.analysis.samDescription}
-              onChange={(e) => update("samDescription", e.target.value)}
-              disabled={readonly}
-              rows={3}
-              className="text-sm resize-none"
-              placeholder={t("maSamDescPlaceholder")}
-            />
-          </div>
+          <h5 className="text-xs font-medium text-muted-foreground mt-1">{t("maTamDescription")}</h5>
+          <Textarea
+            value={local.analysis.tamDescription}
+            onChange={(e) => update("tamDescription", e.target.value)}
+            disabled={readonly}
+            rows={3}
+            className="text-sm resize-none"
+            placeholder={t("maTamDescPlaceholder")}
+          />
         </div>
 
         <div className="space-y-2">
