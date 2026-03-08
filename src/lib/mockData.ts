@@ -629,8 +629,9 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
       competitorLandscape: {
         score: 5,
         analysis: {
-          tam: "", tamDescription: "", sam: "", samDescription: "",
+          tam: "", tamDescription: "", tamProjections: [], sam: "", samDescription: "", samProjections: [],
           marketGrowthRate: "", targetCustomers: "", customerRelationship: "",
+          customerSegments: [], geographicalRegions: [],
           competitors: "ThorDrive (US), Gaussian Robotics (China), KUKA (Germany), Manual Operations (incumbent)",
           competitivePosition: "Only DO-178C certified aviation ground robotics solution globally",
           competitorEntries: [
