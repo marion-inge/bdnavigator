@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import { InvestmentCaseData, InvestmentCaseYearData, InvestmentCaseParameters, createDefaultInvestmentCase } from "@/lib/types";
+import { InvestmentCaseData, InvestmentCaseYearData, InvestmentCaseParameters, createDefaultInvestmentCase, BusinessPlanData } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,12 +12,14 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   investmentCase?: InvestmentCaseData;
   onSave: (ic: InvestmentCaseData) => void;
   readonly?: boolean;
+  businessPlan?: BusinessPlanData;
 }
 
 const formatK = (val: number) =>
@@ -26,12 +28,78 @@ const formatM = (val: number) =>
   Math.abs(val) >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)} M€` : `${(val / 1000).toFixed(0)} k€`;
 const formatPct = (val: number) => `${(val * 100).toFixed(1)}%`;
 
-export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly }: Props) {
+export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [data, setData] = useState<InvestmentCaseData>(investmentCase || createDefaultInvestmentCase());
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
+
+  // ═══ Import from Business Plan ═══
+  const importFromBusinessPlan = () => {
+    if (!businessPlan) return;
+
+    const analysis = businessPlan.marketAttractiveness?.analysis;
+    const somOverview = businessPlan.somOverview;
+    const samProjections = analysis?.samProjections;
+    const tamProjections = analysis?.tamProjections;
+    const grossMargin = businessPlan.commercialViability?.grossMargin || 0;
+    const marketGrowthRate = analysis?.marketGrowthRate ? parseFloat(analysis.marketGrowthRate) : 0;
+
+    // Determine market size from SAM (last year value) or TAM
+    let marketSize = 0;
+    if (samProjections?.length) {
+      marketSize = samProjections[samProjections.length - 1]?.value || 0;
+    } else if (tamProjections?.length) {
+      marketSize = tamProjections[tamProjections.length - 1]?.value || 0;
+    }
+
+    // Update parameters with BP data
+    const updatedParams = { ...data.parameters };
+    if (marketSize > 0) updatedParams.marketSize = marketSize;
+    if (marketGrowthRate > 0) updatedParams.marketGrowthRate = marketGrowthRate;
+
+    // Auto-fill sales from SOM projections
+    const updatedYearData = [...data.yearData];
+    if (somOverview?.projections?.length) {
+      const somProjections = somOverview.projections;
+      for (let i = 0; i < updatedYearData.length; i++) {
+        // Map SOM projection years to investment case years
+        const somEntry = somProjections.find(p => p.year === updatedYearData[i].year) 
+          || (i < somProjections.length ? somProjections[i] : null);
+        if (somEntry && somEntry.value > 0) {
+          updatedYearData[i] = { ...updatedYearData[i], sales: somEntry.value };
+        }
+      }
+    } else if (businessPlan.commercialViability?.projections?.length) {
+      // Fallback: use commercial viability revenue projections
+      const cvProjections = businessPlan.commercialViability.projections;
+      for (let i = 0; i < updatedYearData.length && i < cvProjections.length; i++) {
+        if (cvProjections[i].revenue > 0) {
+          updatedYearData[i] = { ...updatedYearData[i], sales: cvProjections[i].revenue };
+        }
+      }
+    }
+
+    // Apply gross margin if available
+    if (grossMargin > 0) {
+      for (let i = 0; i < updatedYearData.length; i++) {
+        updatedYearData[i] = { ...updatedYearData[i], grossMarginPct: grossMargin };
+      }
+    }
+
+    const updated = { ...data, parameters: updatedParams, yearData: updatedYearData };
+    setData(updated);
+    onSave(updated);
+    toast.success(bp(
+      "Market data imported from Business Plan",
+      "Marktdaten aus Business Plan übernommen"
+    ));
+  };
+
+  const hasBpData = !!(businessPlan?.somOverview?.projections?.length 
+    || businessPlan?.commercialViability?.projections?.length
+    || businessPlan?.marketAttractiveness?.analysis?.samProjections?.length);
 
   const update = (updated: InvestmentCaseData) => {
     setData(updated);
@@ -160,9 +228,16 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
 
   return (
     <div className="space-y-6">
-      {/* Edit toggle */}
+      {/* Edit toggle & Import */}
       {!propReadonly && (
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between gap-2">
+          {hasBpData && (
+            <Button variant="outline" size="sm" onClick={importFromBusinessPlan} disabled={!editing} className="gap-1.5 text-xs">
+              <Download className="h-3.5 w-3.5" />
+              {bp("Import from Business Plan", "Aus Business Plan übernehmen")}
+            </Button>
+          )}
+          <div className="flex-1" />
           <Button variant={editing ? "default" : "outline"} onClick={() => setEditing(!editing)} size="sm">
             {editing ? bp("Done", "Fertig") : bp("Edit", "Bearbeiten")}
           </Button>

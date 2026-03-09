@@ -495,6 +495,7 @@ export default function OpportunityDetail() {
                 investmentCase={opp.investmentCase}
                 onSave={(ic) => updateInvestmentCase(opp.id, ic)}
                 readonly={opp.stage === "closed"}
+                businessPlan={opp.businessPlan}
               />
             )}
             {activeTab === "business_case" && (
