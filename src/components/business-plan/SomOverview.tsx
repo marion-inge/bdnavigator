@@ -99,8 +99,8 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="name" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                  <Tooltip />
+                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${v} M€`} />
+                  <Tooltip formatter={(v: number) => [`${v} M€`, "SOM"]} />
                   <Bar dataKey="SOM" fill="hsl(40, 85%, 50%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
