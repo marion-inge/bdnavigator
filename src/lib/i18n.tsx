@@ -1531,6 +1531,7 @@ guideRI_s5: "Sehr hohes Risiko; feindliches regulatorisches Umfeld; Durchbruch-T
     homeStep_idea: "Erfassen & beschreiben",
     homeStep_rough_scoring: "Schneller Fragebogen",
     homeStep_detailed_scoring: "Markt, Machbarkeit, Risiko & mehr",
+    homeStep_business_case_calc: "Investment, ROI, NPV & Amortisation",
     homeStep_business_case: "Strategie, Piloten & Leads",
     homeStep_go_to_market: "Launch & Umsetzung",
     homeStep_implement_review: "Verfolgen & optimieren",
