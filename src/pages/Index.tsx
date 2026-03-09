@@ -121,7 +121,7 @@ export default function Index() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <img src={noviLogo} alt="NOVI" className="h-14 sm:h-16 shrink-0" />
+            <img src={noviLogo} alt="NOVI" className="h-20 sm:h-24 shrink-0" />
             <div className="min-w-0">
               <h1 className="text-base sm:text-xl font-bold text-muted-foreground tracking-tight truncate">{t("appSlogan")}</h1>
             </div>
