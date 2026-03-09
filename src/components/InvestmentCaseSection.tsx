@@ -395,6 +395,35 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               <ParamField label={bp("Payable Days (DPO)", "Zahlungsziel Lieferanten (Tage)")} value={data.parameters.payableDays} onChange={(v) => updateParam("payableDays", v)} disabled={readonly} type="number" />
             </CardContent>
           </Card>
+
+          {/* Year-by-Year Input Table */}
+          <Card>
+            <CardHeader><CardTitle className="text-sm">{bp("Year-by-Year Inputs", "Jährliche Eingaben")}</CardTitle></CardHeader>
+            <CardContent className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 px-2 font-semibold text-muted-foreground w-48"></th>
+                    {data.yearData.map(y => (
+                      <th key={y.year} className="text-right py-2 px-2 font-semibold text-card-foreground min-w-[80px]">{y.year}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <EditableTableRow label={bp("Investment External", "Investment Extern")} field="investmentExternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <EditableTableRow label={bp("Investment Internal", "Investment Intern")} field="investmentInternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <TableRow label={bp("Total Investment", "Gesamt-Investment")} values={calculations.map(c => c.totalInvestment)} format={formatK} bold />
+                  <tr className="h-2" />
+                  <EditableTableRow label={bp("R&D External", "F&E Extern")} field="rdExternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <EditableTableRow label={bp("R&D Internal", "F&E Intern")} field="rdInternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <TableRow label={bp("Total R&D", "Gesamt-F&E")} values={calculations.map(c => c.totalRD)} format={formatK} bold />
+                  <tr className="h-2" />
+                  <EditableTableRow label={bp("Sales / Turnover", "Umsatz")} field="sales" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <EditableTableRow label={bp("Gross Margin %", "Bruttomarge %")} field="grossMarginPct" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* ═══ P&L / Business Case Tab ═══ */}
