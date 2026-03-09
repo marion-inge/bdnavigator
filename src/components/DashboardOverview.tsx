@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { TrendingUp, Lightbulb, Target, BarChart3 } from "lucide-react";
+import { Lightbulb, BarChart3 } from "lucide-react";
 
 interface DashboardOverviewProps {
   opportunities: Opportunity[];
@@ -38,9 +38,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     const topScorer = total > 0 ? opportunities.reduce((best, o) =>
       calculateTotalScore(o.scoring) > calculateTotalScore(best.scoring) ? o : best
     ) : null;
-    const gtmCount = opportunities.filter((o) => o.stage === "implement_review").length;
-    const implCount = opportunities.filter((o) => o.stage === "business_case").length;
-    return { total, active, topScorer, gtmCount, implCount };
+    return { total, active, topScorer };
   }, [opportunities]);
 
   const industryData = useMemo(() => {
@@ -66,27 +64,13 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   return (
     <div className="space-y-4">
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <KpiCard
           icon={<Lightbulb className="h-4 w-4" />}
           label={t("dashTotal")}
           value={stats.total}
           sub={`${stats.active} ${t("dashActive")}`}
           color="bg-primary"
-        />
-        <KpiCard
-          icon={<Target className="h-4 w-4" />}
-          label={t("dashInImpl")}
-          value={stats.implCount}
-          sub={t("dashActive")}
-          color="bg-accent"
-        />
-        <KpiCard
-          icon={<TrendingUp className="h-4 w-4" />}
-          label={t("dashGtm")}
-          value={stats.gtmCount}
-          sub={t("dashInMarket")}
-          color="bg-[hsl(var(--success))]"
         />
         <KpiCard
           icon={<BarChart3 className="h-4 w-4" />}
