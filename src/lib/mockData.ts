@@ -911,6 +911,28 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         gapsAndLevers: "Key gap: sales capacity (3 FTEs today, need 8 by Year 3). Key lever: Fraport reference visits convert 60% of prospects. Risk: competitor certification could compress our premium positioning. Mitigation: invest in next-gen features (AI-based turnaround optimization) to stay ahead.",
       },
     },
+    investmentCase: {
+      parameters: {
+        projectStart: 2024, startOfOperation: 2025, projectDuration: 6, isSoftwareOnly: false,
+        marketSize: 2500, marketGrowthRate: 22, portfolioCoverage: 35, visibility: 60,
+        visibilityGrowthRate: 8, hitrate: 35, gaExpensesPct: 8, sellingExpensesPct: 12,
+        rdDepreciationYears: 5, investDepreciationYears: 8, wacc: 10,
+      },
+      yearData: [
+        { year: 2024, investmentExternal: 2000000, investmentInternal: 1000000, rdExternal: 1500000, rdInternal: 800000, sales: 0, cogs: 0, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2025, investmentExternal: 3000000, investmentInternal: 500000, rdExternal: 800000, rdInternal: 400000, sales: 7680000, cogs: 2688000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2026, investmentExternal: 500000, investmentInternal: 200000, rdExternal: 400000, rdInternal: 200000, sales: 19200000, cogs: 6720000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2027, investmentExternal: 200000, investmentInternal: 100000, rdExternal: 200000, rdInternal: 100000, sales: 38400000, cogs: 13440000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2028, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 57600000, cogs: 20160000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2029, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 77000000, cogs: 26950000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2030, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 92000000, cogs: 32200000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2031, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 105000000, cogs: 36750000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2032, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 115000000, cogs: 40250000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2033, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 120000000, cogs: 42000000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2034, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 125000000, cogs: 43750000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+      ],
+      notes: "Heavy upfront investment in DO-178C certification and Foxconn production line setup. RaaS model with 65% gross margin drives strong recurring revenue. Fraport pilot data validates unit economics. Payback expected in Year 3.",
+    } as InvestmentCaseData,
     businessCase: {
       investmentCost: 8000000,
       expectedRevenue: 19200000,
@@ -921,8 +943,9 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       notes: "Year 1: 80 robots at Fraport + Swissport. Year 2: scale to 200 robots across 8 airports. Revenue: 100% RaaS recurring.",
     },
     gates: [
-      { id: "g-005a", gate: "gate1", decision: "go", comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
-      { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
+      { id: "g-005a", gate: "gate1" as const, decision: "go" as const, comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
+      { id: "g-005b", gate: "gate2" as const, decision: "go" as const, comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
+      { id: "g-005c", gate: "gate3" as const, decision: "go" as const, comment: "Investment case compelling — NPV €120M+, ROCE far exceeds hurdle rate. RaaS model provides revenue visibility. Full budget approved for production ramp-up.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
     ],
     implementReview: {
       status: "in_progress",
