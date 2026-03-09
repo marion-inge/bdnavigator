@@ -119,7 +119,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-1 sm:py-2 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img src={noviLogo} alt="NOVI" className="h-20 sm:h-24 shrink-0" />
             <div className="min-w-0">
