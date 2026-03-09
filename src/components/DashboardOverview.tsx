@@ -38,9 +38,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     const topScorer = total > 0 ? opportunities.reduce((best, o) =>
       calculateTotalScore(o.scoring) > calculateTotalScore(best.scoring) ? o : best
     ) : null;
-    const gtmCount = opportunities.filter((o) => o.stage === "implement_review").length;
-    const implCount = opportunities.filter((o) => o.stage === "business_case").length;
-    return { total, active, topScorer, gtmCount, implCount };
+    return { total, active, topScorer };
   }, [opportunities]);
 
   const industryData = useMemo(() => {
