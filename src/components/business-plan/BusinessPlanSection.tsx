@@ -99,19 +99,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="tam-research">
-            <EmbeddedMarketResearch {...saProps} />
+            <EmbeddedMarketResearch {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-pestel">
-            <EmbeddedPestel {...saProps} />
+            <EmbeddedPestel {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-valuechain">
-            <EmbeddedValueChain {...saProps} />
+            <EmbeddedValueChain {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-porter">
-            <EmbeddedPorter {...saProps} />
+            <EmbeddedPorter {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-swot">
-            <EmbeddedSwot {...saProps} />
+            <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
