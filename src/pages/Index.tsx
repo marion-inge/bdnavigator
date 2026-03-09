@@ -9,6 +9,7 @@ import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { DashboardOverview } from "@/components/DashboardOverview";
 import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ThreeHorizonsDashboard } from "@/components/ThreeHorizonsDashboard";
 import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
