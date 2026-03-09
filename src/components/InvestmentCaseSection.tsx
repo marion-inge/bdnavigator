@@ -244,6 +244,7 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         receivables,
         payables,
         nonCurrentAssets,
+        deltaWorkingCapital,
       });
     }
     return results;
