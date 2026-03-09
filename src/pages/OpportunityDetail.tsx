@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, STAGE_ORDER, BusinessPlanData from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, STAGE_ORDER, BusinessPlanDatarom "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
@@ -19,12 +19,12 @@ import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMe
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
-type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "debusiness_plan| "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "debubusiness_plansiness_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateDetaiBusinessPlanateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
