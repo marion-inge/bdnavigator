@@ -334,6 +334,15 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               <ParamField label="WACC (%)" value={data.parameters.wacc} onChange={(v) => updateParam("wacc", v)} disabled={readonly} type="number" />
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader><CardTitle className="text-sm">{bp("Working Capital Parameters", "Working Capital Parameter")}</CardTitle></CardHeader>
+            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <ParamField label={bp("Inventory Days", "Lagerdauer (Tage)")} value={data.parameters.inventoryDays} onChange={(v) => updateParam("inventoryDays", v)} disabled={readonly} type="number" />
+              <ParamField label={bp("Receivable Days (DSO)", "Forderungslaufzeit (Tage)")} value={data.parameters.receivableDays} onChange={(v) => updateParam("receivableDays", v)} disabled={readonly} type="number" />
+              <ParamField label={bp("Payable Days (DPO)", "Zahlungsziel Lieferanten (Tage)")} value={data.parameters.payableDays} onChange={(v) => updateParam("payableDays", v)} disabled={readonly} type="number" />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* ═══ P&L / Business Case Tab ═══ */}
