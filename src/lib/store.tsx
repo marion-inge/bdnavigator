@@ -324,6 +324,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const GATE_STAGE_INDEX: Record<string, number> = {
     gate1: STAGE_ORDER.indexOf("gate1"),
     gate2: STAGE_ORDER.indexOf("gate2"),
+    gate3: STAGE_ORDER.indexOf("gate3"),
   };
 
   const revertStage = useCallback(
