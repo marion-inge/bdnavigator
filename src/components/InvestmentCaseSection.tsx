@@ -189,6 +189,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         investDepr,
         rdDepr,
         workingCapital,
+        inventories,
+        receivables,
+        payables,
         nonCurrentAssets,
       };
     });
