@@ -918,6 +918,7 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         marketSize: 2500, marketGrowthRate: 22, portfolioCoverage: 35, visibility: 60,
         visibilityGrowthRate: 8, hitrate: 35, gaExpensesPct: 8, sellingExpensesPct: 12,
         rdDepreciationYears: 5, investDepreciationYears: 8, wacc: 10,
+        inventoryDays: 20, receivableDays: 45, payableDays: 35,
       },
       yearData: [
         { year: 2024, investmentExternal: 2000000, investmentInternal: 1000000, rdExternal: 1500000, rdInternal: 800000, sales: 0, cogs: 0, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
