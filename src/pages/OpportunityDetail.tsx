@@ -57,6 +57,9 @@ export default function OpportunityDetail() {
     if (stage === "business_plan" && !opp.businessPlan) {
       updates.businessPlan = createDefaultBusinessPlan();
     }
+    if (stage === "investment_case" && !opp.investmentCase) {
+      updates.investmentCase = createDefaultInvestmentCase();
+    }
     if (stage === "business_case" && !opp.businessCase) {
       updates.businessCase = createDefaultBusinessCase();
     }
