@@ -31,7 +31,14 @@ const formatPct = (val: number) => `${(val * 100).toFixed(1)}%`;
 export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
-  const [data, setData] = useState<InvestmentCaseData>(investmentCase || createDefaultInvestmentCase());
+  const defaults = createDefaultInvestmentCase();
+  const [data, setData] = useState<InvestmentCaseData>(() => {
+    if (!investmentCase) return defaults;
+    return {
+      ...investmentCase,
+      parameters: { ...defaults.parameters, ...investmentCase.parameters },
+    };
+  });
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
 
