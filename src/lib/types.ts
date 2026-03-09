@@ -263,6 +263,9 @@ export interface InvestmentCaseParameters {
   rdDepreciationYears: number;
   investDepreciationYears: number;
   wacc: number;
+  inventoryDays: number;
+  receivableDays: number;
+  payableDays: number;
 }
 
 export interface InvestmentCaseData {
