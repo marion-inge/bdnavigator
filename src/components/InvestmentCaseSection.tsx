@@ -72,6 +72,12 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
     if (marketSize > 0) updatedParams.marketSize = marketSize;
     if (marketGrowthRate > 0) updatedParams.marketGrowthRate = marketGrowthRate;
 
+    // Import SOM market assumption parameters
+    if (somOverview?.portfolioCoveragePct) updatedParams.portfolioCoverage = somOverview.portfolioCoveragePct;
+    if (somOverview?.visibilityPct) updatedParams.visibility = somOverview.visibilityPct;
+    if (somOverview?.visibilityGrowthPct) updatedParams.visibilityGrowthRate = somOverview.visibilityGrowthPct;
+    if (somOverview?.hitratePct) updatedParams.hitrate = somOverview.hitratePct;
+
     // Auto-fill sales from SOM projections
     const updatedYearData = [...data.yearData];
     if (somOverview?.projections?.length) {
