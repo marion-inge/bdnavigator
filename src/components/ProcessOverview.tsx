@@ -1,12 +1,12 @@
 import { useI18n } from "@/lib/i18n";
 
 const STAGES = [
-  { key: "idea", icon: "💡", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
-  { key: "rough_scoring", icon: "📊", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
-  { key: "detailed_scoring", icon: "🔍", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
-  { key: "business_case_calc", icon: "💰", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
-  { key: "business_case", icon: "💼", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
-  { key: "implement_review", icon: "🔄", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
+  { key: "idea", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
+  { key: "rough_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
+  { key: "detailed_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
+  { key: "business_case_calc", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
+  { key: "business_case", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "implement_review", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
 
 export function ProcessOverview() {
