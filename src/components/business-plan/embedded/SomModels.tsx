@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement, PositioningLandscapeData, PositioningLandscapeEntry } from "@/lib/types";
+import { SomModels, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement, PositioningLandscapeData, PositioningLandscapeEntry } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,19 +12,19 @@ import { Plus, Trash2 } from "lucide-react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ZAxis } from "recharts";
 
 interface EmbeddedModelProps {
-  strategicAnalyses: StrategicAnalyses;
-  onSave: (sa: StrategicAnalyses) => void;
+  data: SomModels;
+  onSave: (data: SomModels) => void;
   readonly?: boolean;
 }
 
 // ── Value Proposition Canvas ──
-export function EmbeddedVPC({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedVPC({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const vpc: ValuePropositionCanvas = strategicAnalyses.valuePropositionCanvas || { customerJobs: "", customerPains: "", customerGains: "", productsServices: "", painRelievers: "", gainCreators: "", description: "", rationale: "" };
-  const updateVpc = (patch: Partial<ValuePropositionCanvas>) => onSave({ ...strategicAnalyses, valuePropositionCanvas: { ...vpc, ...patch } });
+  const vpc: ValuePropositionCanvas = data.valuePropositionCanvas || { customerJobs: "", customerPains: "", customerGains: "", productsServices: "", painRelievers: "", gainCreators: "", description: "", rationale: "" };
+  const updateVpc = (patch: Partial<ValuePropositionCanvas>) => onSave({ ...data, valuePropositionCanvas: { ...vpc, ...patch } });
 
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
@@ -67,13 +67,13 @@ export function EmbeddedVPC({ strategicAnalyses, onSave, readonly: propReadonly 
 }
 
 // ── Customer Benefit Analysis ──
-export function EmbeddedCBA({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedCBA({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const cba: CustomerBenefitAnalysis = strategicAnalyses.customerBenefitAnalysis || { functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "", description: "", rationale: "" };
-  const updateCba = (patch: Partial<CustomerBenefitAnalysis>) => onSave({ ...strategicAnalyses, customerBenefitAnalysis: { ...cba, ...patch } });
+  const cba: CustomerBenefitAnalysis = data.customerBenefitAnalysis || { functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "", description: "", rationale: "" };
+  const updateCba = (patch: Partial<CustomerBenefitAnalysis>) => onSave({ ...data, customerBenefitAnalysis: { ...cba, ...patch } });
 
   const items = [
     { key: "functionalBenefits" as const, label: bp("Functional Benefits", "Funktionaler Nutzen"), color: "bg-blue-500/10 border-blue-500/30", icon: "⚙️" },
@@ -103,13 +103,13 @@ export function EmbeddedCBA({ strategicAnalyses, onSave, readonly: propReadonly 
 }
 
 // ── Three Circle Model ──
-export function EmbeddedThreeCircles({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedThreeCircles({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const tcm: ThreeCircleModel = strategicAnalyses.threeCircleModel || { ourValue: "", competitorValue: "", customerNeeds: "", ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "", description: "", rationale: "" };
-  const updateTcm = (patch: Partial<ThreeCircleModel>) => onSave({ ...strategicAnalyses, threeCircleModel: { ...tcm, ...patch } });
+  const tcm: ThreeCircleModel = data.threeCircleModel || { ourValue: "", competitorValue: "", customerNeeds: "", ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "", description: "", rationale: "" };
+  const updateTcm = (patch: Partial<ThreeCircleModel>) => onSave({ ...data, threeCircleModel: { ...tcm, ...patch } });
 
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
@@ -117,36 +117,15 @@ export function EmbeddedThreeCircles({ strategicAnalyses, onSave, readonly: prop
         <CardHeader><CardTitle>⭕ {bp("Three Circle Model", "Drei-Kreise-Modell")}</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="rounded-lg border p-3 bg-blue-500/10 border-blue-500/30">
-              <Label className="text-sm font-semibold">🔵 {bp("Our Value", "Unser Wert")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.ourValue} onChange={e => updateTcm({ ourValue: e.target.value })} disabled={readonly} rows={3} />
-            </div>
-            <div className="rounded-lg border p-3 bg-red-500/10 border-red-500/30">
-              <Label className="text-sm font-semibold">🔴 {bp("Competitor Value", "Wettbewerberwert")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.competitorValue} onChange={e => updateTcm({ competitorValue: e.target.value })} disabled={readonly} rows={3} />
-            </div>
-            <div className="rounded-lg border p-3 bg-green-500/10 border-green-500/30">
-              <Label className="text-sm font-semibold">🟢 {bp("Customer Needs", "Kundenbedürfnisse")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.customerNeeds} onChange={e => updateTcm({ customerNeeds: e.target.value })} disabled={readonly} rows={3} />
-            </div>
+            <div className="rounded-lg border p-3 bg-blue-500/10 border-blue-500/30"><Label className="text-sm font-semibold">🔵 {bp("Our Value", "Unser Wert")}</Label><Textarea className="mt-2 bg-background" value={tcm.ourValue} onChange={e => updateTcm({ ourValue: e.target.value })} disabled={readonly} rows={3} /></div>
+            <div className="rounded-lg border p-3 bg-red-500/10 border-red-500/30"><Label className="text-sm font-semibold">🔴 {bp("Competitor Value", "Wettbewerberwert")}</Label><Textarea className="mt-2 bg-background" value={tcm.competitorValue} onChange={e => updateTcm({ competitorValue: e.target.value })} disabled={readonly} rows={3} /></div>
+            <div className="rounded-lg border p-3 bg-green-500/10 border-green-500/30"><Label className="text-sm font-semibold">🟢 {bp("Customer Needs", "Kundenbedürfnisse")}</Label><Textarea className="mt-2 bg-background" value={tcm.customerNeeds} onChange={e => updateTcm({ customerNeeds: e.target.value })} disabled={readonly} rows={3} /></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="rounded-lg border p-3 bg-primary/10 border-primary/30">
-              <Label className="text-sm font-semibold">🎯 {bp("Our Unique", "Unser Alleinstellung")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.ourUnique} onChange={e => updateTcm({ ourUnique: e.target.value })} disabled={readonly} rows={2} />
-            </div>
-            <div className="rounded-lg border p-3 bg-orange-500/10 border-orange-500/30">
-              <Label className="text-sm font-semibold">⚠️ {bp("Their Unique", "Deren Alleinstellung")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.theirUnique} onChange={e => updateTcm({ theirUnique: e.target.value })} disabled={readonly} rows={2} />
-            </div>
-            <div className="rounded-lg border p-3 bg-yellow-500/10 border-yellow-500/30">
-              <Label className="text-sm font-semibold">🤝 {bp("Common Value", "Gemeinsamer Wert")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.commonValue} onChange={e => updateTcm({ commonValue: e.target.value })} disabled={readonly} rows={2} />
-            </div>
-            <div className="rounded-lg border p-3 bg-violet-500/10 border-violet-500/30">
-              <Label className="text-sm font-semibold">💡 {bp("Unmet Needs", "Unerfüllte Bedürfnisse")}</Label>
-              <Textarea className="mt-2 bg-background" value={tcm.unmetNeeds} onChange={e => updateTcm({ unmetNeeds: e.target.value })} disabled={readonly} rows={2} />
-            </div>
+            <div className="rounded-lg border p-3 bg-primary/10 border-primary/30"><Label className="text-sm font-semibold">🎯 {bp("Our Unique", "Unser Alleinstellung")}</Label><Textarea className="mt-2 bg-background" value={tcm.ourUnique} onChange={e => updateTcm({ ourUnique: e.target.value })} disabled={readonly} rows={2} /></div>
+            <div className="rounded-lg border p-3 bg-orange-500/10 border-orange-500/30"><Label className="text-sm font-semibold">⚠️ {bp("Their Unique", "Deren Alleinstellung")}</Label><Textarea className="mt-2 bg-background" value={tcm.theirUnique} onChange={e => updateTcm({ theirUnique: e.target.value })} disabled={readonly} rows={2} /></div>
+            <div className="rounded-lg border p-3 bg-yellow-500/10 border-yellow-500/30"><Label className="text-sm font-semibold">🤝 {bp("Common Value", "Gemeinsamer Wert")}</Label><Textarea className="mt-2 bg-background" value={tcm.commonValue} onChange={e => updateTcm({ commonValue: e.target.value })} disabled={readonly} rows={2} /></div>
+            <div className="rounded-lg border p-3 bg-violet-500/10 border-violet-500/30"><Label className="text-sm font-semibold">💡 {bp("Unmet Needs", "Unerfüllte Bedürfnisse")}</Label><Textarea className="mt-2 bg-background" value={tcm.unmetNeeds} onChange={e => updateTcm({ unmetNeeds: e.target.value })} disabled={readonly} rows={2} /></div>
           </div>
           <div><Label>{bp("Description", "Beschreibung")}</Label><Textarea value={tcm.description} onChange={e => updateTcm({ description: e.target.value })} disabled={readonly} /></div>
         </CardContent>
@@ -156,13 +135,13 @@ export function EmbeddedThreeCircles({ strategicAnalyses, onSave, readonly: prop
 }
 
 // ── Positioning Statement ──
-export function EmbeddedPositioning({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedPositioning({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const pos: PositioningStatement = strategicAnalyses.positioningStatement || { targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "", competitiveAlternative: "", differentiator: "", statement: "", description: "", rationale: "" };
-  const updatePos = (patch: Partial<PositioningStatement>) => onSave({ ...strategicAnalyses, positioningStatement: { ...pos, ...patch } });
+  const pos: PositioningStatement = data.positioningStatement || { targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "", competitiveAlternative: "", differentiator: "", statement: "", description: "", rationale: "" };
+  const updatePos = (patch: Partial<PositioningStatement>) => onSave({ ...data, positioningStatement: { ...pos, ...patch } });
 
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
@@ -177,10 +156,7 @@ export function EmbeddedPositioning({ strategicAnalyses, onSave, readonly: propR
             <div><Label>{bp("Competitive Alternative", "Wettbewerbs-Alternative")}</Label><Textarea value={pos.competitiveAlternative} onChange={e => updatePos({ competitiveAlternative: e.target.value })} disabled={readonly} rows={2} /></div>
             <div><Label>{bp("Differentiator", "Differenzierung")}</Label><Textarea value={pos.differentiator} onChange={e => updatePos({ differentiator: e.target.value })} disabled={readonly} rows={2} /></div>
           </div>
-          <div>
-            <Label className="font-semibold">{bp("Positioning Statement", "Positionierungsaussage")}</Label>
-            <Textarea value={pos.statement} onChange={e => updatePos({ statement: e.target.value })} placeholder={bp("For [target], who [need], [product] is a [category] that [benefit]. Unlike [alternative], we [differentiator].", "Für [Zielgruppe], die [Bedürfnis], ist [Produkt] eine [Kategorie], die [Nutzen]. Anders als [Alternative] bieten wir [Differenzierung].")} disabled={readonly} rows={3} />
-          </div>
+          <div><Label className="font-semibold">{bp("Positioning Statement", "Positionierungsaussage")}</Label><Textarea value={pos.statement} onChange={e => updatePos({ statement: e.target.value })} disabled={readonly} rows={3} /></div>
           <div><Label>{bp("Description", "Beschreibung")}</Label><Textarea value={pos.description} onChange={e => updatePos({ description: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
@@ -188,14 +164,14 @@ export function EmbeddedPositioning({ strategicAnalyses, onSave, readonly: propR
   );
 }
 
-// ── Logic Positioning Landscape ──
-export function EmbeddedPositioningLandscape({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+// ── Positioning Landscape ──
+export function EmbeddedPositioningLandscape({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const pl: PositioningLandscapeData = strategicAnalyses.positioningLandscape || { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" };
-  const updatePl = (updated: PositioningLandscapeData) => onSave({ ...strategicAnalyses, positioningLandscape: updated });
+  const pl: PositioningLandscapeData = data.positioningLandscape || { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" };
+  const updatePl = (updated: PositioningLandscapeData) => onSave({ ...data, positioningLandscape: updated });
   const addEntry = () => updatePl({ ...pl, entries: [...pl.entries, { id: crypto.randomUUID(), name: "", isOurs: false, xValue: 5, yValue: 5 }] });
   const removeEntry = (id: string) => updatePl({ ...pl, entries: pl.entries.filter(e => e.id !== id) });
   const updateEntry = (id: string, patch: Partial<PositioningLandscapeEntry>) => updatePl({ ...pl, entries: pl.entries.map(e => e.id === id ? { ...e, ...patch } : e) });
@@ -205,18 +181,12 @@ export function EmbeddedPositioningLandscape({ strategicAnalyses, onSave, readon
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>🗺️ {bp("Positioning Landscape", "Positionierungslandschaft")}</CardTitle>
-            {!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add Player", "Akteur hinzufügen")}</Button>}
-          </div>
-        </CardHeader>
+        <CardHeader><div className="flex items-center justify-between"><CardTitle>🗺️ {bp("Positioning Landscape", "Positionierungslandschaft")}</CardTitle>{!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add Player", "Akteur hinzufügen")}</Button>}</div></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>{bp("X-Axis", "X-Achse")}</Label><Input value={pl.xAxisLabel} onChange={e => updatePl({ ...pl, xAxisLabel: e.target.value })} placeholder={bp("e.g. Price Level", "z.B. Preisniveau")} disabled={readonly} /></div>
-            <div><Label>{bp("Y-Axis", "Y-Achse")}</Label><Input value={pl.yAxisLabel} onChange={e => updatePl({ ...pl, yAxisLabel: e.target.value })} placeholder={bp("e.g. Quality / Features", "z.B. Qualität / Features")} disabled={readonly} /></div>
+            <div><Label>{bp("X-Axis", "X-Achse")}</Label><Input value={pl.xAxisLabel} onChange={e => updatePl({ ...pl, xAxisLabel: e.target.value })} disabled={readonly} /></div>
+            <div><Label>{bp("Y-Axis", "Y-Achse")}</Label><Input value={pl.yAxisLabel} onChange={e => updatePl({ ...pl, yAxisLabel: e.target.value })} disabled={readonly} /></div>
           </div>
-
           {pl.entries.length > 0 && (
             <div className="w-full h-64 border rounded-lg p-2">
               <ResponsiveContainer width="100%" height="100%">
@@ -225,46 +195,25 @@ export function EmbeddedPositioningLandscape({ strategicAnalyses, onSave, readon
                   <XAxis type="number" dataKey="x" domain={[0, 10]} name={pl.xAxisLabel || "X"} tick={{ fontSize: 10 }} label={{ value: pl.xAxisLabel || "X", position: "bottom", fontSize: 11 }} />
                   <YAxis type="number" dataKey="y" domain={[0, 10]} name={pl.yAxisLabel || "Y"} tick={{ fontSize: 10 }} label={{ value: pl.yAxisLabel || "Y", angle: -90, position: "insideLeft", fontSize: 11 }} />
                   <ZAxis range={[100, 100]} />
-                  <Tooltip content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const d = payload[0].payload;
-                    return <div className="bg-popover text-popover-foreground border rounded-md px-3 py-2 text-sm shadow-md"><strong>{d.name}</strong> ({d.x}, {d.y})</div>;
-                  }} />
-                  <Scatter data={scatterData}>
-                    {scatterData.map((entry, i) => (
-                      <Cell key={i} fill={entry.isOurs ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"} />
-                    ))}
-                  </Scatter>
+                  <Tooltip content={({ active, payload }) => { if (!active || !payload?.length) return null; const d = payload[0].payload; return <div className="bg-popover text-popover-foreground border rounded-md px-3 py-2 text-sm shadow-md"><strong>{d.name}</strong> ({d.x}, {d.y})</div>; }} />
+                  <Scatter data={scatterData}>{scatterData.map((entry, i) => (<Cell key={i} fill={entry.isOurs ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"} />))}</Scatter>
                 </ScatterChart>
               </ResponsiveContainer>
             </div>
           )}
-
-          {pl.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("Add players to create the positioning landscape.", "Fügen Sie Akteure hinzu, um die Positionierungslandschaft zu erstellen.")}</p>}
-
+          {pl.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("Add players to create the positioning landscape.", "Fügen Sie Akteure hinzu.")}</p>}
           {pl.entries.map(entry => (
             <div key={entry.id} className={`rounded-lg border p-3 space-y-2 ${entry.isOurs ? "border-primary/50 bg-primary/5" : "border-border"}`}>
               <div className="flex items-center gap-2">
                 <Input value={entry.name} onChange={e => updateEntry(entry.id, { name: e.target.value })} placeholder={bp("Name", "Name")} disabled={readonly} className="flex-1" />
-                <Button variant={entry.isOurs ? "default" : "outline"} size="sm" onClick={() => updateEntry(entry.id, { isOurs: !entry.isOurs })} disabled={readonly} className="text-xs">{bp("Us", "Wir")}</Button>
+                <Button variant={entry.isOurs ? "default" : "outline"} size="sm" onClick={() => updateEntry(entry.id, { isOurs: !entry.isOurs })} disabled={readonly}>Us</Button>
+                <div className="flex items-center gap-1"><span className="text-xs">X:</span><Slider min={0} max={10} step={1} value={[entry.xValue]} onValueChange={([v]) => updateEntry(entry.id, { xValue: v })} disabled={readonly} className="w-20" /></div>
+                <div className="flex items-center gap-1"><span className="text-xs">Y:</span><Slider min={0} max={10} step={1} value={[entry.yValue]} onValueChange={([v]) => updateEntry(entry.id, { yValue: v })} disabled={readonly} className="w-20" /></div>
                 {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs whitespace-nowrap">{pl.xAxisLabel || "X"}:</Label>
-                  <Slider min={0} max={10} step={1} value={[entry.xValue]} onValueChange={([v]) => updateEntry(entry.id, { xValue: v })} disabled={readonly} className="flex-1" />
-                  <span className="text-xs font-bold w-6 text-right">{entry.xValue}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs whitespace-nowrap">{pl.yAxisLabel || "Y"}:</Label>
-                  <Slider min={0} max={10} step={1} value={[entry.yValue]} onValueChange={([v]) => updateEntry(entry.id, { yValue: v })} disabled={readonly} className="flex-1" />
-                  <span className="text-xs font-bold w-6 text-right">{entry.yValue}</span>
-                </div>
               </div>
             </div>
           ))}
           <div><Label>{bp("Description", "Beschreibung")}</Label><Textarea value={pl.description} onChange={e => updatePl({ ...pl, description: e.target.value })} disabled={readonly} /></div>
-          <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={pl.rationale} onChange={e => updatePl({ ...pl, rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
     </EditableSection>

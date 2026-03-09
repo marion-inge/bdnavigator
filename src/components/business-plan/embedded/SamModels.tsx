@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { StrategicAnalyses, CustomerSegmentEntry, CustomerInterviewEntry, InternalInterviewEntry, BusinessModelCanvas, LeanCanvas } from "@/lib/types";
+import { SamModels, CustomerSegmentEntry, CustomerInterviewEntry, InternalInterviewEntry, BusinessModelCanvas, LeanCanvas } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,24 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2 } from "lucide-react";
 
 interface EmbeddedModelProps {
-  strategicAnalyses: StrategicAnalyses;
-  onSave: (sa: StrategicAnalyses) => void;
+  data: SamModels;
+  onSave: (data: SamModels) => void;
   readonly?: boolean;
 }
 
 // ── Customer Segmentation ──
-export function EmbeddedCustomerSegmentation({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedCustomerSegmentation({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const seg = strategicAnalyses.customerSegmentation || { entries: [], description: "", rationale: "" };
-  const updateSeg = (updated: typeof seg) => onSave({ ...strategicAnalyses, customerSegmentation: updated });
+  const seg = data.customerSegmentation || { entries: [], description: "", rationale: "" };
+  const updateSeg = (updated: typeof seg) => onSave({ ...data, customerSegmentation: updated });
   const addEntry = () => updateSeg({ ...seg, entries: [...seg.entries, { id: crypto.randomUUID(), name: "", size: "", needs: "", willingnessToPay: "", priority: "medium" }] });
   const removeEntry = (id: string) => updateSeg({ ...seg, entries: seg.entries.filter(e => e.id !== id) });
   const updateEntry = (id: string, patch: Partial<CustomerSegmentEntry>) => updateSeg({ ...seg, entries: seg.entries.map(e => e.id === id ? { ...e, ...patch } : e) });
@@ -32,12 +31,7 @@ export function EmbeddedCustomerSegmentation({ strategicAnalyses, onSave, readon
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>👥 {bp("Customer Segmentation", "Kundensegmentierung")}</CardTitle>
-            {!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}
-          </div>
-        </CardHeader>
+        <CardHeader><div className="flex items-center justify-between"><CardTitle>👥 {bp("Customer Segmentation", "Kundensegmentierung")}</CardTitle>{!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}</div></CardHeader>
         <CardContent className="space-y-3">
           {seg.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("No segments defined.", "Keine Segmente definiert.")}</p>}
           {seg.entries.map(entry => (
@@ -46,11 +40,7 @@ export function EmbeddedCustomerSegmentation({ strategicAnalyses, onSave, readon
                 <Input value={entry.name} onChange={e => updateEntry(entry.id, { name: e.target.value })} placeholder={bp("Segment name", "Segmentname")} disabled={readonly} className="flex-1 font-medium" />
                 <Select value={entry.priority} onValueChange={v => updateEntry(entry.id, { priority: v as any })} disabled={readonly}>
                   <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="high">🔴 High</SelectItem>
-                    <SelectItem value="medium">🟡 Medium</SelectItem>
-                    <SelectItem value="low">🟢 Low</SelectItem>
-                  </SelectContent>
+                  <SelectContent><SelectItem value="high">🔴 High</SelectItem><SelectItem value="medium">🟡 Medium</SelectItem><SelectItem value="low">🟢 Low</SelectItem></SelectContent>
                 </Select>
                 {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
@@ -69,13 +59,13 @@ export function EmbeddedCustomerSegmentation({ strategicAnalyses, onSave, readon
 }
 
 // ── Customer Interviews ──
-export function EmbeddedCustomerInterviews({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedCustomerInterviews({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const ci = strategicAnalyses.customerInterviewing || { entries: [], description: "", rationale: "" };
-  const updateCi = (updated: typeof ci) => onSave({ ...strategicAnalyses, customerInterviewing: updated });
+  const ci = data.customerInterviewing || { entries: [], description: "", rationale: "" };
+  const updateCi = (updated: typeof ci) => onSave({ ...data, customerInterviewing: updated });
   const addEntry = () => updateCi({ ...ci, entries: [...ci.entries, { id: crypto.randomUUID(), date: new Date().toISOString().slice(0, 10), customerName: "", role: "", keyInsights: "", painPoints: "", quotes: "" }] });
   const removeEntry = (id: string) => updateCi({ ...ci, entries: ci.entries.filter(e => e.id !== id) });
   const updateEntry = (id: string, patch: Partial<CustomerInterviewEntry>) => updateCi({ ...ci, entries: ci.entries.map(e => e.id === id ? { ...e, ...patch } : e) });
@@ -83,12 +73,7 @@ export function EmbeddedCustomerInterviews({ strategicAnalyses, onSave, readonly
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>🎤 {bp("Customer Interviews", "Kundeninterviews")} ({ci.entries.length})</CardTitle>
-            {!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}
-          </div>
-        </CardHeader>
+        <CardHeader><div className="flex items-center justify-between"><CardTitle>🎤 {bp("Customer Interviews", "Kundeninterviews")} ({ci.entries.length})</CardTitle>{!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}</div></CardHeader>
         <CardContent className="space-y-3">
           {ci.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("No interviews recorded.", "Keine Interviews erfasst.")}</p>}
           {ci.entries.map(entry => (
@@ -113,30 +98,25 @@ export function EmbeddedCustomerInterviews({ strategicAnalyses, onSave, readonly
   );
 }
 
-// ── Internal Affiliate Interviews ──
-function InternalInterviewsForm({ title, icon, dataKey, strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps & { title: string; icon: string; dataKey: "internalAffiliateInterviews" | "internalBUInterviews" }) {
+// ── Internal Interviews (shared form) ──
+function InternalInterviewsForm({ title, icon, dataKey, data, onSave, readonly: propReadonly }: EmbeddedModelProps & { title: string; icon: string; dataKey: "internalAffiliateInterviews" | "internalBUInterviews" }) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const data = strategicAnalyses[dataKey] || { entries: [], description: "", rationale: "" };
-  const updateData = (updated: typeof data) => onSave({ ...strategicAnalyses, [dataKey]: updated });
-  const addEntry = () => updateData({ ...data, entries: [...data.entries, { id: crypto.randomUUID(), date: new Date().toISOString().slice(0, 10), intervieweeName: "", role: "", department: "", keyInsights: "", recommendations: "", quotes: "" }] });
-  const removeEntry = (id: string) => updateData({ ...data, entries: data.entries.filter(e => e.id !== id) });
-  const updateEntry = (id: string, patch: Partial<InternalInterviewEntry>) => updateData({ ...data, entries: data.entries.map(e => e.id === id ? { ...e, ...patch } : e) });
+  const interviews = data[dataKey] || { entries: [], description: "", rationale: "" };
+  const updateData = (updated: typeof interviews) => onSave({ ...data, [dataKey]: updated });
+  const addEntry = () => updateData({ ...interviews, entries: [...interviews.entries, { id: crypto.randomUUID(), date: new Date().toISOString().slice(0, 10), intervieweeName: "", role: "", department: "", keyInsights: "", recommendations: "", quotes: "" }] });
+  const removeEntry = (id: string) => updateData({ ...interviews, entries: interviews.entries.filter(e => e.id !== id) });
+  const updateEntry = (id: string, patch: Partial<InternalInterviewEntry>) => updateData({ ...interviews, entries: interviews.entries.map(e => e.id === id ? { ...e, ...patch } : e) });
 
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>{icon} {title} ({data.entries.length})</CardTitle>
-            {!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}
-          </div>
-        </CardHeader>
+        <CardHeader><div className="flex items-center justify-between"><CardTitle>{icon} {title} ({interviews.entries.length})</CardTitle>{!readonly && <Button variant="outline" size="sm" onClick={addEntry}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add", "Hinzufügen")}</Button>}</div></CardHeader>
         <CardContent className="space-y-3">
-          {data.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("No interviews recorded.", "Keine Interviews erfasst.")}</p>}
-          {data.entries.map(entry => (
+          {interviews.entries.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("No interviews recorded.", "Keine Interviews erfasst.")}</p>}
+          {interviews.entries.map(entry => (
             <div key={entry.id} className="rounded-lg border border-border p-3 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
                 <Input type="date" value={entry.date} onChange={e => updateEntry(entry.id, { date: e.target.value })} disabled={readonly} className="w-36" />
@@ -152,7 +132,7 @@ function InternalInterviewsForm({ title, icon, dataKey, strategicAnalyses, onSav
               </div>
             </div>
           ))}
-          <div><Label>{bp("Description", "Beschreibung")}</Label><Textarea value={data.description} onChange={e => updateData({ ...data, description: e.target.value })} disabled={readonly} /></div>
+          <div><Label>{bp("Description", "Beschreibung")}</Label><Textarea value={interviews.description} onChange={e => updateData({ ...interviews, description: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
     </EditableSection>
@@ -172,13 +152,13 @@ export function EmbeddedInternalBUInterviews(props: EmbeddedModelProps) {
 }
 
 // ── Business Model Canvas ──
-export function EmbeddedBMC({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedBMC({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const bm: BusinessModelCanvas = strategicAnalyses.businessModelling || { valueProposition: "", customerSegments: "", channels: "", customerRelationships: "", revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "", description: "", rationale: "" };
-  const updateBm = (patch: Partial<BusinessModelCanvas>) => onSave({ ...strategicAnalyses, businessModelling: { ...bm, ...patch } });
+  const bm: BusinessModelCanvas = data.businessModelling || { valueProposition: "", customerSegments: "", channels: "", customerRelationships: "", revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "", description: "", rationale: "" };
+  const updateBm = (patch: Partial<BusinessModelCanvas>) => onSave({ ...data, businessModelling: { ...bm, ...patch } });
 
   const items: { key: keyof BusinessModelCanvas; label: string; color: string }[] = [
     { key: "valueProposition", label: bp("Value Proposition", "Wertversprechen"), color: "bg-primary/10 border-primary/30" },
@@ -213,13 +193,13 @@ export function EmbeddedBMC({ strategicAnalyses, onSave, readonly: propReadonly 
 }
 
 // ── Lean Canvas ──
-export function EmbeddedLeanCanvas({ strategicAnalyses, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedLeanCanvas({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const lc: LeanCanvas = strategicAnalyses.leanCanvas || { problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "", customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "", description: "", rationale: "" };
-  const updateLc = (patch: Partial<LeanCanvas>) => onSave({ ...strategicAnalyses, leanCanvas: { ...lc, ...patch } });
+  const lc: LeanCanvas = data.leanCanvas || { problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "", customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "", description: "", rationale: "" };
+  const updateLc = (patch: Partial<LeanCanvas>) => onSave({ ...data, leanCanvas: { ...lc, ...patch } });
 
   const items: { key: keyof LeanCanvas; label: string; color: string }[] = [
     { key: "problem", label: bp("Problem", "Problem"), color: "bg-red-500/10 border-red-500/30" },

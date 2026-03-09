@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, createDefaultDetailedScoring, createDefaultBusinessCase, GateRecord, Stage, Scoring, DetailedScoring, BusinessCase, STAGE_ORDER } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -11,7 +11,7 @@ interface StoreContextType {
   deleteOpportunity: (id: string) => void;
   getOpportunity: (id: string) => Opportunity | undefined;
   updateScoring: (id: string, scoring: Scoring) => void;
-  updateDetailedScoring: (id: string, detailedScoring: DetailedScoring) => void;
+  updateBusinessPlan: (id: string, businessPlan: BusinessPlanData) => void;
   updateBusinessCase: (id: string, businessCase: BusinessCase) => void;
   addGateDecision: (id: string, gate: GateRecord) => void;
   updateGateDecision: (oppId: string, gateId: string, updates: Partial<GateRecord>) => void;
@@ -20,12 +20,6 @@ interface StoreContextType {
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
-
-// ── DB helpers ──────────────────────────────────────────────────────
-// NOTE: DB column names use legacy identifiers that differ from UI labels:
-//   rough_scoring_answers / rough_scoring_comments → UI: "Idea Scoring"
-//   detailed_scoring → UI: "Business Plan"
-//   business_case → UI: "Implementation and GTM Plan"
 
 function oppToRow(o: Opportunity) {
   return {
@@ -40,7 +34,7 @@ function oppToRow(o: Opportunity) {
     idea_bringer: o.ideaBringer ?? "",
     stage: o.stage,
     scoring: o.scoring as any,
-    detailed_scoring: o.detailedScoring ?? null,
+    business_plan: o.businessPlan ?? null,
     business_case: o.businessCase ?? null,
     strategic_analyses: o.strategicAnalyses ?? null,
     go_to_market_plan: o.goToMarketPlan ?? null,
@@ -66,9 +60,9 @@ function rowToOpp(r: any): Opportunity {
     ideaBringer: r.idea_bringer ?? "",
     stage: r.stage as Stage,
     scoring: r.scoring as Scoring,
-    detailedScoring: r.detailed_scoring ?? undefined,
+    businessPlan: r.business_plan ?? undefined,
     businessCase: r.business_case ?? undefined,
-    strategicAnalyses: r.strategic_analyses ?? undefined,
+    strategicAnalyses: r.strategic_analyses ? migrateStrategicAnalyses(r.strategic_analyses) : undefined,
     goToMarketPlan: r.go_to_market_plan ?? undefined,
     implementReview: r.implement_review ?? undefined,
     roughScoringAnswers: r.rough_scoring_answers ?? undefined,
@@ -109,19 +103,15 @@ async function deleteOpportunityFromDb(id: string) {
   if (error) console.error("Failed to delete opportunity:", error);
 }
 
-// ── Provider ────────────────────────────────────────────────────────
-
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load from DB on mount; seed mock data if empty
   useEffect(() => {
     fetchOpportunities().then(async (dbOpps) => {
       if (dbOpps.length > 0) {
         setOpportunities(dbOpps);
       } else {
-        // Seed mock data into DB on first start
         const mocks = [...MOCK_OPPORTUNITIES];
         setOpportunities(mocks);
         for (const opp of mocks) {
@@ -134,10 +124,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateLocal = useCallback((updater: (prev: Opportunity[]) => Opportunity[]) => {
-    setOpportunities((prev) => {
-      const next = updater(prev);
-      return next;
-    });
+    setOpportunities((prev) => updater(prev));
   }, []);
 
   const addOpportunity = useCallback(
@@ -194,10 +181,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [updateLocal]
   );
 
-  const updateDetailedScoring = useCallback(
-    (id: string, detailedScoring: DetailedScoring) => {
+  const updateBusinessPlan = useCallback(
+    (id: string, businessPlan: BusinessPlanData) => {
       updateLocal((prev) => {
-        const next = prev.map((o) => (o.id === id ? { ...o, detailedScoring } : o));
+        const next = prev.map((o) => (o.id === id ? { ...o, businessPlan } : o));
         const updated = next.find((o) => o.id === id);
         if (updated) upsertOpportunity(updated);
         return next;
@@ -226,15 +213,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const gates = [...o.gates, gate];
           let stage: Stage = o.stage;
           if (gate.gate === "gate1") {
-            if (gate.decision === "go") stage = "detailed_scoring";
+            if (gate.decision === "go") stage = "business_plan";
             else if (gate.decision === "no-go") stage = "closed";
           } else if (gate.gate === "gate2") {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
           }
           const updates: Partial<Opportunity> = { gates, stage };
-          if (stage === "detailed_scoring" && !o.detailedScoring) {
-            updates.detailedScoring = createDefaultDetailedScoring();
+          if (stage === "business_plan" && !o.businessPlan) {
+            updates.businessPlan = createDefaultBusinessPlan();
           }
           if (stage === "business_case" && !o.businessCase) {
             updates.businessCase = createDefaultBusinessCase();
@@ -311,7 +298,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
+      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
     >
       {children}
     </StoreContext.Provider>
