@@ -213,8 +213,12 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
       const roce = ebit / capitalEmployed;
 
-      // Cash Flow
-      const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr;
+      // Delta Working Capital (increase in WC consumes cash)
+      const prevWorkingCapital = idx > 0 ? results[idx - 1].workingCapital : 0;
+      const deltaWorkingCapital = workingCapital - prevWorkingCapital;
+
+      // Cash Flow = EBIT + Depreciation (non-cash) - Investments - Delta WC
+      const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr - deltaWorkingCapital;
 
       results.push({
         year: y.year,
