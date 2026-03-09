@@ -12,6 +12,7 @@ interface StoreContextType {
   getOpportunity: (id: string) => Opportunity | undefined;
   updateScoring: (id: string, scoring: Scoring) => void;
   updateBusinessPlan: (id: string, businessPlan: BusinessPlanData) => void;
+  updateInvestmentCase: (id: string, investmentCase: InvestmentCaseData) => void;
   updateBusinessCase: (id: string, businessCase: BusinessCase) => void;
   addGateDecision: (id: string, gate: GateRecord) => void;
   updateGateDecision: (oppId: string, gateId: string, updates: Partial<GateRecord>) => void;
