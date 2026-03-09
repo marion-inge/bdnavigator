@@ -79,13 +79,13 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
 
         {/* SAM Summary */}
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2"><Target className="h-4 w-4" /> {bp("SAM Summary (5 Years)", "SAM-Zusammenfassung (5 Jahre)")}</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Target className="h-4 w-4" /> {bp("SAM Summary (5 Years, in M€)", "SAM-Zusammenfassung (5 Jahre, in M€)")}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-5 gap-2">
               {localProj.map((p, i) => (
                 <div key={i}>
                   <Label className="text-xs">{bp("Year", "Jahr")} {p.year}</Label>
-                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="€" />
+                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="M€" />
                 </div>
               ))}
             </div>
