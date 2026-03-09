@@ -1069,7 +1069,7 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
     geography: "Europe / South Korea",
     technology: "Cobots / Welding Automation",
     owner: "Lisa Hoffmann",
-    stage: "detailed_scoring",
+    stage: "business_plan",
     scoring: scoring(4, 5, 3, 4, 2, {
       marketAttractiveness: "Shipyards worldwide struggling with skilled welder shortage. 30% of welders retiring within 5 years.",
       strategicFit: "Perfect fit with our robotics and maritime divisions. Combines two core competencies.",
