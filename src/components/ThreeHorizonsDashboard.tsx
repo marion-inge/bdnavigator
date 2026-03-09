@@ -96,7 +96,7 @@ export function ThreeHorizonsDashboard({ opportunities }: Props) {
     const h: [Opportunity[], Opportunity[], Opportunity[]] = [[], [], []];
     const unassigned: Opportunity[] = [];
     opportunities.forEach((o) => {
-      const horizon = o.strategicAnalyses?.threeHorizons?.horizon;
+      const horizon = o.strategicAnalyses?.ideaScoring?.threeHorizons?.horizon;
       if (horizon === "horizon1") h[0].push(o);
       else if (horizon === "horizon2") h[1].push(o);
       else if (horizon === "horizon3") h[2].push(o);
