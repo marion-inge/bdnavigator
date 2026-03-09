@@ -1,4 +1,4 @@
-import { Opportunity, Scoring, GateRecord, Stage, DetailedScoring, BusinessCase, createDefaultStrategicAnalyses } from "./types";
+import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses } from "./types";
 
 function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, comments: Record<string, string>): Scoring {
   return {
