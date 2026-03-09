@@ -723,7 +723,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     dashByGeography: "By Geography",
     dashByTechnology: "By Technology",
     homeProcessTitle: "Stage-Gate Process",
-    homeProcessSub: "How ideas become business",
+    homeProcessSub: "Where ideas become business",
     homeStep_idea: "Capture & describe",
     homeStep_rough_scoring: "Quick questionnaire",
     homeStep_detailed_scoring: "Market, Feasibility, Risk & more",
