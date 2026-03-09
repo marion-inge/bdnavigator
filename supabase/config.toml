@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.agent-chat]
 verify_jwt = false
+
+[functions.business-case-assessment]
+verify_jwt = false

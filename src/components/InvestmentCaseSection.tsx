@@ -637,6 +637,26 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ═══ IDA Assessment Tab ═══ */}
+        <TabsContent value="ida" className="space-y-4 mt-4">
+          <BusinessCaseAssessment
+            opportunityId={opportunityId}
+            title={oppTitle}
+            description={oppDescription}
+            industry={industry}
+            technology={technology}
+            kpis={{
+              totalROCE,
+              npv,
+              paybackPeriod,
+              totalEbit,
+              totalSales,
+            }}
+            parameters={data.parameters}
+            yearData={calculations}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );
