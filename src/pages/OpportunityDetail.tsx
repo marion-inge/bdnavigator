@@ -166,7 +166,7 @@ export default function OpportunityDetail() {
 
 
   const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
-    setActiveTab("detailed_scoring");
+    setActiveTab("business_plan");
     setBpMainTab(mainTab);
     setBpSubTab(subTab);
     setSidebarOpen(false);
@@ -175,7 +175,7 @@ export default function OpportunityDetail() {
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
-    { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
+    { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
     { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
