@@ -1,5 +1,8 @@
 import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses } from "./types";
 
+// Mock data uses old flat strategicAnalyses format; migrateStrategicAnalyses() in store handles conversion at runtime
+const sa = (data: Record<string, any>): StrategicAnalyses => data as unknown as StrategicAnalyses;
+
 function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, comments: Record<string, string>): Scoring {
   return {
     marketAttractiveness: { id: "marketAttractiveness", score: ma, comment: comments.marketAttractiveness ?? "" },
