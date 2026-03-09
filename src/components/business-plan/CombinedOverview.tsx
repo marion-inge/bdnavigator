@@ -141,7 +141,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{bp("5-Year Market Projections", "5-Jahres-Marktprojektionen")}</CardTitle>
+          <CardTitle>{bp("5-Year Market Projections (in M€)", "5-Jahres-Marktprojektionen (in M€)")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
