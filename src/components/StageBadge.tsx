@@ -7,7 +7,9 @@ const stageColors: Record<Stage, string> = {
   gate1: "bg-stage-gate1",
   business_plan: "bg-stage-detailed-scoring",
   gate2: "bg-stage-gate2",
-  business_case: "bg-stage-business-case",
+  investment_case: "bg-stage-business-case",
+  gate3: "bg-stage-gate3",
+  business_case: "bg-stage-gtm",
   implement_review: "bg-stage-implement-review",
   closed: "bg-stage-closed",
 };

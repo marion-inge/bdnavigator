@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, STAGE_ORDER, BusinessPlanData } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, STAGE_ORDER, BusinessPlanData } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
 import { BusinessPlanSection } from "@/components/business-plan/BusinessPlanSection";
-
+import { InvestmentCaseSection } from "@/components/InvestmentCaseSection";
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { GoToMarketSection } from "@/components/GoToMarketSection";
@@ -15,16 +15,16 @@ import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { FileAttachments } from "@/components/FileAttachments";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
-type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateBusinessPlan, updateInvestmentCase, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -57,6 +57,9 @@ export default function OpportunityDetail() {
     if (stage === "business_plan" && !opp.businessPlan) {
       updates.businessPlan = createDefaultBusinessPlan();
     }
+    if (stage === "investment_case" && !opp.investmentCase) {
+      updates.investmentCase = createDefaultInvestmentCase();
+    }
     if (stage === "business_case" && !opp.businessCase) {
       updates.businessCase = createDefaultBusinessCase();
     }
@@ -76,6 +79,7 @@ export default function OpportunityDetail() {
     sa_mckinsey:         "gate1",
     sa_three_horizons:   "gate1",
     business_plan:       "gate2",
+    investment_case:     "gate3",
     business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
@@ -90,6 +94,7 @@ export default function OpportunityDetail() {
     sa_mckinsey:        "",
     sa_three_horizons:  "",
     business_plan:      "business_plan",
+    investment_case:    "investment_case",
     business_case:      "business_case",
     implement_review:   "implement_review",
     gates:              "gate1",
@@ -176,6 +181,7 @@ export default function OpportunityDetail() {
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
     { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
+    { key: "investment_case",     label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
     { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
@@ -482,6 +488,13 @@ export default function OpportunityDetail() {
                 }}
                 opportunityTitle={opp.title}
                 opportunityDescription={opp.description}
+              />
+            )}
+            {activeTab === "investment_case" && (
+              <InvestmentCaseSection
+                investmentCase={opp.investmentCase}
+                onSave={(ic) => updateInvestmentCase(opp.id, ic)}
+                readonly={opp.stage === "closed"}
               />
             )}
             {activeTab === "business_case" && (

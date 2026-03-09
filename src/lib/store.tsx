@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, InvestmentCaseData, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -12,6 +12,7 @@ interface StoreContextType {
   getOpportunity: (id: string) => Opportunity | undefined;
   updateScoring: (id: string, scoring: Scoring) => void;
   updateBusinessPlan: (id: string, businessPlan: BusinessPlanData) => void;
+  updateInvestmentCase: (id: string, investmentCase: InvestmentCaseData) => void;
   updateBusinessCase: (id: string, businessCase: BusinessCase) => void;
   addGateDecision: (id: string, gate: GateRecord) => void;
   updateGateDecision: (oppId: string, gateId: string, updates: Partial<GateRecord>) => void;
@@ -35,6 +36,7 @@ function oppToRow(o: Opportunity) {
     stage: o.stage,
     scoring: o.scoring as any,
     business_plan: o.businessPlan ?? null,
+    investment_case: o.investmentCase ?? null,
     business_case: o.businessCase ?? null,
     strategic_analyses: o.strategicAnalyses ?? null,
     go_to_market_plan: o.goToMarketPlan ?? null,
@@ -61,6 +63,7 @@ function rowToOpp(r: any): Opportunity {
     stage: r.stage as Stage,
     scoring: r.scoring as Scoring,
     businessPlan: r.business_plan ?? undefined,
+    investmentCase: r.investment_case ?? undefined,
     businessCase: r.business_case ?? undefined,
     strategicAnalyses: r.strategic_analyses ? migrateStrategicAnalyses(r.strategic_analyses) : undefined,
     goToMarketPlan: r.go_to_market_plan ?? undefined,
@@ -225,6 +228,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [updateLocal]
   );
 
+  const updateInvestmentCase = useCallback(
+    (id: string, investmentCase: InvestmentCaseData) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, investmentCase } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
+    },
+    [updateLocal]
+  );
+
   const updateBusinessCase = useCallback(
     (id: string, businessCase: BusinessCase) => {
       updateLocal((prev) => {
@@ -248,12 +263,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             if (gate.decision === "go") stage = "business_plan";
             else if (gate.decision === "no-go") stage = "closed";
           } else if (gate.gate === "gate2") {
+            if (gate.decision === "go") stage = "investment_case";
+            else if (gate.decision === "no-go") stage = "closed";
+          } else if (gate.gate === "gate3") {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
           }
           const updates: Partial<Opportunity> = { gates, stage };
           if (stage === "business_plan" && !o.businessPlan) {
             updates.businessPlan = createDefaultBusinessPlan();
+          }
+          if (stage === "investment_case" && !o.investmentCase) {
+            updates.investmentCase = createDefaultInvestmentCase();
           }
           if (stage === "business_case" && !o.businessCase) {
             updates.businessCase = createDefaultBusinessCase();
@@ -303,6 +324,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const GATE_STAGE_INDEX: Record<string, number> = {
     gate1: STAGE_ORDER.indexOf("gate1"),
     gate2: STAGE_ORDER.indexOf("gate2"),
+    gate3: STAGE_ORDER.indexOf("gate3"),
   };
 
   const revertStage = useCallback(
@@ -330,7 +352,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
+      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateBusinessPlan, updateInvestmentCase, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
     >
       {children}
     </StoreContext.Provider>

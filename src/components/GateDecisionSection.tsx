@@ -37,14 +37,16 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
 
   const canDecideGate1 = currentStage === "gate1";
   const canDecideGate2 = currentStage === "gate2";
-  const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : null;
+  const canDecideGate3 = currentStage === "gate3";
+  const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : canDecideGate3 ? "gate3" : null;
 
-  const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "business_case", "implement_review"].includes(currentStage);
+  const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "investment_case", "gate3", "business_case", "implement_review"].includes(currentStage);
 
   // Filter gates to only show those that are before the current stage
   const GATE_STAGE_INDEX: Record<string, number> = {
     gate1: STAGE_ORDER.indexOf("gate1"),
     gate2: STAGE_ORDER.indexOf("gate2"),
+    gate3: STAGE_ORDER.indexOf("gate3"),
   };
   const currentStageIdx = STAGE_ORDER.indexOf(currentStage);
   const visibleGates = gates.filter((g) => {
@@ -104,7 +106,8 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
 
   const gateLabel = (gate: string) => {
     if (gate === "gate1") return t("stage_gate1");
-    return t("stage_gate2");
+    if (gate === "gate2") return t("stage_gate2");
+    return t("stage_gate3" as any);
   };
 
   return (
