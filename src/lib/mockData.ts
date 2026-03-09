@@ -1588,6 +1588,52 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         description: "Exceptionally favorable environment — economic drivers (high energy prices), political support (Energiewende), and technological readiness all converge.",
         rationale: "PESTEL is strongly positive across all dimensions. The economic driver alone (doubled electricity prices) makes the business case compelling for any industrial energy consumer.",
       },
+      porter: {
+        competitiveRivalry: { intensity: 4, description: "Fluence, Tesla, Stem, and enspired are all well-funded. Market growing fast enough for multiple winners but competition intense for early customers." },
+        threatOfNewEntrants: { intensity: 3, description: "Energy trading expertise and grid operator prequalification create moderate barriers. Cloud platform development is capital-intensive." },
+        threatOfSubstitutes: { intensity: 2, description: "Manual dispatch is the substitute — highly suboptimal and leaving money on the table. No real alternative to AI optimization." },
+        bargainingPowerBuyers: { intensity: 3, description: "Large industrials (BASF, ThyssenKrupp) have negotiating power. But ROI is compelling and few alternatives with industrial process integration." },
+        bargainingPowerSuppliers: { intensity: 2, description: "Cloud infrastructure (AWS/Azure) is commodity. EPEX SPOT API access is standardized. No critical supplier dependencies." },
+        description: "Competitive market with well-funded players, but strong fundamentals: growing fast, no real substitute, and low supplier power.",
+        rationale: "Porter confirms market is attractive despite competition. Our industrial IoT differentiation is meaningful — competitors focus on pure grid trading without process integration.",
+      },
+      valueChain: {
+        stages: [
+          { id: "vc-sg-1", name: "Battery Hardware / BMS", isOurPosition: false, marginAttractiveness: 2, differentiators: "Cell chemistry, BMS firmware, warranty terms", dynamics: "Commoditizing — CATL, BYD, Samsung dominate. We're hardware-agnostic." },
+          { id: "vc-sg-2", name: "Optimization Software", isOurPosition: true, marginAttractiveness: 5, differentiators: "Forecast accuracy, dispatch algorithms, industrial process integration", dynamics: "Winner-take-most per site. Data network effects." },
+          { id: "vc-sg-3", name: "Energy Market Interface", isOurPosition: true, marginAttractiveness: 4, differentiators: "EPEX SPOT integration, multi-market bidding, settlement automation", dynamics: "Regulatory expertise required. Changes frequently." },
+          { id: "vc-sg-4", name: "Grid Services Aggregation", isOurPosition: true, marginAttractiveness: 5, differentiators: "Prequalification management, pool aggregation, performance guarantees", dynamics: "Recurring revenue. Trust-based relationship with TSOs." },
+          { id: "vc-sg-5", name: "Customer Operations / Support", isOurPosition: true, marginAttractiveness: 3, differentiators: "24/7 monitoring, performance reporting, optimization recommendations", dynamics: "Essential for retention. Data-driven upselling." },
+        ],
+        description: "We capture value in software, energy market interface, and grid services aggregation — the highest-margin, stickiest parts of the value chain.",
+        rationale: "Hardware-agnostic positioning is key: we avoid the commodity BMS layer and focus on intelligence and market access where margins are highest.",
+      },
+      customerSegmentation: {
+        entries: [
+          { id: "cs-008-1", name: "Heavy Manufacturing", size: "45%", needs: "Peak shaving, load shifting, grid services revenue, energy cost reduction", willingnessToPay: "High (€5K/month + revenue share — energy costs are 15-25% of opex)", priority: "high" },
+          { id: "cs-008-2", name: "Logistics & Warehousing", size: "30%", needs: "EV charging optimization, solar self-consumption, demand charge management", willingnessToPay: "Medium-High (growing battery installations, ROI-driven decisions)", priority: "high" },
+          { id: "cs-008-3", name: "Data Centers", size: "25%", needs: "UPS battery monetization for grid services, peak shaving, sustainability targets", willingnessToPay: "High (existing battery assets, pure revenue uplift from grid services)", priority: "medium" },
+        ],
+        description: "Three segments with different entry points. Manufacturing is primary target (largest pain). Data centers are highest margin (existing batteries).",
+        rationale: "Segmentation aligns with battery installation patterns. Manufacturing has the most acute pain. Data centers offer 'free money' from existing UPS batteries.",
+      },
+      competitorAnalysis: {
+        entries: [
+          { id: "ca-008-1", name: "Fluence (Siemens/AES)", strengths: "Market leader, global scale, Siemens industrial relationships, proven platform (Fluence IQ)", weaknesses: "Focused on utility-scale, less attention to industrial microgrids, complex enterprise sales", marketShare: "30%", strategy: "Top-down from utility-scale to C&I segment", threatLevel: 4 },
+          { id: "ca-008-2", name: "Tesla Autobidder", strengths: "Bundled with Megapack, strong brand, large install base", weaknesses: "Tesla-hardware-only, no third-party BMS support, limited grid services in EU", marketShare: "20%", strategy: "Vertical integration — sell hardware + software bundle", threatLevel: 3 },
+          { id: "ca-008-3", name: "enspired", strengths: "European energy trading native, strong algorithmic trading, regulatory expertise", weaknesses: "Small team, limited industrial customer relationships, pure software", marketShare: "5%", strategy: "Pure-play energy trading optimization, partnering with hardware vendors", threatLevel: 3 },
+        ],
+        description: "Market split between large players (Fluence, Tesla) and nimble specialists (enspired). Our IoT industrial process integration is a unique angle.",
+        rationale: "Competitors approach from energy trading or hardware perspective. Our entry via industrial IoT/process integration is genuinely differentiated.",
+      },
+      customerInterviewing: {
+        entries: [
+          { id: "ci-008-1", date: "2025-11-20", customerName: "BASF Ludwigshafen", role: "Head of Energy Management", keyInsights: "Energy costs are 20% of site opex. Currently manual dispatch — leaving €500K/year in grid services revenue on the table. Need integration with existing SCADA system.", painPoints: "Manual battery dispatch. No grid services participation. Energy cost unpredictability. Multiple BMS vendors on site.", quotes: "\"We have 15 MW of battery storage and we're barely using it intelligently. Show us €200K/year in grid services revenue and the business case writes itself.\"" },
+          { id: "ci-008-2", date: "2025-12-10", customerName: "Equinix Frankfurt", role: "VP Data Center Operations", keyInsights: "70 MW of UPS batteries sitting idle 99.9% of the time. Could monetize for FCR. Need zero-risk approach — uptime is non-negotiable.", painPoints: "Stranded UPS battery capacity. Rising energy costs. Sustainability targets (carbon neutral by 2030). Board pressure for revenue diversification.", quotes: "\"If you can guarantee zero impact on uptime and generate €500K/year from our existing UPS batteries, we'll pilot within 3 months.\"" },
+        ],
+        description: "Interviews confirm two distinct value propositions: cost reduction for manufacturers, revenue generation for data centers.",
+        rationale: "Both interviews validate compelling ROI cases. BASF represents the typical industrial customer; Equinix shows the data center 'stranded asset' opportunity.",
+      },
     },
     gates: [],
     createdAt: "2025-12-15T08:00:00Z",
