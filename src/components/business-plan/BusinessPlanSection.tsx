@@ -174,19 +174,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="som-vpc">
-            <EmbeddedVPC {...saProps} />
+            <EmbeddedVPC {...somProps} />
           </TabsContent>
           <TabsContent value="som-cba">
-            <EmbeddedCBA {...saProps} />
+            <EmbeddedCBA {...somProps} />
           </TabsContent>
           <TabsContent value="som-threecircles">
-            <EmbeddedThreeCircles {...saProps} />
+            <EmbeddedThreeCircles {...somProps} />
           </TabsContent>
           <TabsContent value="som-positioning">
-            <EmbeddedPositioning {...saProps} />
+            <EmbeddedPositioning {...somProps} />
           </TabsContent>
           <TabsContent value="som-landscape">
-            <EmbeddedPositioningLandscape {...saProps} />
+            <EmbeddedPositioningLandscape {...somProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
