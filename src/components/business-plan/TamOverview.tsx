@@ -51,7 +51,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   const updateOv = (patch: Partial<TamOverviewData>) => { setLocalOverview(prev => ({ ...prev, ...patch })); markDirty(); };
 
   const formatM = (v: number) =>
-    v >= 1000 ? `€${(v / 1000).toFixed(1)}B` : `€${v}M`;
+    v >= 1000 ? `${(v / 1000).toFixed(1)} B€` : `${v} M€`;
 
   const handleSave = () => {
     const updated: any = {
