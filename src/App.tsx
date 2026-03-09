@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { I18nProvider } from "@/lib/i18n";
 import { StoreProvider } from "@/lib/store";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import OpportunityDetail from "./pages/OpportunityDetail";
 import ProcessGuide from "./pages/ProcessGuide";
@@ -19,14 +20,16 @@ const App = () => (
         <StoreProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/opportunity/:id" element={<OpportunityDetail />} />
-              <Route path="/guide" element={<ProcessGuide />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <ErrorBoundary>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/opportunity/:id" element={<OpportunityDetail />} />
+                <Route path="/guide" element={<ProcessGuide />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ErrorBoundary>
         </StoreProvider>
       </I18nProvider>
     </TooltipProvider>

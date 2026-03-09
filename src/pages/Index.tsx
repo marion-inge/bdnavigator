@@ -9,6 +9,7 @@ import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { DashboardOverview } from "@/components/DashboardOverview";
 import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ThreeHorizonsDashboard } from "@/components/ThreeHorizonsDashboard";
 import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
@@ -139,9 +140,7 @@ export default function Index() {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          </div>
+          <DashboardSkeleton />
         ) : (
         <>
         <ProcessOverview />
