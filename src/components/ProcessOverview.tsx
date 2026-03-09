@@ -1,12 +1,12 @@
 import { useI18n } from "@/lib/i18n";
 
 const STAGES = [
-  { key: "idea", icon: "💡", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
-  { key: "rough_scoring", icon: "📊", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
-  { key: "detailed_scoring", icon: "🔍", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
-  { key: "business_case_calc", icon: "💰", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
-  { key: "business_case", icon: "💼", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
-  { key: "implement_review", icon: "🔄", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
+  { key: "idea", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
+  { key: "rough_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
+  { key: "detailed_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
+  { key: "business_case_calc", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
+  { key: "business_case", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "implement_review", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
 
 export function ProcessOverview() {
@@ -47,8 +47,7 @@ export function ProcessOverview() {
                 {/* Color bar top */}
                 <div className={`h-1 w-full ${stage.color} opacity-70`} />
                 <div className="flex flex-col items-center text-center px-2 py-3 flex-1 gap-1.5">
-                  <div className="text-xl leading-none">{stage.icon}</div>
-                  <span className="text-[11px] font-semibold text-card-foreground leading-tight">
+                  <span className="text-sm font-bold text-card-foreground leading-tight">
                     {t(`stage_${stage.key}` as any)}
                   </span>
                   <span className="text-[10px] text-muted-foreground leading-tight hidden sm:block">
