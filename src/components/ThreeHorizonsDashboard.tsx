@@ -96,7 +96,7 @@ export function ThreeHorizonsDashboard({ opportunities }: Props) {
     const h: [Opportunity[], Opportunity[], Opportunity[]] = [[], [], []];
     const unassigned: Opportunity[] = [];
     opportunities.forEach((o) => {
-      const horizon = o.strategicAnalyses?.threeHorizons?.horizon;
+      const horizon = o.strategicAnalyses?.ideaScoring?.threeHorizons?.horizon;
       if (horizon === "horizon1") h[0].push(o);
       else if (horizon === "horizon2") h[1].push(o);
       else if (horizon === "horizon3") h[2].push(o);
@@ -130,16 +130,19 @@ export function ThreeHorizonsDashboard({ opportunities }: Props) {
     const opp = opportunities.find((o) => o.id === oppId);
     if (!opp) return;
 
-    const currentHorizon = opp.strategicAnalyses?.threeHorizons?.horizon || "horizon1";
+    const currentHorizon = opp.strategicAnalyses?.ideaScoring?.threeHorizons?.horizon || "horizon1";
     if (currentHorizon === targetHorizon) return;
 
     const sa = opp.strategicAnalyses || createDefaultStrategicAnalyses();
     updateOpportunity(oppId, {
       strategicAnalyses: {
         ...sa,
-        threeHorizons: {
-          ...sa.threeHorizons!,
-          horizon: targetHorizon,
+        ideaScoring: {
+          ...sa.ideaScoring,
+          threeHorizons: {
+            ...sa.ideaScoring.threeHorizons,
+            horizon: targetHorizon,
+          },
         },
       },
     });

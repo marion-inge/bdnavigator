@@ -114,7 +114,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
   y = addKeyValue(doc, y, "Gesamtbewertung", roughScore.toFixed(1) + " / 5.0");
 
   // Detailed Scoring
-  const ds = opp.detailedScoring;
+  const ds = opp.businessPlan;
   if (ds) {
     y += 4;
     y = addSectionTitle(doc, y, "Business Plan");
@@ -316,7 +316,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map(opp => {
         const rs = calculateTotalScore(opp.scoring).toFixed(1);
-        const ds = opp.detailedScoring;
+        const ds = opp.businessPlan;
         const detScore = ds
           ? (((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) ).toFixed(1)
           : "—";

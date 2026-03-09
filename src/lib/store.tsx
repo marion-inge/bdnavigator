@@ -112,7 +112,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (dbOpps.length > 0) {
         setOpportunities(dbOpps);
       } else {
-        const mocks = [...MOCK_OPPORTUNITIES];
+        const mocks = (MOCK_OPPORTUNITIES as any[]).map((m: any) => ({
+          ...m,
+          businessPlan: m.businessPlan ?? m.detailedScoring ?? undefined,
+          strategicAnalyses: m.strategicAnalyses ? migrateStrategicAnalyses(m.strategicAnalyses) : undefined,
+        })) as Opportunity[];
         setOpportunities(mocks);
         for (const opp of mocks) {
           await upsertOpportunity(opp);

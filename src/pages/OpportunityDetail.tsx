@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { calculateTotalScore, Stage, createDefaultDetailedScoring, createDefaultBusinessCase, STAGE_ORDER, DetailedScoring } from "@/lib/types";
+import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, STAGE_ORDER, BusinessPlanData } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
@@ -19,12 +19,12 @@ import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMe
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
-type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "detailed_scoring" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, updateDetailedScoring, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -54,8 +54,8 @@ export default function OpportunityDetail() {
 
   const handleAdvanceStage = (stage: Stage) => {
     const updates: Partial<typeof opp> = { stage };
-    if (stage === "detailed_scoring" && !opp.detailedScoring) {
-      updates.detailedScoring = createDefaultDetailedScoring();
+    if (stage === "business_plan" && !opp.businessPlan) {
+      updates.businessPlan = createDefaultBusinessPlan();
     }
     if (stage === "business_case" && !opp.businessCase) {
       updates.businessCase = createDefaultBusinessCase();
@@ -75,7 +75,7 @@ export default function OpportunityDetail() {
     sa_bcg:              "gate1",
     sa_mckinsey:         "gate1",
     sa_three_horizons:   "gate1",
-    detailed_scoring:    "gate2",
+    business_plan:       "gate2",
     business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
@@ -89,7 +89,7 @@ export default function OpportunityDetail() {
     sa_bcg:             "",
     sa_mckinsey:        "",
     sa_three_horizons:  "",
-    detailed_scoring:   "detailed_scoring",
+    business_plan:      "business_plan",
     business_case:      "business_case",
     implement_review:   "implement_review",
     gates:              "gate1",
@@ -166,7 +166,7 @@ export default function OpportunityDetail() {
 
 
   const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
-    setActiveTab("detailed_scoring");
+    setActiveTab("business_plan");
     setBpMainTab(mainTab);
     setBpSubTab(subTab);
     setSidebarOpen(false);
@@ -175,7 +175,7 @@ export default function OpportunityDetail() {
   const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
-    { key: "detailed_scoring",    label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
+    { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
     { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
     { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
@@ -252,7 +252,7 @@ export default function OpportunityDetail() {
             const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
-            const isBpItem = item.key === "detailed_scoring";
+            const isBpItem = item.key === "business_plan";
             const isScoringItem = item.key === "scoring";
             const hasExpander = isBpItem || isScoringItem;
 
@@ -467,11 +467,11 @@ export default function OpportunityDetail() {
                 defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
               />
             )}
-            {activeTab === "detailed_scoring" && (
+            {activeTab === "business_plan" && (
               <BusinessPlanSection
-                detailedScoring={opp.detailedScoring}
+                detailedScoring={opp.businessPlan}
                 strategicAnalyses={opp.strategicAnalyses}
-                onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
+                onSaveDetailed={(ds) => updateBusinessPlan(opp.id, ds)}
                 onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 activeMainTab={bpMainTab}
@@ -491,8 +491,8 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 businessCase={opp.businessCase}
                 onSaveBusinessCase={(bc) => updateBusinessCase(opp.id, bc)}
-                detailedScoring={opp.detailedScoring}
-                onSaveDetailedScoring={(ds) => updateDetailedScoring(opp.id, ds)}
+                detailedScoring={opp.businessPlan}
+                onSaveDetailedScoring={(ds) => updateBusinessPlan(opp.id, ds)}
               />
             )}
             {activeTab === "implement_review" && (

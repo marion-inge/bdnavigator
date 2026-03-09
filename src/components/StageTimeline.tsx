@@ -3,7 +3,7 @@ import { Stage, STAGE_ORDER } from "@/lib/types";
 import { CheckCircle2 } from "lucide-react";
 
 const STAGE_PROGRESS: Record<string, number> = {
-  idea: 0, rough_scoring: 1, gate1: 2, detailed_scoring: 3,
+  idea: 0, rough_scoring: 1, gate1: 2, business_plan: 3,
   gate2: 4, business_case: 5, implement_review: 6, closed: -1,
 };
 

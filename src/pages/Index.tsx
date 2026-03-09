@@ -255,7 +255,7 @@ export default function Index() {
           <div className="space-y-3 sm:hidden">
             {filtered.map((opp) => {
               const roughScore = calculateTotalScore(opp.scoring);
-              const ds = opp.detailedScoring;
+              const ds = opp.businessPlan;
               const detailedScore = ds
                 ? Math.round(
                     ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
@@ -311,7 +311,7 @@ export default function Index() {
               <tbody>
                 {filtered.map((opp) => {
                   const roughScore = calculateTotalScore(opp.scoring);
-                  const ds = opp.detailedScoring;
+                  const ds = opp.businessPlan;
                   const detailedScore = ds
                     ? Math.round(
                         ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10

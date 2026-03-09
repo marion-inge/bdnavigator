@@ -1,4 +1,7 @@
-import { Opportunity, Scoring, GateRecord, Stage, DetailedScoring, BusinessCase, createDefaultStrategicAnalyses } from "./types";
+import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses } from "./types";
+
+// Mock data uses old flat strategicAnalyses format; migrateStrategicAnalyses() in store handles conversion at runtime
+const sa = (data: Record<string, any>): StrategicAnalyses => data as unknown as StrategicAnalyses;
 
 function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, comments: Record<string, string>): Scoring {
   return {
@@ -10,7 +13,7 @@ function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, com
   };
 }
 
-export const MOCK_OPPORTUNITIES: Opportunity[] = [
+export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'businessPlan'> & { strategicAnalyses?: any; detailedScoring?: any; businessPlan?: any })[] = [
   {
     id: "a0000001-0001-4000-8000-000000000001",
     title: "Autonomous Navigation Module for Container Ships",
@@ -1066,7 +1069,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     geography: "Europe / South Korea",
     technology: "Cobots / Welding Automation",
     owner: "Lisa Hoffmann",
-    stage: "detailed_scoring",
+    stage: "business_plan",
     scoring: scoring(4, 5, 3, 4, 2, {
       marketAttractiveness: "Shipyards worldwide struggling with skilled welder shortage. 30% of welders retiring within 5 years.",
       strategicFit: "Perfect fit with our robotics and maritime divisions. Combines two core competencies.",
@@ -1352,7 +1355,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     geography: "Europe / Middle East",
     technology: "Gas Analytics / Sensor Technology",
     owner: "Markus Schneider",
-    stage: "detailed_scoring",
+    stage: "business_plan",
     scoring: scoring(5, 4, 3, 4, 2, {
       marketAttractiveness: "Green hydrogen production capacity growing >40% CAGR. Every electrolyser needs quality assurance — regulatory mandates (ISO 14687, EN 17124) make this non-optional.",
       strategicFit: "Extends our industrial sensor and analytics portfolio into the hydrogen value chain. Leverages existing gas analysis competencies from process industry.",

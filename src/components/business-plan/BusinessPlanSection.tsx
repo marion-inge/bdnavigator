@@ -58,7 +58,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     onSaveStrategic(updated);
   };
 
-  const saProps = { strategicAnalyses: saData, onSave: handleUpdateSa, readonly };
+  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly };
+  const samProps = { data: saData.sam, onSave: (d: any) => handleUpdateSa({ ...saData, sam: d }), readonly };
+  const somProps = { data: saData.som, onSave: (d: any) => handleUpdateSa({ ...saData, som: d }), readonly };
 
   // Helper for sub-tabs: use activeSubTab if provided, otherwise default
   const getSubTab = (section: string, defaultVal: string) => {
@@ -97,19 +99,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="tam-research">
-            <EmbeddedMarketResearch {...saProps} />
+            <EmbeddedMarketResearch {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-pestel">
-            <EmbeddedPestel {...saProps} />
+            <EmbeddedPestel {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-valuechain">
-            <EmbeddedValueChain {...saProps} />
+            <EmbeddedValueChain {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-porter">
-            <EmbeddedPorter {...saProps} />
+            <EmbeddedPorter {...tamProps} />
           </TabsContent>
           <TabsContent value="tam-swot">
-            <EmbeddedSwot {...saProps} />
+            <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
@@ -139,22 +141,22 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="sam-segmentation">
-            <EmbeddedCustomerSegmentation {...saProps} />
+            <EmbeddedCustomerSegmentation {...samProps} />
           </TabsContent>
           <TabsContent value="sam-interviews">
-            <EmbeddedCustomerInterviews {...saProps} />
+            <EmbeddedCustomerInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-affiliate">
-            <EmbeddedInternalAffiliateInterviews {...saProps} />
+            <EmbeddedInternalAffiliateInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-bu">
-            <EmbeddedInternalBUInterviews {...saProps} />
+            <EmbeddedInternalBUInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-bmc">
-            <EmbeddedBMC {...saProps} />
+            <EmbeddedBMC {...samProps} />
           </TabsContent>
           <TabsContent value="sam-lean">
-            <EmbeddedLeanCanvas {...saProps} />
+            <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
@@ -172,19 +174,19 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="som-vpc">
-            <EmbeddedVPC {...saProps} />
+            <EmbeddedVPC {...somProps} />
           </TabsContent>
           <TabsContent value="som-cba">
-            <EmbeddedCBA {...saProps} />
+            <EmbeddedCBA {...somProps} />
           </TabsContent>
           <TabsContent value="som-threecircles">
-            <EmbeddedThreeCircles {...saProps} />
+            <EmbeddedThreeCircles {...somProps} />
           </TabsContent>
           <TabsContent value="som-positioning">
-            <EmbeddedPositioning {...saProps} />
+            <EmbeddedPositioning {...somProps} />
           </TabsContent>
           <TabsContent value="som-landscape">
-            <EmbeddedPositioningLandscape {...saProps} />
+            <EmbeddedPositioningLandscape {...somProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
