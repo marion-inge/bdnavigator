@@ -352,7 +352,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
+      value={{ opportunities, loading, addOpportunity, updateOpportunity, deleteOpportunity, getOpportunity, updateScoring, updateBusinessPlan, updateInvestmentCase, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage }}
     >
       {children}
     </StoreContext.Provider>
