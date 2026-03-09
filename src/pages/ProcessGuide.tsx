@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip } from "lucide-react";
+import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip, DollarSign, ArrowRightLeft, Rocket } from "lucide-react";
 import idaRobot from "@/assets/ida-robot.png";
 import markRobot from "@/assets/mark-robot.png";
 
@@ -36,19 +36,19 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{bp("What is the BD Navigator?", "Was ist der BD Navigator?")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "The BD Navigator is a structured tool for evaluating, developing, and tracking new business ideas from initial concept through to market implementation. It guides teams through a Stage Gate process with integrated scoring, market analysis, and AI-powered insights.",
-              "Der BD Navigator ist ein strukturiertes Tool zur Bewertung, Entwicklung und Nachverfolgung neuer Geschäftsideen – vom ersten Konzept bis zur Markteinführung. Er führt Teams durch einen Stage-Gate-Prozess mit integriertem Scoring, Marktanalyse und KI-gestützten Einblicken."
+              "The BD Navigator is a structured tool for evaluating, developing, and tracking new business ideas from initial concept through to market implementation. It guides teams through a Stage-Gate process with integrated scoring, market sizing (TAM/SAM/SOM in M€), financial modeling, and AI-powered insights.",
+              "Der BD Navigator ist ein strukturiertes Tool zur Bewertung, Entwicklung und Nachverfolgung neuer Geschäftsideen – vom ersten Konzept bis zur Markteinführung. Er führt Teams durch einen Stage-Gate-Prozess mit integriertem Scoring, Marktgrößenbestimmung (TAM/SAM/SOM in M€), Finanzmodellierung und KI-gestützten Einblicken."
             )}
           </p>
         </section>
 
         {/* Stage Gate Process */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">{bp("Stage Gate Process", "Stage-Gate-Prozess")}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{bp("Stage-Gate Process", "Stage-Gate-Prozess")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "Each idea progresses through defined stages. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
-              "Jede Idee durchläuft definierte Phasen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
+              "Each idea progresses through 7 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
+              "Jede Idee durchläuft 7 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
           <StageFlowDiagram bp={bp} />
@@ -79,33 +79,51 @@ export default function ProcessGuide() {
 
             <FeatureCard
               icon={<Globe className="h-5 w-5 text-primary" />}
-              title={bp("Business Plan — TAM", "Business Plan — TAM")}
+              title={bp("Business Plan — TAM Overview", "Business Plan — TAM-Übersicht")}
               description={bp(
-                "Total Addressable Market analysis. Includes Market Research, PESTEL analysis, Value Chain analysis, Porter's Five Forces, and SWOT. Quantifies the overall market opportunity with market size estimates by region and year.",
-                "Gesamtmarktanalyse (Total Addressable Market). Beinhaltet Marktforschung, PESTEL-Analyse, Wertschöpfungskettenanalyse, Porter's Five Forces und SWOT. Quantifiziert die Gesamtmarktchance mit Marktgrößenschätzungen nach Region und Jahr."
+                "Total Addressable Market analysis (all values in M€). 5-year projections with CAGR, geographic breakdown with potential ratings and radar chart, scope definition, market assumptions, market development drivers & trends, and derivation methodology with source assessment. Supporting models: Market Research, PESTEL, Value Chain, Porter's Five Forces, SWOT.",
+                "Gesamtmarktanalyse (Total Addressable Market, alle Werte in M€). 5-Jahres-Projektionen mit CAGR, geografische Aufschlüsselung mit Potenzialbewertungen und Radar-Chart, Scope-Definition, Marktannahmen, Marktentwicklungstreiber & Trends und Herleitungsmethodik mit Quellenbewertung. Unterstützende Modelle: Marktforschung, PESTEL, Wertschöpfungskette, Porter's Five Forces, SWOT."
               )}
             />
 
             <FeatureCard
               icon={<Target className="h-5 w-5 text-primary" />}
-              title={bp("Business Plan — SAM", "Business Plan — SAM")}
+              title={bp("Business Plan — SAM Overview", "Business Plan — SAM-Übersicht")}
               description={bp(
-                "Serviceable Addressable Market. Includes Customer Landscape, Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk assessment, Customer Segmentation, Interviews (Customer, Affiliate, BU), Business Model Canvas, and Lean Canvas.",
-                "Bedienbarer Markt (Serviceable Addressable Market). Beinhaltet Kundenlandschaft, Strategischer Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risikobewertung, Kundensegmentierung, Interviews (Kunden, Affiliate, BU), Business Model Canvas und Lean Canvas."
+                "Serviceable Available Market (in M€). Defines why SAM is smaller than TAM, included/excluded industries, geographic focus & exclusions, target groups, price evolution, resource scenarios, and required investments. Geographic breakdown with regional potential. Supporting analyses: Customer Landscape, Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk, Segmentation, Interviews, BMC, Lean Canvas.",
+                "Bedienbarer Markt (Serviceable Available Market, in M€). Definiert warum der SAM kleiner als der TAM ist, ein-/ausgeschlossene Branchen, geografischer Fokus & Ausschlüsse, Zielgruppen, Preisentwicklung, Ressourcenszenarien und benötigte Investitionen. Geografische Aufschlüsselung mit regionalem Potenzial. Unterstützende Analysen: Kundenlandschaft, Strategischer Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risiko, Segmentierung, Interviews, BMC, Lean Canvas."
               )}
             />
 
             <FeatureCard
               icon={<TrendingUp className="h-5 w-5 text-primary" />}
-              title={bp("Business Plan — SOM", "Business Plan — SOM")}
+              title={bp("Business Plan — SOM Overview", "Business Plan — SOM-Übersicht")}
               description={bp(
-                "Serviceable Obtainable Market. Includes Competitor Landscape (with Spider Chart), Pilot Customers & Leads, Value Proposition Canvas, Customer Benefit Analysis, Three Circles Model, Positioning Strategy, and Positioning Landscape.",
-                "Erreichbarer Markt (Serviceable Obtainable Market). Beinhaltet Wettbewerbslandschaft (mit Spider-Chart), Pilotkunden & Leads, Value Proposition Canvas, Kundennutzenanalyse, Drei-Kreise-Modell, Positionierungsstrategie und Positionierungslandschaft."
+                "Serviceable Obtainable Market (in M€). 5-year revenue projections with market share vs SAM calculation, growth rate, visibility rate, sales capacity, pipeline, and license to operate. Includes Market Assumptions for Business Case (Portfolio Coverage %, Visibility %, Visibility Growth %, Hitrate %) which feed into the Investment Calculation via the Data Bridge. Supporting analyses: Competitors, Pilot & Leads, VPC, Customer Benefit, Three Circles, Positioning, Positioning Landscape.",
+                "Erreichbarer Markt (Serviceable Obtainable Market, in M€). 5-Jahres-Umsatzprojektionen mit Marktanteilsberechnung vs SAM, Wachstumsrate, Sichtbarkeitsrate, Vertriebskapazität, Pipeline und License to Operate. Enthält Marktannahmen für den Business Case (Portfolioabdeckung %, Sichtbarkeit %, Sichtbarkeitswachstum %, Hitrate %), die über die Datenbrücke in die Investitionsrechnung einfließen. Unterstützende Analysen: Wettbewerber, Pilot & Leads, VPC, Kundennutzen, Drei-Kreise-Modell, Positionierung, Positionierungslandschaft."
               )}
             />
 
             <FeatureCard
-              icon={<Briefcase className="h-5 w-5 text-primary" />}
+              icon={<ArrowRightLeft className="h-5 w-5 text-primary" />}
+              title={bp("Business Plan — Combined Overview", "Business Plan — Gesamtübersicht")}
+              description={bp(
+                "Unified view of TAM, SAM, and SOM development over 5 years (all in M€). Includes area chart comparison, data table with CAGR, auto-calculated insights (conversion rates, growth ratios), geographic comparison across all three levels, and an interpretation section for strategic conclusions.",
+                "Einheitliche Darstellung der TAM-, SAM- und SOM-Entwicklung über 5 Jahre (alle in M€). Enthält Flächendiagramm-Vergleich, Datentabelle mit CAGR, automatisch berechnete Insights (Konversionsraten, Wachstumsverhältnisse), geografischen Vergleich über alle drei Ebenen und einen Interpretationsabschnitt für strategische Schlussfolgerungen."
+              )}
+            />
+
+            <FeatureCard
+              icon={<DollarSign className="h-5 w-5 text-primary" />}
+              title={bp("Business Case (Investment Calculation)", "Business Case (Investitionsrechnung)")}
+              description={bp(
+                "Financial modeling with an 11-year horizon (e.g. 2025–2035). Three tabs: Parameters (unit price, costs, team size, market assumptions from SOM via Data Bridge), Year Data (investment, R&D, revenue, costs per year), and Results (NPV, IRR, payback period, cumulative cash flow chart). The Data Bridge imports SOM projections and market assumptions automatically from the Business Plan.",
+                "Finanzmodellierung mit 11-Jahres-Horizont (z.B. 2025–2035). Drei Tabs: Parameter (Stückpreis, Kosten, Teamgröße, Marktannahmen aus SOM via Datenbrücke), Jahresdaten (Investition, F&E, Umsatz, Kosten pro Jahr) und Ergebnisse (NPV, IRR, Amortisationszeit, kumulatives Cashflow-Diagramm). Die Datenbrücke importiert SOM-Projektionen und Marktannahmen automatisch aus dem Business Plan."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Rocket className="h-5 w-5 text-primary" />}
               title={bp("Implementation & GTM Plan", "Umsetzungs- & GTM-Plan")}
               description={bp(
                 "Go-to-Market strategy planning with target segments, channels, pricing, key partners, and KPIs. Includes pilot customer management, lead generation tracking, business case financials, and commercial viability assessment.",
@@ -124,10 +142,10 @@ export default function ProcessGuide() {
 
             <FeatureCard
               icon={<GitMerge className="h-5 w-5 text-primary" />}
-              title={bp("Stage Gates", "Stage Gates")}
+              title={bp("Stage Gates (G1, G2, G3)", "Stage Gates (G1, G2, G3)")}
               description={bp(
-                "Gate decisions document Go/No-Go/Hold decisions with rationale, date, and conditions. Gates control progression between stages and can be edited or reverted.",
-                "Gate-Entscheidungen dokumentieren Go/No-Go/Hold-Entscheidungen mit Begründung, Datum und Bedingungen. Gates steuern den Fortschritt zwischen Phasen und können bearbeitet oder rückgängig gemacht werden."
+                "Three gate decisions control progression: G1 (after Idea Scoring → Business Plan), G2 (after Business Plan → Business Case), G3 (after Business Case → Implementation). Each gate documents Go/No-Go/Hold with rationale, date, and conditions. Gates can be edited or reverted.",
+                "Drei Gate-Entscheidungen steuern den Fortschritt: G1 (nach Ideen-Scoring → Business Plan), G2 (nach Business Plan → Business Case), G3 (nach Business Case → Umsetzung). Jedes Gate dokumentiert Go/No-Go/Hold mit Begründung, Datum und Bedingungen. Gates können bearbeitet oder rückgängig gemacht werden."
               )}
             />
 
@@ -203,6 +221,34 @@ export default function ProcessGuide() {
           </div>
         </section>
 
+        {/* Data Bridge */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{bp("Data Bridge", "Datenbrücke")}</h2>
+          <Card>
+            <CardContent className="pt-6 space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {bp(
+                  "The Data Bridge connects the Business Plan (market modeling) with the Business Case (investment calculation). It automatically transfers:",
+                  "Die Datenbrücke verbindet den Business Plan (Marktmodellierung) mit dem Business Case (Investitionsrechnung). Sie überträgt automatisch:"
+                )}
+              </p>
+              <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                <li>{bp("SOM revenue projections (M€) → Year Data revenue fields", "SOM-Umsatzprojektionen (M€) → Jahresdaten-Umsatzfelder")}</li>
+                <li>{bp("Portfolio Coverage (%) → Market parameter", "Portfolioabdeckung (%) → Marktparameter")}</li>
+                <li>{bp("Visibility (%) → Market parameter", "Sichtbarkeit (%) → Marktparameter")}</li>
+                <li>{bp("Visibility Growth (%/yr) → Market parameter", "Sichtbarkeitswachstum (%/J.) → Marktparameter")}</li>
+                <li>{bp("Hitrate (%) → Market parameter", "Hitrate (%) → Marktparameter")}</li>
+              </ul>
+              <p className="text-sm text-muted-foreground">
+                {bp(
+                  "Market Assumptions are defined in the SOM Overview (Business Plan) and displayed as read-only references in the Business Case. This ensures a single source of truth for market parameters.",
+                  "Marktannahmen werden in der SOM-Übersicht (Business Plan) definiert und als Nur-Lese-Referenz im Business Case angezeigt. Dies gewährleistet eine einzige Datenquelle für Marktparameter."
+                )}
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Idea Scoring Formula */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{bp("Idea Scoring Formula", "Ideen-Scoring-Formel")}</h2>
@@ -232,6 +278,33 @@ export default function ProcessGuide() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Market Sizing Convention */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">{bp("Market Sizing Convention", "Marktgrößen-Konvention")}</h2>
+          <Card>
+            <CardContent className="pt-6 space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {bp(
+                  "All market values (TAM, SAM, SOM) are stored and displayed in M€ (millions of euros). This applies to:",
+                  "Alle Marktwerte (TAM, SAM, SOM) werden in M€ (Millionen Euro) gespeichert und angezeigt. Dies gilt für:"
+                )}
+              </p>
+              <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                <li>{bp("5-year projections in TAM, SAM, and SOM overviews", "5-Jahres-Projektionen in TAM-, SAM- und SOM-Übersichten")}</li>
+                <li>{bp("Combined Overview chart and data table", "Gesamtübersicht-Diagramm und Datentabelle")}</li>
+                <li>{bp("Chart tooltips and Y-axis labels", "Chart-Tooltips und Y-Achsen-Beschriftungen")}</li>
+                <li>{bp("Geographic regional market sizes", "Geografische regionale Marktgrößen")}</li>
+              </ul>
+              <p className="text-sm text-muted-foreground">
+                {bp(
+                  "The Investment Calculation (Business Case) uses an extended 11-year horizon (e.g. 2025–2035) to capture the full financial lifecycle including R&D, ramp-up, and terminal value.",
+                  "Die Investitionsrechnung (Business Case) verwendet einen erweiterten 11-Jahres-Horizont (z.B. 2025–2035), um den gesamten Finanzlebenszyklus einschließlich F&E, Hochlauf und Endwert abzubilden."
+                )}
+              </p>
             </CardContent>
           </Card>
         </section>
@@ -272,15 +345,17 @@ export default function ProcessGuide() {
   );
 }
 
-/* Stage flow visual */
+/* Stage flow visual — 7-stage process with 3 gates */
 function StageFlowDiagram({ bp }: { bp: (en: string, de: string) => string }) {
   const stages = [
     { label: bp("Idea Entry", "Ideeneingabe"), color: "bg-stage-idea" },
     { label: bp("Idea Scoring", "Ideen-Scoring"), color: "bg-stage-rough-scoring" },
-    { label: "Gate 1", color: "bg-stage-gate1" },
+    { label: "G1", color: "bg-stage-gate1" },
     { label: bp("Business Plan", "Business Plan"), color: "bg-stage-detailed-scoring" },
-    { label: "Gate 2", color: "bg-stage-gate2" },
-    { label: bp("GTM Plan", "GTM-Plan"), color: "bg-stage-business-case" },
+    { label: "G2", color: "bg-stage-gate2" },
+    { label: bp("Business Case", "Business Case"), color: "bg-stage-business-case" },
+    { label: "G3", color: "bg-stage-gate3" },
+    { label: bp("Implementation & GTM", "Umsetzung & GTM"), color: "bg-stage-gtm" },
     { label: bp("Implement & Review", "Umsetzung & Review"), color: "bg-stage-implement-review" },
   ];
   return (
