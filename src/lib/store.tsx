@@ -36,6 +36,7 @@ function oppToRow(o: Opportunity) {
     stage: o.stage,
     scoring: o.scoring as any,
     business_plan: o.businessPlan ?? null,
+    investment_case: o.investmentCase ?? null,
     business_case: o.businessCase ?? null,
     strategic_analyses: o.strategicAnalyses ?? null,
     go_to_market_plan: o.goToMarketPlan ?? null,
