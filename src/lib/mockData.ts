@@ -1,4 +1,4 @@
-import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses } from "./types";
+import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses, InvestmentCaseData } from "./types";
 
 // Mock data uses old flat strategicAnalyses format; migrateStrategicAnalyses() in store handles conversion at runtime
 const sa = (data: Record<string, any>): StrategicAnalyses => data as unknown as StrategicAnalyses;
