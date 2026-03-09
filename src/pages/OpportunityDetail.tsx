@@ -467,11 +467,11 @@ export default function OpportunityDetail() {
                 defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
               />
             )}
-            {activeTab === "detailed_scoring" && (
+            {activeTab === "business_plan" && (
               <BusinessPlanSection
-                detailedScoring={opp.detailedScoring}
+                detailedScoring={opp.businessPlan}
                 strategicAnalyses={opp.strategicAnalyses}
-                onSaveDetailed={(ds) => updateDetailedScoring(opp.id, ds)}
+                onSaveDetailed={(ds) => updateBusinessPlan(opp.id, ds)}
                 onSaveStrategic={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 activeMainTab={bpMainTab}
@@ -491,8 +491,8 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 businessCase={opp.businessCase}
                 onSaveBusinessCase={(bc) => updateBusinessCase(opp.id, bc)}
-                detailedScoring={opp.detailedScoring}
-                onSaveDetailedScoring={(ds) => updateDetailedScoring(opp.id, ds)}
+                detailedScoring={opp.businessPlan}
+                onSaveDetailedScoring={(ds) => updateBusinessPlan(opp.id, ds)}
               />
             )}
             {activeTab === "implement_review" && (
