@@ -160,6 +160,11 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
                 → {t("stage_gate2")} <ChevronRight className="h-3.5 w-3.5" />
               </Button>
             )}
+            {canMoveToGate3 && (
+              <Button size="sm" onClick={() => onAdvanceStage("gate3")} className="gap-1.5">
+                → {language === "de" ? "Gate 3" : "Gate 3"} <ChevronRight className="h-3.5 w-3.5" />
+              </Button>
+            )}
             {canMoveToImplementReview && (
               <Button size="sm" onClick={() => onAdvanceStage("implement_review")} className="gap-1.5">
                 {t("moveToImplementReview")} <ChevronRight className="h-3.5 w-3.5" />
