@@ -6,7 +6,7 @@ export type Language = "en" | "de";
 const translations = {
   en: {
     appTitle: "NOVI",
-    appSlogan: "How Ideas Become Business",
+    appSlogan: "Where Ideas Become Business",
     opportunities: "Opportunities",
     newOpportunity: "New Idea",
     title: "Title",
