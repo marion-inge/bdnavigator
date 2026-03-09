@@ -1523,6 +1523,7 @@ guideRI_s5: "Sehr hohes Risiko; feindliches regulatorisches Umfeld; Durchbruch-T
     dashTotal: "Gesamt-Ideen",
     dashActive: "aktiv",
     dashAvgScore: "Ø Score",
+    dashInImpl: "Umsetzung",
     dashGtm: "In Umsetzung",
     dashInMarket: "in Bearbeitung",
     dashTopScorer: "Top-Scorer",
