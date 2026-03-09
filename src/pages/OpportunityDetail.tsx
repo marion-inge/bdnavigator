@@ -24,7 +24,7 @@ type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getOpportunity, updateScoring, updateDetaiBusinessPlanateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
+  const { getOpportunity, updateScoring, updateBusinessPlan, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t, language } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
