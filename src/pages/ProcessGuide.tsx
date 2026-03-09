@@ -353,9 +353,9 @@ function StageFlowDiagram({ bp }: { bp: (en: string, de: string) => string }) {
     { label: "G1", color: "bg-stage-gate1" },
     { label: bp("Business Plan", "Business Plan"), color: "bg-stage-detailed-scoring" },
     { label: "G2", color: "bg-stage-gate2" },
-    { label: bp("Business Case", "Business Case"), color: "bg-stage-investment-case" },
+    { label: bp("Business Case", "Business Case"), color: "bg-stage-business-case" },
     { label: "G3", color: "bg-stage-gate3" },
-    { label: bp("Implementation & GTM", "Umsetzung & GTM"), color: "bg-stage-business-case" },
+    { label: bp("Implementation & GTM", "Umsetzung & GTM"), color: "bg-stage-gtm" },
     { label: bp("Implement & Review", "Umsetzung & Review"), color: "bg-stage-implement-review" },
   ];
   return (
