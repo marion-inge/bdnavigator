@@ -254,9 +254,8 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
   }, [calculations]);
 
   const totalROCE = useMemo(() => {
-    const totalEbit = calculations.reduce((s, c) => s + c.ebit, 0);
-    const avgCapital = calculations.reduce((s, c) => s + c.capitalEmployed, 0) / Math.max(calculations.length, 1);
-    return avgCapital > 0 ? totalEbit / avgCapital : 0;
+    const roces = calculations.map(c => c.roce);
+    return roces.reduce((s, r) => s + r, 0) / Math.max(roces.length, 1);
   }, [calculations]);
 
   const paybackPeriod = useMemo(() => {
