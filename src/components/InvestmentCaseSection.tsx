@@ -155,9 +155,14 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       const ebit = grossMarginInclDepreciation - costsAfterGM;
       const ebitPct = y.sales > 0 ? ebit / y.sales : 0;
       
-      // Capital employed (simplified)
+      // Working Capital calculation based on days
+      const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.inventoryDays / 365) : 0;
+      const receivables = y.sales > 0 ? y.sales * (p.receivableDays / 365) : 0;
+      const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.payableDays / 365) : 0;
+      const workingCapital = inventories + receivables - payables;
+      
+      // Capital employed
       const nonCurrentAssets = totalInvestment - investDepr;
-      const workingCapital = y.sales > 0 ? y.sales * 0.15 : 0; // ~15% of sales as working capital
       const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
       const roce = ebit / capitalEmployed;
       
