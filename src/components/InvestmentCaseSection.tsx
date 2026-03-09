@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import { InvestmentCaseData, InvestmentCaseYearData, InvestmentCaseParameters, createDefaultInvestmentCase } from "@/lib/types";
+import { InvestmentCaseData, InvestmentCaseYearData, InvestmentCaseParameters, createDefaultInvestmentCase, BusinessPlanData } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,12 +12,14 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   investmentCase?: InvestmentCaseData;
   onSave: (ic: InvestmentCaseData) => void;
   readonly?: boolean;
+  businessPlan?: BusinessPlanData;
 }
 
 const formatK = (val: number) =>
