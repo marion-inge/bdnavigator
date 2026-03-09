@@ -106,7 +106,8 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
 
   const gateLabel = (gate: string) => {
     if (gate === "gate1") return t("stage_gate1");
-    return t("stage_gate2");
+    if (gate === "gate2") return t("stage_gate2");
+    return t("stage_gate3" as any);
   };
 
   return (
