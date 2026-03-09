@@ -80,7 +80,7 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
 
         {/* SOM Summary */}
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> {bp("SOM Summary (5 Years)", "SOM-Zusammenfassung (5 Jahre)")}</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> {bp("SOM Summary (5 Years, in M€)", "SOM-Zusammenfassung (5 Jahre, in M€)")}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-5 gap-2">
               {localProj.map((p, i) => (
