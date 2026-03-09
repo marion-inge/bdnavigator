@@ -141,22 +141,22 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="sam-segmentation">
-            <EmbeddedCustomerSegmentation {...saProps} />
+            <EmbeddedCustomerSegmentation {...samProps} />
           </TabsContent>
           <TabsContent value="sam-interviews">
-            <EmbeddedCustomerInterviews {...saProps} />
+            <EmbeddedCustomerInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-affiliate">
-            <EmbeddedInternalAffiliateInterviews {...saProps} />
+            <EmbeddedInternalAffiliateInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-bu">
-            <EmbeddedInternalBUInterviews {...saProps} />
+            <EmbeddedInternalBUInterviews {...samProps} />
           </TabsContent>
           <TabsContent value="sam-bmc">
-            <EmbeddedBMC {...saProps} />
+            <EmbeddedBMC {...samProps} />
           </TabsContent>
           <TabsContent value="sam-lean">
-            <EmbeddedLeanCanvas {...saProps} />
+            <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
       </TabsContent>
