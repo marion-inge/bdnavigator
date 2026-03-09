@@ -54,8 +54,8 @@ export default function OpportunityDetail() {
 
   const handleAdvanceStage = (stage: Stage) => {
     const updates: Partial<typeof opp> = { stage };
-    if (stage === "detailed_scoring" && !opp.detailedScoring) {
-      updates.detailedScoring = createDefaultDetailedScoring();
+    if (stage === "business_plan" && !opp.businessPlan) {
+      updates.businessPlan = createDefaultBusinessPlan();
     }
     if (stage === "business_case" && !opp.businessCase) {
       updates.businessCase = createDefaultBusinessCase();
