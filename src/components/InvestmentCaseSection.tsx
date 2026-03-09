@@ -353,6 +353,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
           <TabsTrigger value="notes" className="gap-1.5 text-xs">
             <FileText className="h-3 w-3" /> {bp("Notes", "Notizen")}
           </TabsTrigger>
+          <TabsTrigger value="ida" className="gap-1.5 text-xs">
+            <Bot className="h-3 w-3" /> IDA Assessment
+          </TabsTrigger>
         </TabsList>
 
         {/* ═══ Parameters Tab ═══ */}
