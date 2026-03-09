@@ -114,7 +114,7 @@ export function exportOpportunityPdf(opp: Opportunity) {
   y = addKeyValue(doc, y, "Gesamtbewertung", roughScore.toFixed(1) + " / 5.0");
 
   // Detailed Scoring
-  const ds = opp.detailedScoring;
+  const ds = opp.businessPlan;
   if (ds) {
     y += 4;
     y = addSectionTitle(doc, y, "Business Plan");
