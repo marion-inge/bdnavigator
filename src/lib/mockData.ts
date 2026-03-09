@@ -1355,7 +1355,7 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
     geography: "Europe / Middle East",
     technology: "Gas Analytics / Sensor Technology",
     owner: "Markus Schneider",
-    stage: "detailed_scoring",
+    stage: "business_plan",
     scoring: scoring(5, 4, 3, 4, 2, {
       marketAttractiveness: "Green hydrogen production capacity growing >40% CAGR. Every electrolyser needs quality assurance — regulatory mandates (ISO 14687, EN 17124) make this non-optional.",
       strategicFit: "Extends our industrial sensor and analytics portfolio into the hydrogen value chain. Leverages existing gas analysis competencies from process industry.",
