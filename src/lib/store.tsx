@@ -143,8 +143,7 @@ function mergeBusinessPlan(dbBp: any, mockBp: any): any {
     },
   };
 }
-
-
+export function StoreProvider({ children }: { children: ReactNode }) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
 
