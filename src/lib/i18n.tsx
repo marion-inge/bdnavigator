@@ -714,6 +714,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     dashTotal: "Total Ideas",
     dashActive: "active",
     dashAvgScore: "Avg. Score",
+    dashInImpl: "Implementation",
     dashGtm: "In Implementation",
     dashInMarket: "in progress",
     dashTopScorer: "Top Scorer",
