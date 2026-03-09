@@ -31,9 +31,9 @@ function calcCagr(values: MarketYearValue[]): string {
 }
 
 function formatValue(v: number): string {
-  if (v >= 1_000_000) return `€${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `€${(v / 1_000).toFixed(0)}K`;
-  return `€${v}`;
+  if (v >= 1_000) return `${(v / 1_000).toFixed(1)} B€`;
+  if (v > 0) return `${v} M€`;
+  return `0 M€`;
 }
 
 const defaultInterpretation: CombinedInterpretation = {
@@ -122,8 +122,8 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000_000 ? `${(v/1_000_000).toFixed(0)}M` : v >= 1_000 ? `${(v/1_000).toFixed(0)}K` : `${v}`} />
-                <Tooltip formatter={(v: number) => formatValue(v)} />
+                <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000 ? `${(v/1_000).toFixed(0)}B€` : `${v}M€`} />
+                <Tooltip formatter={(v: number, name: string) => [`${formatValue(v)}`, name]} />
                 <Legend />
                 <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
                 <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
@@ -141,7 +141,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{bp("5-Year Market Projections", "5-Jahres-Marktprojektionen")}</CardTitle>
+          <CardTitle>{bp("5-Year Market Projections (in M€)", "5-Jahres-Marktprojektionen (in M€)")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
