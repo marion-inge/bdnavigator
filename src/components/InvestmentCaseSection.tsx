@@ -155,10 +155,13 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       const ebit = grossMarginInclDepreciation - costsAfterGM;
       const ebitPct = y.sales > 0 ? ebit / y.sales : 0;
       
-      // Working Capital calculation based on days
-      const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.inventoryDays / 365) : 0;
-      const receivables = y.sales > 0 ? y.sales * (p.receivableDays / 365) : 0;
-      const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.payableDays / 365) : 0;
+      // Working Capital calculation based on days (with safe defaults for legacy data)
+      const invDays = p.inventoryDays ?? 30;
+      const recDays = p.receivableDays ?? 45;
+      const payDays = p.payableDays ?? 30;
+      const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (invDays / 365) : 0;
+      const receivables = y.sales > 0 ? y.sales * (recDays / 365) : 0;
+      const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (payDays / 365) : 0;
       const workingCapital = inventories + receivables - payables;
       
       // Capital employed
