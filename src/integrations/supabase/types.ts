@@ -66,6 +66,7 @@ export type Database = {
           idea_bringer: string
           implement_review: Json | null
           industry: string
+          investment_case: Json | null
           owner: string
           rough_scoring_answers: Json | null
           rough_scoring_comments: Json | null
@@ -89,6 +90,7 @@ export type Database = {
           idea_bringer?: string
           implement_review?: Json | null
           industry?: string
+          investment_case?: Json | null
           owner?: string
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
@@ -112,6 +114,7 @@ export type Database = {
           idea_bringer?: string
           implement_review?: Json | null
           industry?: string
+          investment_case?: Json | null
           owner?: string
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
