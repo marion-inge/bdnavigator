@@ -490,6 +490,13 @@ export default function OpportunityDetail() {
                 opportunityDescription={opp.description}
               />
             )}
+            {activeTab === "investment_case" && (
+              <InvestmentCaseSection
+                investmentCase={opp.investmentCase}
+                onSave={(ic) => updateInvestmentCase(opp.id, ic)}
+                readonly={opp.stage === "closed"}
+              />
+            )}
             {activeTab === "business_case" && (
               <GoToMarketSection
                 goToMarketPlan={opp.goToMarketPlan}
