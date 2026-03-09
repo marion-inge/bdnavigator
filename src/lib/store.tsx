@@ -115,6 +115,34 @@ function hasSubstantiveInvestmentCase(ic?: InvestmentCaseData): boolean {
   );
 }
 
+/** Deep-merge business plan: DB data wins, but fill in missing overview sections from mock */
+function mergeBusinessPlan(dbBp: any, mockBp: any): any {
+  if (!dbBp) return mockBp;
+  if (!mockBp) return dbBp;
+  return {
+    ...mockBp,
+    ...dbBp,
+    // Merge overview sections: prefer DB if present, fallback to mock
+    tamOverview: dbBp.tamOverview || mockBp.tamOverview,
+    samOverview: dbBp.samOverview || mockBp.samOverview,
+    somOverview: dbBp.somOverview || mockBp.somOverview,
+    combinedInterpretation: dbBp.combinedInterpretation || mockBp.combinedInterpretation,
+    // Deep-merge market analysis to preserve mock TAM/SAM projections
+    marketAttractiveness: {
+      ...(mockBp.marketAttractiveness || {}),
+      ...(dbBp.marketAttractiveness || {}),
+      analysis: {
+        ...(mockBp.marketAttractiveness?.analysis || {}),
+        ...(dbBp.marketAttractiveness?.analysis || {}),
+        tamProjections: dbBp.marketAttractiveness?.analysis?.tamProjections?.length ? dbBp.marketAttractiveness.analysis.tamProjections : (mockBp.marketAttractiveness?.analysis?.tamProjections || []),
+        samProjections: dbBp.marketAttractiveness?.analysis?.samProjections?.length ? dbBp.marketAttractiveness.analysis.samProjections : (mockBp.marketAttractiveness?.analysis?.samProjections || []),
+        geographicalRegions: dbBp.marketAttractiveness?.analysis?.geographicalRegions?.length ? dbBp.marketAttractiveness.analysis.geographicalRegions : (mockBp.marketAttractiveness?.analysis?.geographicalRegions || []),
+        customerSegments: dbBp.marketAttractiveness?.analysis?.customerSegments?.length ? dbBp.marketAttractiveness.analysis.customerSegments : (mockBp.marketAttractiveness?.analysis?.customerSegments || []),
+        competitorEntries: dbBp.marketAttractiveness?.analysis?.competitorEntries?.length ? dbBp.marketAttractiveness.analysis.competitorEntries : (mockBp.marketAttractiveness?.analysis?.competitorEntries || []),
+      },
+    },
+  };
+}
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,7 +167,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             // Prefer mock data for fields that are empty/undefined in DB
             solutionDescription: dbOpp.solutionDescription || mock.solutionDescription,
             ideaBringer: dbOpp.ideaBringer || mock.ideaBringer,
-            businessPlan: dbOpp.businessPlan || mock.businessPlan,
+            businessPlan: mergeBusinessPlan(dbOpp.businessPlan, mock.businessPlan),
             investmentCase: hasSubstantiveInvestmentCase(dbOpp.investmentCase) ? dbOpp.investmentCase : (mock.investmentCase || dbOpp.investmentCase),
             businessCase: dbOpp.businessCase || mock.businessCase,
             implementReview: dbOpp.implementReview || mock.implementReview,
