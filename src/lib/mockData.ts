@@ -902,7 +902,7 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
     ],
     implementReview: {
-      status: "On Track — Production ramp-up proceeding. Fraport deployment expanding.",
+      status: "in_progress",
       progressNotes: "Month 6: Fraport pilot completed successfully with 22% turnaround improvement and zero incidents. Production line at Foxconn operational with first batch of 40 robots delivered. Zurich airport onboarding in progress. Swissport contract negotiations in final stage.",
       lessonsLearned: "1) Airport ground crew adoption is faster when robots are introduced as 'assistants' rather than 'replacements'. 2) Battery management needs optimization for northern European winter conditions — 15% capacity reduction at -10°C. 3) Integration with SITA BagManager more complex than anticipated — needs dedicated API development.",
       nextSteps: "1) Complete Zurich airport deployment (10 robots, Q2 2026). 2) Sign Swissport global framework agreement. 3) Begin Nordic airports roadshow (CPH, OSL, ARN). 4) Launch winter battery optimization program. 5) Scale production to 200 robots for Q3/Q4 demand.",
