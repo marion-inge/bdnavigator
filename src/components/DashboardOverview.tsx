@@ -76,9 +76,9 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
         />
         <KpiCard
           icon={<Target className="h-4 w-4" />}
-          label={t("dashAvgScore")}
-          value={stats.avgScore.toFixed(1)}
-          sub="/ 5.0"
+          label={t("dashInImpl")}
+          value={stats.implCount}
+          sub={t("dashActive")}
           color="bg-accent"
         />
         <KpiCard
