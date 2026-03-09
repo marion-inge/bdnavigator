@@ -7,7 +7,7 @@ import { OpportunityOverview } from "@/components/OpportunityOverview";
 import { StageBadge } from "@/components/StageBadge";
 import { ScoringSection } from "@/components/ScoringSection";
 import { BusinessPlanSection } from "@/components/business-plan/BusinessPlanSection";
-
+import { InvestmentCaseSection } from "@/components/InvestmentCaseSection";
 import { GateDecisionSection } from "@/components/GateDecisionSection";
 import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection";
 import { GoToMarketSection } from "@/components/GoToMarketSection";
