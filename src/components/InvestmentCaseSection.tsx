@@ -469,6 +469,17 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
 
                   <tr className="border-b border-border/50">
                     <td className="py-1.5 px-2 font-semibold text-card-foreground pt-4" colSpan={data.yearData.length + 2}>
+                      {bp("Working Capital", "Working Capital")}
+                    </td>
+                  </tr>
+                  <TotalRow label={bp("Inventories", "Vorräte")} total={calculations.reduce((s, c) => s + c.inventories, 0)} values={calculations.map(c => c.inventories)} format={formatK} />
+                  <TotalRow label={bp("Receivables", "Forderungen")} total={calculations.reduce((s, c) => s + c.receivables, 0)} values={calculations.map(c => c.receivables)} format={formatK} />
+                  <TotalRow label={bp("Payables", "Verbindlichkeiten")} total={calculations.reduce((s, c) => s + c.payables, 0)} values={calculations.map(c => -c.payables)} format={formatK} />
+                  <TotalRow label={bp("Net Working Capital", "Netto Working Capital")} total={calculations.reduce((s, c) => s + c.workingCapital, 0)} values={calculations.map(c => c.workingCapital)} format={formatK} bold />
+                  <TotalRow label={bp("Capital Employed", "Eingesetztes Kapital")} total={calculations.reduce((s, c) => s + c.capitalEmployed, 0) / Math.max(calculations.length, 1)} values={calculations.map(c => c.capitalEmployed)} format={formatK} bold />
+
+                  <tr className="border-b border-border/50">
+                    <td className="py-1.5 px-2 font-semibold text-card-foreground pt-4" colSpan={data.yearData.length + 2}>
                       ROCE
                     </td>
                   </tr>
