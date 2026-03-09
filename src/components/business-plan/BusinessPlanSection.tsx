@@ -58,7 +58,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     onSaveStrategic(updated);
   };
 
-  const saProps = { strategicAnalyses: saData, onSave: handleUpdateSa, readonly };
+  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly };
+  const samProps = { data: saData.sam, onSave: (d: any) => handleUpdateSa({ ...saData, sam: d }), readonly };
+  const somProps = { data: saData.som, onSave: (d: any) => handleUpdateSa({ ...saData, som: d }), readonly };
 
   // Helper for sub-tabs: use activeSubTab if provided, otherwise default
   const getSubTab = (section: string, defaultVal: string) => {
