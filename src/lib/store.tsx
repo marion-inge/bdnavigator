@@ -228,6 +228,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [updateLocal]
   );
 
+  const updateInvestmentCase = useCallback(
+    (id: string, investmentCase: InvestmentCaseData) => {
+      updateLocal((prev) => {
+        const next = prev.map((o) => (o.id === id ? { ...o, investmentCase } : o));
+        const updated = next.find((o) => o.id === id);
+        if (updated) upsertOpportunity(updated);
+        return next;
+      });
+    },
+    [updateLocal]
+  );
+
   const updateBusinessCase = useCallback(
     (id: string, businessCase: BusinessCase) => {
       updateLocal((prev) => {
