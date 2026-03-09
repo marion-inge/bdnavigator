@@ -1,13 +1,16 @@
 // Stage identifiers – UI labels differ from code names:
-//   "rough_scoring"    → UI: "Idea Scoring"
-//   "business_plan"    → UI: "Business Plan"
-//   "business_case"    → UI: "Implementation and GTM Plan"
+//   "rough_scoring"      → UI: "Idea Scoring"
+//   "business_plan"      → UI: "Business Plan"
+//   "investment_case"    → UI: "Business Case"
+//   "business_case"      → UI: "Implementation and GTM Plan"
 export type Stage =
   | "idea"
   | "rough_scoring"       // UI: Idea Scoring
   | "gate1"
   | "business_plan"       // UI: Business Plan
   | "gate2"
+  | "investment_case"     // UI: Business Case (Investment Calculation)
+  | "gate3"
   | "business_case"       // UI: Implementation and GTM Plan
   | "implement_review"
   | "closed";
