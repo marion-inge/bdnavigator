@@ -954,11 +954,11 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       },
       somOverview: {
         projections: [
-          { year: 1, value: 7680000 },
-          { year: 2, value: 19200000 },
-          { year: 3, value: 38400000 },
-          { year: 4, value: 57600000 },
-          { year: 5, value: 76800000 },
+          { year: 1, value: 8 },
+          { year: 2, value: 19 },
+          { year: 3, value: 38 },
+          { year: 4, value: 58 },
+          { year: 5, value: 77 },
         ],
         marketShareVsSam: "Year 1: 0.3% of SAM (€2.5B). Year 3: 1.5%. Year 5: 3.1%. Conservative given first-mover advantage and certification moat.",
         growthRate: "150% Year 1→2 (scaling from pilot to multi-airport). 100% Year 2→3. 50% Year 3→4. 33% Year 4→5. Decelerating as base grows.",
