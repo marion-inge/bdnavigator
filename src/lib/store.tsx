@@ -130,6 +130,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             // Prefer mock data for fields that are empty/undefined in DB
             solutionDescription: dbOpp.solutionDescription || mock.solutionDescription,
             ideaBringer: dbOpp.ideaBringer || mock.ideaBringer,
+            businessPlan: dbOpp.businessPlan || mock.businessPlan,
+            investmentCase: dbOpp.investmentCase || mock.investmentCase,
+            businessCase: dbOpp.businessCase || mock.businessCase,
             implementReview: dbOpp.implementReview || mock.implementReview,
             roughScoringComments: dbOpp.roughScoringComments || mock.roughScoringComments,
             roughScoringSources: dbOpp.roughScoringSources || mock.roughScoringSources,
