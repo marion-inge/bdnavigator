@@ -497,7 +497,6 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 businessPlan={opp.businessPlan}
               />
-              />
             )}
             {activeTab === "business_case" && (
               <GoToMarketSection
