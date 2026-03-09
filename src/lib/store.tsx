@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, InvestmentCaseData, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 import { supabase } from "@/integrations/supabase/client";
 
