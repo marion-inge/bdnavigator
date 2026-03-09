@@ -13,7 +13,7 @@ function scoring(ma: number, sf: number, fe: number, cv: number, ri: number, com
   };
 }
 
-export const MOCK_OPPORTUNITIES: Opportunity[] = [
+export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'businessPlan'> & { strategicAnalyses?: any; detailedScoring?: any; businessPlan?: any })[] = [
   {
     id: "a0000001-0001-4000-8000-000000000001",
     title: "Autonomous Navigation Module for Container Ships",
