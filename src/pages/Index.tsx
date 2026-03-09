@@ -19,10 +19,7 @@ import { Search, X, BookOpen } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
 import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
-import noviLogo from "@/assets/novi-logo.png";
-import noviLogoV2 from "@/assets/novi-logo-v2.png";
-import noviLogoV3 from "@/assets/novi-logo-v3.png";
-import noviLogoV4 from "@/assets/novi-logo-v4.png";
+import noviLogo from "@/assets/novi-logo-v4.png";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
@@ -124,7 +121,7 @@ export default function Index() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-3 sm:py-5 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <img src={noviLogo} alt="NOVI" className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl shrink-0" />
+            <img src={noviLogo} alt="NOVI" className="h-14 sm:h-16 shrink-0" />
             <div className="min-w-0">
               <h1 className="text-lg sm:text-2xl font-extrabold text-card-foreground tracking-tight truncate">{t("appTitle")}</h1>
               <p className="text-xs sm:text-sm text-muted-foreground font-medium truncate">{t("appSlogan")}</p>
@@ -141,22 +138,6 @@ export default function Index() {
         </div>
       </header>
 
-      {/* TEMP: Logo comparison – remove after decision */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6">
-        <div className="rounded-lg border border-border bg-card p-6 mb-6">
-          <h2 className="text-lg font-bold text-card-foreground mb-4 text-center">Logo-Vergleich</h2>
-          <div className="grid grid-cols-2 gap-6 items-center justify-items-center">
-            <div className="text-center space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground">V3 – Quadratisch</p>
-              <img src={noviLogoV3} alt="Logo V3" className="w-24 h-24 rounded-xl mx-auto" />
-            </div>
-            <div className="text-center space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground">V4 – Horizontal</p>
-              <img src={noviLogoV4} alt="Logo V4" className="h-20 mx-auto" />
-            </div>
-          </div>
-        </div>
-      </div>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
         {loading ? (
