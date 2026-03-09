@@ -895,6 +895,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     revertConfirm: "Möchten Sie wirklich zur vorherigen Phase zurückkehren?",
     moveToRoughScoring: "Zum Ideen-Scoring",
     moveToDetailedScoring: "Zum Business Plan",
+    moveToInvestmentCase: "Zum Business Case",
     moveToBusinessCase: "Zum Umsetzungs- und GTM-Plan",
     moveToImplementReview: "Zur Umsetzung & Review",
     allStages: "Alle Phasen",
