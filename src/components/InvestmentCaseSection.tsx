@@ -335,11 +335,11 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
           <TabsTrigger value="parameters" className="gap-1.5 text-xs">
             <Settings className="h-3 w-3" /> {bp("Parameters", "Parameter")}
           </TabsTrigger>
-          <TabsTrigger value="pl" className="gap-1.5 text-xs">
-            <DollarSign className="h-3 w-3" /> {bp("P&L / Business Case", "GuV / Business Case")}
-          </TabsTrigger>
           <TabsTrigger value="investment" className="gap-1.5 text-xs">
             <Calculator className="h-3 w-3" /> {bp("Investment & R&D", "Investment & F&E")}
+          </TabsTrigger>
+          <TabsTrigger value="pl" className="gap-1.5 text-xs">
+            <DollarSign className="h-3 w-3" /> {bp("P&L / Business Case", "GuV / Business Case")}
           </TabsTrigger>
           <TabsTrigger value="roce" className="gap-1.5 text-xs">
             <TrendingUp className="h-3 w-3" /> {bp("ROCE & NPV", "ROCE & NPV")}
