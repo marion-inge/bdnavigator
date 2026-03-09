@@ -12,14 +12,20 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot } from "lucide-react";
 import { toast } from "sonner";
+import { BusinessCaseAssessment } from "@/components/BusinessCaseAssessment";
 
 interface Props {
   investmentCase?: InvestmentCaseData;
   onSave: (ic: InvestmentCaseData) => void;
   readonly?: boolean;
   businessPlan?: BusinessPlanData;
+  opportunityId: string;
+  title?: string;
+  description?: string;
+  industry?: string;
+  technology?: string;
 }
 
 const formatK = (val: number) =>
@@ -28,7 +34,7 @@ const formatM = (val: number) =>
   Math.abs(val) >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)} M€` : `${(val / 1000).toFixed(0)} k€`;
 const formatPct = (val: number) => `${(val * 100).toFixed(1)}%`;
 
-export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan }: Props) {
+export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan, opportunityId, title: oppTitle, description: oppDescription, industry, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const defaults = createDefaultInvestmentCase();
@@ -347,6 +353,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
           <TabsTrigger value="notes" className="gap-1.5 text-xs">
             <FileText className="h-3 w-3" /> {bp("Notes", "Notizen")}
           </TabsTrigger>
+          <TabsTrigger value="ida" className="gap-1.5 text-xs">
+            <Bot className="h-3 w-3" /> IDA Assessment
+          </TabsTrigger>
         </TabsList>
 
         {/* ═══ Parameters Tab ═══ */}
@@ -627,6 +636,26 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ═══ IDA Assessment Tab ═══ */}
+        <TabsContent value="ida" className="space-y-4 mt-4">
+          <BusinessCaseAssessment
+            opportunityId={opportunityId}
+            title={oppTitle}
+            description={oppDescription}
+            industry={industry}
+            technology={technology}
+            kpis={{
+              totalROCE,
+              npv,
+              paybackPeriod,
+              totalEbit,
+              totalSales,
+            }}
+            parameters={data.parameters}
+            yearData={calculations}
+          />
         </TabsContent>
       </Tabs>
     </div>
