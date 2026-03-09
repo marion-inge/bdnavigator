@@ -370,6 +370,13 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                   <TableRow label="EBIT" values={calculations.map(c => c.ebit)} format={formatK} bold highlight />
                   <TableRow label="EBIT %" values={calculations.map(c => c.ebitPct)} format={(v) => `${(v * 100).toFixed(1)}%`} />
                   <TableRow label="ROCE" values={calculations.map(c => c.roce)} format={(v) => `${(v * 100).toFixed(1)}%`} highlight />
+                  <tr className="h-2" />
+                  <TableRow label={bp("Inventories", "Vorräte")} values={calculations.map(c => c.inventories)} format={formatK} muted />
+                  <TableRow label={bp("Receivables", "Forderungen")} values={calculations.map(c => c.receivables)} format={formatK} muted />
+                  <TableRow label={bp("Payables", "Verbindlichkeiten")} values={calculations.map(c => -c.payables)} format={formatK} muted />
+                  <TableRow label={bp("Working Capital", "Working Capital")} values={calculations.map(c => c.workingCapital)} format={formatK} bold />
+                  <TableRow label={bp("Capital Employed", "Eingesetztes Kapital")} values={calculations.map(c => c.capitalEmployed)} format={formatK} bold />
+                  <tr className="h-2" />
                   <TableRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} />
                   <TableRow label={bp("Accumulated Cash Flow", "Kum. Cashflow")} values={accumulatedCashFlow.map(c => c.accumulated)} format={formatK} bold highlight />
                 </tbody>
