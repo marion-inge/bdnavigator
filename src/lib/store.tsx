@@ -106,6 +106,15 @@ async function deleteOpportunityFromDb(id: string) {
   if (error) console.error("Failed to delete opportunity:", error);
 }
 
+/** Check if an investment case has real data (non-zero investment/R&D) vs just defaults */
+function hasSubstantiveInvestmentCase(ic?: InvestmentCaseData): boolean {
+  if (!ic?.yearData) return false;
+  return ic.yearData.some(y => 
+    y.investmentExternal > 0 || y.investmentInternal > 0 || 
+    y.rdExternal > 0 || y.rdInternal > 0
+  );
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
