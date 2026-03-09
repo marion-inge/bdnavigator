@@ -38,7 +38,10 @@ const translations = {
     stage_gate1: "Gate 1",
     stage_detailed_scoring: "Business Plan",
     stage_gate2: "Gate 2",
+    stage_investment_case: "Business Case",
+    stage_gate3: "Gate 3",
     stage_business_case: "Implementation and GTM Plan",
+    stage_business_case_calc: "Business Case",
     stage_implement_review: "Implement & Review",
     stage_closed: "Closed",
     // Scoring criteria
