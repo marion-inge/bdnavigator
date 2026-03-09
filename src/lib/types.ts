@@ -717,6 +717,7 @@ export interface Opportunity {
   stage: Stage;
   scoring: Scoring;                                  // UI: Idea Scoring data
   businessPlan?: BusinessPlanData;                    // UI: Business Plan data
+  investmentCase?: InvestmentCaseData;               // UI: Business Case (Investment Calculation)
   businessCase?: BusinessCase;                       // UI: Implementation and GTM Plan data
   strategicAnalyses?: StrategicAnalyses;
   goToMarketPlan?: GoToMarketPlan;
