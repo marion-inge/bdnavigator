@@ -12,8 +12,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot } from "lucide-react";
 import { toast } from "sonner";
+import { BusinessCaseAssessment } from "@/components/BusinessCaseAssessment";
 
 interface Props {
   investmentCase?: InvestmentCaseData;
