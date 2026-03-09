@@ -232,9 +232,90 @@ export interface BusinessCase {
   notes: string;
 }
 
+/** Investment Calculation Sheet – mirrors internal controlling template */
+export interface InvestmentCaseYearData {
+  year: number;
+  investmentExternal: number;
+  investmentInternal: number;
+  rdExternal: number;
+  rdInternal: number;
+  sales: number;
+  cogs: number;
+  grossMarginPct: number;
+  sellingExpenses: number;
+  gaExpenses: number;
+  otherExpenses: number;
+}
+
+export interface InvestmentCaseParameters {
+  projectStart: number;
+  startOfOperation: number;
+  projectDuration: number;
+  isSoftwareOnly: boolean;
+  marketSize: number;
+  marketGrowthRate: number;
+  portfolioCoverage: number;
+  visibility: number;
+  visibilityGrowthRate: number;
+  hitrate: number;
+  gaExpensesPct: number;
+  sellingExpensesPct: number;
+  rdDepreciationYears: number;
+  investDepreciationYears: number;
+  wacc: number;
+}
+
+export interface InvestmentCaseData {
+  parameters: InvestmentCaseParameters;
+  yearData: InvestmentCaseYearData[];
+  notes: string;
+}
+
+export function createDefaultInvestmentCase(): InvestmentCaseData {
+  const currentYear = new Date().getFullYear();
+  const duration = 6;
+  const years: InvestmentCaseYearData[] = [];
+  for (let i = 0; i <= duration + 4; i++) {
+    years.push({
+      year: currentYear + i,
+      investmentExternal: 0,
+      investmentInternal: 0,
+      rdExternal: 0,
+      rdInternal: 0,
+      sales: 0,
+      cogs: 0,
+      grossMarginPct: 30,
+      sellingExpenses: 0,
+      gaExpenses: 0,
+      otherExpenses: 0,
+    });
+  }
+  return {
+    parameters: {
+      projectStart: currentYear,
+      startOfOperation: currentYear + 1,
+      projectDuration: duration,
+      isSoftwareOnly: false,
+      marketSize: 0,
+      marketGrowthRate: 5,
+      portfolioCoverage: 40,
+      visibility: 50,
+      visibilityGrowthRate: 5,
+      hitrate: 30,
+      gaExpensesPct: 10,
+      sellingExpensesPct: 10,
+      rdDepreciationYears: 6,
+      investDepreciationYears: 10,
+      wacc: 10,
+    },
+    yearData: years,
+    notes: "",
+  };
+}
+
 export interface GateRecord {
   id: string;
-  gate: "gate1" | "gate2";
+  gate: "gate1" | "gate2" | "gate3";
   decision: GateDecision;
   comment: string;
   decider: string;
