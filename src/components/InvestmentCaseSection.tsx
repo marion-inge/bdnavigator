@@ -21,6 +21,11 @@ interface Props {
   onSave: (ic: InvestmentCaseData) => void;
   readonly?: boolean;
   businessPlan?: BusinessPlanData;
+  opportunityId: string;
+  title?: string;
+  description?: string;
+  industry?: string;
+  technology?: string;
 }
 
 const formatK = (val: number) =>
