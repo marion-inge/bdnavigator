@@ -140,6 +140,27 @@ export default function Index() {
         </div>
       </header>
 
+      {/* TEMP: Logo comparison – remove after decision */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6">
+        <div className="rounded-lg border border-border bg-card p-6 mb-6">
+          <h2 className="text-lg font-bold text-card-foreground mb-4 text-center">Logo-Vergleich</h2>
+          <div className="grid grid-cols-3 gap-6 items-center justify-items-center">
+            <div className="text-center space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground">Aktuell</p>
+              <img src={noviLogo} alt="Aktuelles Logo" className="w-24 h-24 rounded-xl mx-auto" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground">V2 – Schlicht</p>
+              <img src={noviLogoV2} alt="Logo V2" className="w-24 h-24 rounded-xl mx-auto" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground">V3 – Bunt</p>
+              <img src={noviLogoV3} alt="Logo V3" className="w-24 h-24 rounded-xl mx-auto" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
         {loading ? (
           <DashboardSkeleton />
