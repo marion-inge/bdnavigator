@@ -132,6 +132,28 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         notes: "Hapag-Lloyd is our anchor pilot customer with signed LoI. Nor Lines represents the coastal/crew-shortage value proposition. Focus next quarter on converting Nor Lines to LoI and progressing CMA CGM to interested stage.",
       },
     },
+    investmentCase: {
+      parameters: {
+        projectStart: 2025, startOfOperation: 2026, projectDuration: 6, isSoftwareOnly: false,
+        marketSize: 3000, marketGrowthRate: 18, portfolioCoverage: 40, visibility: 50,
+        visibilityGrowthRate: 5, hitrate: 30, gaExpensesPct: 10, sellingExpensesPct: 10,
+        rdDepreciationYears: 6, investDepreciationYears: 10, wacc: 10,
+      },
+      yearData: [
+        { year: 2025, investmentExternal: 800000, investmentInternal: 400000, rdExternal: 1200000, rdInternal: 600000, sales: 0, cogs: 0, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2026, investmentExternal: 200000, investmentInternal: 100000, rdExternal: 400000, rdInternal: 200000, sales: 12000000, cogs: 4800000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2027, investmentExternal: 0, investmentInternal: 0, rdExternal: 200000, rdInternal: 100000, sales: 30000000, cogs: 12000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2028, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 52000000, cogs: 20800000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2029, investmentExternal: 0, investmentInternal: 0, rdExternal: 50000, rdInternal: 25000, sales: 75000000, cogs: 30000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2030, investmentExternal: 0, investmentInternal: 0, rdExternal: 50000, rdInternal: 25000, sales: 100000000, cogs: 40000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2031, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 120000000, cogs: 48000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2032, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 140000000, cogs: 56000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2033, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 155000000, cogs: 62000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2034, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 170000000, cogs: 68000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2035, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 180000000, cogs: 72000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+      ],
+      notes: "Based on SAM projections from Business Plan. R&D front-loaded in Y1-Y2 for sensor fusion development and DNV certification. Sales ramp assumes 24 vessels Y1, scaling to 360 vessels by Y6. Gross margin 60% at scale per SaaS + hardware model.",
+    } as InvestmentCaseData,
     businessCase: {
       investmentCost: 5000000,
       expectedRevenue: 12000000,
