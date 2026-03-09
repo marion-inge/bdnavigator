@@ -34,7 +34,7 @@ const formatM = (val: number) =>
   Math.abs(val) >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)} M€` : `${(val / 1000).toFixed(0)} k€`;
 const formatPct = (val: number) => `${(val * 100).toFixed(1)}%`;
 
-export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan }: Props) {
+export function InvestmentCaseSection({ investmentCase, onSave, readonly: propReadonly, businessPlan, opportunityId, title: oppTitle, description: oppDescription, industry, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const defaults = createDefaultInvestmentCase();
