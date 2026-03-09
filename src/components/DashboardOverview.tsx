@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { TrendingUp, Lightbulb, Target, BarChart3 } from "lucide-react";
+import { Lightbulb, BarChart3 } from "lucide-react";
 
 interface DashboardOverviewProps {
   opportunities: Opportunity[];
