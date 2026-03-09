@@ -123,8 +123,7 @@ export default function Index() {
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img src={noviLogo} alt="NOVI" className="h-14 sm:h-16 shrink-0" />
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-2xl font-extrabold text-card-foreground tracking-tight truncate">{t("appTitle")}</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground font-medium truncate">{t("appSlogan")}</p>
+              <h1 className="text-base sm:text-xl font-bold text-muted-foreground tracking-tight truncate">{t("appSlogan")}</h1>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
