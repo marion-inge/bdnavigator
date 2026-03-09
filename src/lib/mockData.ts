@@ -305,8 +305,9 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       },
     },
     gates: [
-      { id: "g-001a", gate: "gate1", decision: "go", comment: "Strong market pull confirmed through customer interviews. Team unanimously supports proceeding.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
-      { id: "g-001b", gate: "gate2", decision: "go", comment: "Detailed market analysis validates €3B SAM. Competitive differentiation clear. DNV partnership secured.", decider: "Michael Braun", date: "2026-01-10T14:00:00Z" },
+      { id: "g-001a", gate: "gate1" as const, decision: "go" as const, comment: "Strong market pull confirmed through customer interviews. Team unanimously supports proceeding.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
+      { id: "g-001b", gate: "gate2" as const, decision: "go" as const, comment: "Detailed market analysis validates €3B SAM. Competitive differentiation clear. DNV partnership secured.", decider: "Michael Braun", date: "2026-01-10T14:00:00Z" },
+      { id: "g-001c", gate: "gate3" as const, decision: "go" as const, comment: "Investment case approved. NPV strongly positive at 75M€. ROCE exceeds WACC hurdle rate. Payback within project duration. Board approved budget allocation.", decider: "Dr. Claudia Weiss", date: "2026-02-20T15:00:00Z" },
     ],
     roughScoringAnswers: {
       ma_market_size: 5, ma_growth_rate: 4, ma_customer_demand: 5, ma_competition: 4, ma_accessibility: 4,
