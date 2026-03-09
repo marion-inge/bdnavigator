@@ -155,9 +155,14 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       const ebit = grossMarginInclDepreciation - costsAfterGM;
       const ebitPct = y.sales > 0 ? ebit / y.sales : 0;
       
-      // Capital employed (simplified)
+      // Working Capital calculation based on days
+      const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.inventoryDays / 365) : 0;
+      const receivables = y.sales > 0 ? y.sales * (p.receivableDays / 365) : 0;
+      const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (p.payableDays / 365) : 0;
+      const workingCapital = inventories + receivables - payables;
+      
+      // Capital employed
       const nonCurrentAssets = totalInvestment - investDepr;
-      const workingCapital = y.sales > 0 ? y.sales * 0.15 : 0; // ~15% of sales as working capital
       const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
       const roce = ebit / capitalEmployed;
       
@@ -184,6 +189,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         investDepr,
         rdDepr,
         workingCapital,
+        inventories,
+        receivables,
+        payables,
         nonCurrentAssets,
       };
     });
@@ -326,6 +334,15 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               <ParamField label="WACC (%)" value={data.parameters.wacc} onChange={(v) => updateParam("wacc", v)} disabled={readonly} type="number" />
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader><CardTitle className="text-sm">{bp("Working Capital Parameters", "Working Capital Parameter")}</CardTitle></CardHeader>
+            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <ParamField label={bp("Inventory Days", "Lagerdauer (Tage)")} value={data.parameters.inventoryDays} onChange={(v) => updateParam("inventoryDays", v)} disabled={readonly} type="number" />
+              <ParamField label={bp("Receivable Days (DSO)", "Forderungslaufzeit (Tage)")} value={data.parameters.receivableDays} onChange={(v) => updateParam("receivableDays", v)} disabled={readonly} type="number" />
+              <ParamField label={bp("Payable Days (DPO)", "Zahlungsziel Lieferanten (Tage)")} value={data.parameters.payableDays} onChange={(v) => updateParam("payableDays", v)} disabled={readonly} type="number" />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* ═══ P&L / Business Case Tab ═══ */}
@@ -353,6 +370,13 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                   <TableRow label="EBIT" values={calculations.map(c => c.ebit)} format={formatK} bold highlight />
                   <TableRow label="EBIT %" values={calculations.map(c => c.ebitPct)} format={(v) => `${(v * 100).toFixed(1)}%`} />
                   <TableRow label="ROCE" values={calculations.map(c => c.roce)} format={(v) => `${(v * 100).toFixed(1)}%`} highlight />
+                  <tr className="h-2" />
+                  <TableRow label={bp("Inventories", "Vorräte")} values={calculations.map(c => c.inventories)} format={formatK} muted />
+                  <TableRow label={bp("Receivables", "Forderungen")} values={calculations.map(c => c.receivables)} format={formatK} muted />
+                  <TableRow label={bp("Payables", "Verbindlichkeiten")} values={calculations.map(c => -c.payables)} format={formatK} muted />
+                  <TableRow label={bp("Working Capital", "Working Capital")} values={calculations.map(c => c.workingCapital)} format={formatK} bold />
+                  <TableRow label={bp("Capital Employed", "Eingesetztes Kapital")} values={calculations.map(c => c.capitalEmployed)} format={formatK} bold />
+                  <tr className="h-2" />
                   <TableRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} />
                   <TableRow label={bp("Accumulated Cash Flow", "Kum. Cashflow")} values={accumulatedCashFlow.map(c => c.accumulated)} format={formatK} bold highlight />
                 </tbody>
@@ -442,6 +466,17 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                   <TotalRow label={bp("Turnover / Sales", "Umsatz")} total={totalSales} values={calculations.map(c => c.sales)} format={formatK} />
                   <TotalRow label="EBIT" total={totalEbit} values={calculations.map(c => c.ebit)} format={formatK} bold />
                   <TotalRow label="EBIT %" total={totalSales > 0 ? totalEbit / totalSales : 0} values={calculations.map(c => c.ebitPct)} format={(v) => `${(v * 100).toFixed(1)}%`} totalFormat={(v) => `${(v * 100).toFixed(1)}%`} />
+
+                  <tr className="border-b border-border/50">
+                    <td className="py-1.5 px-2 font-semibold text-card-foreground pt-4" colSpan={data.yearData.length + 2}>
+                      {bp("Working Capital", "Working Capital")}
+                    </td>
+                  </tr>
+                  <TotalRow label={bp("Inventories", "Vorräte")} total={calculations.reduce((s, c) => s + c.inventories, 0)} values={calculations.map(c => c.inventories)} format={formatK} />
+                  <TotalRow label={bp("Receivables", "Forderungen")} total={calculations.reduce((s, c) => s + c.receivables, 0)} values={calculations.map(c => c.receivables)} format={formatK} />
+                  <TotalRow label={bp("Payables", "Verbindlichkeiten")} total={calculations.reduce((s, c) => s + c.payables, 0)} values={calculations.map(c => -c.payables)} format={formatK} />
+                  <TotalRow label={bp("Net Working Capital", "Netto Working Capital")} total={calculations.reduce((s, c) => s + c.workingCapital, 0)} values={calculations.map(c => c.workingCapital)} format={formatK} bold />
+                  <TotalRow label={bp("Capital Employed", "Eingesetztes Kapital")} total={calculations.reduce((s, c) => s + c.capitalEmployed, 0) / Math.max(calculations.length, 1)} values={calculations.map(c => c.capitalEmployed)} format={formatK} bold />
 
                   <tr className="border-b border-border/50">
                     <td className="py-1.5 px-2 font-semibold text-card-foreground pt-4" colSpan={data.yearData.length + 2}>

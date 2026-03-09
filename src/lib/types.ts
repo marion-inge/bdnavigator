@@ -263,6 +263,9 @@ export interface InvestmentCaseParameters {
   rdDepreciationYears: number;
   investDepreciationYears: number;
   wacc: number;
+  inventoryDays: number;
+  receivableDays: number;
+  payableDays: number;
 }
 
 export interface InvestmentCaseData {
@@ -307,6 +310,9 @@ export function createDefaultInvestmentCase(): InvestmentCaseData {
       rdDepreciationYears: 6,
       investDepreciationYears: 10,
       wacc: 10,
+      inventoryDays: 30,
+      receivableDays: 45,
+      payableDays: 30,
     },
     yearData: years,
     notes: "",
