@@ -43,8 +43,9 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
   const canMoveToRoughScoring = opp.stage === "idea";
   const canMoveToGate1 = opp.stage === "rough_scoring";
   const canMoveToGate2 = opp.stage === "business_plan";
+  const canMoveToGate3 = opp.stage === "investment_case";
   const canMoveToImplementReview = opp.stage === "business_case";
-  const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToImplementReview;
+  const hasAction = canMoveToRoughScoring || canMoveToGate1 || canMoveToGate2 || canMoveToGate3 || canMoveToImplementReview;
   const canRevert = onRevertStage && STAGE_ORDER.indexOf(opp.stage) > 0 && opp.stage !== "closed";
 
 
