@@ -138,22 +138,6 @@ export default function Index() {
         </div>
       </header>
 
-      {/* TEMP: Logo comparison – remove after decision */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6">
-        <div className="rounded-lg border border-border bg-card p-6 mb-6">
-          <h2 className="text-lg font-bold text-card-foreground mb-4 text-center">Logo-Vergleich</h2>
-          <div className="grid grid-cols-2 gap-6 items-center justify-items-center">
-            <div className="text-center space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground">V3 – Quadratisch</p>
-              <img src={noviLogoV3} alt="Logo V3" className="w-24 h-24 rounded-xl mx-auto" />
-            </div>
-            <div className="text-center space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground">V4 – Horizontal</p>
-              <img src={noviLogoV4} alt="Logo V4" className="h-20 mx-auto" />
-            </div>
-          </div>
-        </div>
-      </div>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-6 space-y-6">
         {loading ? (
