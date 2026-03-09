@@ -63,6 +63,7 @@ function rowToOpp(r: any): Opportunity {
     stage: r.stage as Stage,
     scoring: r.scoring as Scoring,
     businessPlan: r.business_plan ?? undefined,
+    investmentCase: r.investment_case ?? undefined,
     businessCase: r.business_case ?? undefined,
     strategicAnalyses: r.strategic_analyses ? migrateStrategicAnalyses(r.strategic_analyses) : undefined,
     goToMarketPlan: r.go_to_market_plan ?? undefined,
