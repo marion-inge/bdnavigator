@@ -484,10 +484,10 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
           </Card>
         </TabsContent>
 
-        {/* ═══ Investment & R&D Tab ═══ */}
+        {/* ═══ Investment & R&D Summary Tab ═══ */}
         <TabsContent value="investment" className="space-y-6 mt-4">
           <Card>
-            <CardHeader><CardTitle className="text-sm">{bp("Investment & R&D Costs (in k€)", "Investment & F&E-Kosten (in k€)")}</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm">{bp("Investment & R&D Summary", "Investment & F&E Übersicht")}</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
               <table className="w-full text-xs border-collapse min-w-[800px]">
                 <thead>
@@ -499,16 +499,18 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                   </tr>
                 </thead>
                 <tbody>
-                  <EditableTableRow label={bp("Investment External", "Investment Extern")} field="investmentExternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
-                  <EditableTableRow label={bp("Investment Internal", "Investment Intern")} field="investmentInternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <TableRow label={bp("Investment External", "Investment Extern")} values={data.yearData.map(y => y.investmentExternal)} format={formatK} />
+                  <TableRow label={bp("Investment Internal", "Investment Intern")} values={data.yearData.map(y => y.investmentInternal)} format={formatK} />
                   <TableRow label={bp("Total Investment", "Gesamt-Investment")} values={calculations.map(c => c.totalInvestment)} format={formatK} bold />
+                  <TableRow label={bp("Invest Depreciation", "Invest-Abschreibung")} values={calculations.map(c => c.investDepr)} format={formatK} muted />
                   <tr className="h-2" />
-                  <EditableTableRow label={bp("R&D External", "F&E Extern")} field="rdExternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
-                  <EditableTableRow label={bp("R&D Internal", "F&E Intern")} field="rdInternal" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <TableRow label={bp("R&D External", "F&E Extern")} values={data.yearData.map(y => y.rdExternal)} format={formatK} />
+                  <TableRow label={bp("R&D Internal", "F&E Intern")} values={data.yearData.map(y => y.rdInternal)} format={formatK} />
                   <TableRow label={bp("Total R&D", "Gesamt-F&E")} values={calculations.map(c => c.totalRD)} format={formatK} bold />
+                  <TableRow label={bp("R&D Depreciation", "F&E-Abschreibung")} values={calculations.map(c => c.rdDepr)} format={formatK} muted />
                   <tr className="h-2" />
-                  <EditableTableRow label={bp("Sales / Turnover", "Umsatz")} field="sales" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
-                  <EditableTableRow label={bp("Gross Margin %", "Bruttomarge %")} field="grossMarginPct" yearData={data.yearData} onUpdate={updateYear} disabled={readonly} />
+                  <TableRow label={bp("Total Depreciation", "Gesamt-Abschreibung")} values={calculations.map(c => c.investDepr + c.rdDepr)} format={formatK} bold />
+                  <TableRow label={bp("Non-Current Assets", "Anlagevermögen")} values={calculations.map(c => c.nonCurrentAssets)} format={formatK} bold highlight />
                 </tbody>
               </table>
             </CardContent>
