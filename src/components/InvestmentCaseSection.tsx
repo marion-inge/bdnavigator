@@ -542,7 +542,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                       {bp("Net Present Value (NPV)", "Kapitalwert (NPV)")}
                     </td>
                   </tr>
-                  <TotalRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} />
+                  <TotalRow label={bp("Depreciation (add-back)", "Abschreibungen (Rückrechnung)")} total={calculations.reduce((s, c) => s + c.investDepr + c.rdDepr, 0)} values={calculations.map(c => c.investDepr + c.rdDepr)} format={formatK} />
+                  <TotalRow label={bp("Δ Working Capital", "Δ Working Capital")} total={calculations.reduce((s, c) => s + c.deltaWorkingCapital, 0)} values={calculations.map(c => -c.deltaWorkingCapital)} format={formatK} />
+                  <TotalRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} bold />
                   <TotalRow label={bp("Accumulated Cash Flow", "Kum. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.accumulated)} format={formatK} bold highlight />
                   <tr className="border-b border-border/50">
                     <td className="py-2 px-2 text-muted-foreground">{bp("Discounted Cash Flow (NPV)", "Diskontierter Cashflow (NPV)")}</td>
