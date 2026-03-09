@@ -111,7 +111,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
   const quadrants = useMemo(() => {
     const q: [Opportunity[], Opportunity[], Opportunity[], Opportunity[]] = [[], [], [], []];
     opportunities.forEach((o) => {
-      const pos = o.strategicAnalyses?.ansoff?.position || "market_penetration";
+      const pos = o.strategicAnalyses?.ideaScoring?.ansoff?.position || "market_penetration";
       const mapped = POSITION_MAP[pos] ?? POSITION_MAP["market_penetration"];
       const idx = mapped.row * 2 + mapped.col;
       q[idx].push(o);
