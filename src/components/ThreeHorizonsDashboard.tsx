@@ -130,16 +130,19 @@ export function ThreeHorizonsDashboard({ opportunities }: Props) {
     const opp = opportunities.find((o) => o.id === oppId);
     if (!opp) return;
 
-    const currentHorizon = opp.strategicAnalyses?.threeHorizons?.horizon || "horizon1";
+    const currentHorizon = opp.strategicAnalyses?.ideaScoring?.threeHorizons?.horizon || "horizon1";
     if (currentHorizon === targetHorizon) return;
 
     const sa = opp.strategicAnalyses || createDefaultStrategicAnalyses();
     updateOpportunity(oppId, {
       strategicAnalyses: {
         ...sa,
-        threeHorizons: {
-          ...sa.threeHorizons!,
-          horizon: targetHorizon,
+        ideaScoring: {
+          ...sa.ideaScoring,
+          threeHorizons: {
+            ...sa.ideaScoring.threeHorizons,
+            horizon: targetHorizon,
+          },
         },
       },
     });

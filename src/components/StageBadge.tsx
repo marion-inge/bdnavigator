@@ -5,7 +5,7 @@ const stageColors: Record<Stage, string> = {
   idea: "bg-stage-idea",
   rough_scoring: "bg-stage-rough-scoring",
   gate1: "bg-stage-gate1",
-  detailed_scoring: "bg-stage-detailed-scoring",
+  business_plan: "bg-stage-detailed-scoring",
   gate2: "bg-stage-gate2",
   business_case: "bg-stage-business-case",
   implement_review: "bg-stage-implement-review",

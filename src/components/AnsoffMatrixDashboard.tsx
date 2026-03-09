@@ -149,7 +149,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
     const opp = opportunities.find((o) => o.id === oppId);
     if (!opp) return;
 
-    const currentPos = opp.strategicAnalyses?.ansoff?.position || "market_penetration";
+    const currentPos = opp.strategicAnalyses?.ideaScoring?.ansoff?.position || "market_penetration";
     const currentMapped = POSITION_MAP[currentPos] ?? POSITION_MAP["market_penetration"];
     const currentIdx = currentMapped.row * 2 + currentMapped.col;
     if (currentIdx === targetIdx) return;
@@ -158,9 +158,12 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
     updateOpportunity(oppId, {
       strategicAnalyses: {
         ...sa,
-        ansoff: {
-          ...sa.ansoff,
-          position: targetPosition,
+        ideaScoring: {
+          ...sa.ideaScoring,
+          ansoff: {
+            ...sa.ideaScoring.ansoff,
+            position: targetPosition,
+          },
         },
       },
     });
