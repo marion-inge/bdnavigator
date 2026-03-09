@@ -108,15 +108,43 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const mocks = (MOCK_OPPORTUNITIES as any[]).map((m: any) => ({
+      ...m,
+      businessPlan: m.businessPlan ?? m.detailedScoring ?? undefined,
+      strategicAnalyses: m.strategicAnalyses ? migrateStrategicAnalyses(m.strategicAnalyses) : undefined,
+    })) as Opportunity[];
+
     fetchOpportunities().then(async (dbOpps) => {
       if (dbOpps.length > 0) {
-        setOpportunities(dbOpps);
+        // Merge mock data into DB records to fill any missing fields
+        const mockMap = new Map(mocks.map((m) => [m.id, m]));
+        const merged = dbOpps.map((dbOpp) => {
+          const mock = mockMap.get(dbOpp.id);
+          if (!mock) return dbOpp;
+          const updated: Opportunity = {
+            ...mock,
+            ...dbOpp,
+            // Prefer mock data for fields that are empty/undefined in DB
+            solutionDescription: dbOpp.solutionDescription || mock.solutionDescription,
+            ideaBringer: dbOpp.ideaBringer || mock.ideaBringer,
+            implementReview: dbOpp.implementReview || mock.implementReview,
+            roughScoringComments: dbOpp.roughScoringComments || mock.roughScoringComments,
+            roughScoringSources: dbOpp.roughScoringSources || mock.roughScoringSources,
+            strategicAnalyses: dbOpp.strategicAnalyses || mock.strategicAnalyses,
+            goToMarketPlan: dbOpp.goToMarketPlan || mock.goToMarketPlan,
+          };
+          return updated;
+        });
+        // Add any mock opportunities not yet in DB
+        const dbIds = new Set(dbOpps.map((o) => o.id));
+        const newMocks = mocks.filter((m) => !dbIds.has(m.id));
+        const all = [...merged, ...newMocks];
+        setOpportunities(all);
+        // Upsert all to persist merged data
+        for (const opp of all) {
+          await upsertOpportunity(opp);
+        }
       } else {
-        const mocks = (MOCK_OPPORTUNITIES as any[]).map((m: any) => ({
-          ...m,
-          businessPlan: m.businessPlan ?? m.detailedScoring ?? undefined,
-          strategicAnalyses: m.strategicAnalyses ? migrateStrategicAnalyses(m.strategicAnalyses) : undefined,
-        })) as Opportunity[];
         setOpportunities(mocks);
         for (const opp of mocks) {
           await upsertOpportunity(opp);
