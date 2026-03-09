@@ -213,8 +213,12 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
       const roce = ebit / capitalEmployed;
 
-      // Cash Flow
-      const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr;
+      // Delta Working Capital (increase in WC consumes cash)
+      const prevWorkingCapital = idx > 0 ? results[idx - 1].workingCapital : 0;
+      const deltaWorkingCapital = workingCapital - prevWorkingCapital;
+
+      // Cash Flow = EBIT + Depreciation (non-cash) - Investments - Delta WC
+      const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr - deltaWorkingCapital;
 
       results.push({
         year: y.year,
@@ -240,6 +244,7 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         receivables,
         payables,
         nonCurrentAssets,
+        deltaWorkingCapital,
       });
     }
     return results;
@@ -537,7 +542,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
                       {bp("Net Present Value (NPV)", "Kapitalwert (NPV)")}
                     </td>
                   </tr>
-                  <TotalRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} />
+                  <TotalRow label={bp("Depreciation (add-back)", "Abschreibungen (Rückrechnung)")} total={calculations.reduce((s, c) => s + c.investDepr + c.rdDepr, 0)} values={calculations.map(c => c.investDepr + c.rdDepr)} format={formatK} />
+                  <TotalRow label={bp("Δ Working Capital", "Δ Working Capital")} total={calculations.reduce((s, c) => s + c.deltaWorkingCapital, 0)} values={calculations.map(c => -c.deltaWorkingCapital)} format={formatK} />
+                  <TotalRow label={bp("Annual Cash Flow", "Jährl. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.annual)} format={formatK} bold />
                   <TotalRow label={bp("Accumulated Cash Flow", "Kum. Cashflow")} total={0} values={accumulatedCashFlow.map(c => c.accumulated)} format={formatK} bold highlight />
                   <tr className="border-b border-border/50">
                     <td className="py-2 px-2 text-muted-foreground">{bp("Discounted Cash Flow (NPV)", "Diskontierter Cashflow (NPV)")}</td>
