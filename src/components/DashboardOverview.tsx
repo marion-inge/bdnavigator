@@ -35,13 +35,12 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   const stats = useMemo(() => {
     const total = opportunities.length;
     const active = opportunities.filter((o) => o.stage !== "closed").length;
-    const scores = opportunities.map((o) => calculateTotalScore(o.scoring));
-    const avgScore = total > 0 ? scores.reduce((a, b) => a + b, 0) / total : 0;
     const topScorer = total > 0 ? opportunities.reduce((best, o) =>
       calculateTotalScore(o.scoring) > calculateTotalScore(best.scoring) ? o : best
     ) : null;
     const gtmCount = opportunities.filter((o) => o.stage === "implement_review").length;
-    return { total, active, avgScore, topScorer, gtmCount };
+    const implCount = opportunities.filter((o) => o.stage === "business_case").length;
+    return { total, active, topScorer, gtmCount, implCount };
   }, [opportunities]);
 
   const industryData = useMemo(() => {
