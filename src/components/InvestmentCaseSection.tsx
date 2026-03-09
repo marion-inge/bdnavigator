@@ -72,6 +72,12 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
     if (marketSize > 0) updatedParams.marketSize = marketSize;
     if (marketGrowthRate > 0) updatedParams.marketGrowthRate = marketGrowthRate;
 
+    // Import SOM market assumption parameters
+    if (somOverview?.portfolioCoveragePct) updatedParams.portfolioCoverage = somOverview.portfolioCoveragePct;
+    if (somOverview?.visibilityPct) updatedParams.visibility = somOverview.visibilityPct;
+    if (somOverview?.visibilityGrowthPct) updatedParams.visibilityGrowthRate = somOverview.visibilityGrowthPct;
+    if (somOverview?.hitratePct) updatedParams.hitrate = somOverview.hitratePct;
+
     // Auto-fill sales from SOM projections
     const updatedYearData = [...data.yearData];
     if (somOverview?.projections?.length) {
@@ -373,15 +379,16 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader><CardTitle className="text-sm">{bp("Market Assumptions", "Marktannahmen")}</CardTitle></CardHeader>
+          {/* Market Assumptions (read-only reference from Business Plan) */}
+          <Card className="border-dashed">
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2">{bp("Market Assumptions", "Marktannahmen")} <span className="text-[10px] text-muted-foreground font-normal">({bp("from Business Plan", "aus Business Plan")})</span></CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <ParamField label={bp("Market Size (€)", "Marktgröße (€)")} value={data.parameters.marketSize} onChange={(v) => updateParam("marketSize", v)} disabled={readonly} type="number" />
-              <ParamField label={bp("Market Growth Rate (%)", "Marktwachstum (%)")} value={data.parameters.marketGrowthRate} onChange={(v) => updateParam("marketGrowthRate", v)} disabled={readonly} type="number" />
-              <ParamField label={bp("Portfolio Coverage (%)", "Portfolioabdeckung (%)")} value={data.parameters.portfolioCoverage} onChange={(v) => updateParam("portfolioCoverage", v)} disabled={readonly} type="number" />
-              <ParamField label={bp("Visibility (%)", "Sichtbarkeit (%)")} value={data.parameters.visibility} onChange={(v) => updateParam("visibility", v)} disabled={readonly} type="number" />
-              <ParamField label={bp("Visibility Growth (%)", "Sichtbarkeitswachstum (%)")} value={data.parameters.visibilityGrowthRate} onChange={(v) => updateParam("visibilityGrowthRate", v)} disabled={readonly} type="number" />
-              <ParamField label={bp("Hitrate (%)", "Hitrate (%)")} value={data.parameters.hitrate} onChange={(v) => updateParam("hitrate", v)} disabled={readonly} type="number" />
+              <ParamField label={bp("Market Size (€)", "Marktgröße (€)")} value={data.parameters.marketSize} onChange={(v) => updateParam("marketSize", v)} disabled={true} type="number" />
+              <ParamField label={bp("Market Growth Rate (%)", "Marktwachstum (%)")} value={data.parameters.marketGrowthRate} onChange={(v) => updateParam("marketGrowthRate", v)} disabled={true} type="number" />
+              <ParamField label={bp("Portfolio Coverage (%)", "Portfolioabdeckung (%)")} value={data.parameters.portfolioCoverage} onChange={(v) => updateParam("portfolioCoverage", v)} disabled={true} type="number" />
+              <ParamField label={bp("Visibility (%)", "Sichtbarkeit (%)")} value={data.parameters.visibility} onChange={(v) => updateParam("visibility", v)} disabled={true} type="number" />
+              <ParamField label={bp("Visibility Growth (%)", "Sichtbarkeitswachstum (%)")} value={data.parameters.visibilityGrowthRate} onChange={(v) => updateParam("visibilityGrowthRate", v)} disabled={true} type="number" />
+              <ParamField label={bp("Hitrate (%)", "Hitrate (%)")} value={data.parameters.hitrate} onChange={(v) => updateParam("hitrate", v)} disabled={true} type="number" />
             </CardContent>
           </Card>
 

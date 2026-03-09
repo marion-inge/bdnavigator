@@ -122,6 +122,37 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
           </CardContent>
         </Card>
 
+        {/* Market Assumption Parameters (feed into Business Case) */}
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2">📊 {bp("Market Assumptions for Business Case", "Marktannahmen für Business Case")}</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-muted-foreground mb-3">
+              {bp(
+                "These parameters are used in the Business Case (Investment Calculation) to model revenue. They are imported automatically via the Data Bridge.",
+                "Diese Parameter werden im Business Case (Investitionsrechnung) zur Umsatzmodellierung verwendet. Sie werden automatisch über die Data Bridge importiert."
+              )}
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <Label className="text-xs">{bp("Portfolio Coverage (%)", "Portfolioabdeckung (%)")}</Label>
+                <Input type="number" value={localOv.portfolioCoveragePct || ""} onChange={e => updateOv({ portfolioCoveragePct: Number(e.target.value) })} disabled={readonly} placeholder="40" />
+              </div>
+              <div>
+                <Label className="text-xs">{bp("Visibility (%)", "Sichtbarkeit (%)")}</Label>
+                <Input type="number" value={localOv.visibilityPct || ""} onChange={e => updateOv({ visibilityPct: Number(e.target.value) })} disabled={readonly} placeholder="50" />
+              </div>
+              <div>
+                <Label className="text-xs">{bp("Visibility Growth (%/yr)", "Sichtbarkeitswachstum (%/J.)")}</Label>
+                <Input type="number" value={localOv.visibilityGrowthPct || ""} onChange={e => updateOv({ visibilityGrowthPct: Number(e.target.value) })} disabled={readonly} placeholder="5" />
+              </div>
+              <div>
+                <Label className="text-xs">{bp("Hitrate (%)", "Hitrate (%)")}</Label>
+                <Input type="number" value={localOv.hitratePct || ""} onChange={e => updateOv({ hitratePct: Number(e.target.value) })} disabled={readonly} placeholder="30" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Sales & Traction */}
         <Card>
           <CardHeader><CardTitle className="flex items-center gap-2"><ShoppingCart className="h-4 w-4" /> {bp("Sales & Traction", "Vertrieb & Traktion")}</CardTitle></CardHeader>
