@@ -822,6 +822,8 @@ export const STAGE_ORDER: Stage[] = [
   "gate1",
   "business_plan",
   "gate2",
+  "investment_case",
+  "gate3",
   "business_case",
   "implement_review",
   "closed",
