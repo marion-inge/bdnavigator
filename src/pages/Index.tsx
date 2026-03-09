@@ -127,6 +127,10 @@ export default function Index() {
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/features")}>
+              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">Features</span>
+            </Button>
             <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
               <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
