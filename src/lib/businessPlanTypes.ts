@@ -43,6 +43,11 @@ export interface SomOverviewData {
   marketingBudgetScenario: string;
   positioningScenario: string;
   geographicalRegions: GeographicalRegion[];
+  // Numeric market assumption parameters for Business Case bridge
+  portfolioCoveragePct?: number;
+  visibilityPct?: number;
+  visibilityGrowthPct?: number;
+  hitratePct?: number;
 }
 
 export interface InternalInterviewEntry {
