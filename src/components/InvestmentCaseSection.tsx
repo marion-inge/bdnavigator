@@ -145,41 +145,78 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
   const calculations = useMemo(() => {
     const p = data.parameters;
     const years = data.yearData;
+    const investDeprYears = Math.max(p.investDepreciationYears, 1);
+    const rdDeprYears = Math.max(p.rdDepreciationYears, 1);
+    const invDays = p.inventoryDays ?? 30;
+    const recDays = p.receivableDays ?? 45;
+    const payDays = p.payableDays ?? 30;
+
+    // First pass: collect all investments/R&D for cumulative depreciation
+    const results: any[] = [];
     
-    return years.map((y, idx) => {
+    for (let idx = 0; idx < years.length; idx++) {
+      const y = years[idx];
       const totalInvestment = y.investmentExternal + y.investmentInternal;
       const totalRD = y.rdExternal + y.rdInternal;
       const grossMarginAbs = y.sales * (y.grossMarginPct / 100);
       const sellingExp = y.sales * (p.sellingExpensesPct / 100);
       const gaExp = y.sales * (p.gaExpensesPct / 100);
       const costsAfterGM = sellingExp + gaExp + y.otherExpenses;
-      
-      // Simplified depreciation
-      const investDepr = totalInvestment / Math.max(p.investDepreciationYears, 1);
-      const rdDepr = totalRD / Math.max(p.rdDepreciationYears, 1);
-      
+
+      // Cumulative depreciation: each past year's investment depreciates over its lifetime
+      let investDepr = 0;
+      let rdDepr = 0;
+      let cumInvest = 0;
+      let cumInvestDepr = 0;
+      let cumRD = 0;
+      let cumRDDepr = 0;
+
+      for (let j = 0; j <= idx; j++) {
+        const pastInv = years[j].investmentExternal + years[j].investmentInternal;
+        const pastRD = years[j].rdExternal + years[j].rdInternal;
+        const yearsElapsed = idx - j;
+        
+        cumInvest += pastInv;
+        cumRD += pastRD;
+
+        // Annual depreciation for this vintage
+        const invAnnualDepr = pastInv / investDeprYears;
+        const rdAnnualDepr = pastRD / rdDeprYears;
+
+        // Add to this year's total depreciation (only if still within depreciation period)
+        if (yearsElapsed < investDeprYears) {
+          investDepr += invAnnualDepr;
+        }
+        if (yearsElapsed < rdDeprYears) {
+          rdDepr += rdAnnualDepr;
+        }
+
+        // Cumulative depreciation (total depreciated so far for this vintage)
+        cumInvestDepr += Math.min(yearsElapsed + 1, investDeprYears) * invAnnualDepr;
+        cumRDDepr += Math.min(yearsElapsed + 1, rdDeprYears) * rdAnnualDepr;
+      }
+
       const grossMarginInclDepreciation = grossMarginAbs - investDepr - rdDepr;
       const ebit = grossMarginInclDepreciation - costsAfterGM;
       const ebitPct = y.sales > 0 ? ebit / y.sales : 0;
-      
-      // Working Capital calculation based on days (with safe defaults for legacy data)
-      const invDays = p.inventoryDays ?? 30;
-      const recDays = p.receivableDays ?? 45;
-      const payDays = p.payableDays ?? 30;
+
+      // Non-current assets = cumulative investments - cumulative depreciation
+      const nonCurrentAssets = Math.max((cumInvest - cumInvestDepr) + (cumRD - cumRDDepr), 0);
+
+      // Working Capital
       const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (invDays / 365) : 0;
       const receivables = y.sales > 0 ? y.sales * (recDays / 365) : 0;
       const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (payDays / 365) : 0;
       const workingCapital = inventories + receivables - payables;
-      
+
       // Capital employed
-      const nonCurrentAssets = totalInvestment - investDepr;
       const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
       const roce = ebit / capitalEmployed;
-      
+
       // Cash Flow
       const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr;
-      
-      return {
+
+      results.push({
         year: y.year,
         totalInvestment,
         totalRD,
@@ -203,8 +240,9 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         receivables,
         payables,
         nonCurrentAssets,
-      };
-    });
+      });
+    }
+    return results;
   }, [data]);
 
   const accumulatedCashFlow = useMemo(() => {
