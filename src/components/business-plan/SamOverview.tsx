@@ -85,7 +85,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
               {localProj.map((p, i) => (
                 <div key={i}>
                   <Label className="text-xs">{bp("Year", "Jahr")} {p.year}</Label>
-                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="€" />
+                  <Input type="number" value={p.value || ""} onChange={e => { setLocalProj(prev => prev.map((pp, idx) => idx === i ? { ...pp, value: Number(e.target.value) } : pp)); markDirty(); }} disabled={readonly} placeholder="M€" />
                 </div>
               ))}
             </div>
