@@ -20,14 +20,16 @@ const App = () => (
         <StoreProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/opportunity/:id" element={<OpportunityDetail />} />
-              <Route path="/guide" element={<ProcessGuide />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <ErrorBoundary>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/opportunity/:id" element={<OpportunityDetail />} />
+                <Route path="/guide" element={<ProcessGuide />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ErrorBoundary>
         </StoreProvider>
       </I18nProvider>
     </TooltipProvider>
