@@ -725,6 +725,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     homeStep_idea: "Capture & describe",
     homeStep_rough_scoring: "Quick questionnaire",
     homeStep_detailed_scoring: "Market, Feasibility, Risk & more",
+    homeStep_business_case_calc: "Investment, ROI, NPV & Payback",
     homeStep_business_case: "Strategy, Pilots & Leads",
     homeStep_go_to_market: "Launch & execute",
     homeStep_implement_review: "Track & refine",
