@@ -20,6 +20,8 @@ import { getRatingColor } from "@/lib/aiAssessmentService";
 import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo.png";
+import noviLogoV2 from "@/assets/novi-logo-v2.png";
+import noviLogoV3 from "@/assets/novi-logo-v3.png";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
