@@ -56,9 +56,9 @@ export type Database = {
       opportunities: {
         Row: {
           business_case: Json | null
+          business_plan: Json | null
           created_at: string
           description: string
-          detailed_scoring: Json | null
           gates: Json
           geography: string
           go_to_market_plan: Json | null
@@ -79,9 +79,9 @@ export type Database = {
         }
         Insert: {
           business_case?: Json | null
+          business_plan?: Json | null
           created_at?: string
           description?: string
-          detailed_scoring?: Json | null
           gates?: Json
           geography?: string
           go_to_market_plan?: Json | null
@@ -102,9 +102,9 @@ export type Database = {
         }
         Update: {
           business_case?: Json | null
+          business_plan?: Json | null
           created_at?: string
           description?: string
-          detailed_scoring?: Json | null
           gates?: Json
           geography?: string
           go_to_market_plan?: Json | null

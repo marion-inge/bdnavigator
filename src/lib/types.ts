@@ -1,12 +1,12 @@
 // Stage identifiers – UI labels differ from code names:
 //   "rough_scoring"    → UI: "Idea Scoring"
-//   "detailed_scoring" → UI: "Business Plan"
+//   "business_plan"    → UI: "Business Plan"
 //   "business_case"    → UI: "Implementation and GTM Plan"
 export type Stage =
   | "idea"
   | "rough_scoring"       // UI: Idea Scoring
   | "gate1"
-  | "detailed_scoring"    // UI: Business Plan
+  | "business_plan"       // UI: Business Plan
   | "gate2"
   | "business_case"       // UI: Implementation and GTM Plan
   | "implement_review"
@@ -30,53 +30,49 @@ export interface Scoring {
 
 export interface CustomerSegment {
   name: string;
-  size: number; // percentage or absolute
+  size: number;
   description: string;
 }
 
 export interface CompetitorDimensionRating {
-  dimension: string; // e.g. "price", "techFeatures", "reach", "brandAwareness", "history", "usps"
-  score: number; // 1-5
+  dimension: string;
+  score: number;
   comment: string;
 }
 
 export interface CompetitorEntry {
   name: string;
-  marketShare: number; // percentage
-  threatLevel: number; // 1-5
+  marketShare: number;
+  threatLevel: number;
   dimensionRatings?: CompetitorDimensionRating[];
 }
 
 export interface GeographicalRegion {
   region: string;
-  potential: number; // 1-5
+  potential: number;
   marketSize: string;
   notes: string;
 }
 
 export interface MarketYearValue {
   year: number;
-  value: number; // in M€
+  value: number;
 }
 
 export interface DetailedMarketAnalysis {
-  // Marktpotential
-  tam: string; // kept for legacy / description
+  tam: string;
   tamDescription: string;
-  tamProjections: MarketYearValue[]; // 5-year TAM
-  sam: string; // kept for legacy / description
+  tamProjections: MarketYearValue[];
+  sam: string;
   samDescription: string;
-  samProjections: MarketYearValue[]; // 5-year SAM
+  samProjections: MarketYearValue[];
   marketGrowthRate: string;
-  // Customer Landscape
   targetCustomers: string;
   customerRelationship: string;
   customerSegments: CustomerSegment[];
-  // Competitor Landscape
   competitors: string;
   competitivePosition: string;
   competitorEntries: CompetitorEntry[];
-  // Geographical Focus
   geographicalRegions: GeographicalRegion[];
 }
 
@@ -97,23 +93,23 @@ export interface RiskItem {
   id: string;
   name: string;
   category: "market" | "technical" | "regulatory" | "execution" | "financial";
-  probability: number; // 1-5
-  impact: number; // 1-5
+  probability: number;
+  impact: number;
   mitigation: string;
 }
 
 export interface AlignmentDimension {
   key: string;
   label: string;
-  current: number; // 1-5 current capability
-  required: number; // 1-5 required level
+  current: number;
+  required: number;
 }
 
 export interface CapabilityGap {
   id: string;
   capability: string;
-  currentLevel: number; // 1-5
-  requiredLevel: number; // 1-5
+  currentLevel: number;
+  requiredLevel: number;
   action: string;
   priority: "high" | "medium" | "low";
 }
@@ -141,7 +137,7 @@ export interface PilotCustomerEntry {
 }
 
 export interface PilotCustomerData {
-  score: number; // 1-5 readiness
+  score: number;
   entries: PilotCustomerEntry[];
   notes: string;
 }
@@ -149,12 +145,12 @@ export interface PilotCustomerData {
 export interface PortfolioFitDimension {
   key: string;
   label: string;
-  score: number; // 1-5
+  score: number;
   notes: string;
 }
 
 export interface PortfolioFitData {
-  score: number; // 1-5 overall
+  score: number;
   dimensions: PortfolioFitDimension[];
   cannibalizationRisk: string;
   crossSellingPotential: string;
@@ -195,7 +191,8 @@ export interface LeadGenerationData {
   pipelineNotes: string;
 }
 
-export interface DetailedScoring {
+/** Business Plan data – formerly "DetailedScoring" */
+export interface BusinessPlanData {
   marketAttractiveness: { score: number; analysis: DetailedMarketAnalysis };
   strategicFit: { score: number; details: string; alignmentDimensions?: AlignmentDimension[]; capabilityGaps?: CapabilityGap[] };
   feasibility: { score: number; details: string; trl?: number; milestones?: FeasibilityMilestone[] };
@@ -219,6 +216,9 @@ export interface DetailedScoring {
   combinedInterpretation?: import("./businessPlanTypes").CombinedInterpretation;
 }
 
+/** @deprecated Use BusinessPlanData instead */
+export type DetailedScoring = BusinessPlanData;
+
 export interface BusinessCase {
   investmentCost: number;
   expectedRevenue: number;
@@ -235,11 +235,11 @@ export interface GateRecord {
   decision: GateDecision;
   comment: string;
   decider: string;
-  date: string; // ISO date
+  date: string;
 }
 
 export interface PorterForce {
-  intensity: number; // 1-5
+  intensity: number;
   description: string;
 }
 
@@ -257,7 +257,7 @@ export interface ValueChainStage {
   id: string;
   name: string;
   isOurPosition: boolean;
-  marginAttractiveness: number; // 1-5
+  marginAttractiveness: number;
   differentiators: string;
   dynamics: string;
 }
@@ -298,7 +298,7 @@ export interface CompetitorAnalysisEntry {
   weaknesses: string;
   marketShare: string;
   strategy: string;
-  threatLevel: number; // 1-5
+  threatLevel: number;
 }
 
 export interface CustomerInterviewEntry {
@@ -420,44 +420,53 @@ export interface BusinessModelCanvas {
   rationale: string;
 }
 
-export interface StrategicAnalyses {
+// ═══ Strategic Analyses – grouped by TAM / SAM / SOM / Idea Scoring ═══
+
+export interface IdeaScoringModels {
   ansoff: { position: string; description: string; rationale: string };
   bcg: { position: string; description: string; rationale: string };
   mckinsey: { position: string; description: string; rationale: string };
-  swot: {
-    strengths: string;
-    weaknesses: string;
-    opportunities: string;
-    threats: string;
-    description: string;
-    rationale: string;
-  };
+  threeHorizons: { horizon: string; description: string; rationale: string };
+}
+
+export interface TamModels {
+  marketResearch?: MarketResearchData;
   pestel: {
-    political: string;
-    economic: string;
-    social: string;
-    technological: string;
-    environmental: string;
-    legal: string;
-    description: string;
-    rationale: string;
+    political: string; economic: string; social: string;
+    technological: string; environmental: string; legal: string;
+    description: string; rationale: string;
   };
   porter: PortersFiveForces;
+  swot: {
+    strengths: string; weaknesses: string; opportunities: string; threats: string;
+    description: string; rationale: string;
+  };
   valueChain?: IndustryValueChain;
+}
+
+export interface SamModels {
   customerSegmentation?: { entries: CustomerSegmentEntry[]; description: string; rationale: string };
-  competitorAnalysis?: { entries: CompetitorAnalysisEntry[]; description: string; rationale: string };
   customerInterviewing?: { entries: CustomerInterviewEntry[]; description: string; rationale: string };
+  internalAffiliateInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
+  internalBUInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
   businessModelling?: BusinessModelCanvas;
   leanCanvas?: LeanCanvas;
+}
+
+export interface SomModels {
+  competitorAnalysis?: { entries: CompetitorAnalysisEntry[]; description: string; rationale: string };
   valuePropositionCanvas?: ValuePropositionCanvas;
   customerBenefitAnalysis?: CustomerBenefitAnalysis;
   threeCircleModel?: ThreeCircleModel;
   positioningStatement?: PositioningStatement;
-  threeHorizons?: { horizon: string; description: string; rationale: string };
-  internalAffiliateInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
-  internalBUInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
   positioningLandscape?: PositioningLandscapeData;
-  marketResearch?: MarketResearchData;
+}
+
+export interface StrategicAnalyses {
+  ideaScoring: IdeaScoringModels;
+  tam: TamModels;
+  sam: SamModels;
+  som: SomModels;
 }
 
 function createDefaultPorter(): PortersFiveForces {
@@ -475,50 +484,94 @@ function createDefaultPorter(): PortersFiveForces {
 
 export function createDefaultStrategicAnalyses(): StrategicAnalyses {
   return {
-    ansoff: { position: "", description: "", rationale: "" },
-    bcg: { position: "", description: "", rationale: "" },
-    mckinsey: { position: "", description: "", rationale: "" },
-    swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
-    pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
-    porter: createDefaultPorter(),
-    valueChain: createDefaultValueChain(),
-    customerSegmentation: { entries: [], description: "", rationale: "" },
-    competitorAnalysis: { entries: [], description: "", rationale: "" },
-    customerInterviewing: { entries: [], description: "", rationale: "" },
-    businessModelling: {
-      valueProposition: "", customerSegments: "", channels: "", customerRelationships: "",
-      revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "",
-      description: "", rationale: "",
+    ideaScoring: {
+      ansoff: { position: "", description: "", rationale: "" },
+      bcg: { position: "", description: "", rationale: "" },
+      mckinsey: { position: "", description: "", rationale: "" },
+      threeHorizons: { horizon: "", description: "", rationale: "" },
     },
-    leanCanvas: {
-      problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "",
-      customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "",
-      description: "", rationale: "",
+    tam: {
+      pestel: { political: "", economic: "", social: "", technological: "", environmental: "", legal: "", description: "", rationale: "" },
+      porter: createDefaultPorter(),
+      swot: { strengths: "", weaknesses: "", opportunities: "", threats: "", description: "", rationale: "" },
+      valueChain: createDefaultValueChain(),
     },
-    valuePropositionCanvas: {
-      customerJobs: "", customerPains: "", customerGains: "",
-      productsServices: "", painRelievers: "", gainCreators: "",
-      description: "", rationale: "",
+    sam: {
+      customerSegmentation: { entries: [], description: "", rationale: "" },
+      customerInterviewing: { entries: [], description: "", rationale: "" },
+      businessModelling: {
+        valueProposition: "", customerSegments: "", channels: "", customerRelationships: "",
+        revenueStreams: "", keyResources: "", keyActivities: "", keyPartners: "", costStructure: "",
+        description: "", rationale: "",
+      },
+      leanCanvas: {
+        problem: "", solution: "", uniqueValueProposition: "", unfairAdvantage: "",
+        customerSegments: "", keyMetrics: "", channels: "", costStructure: "", revenueStreams: "",
+        description: "", rationale: "",
+      },
     },
-    customerBenefitAnalysis: {
-      functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "",
-      description: "", rationale: "",
+    som: {
+      valuePropositionCanvas: {
+        customerJobs: "", customerPains: "", customerGains: "",
+        productsServices: "", painRelievers: "", gainCreators: "",
+        description: "", rationale: "",
+      },
+      customerBenefitAnalysis: {
+        functionalBenefits: "", emotionalBenefits: "", socialBenefits: "", selfExpressiveBenefits: "",
+        description: "", rationale: "",
+      },
+      threeCircleModel: {
+        ourValue: "", competitorValue: "", customerNeeds: "",
+        ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "",
+        description: "", rationale: "",
+      },
+      positioningStatement: {
+        targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "",
+        competitiveAlternative: "", differentiator: "", statement: "",
+        description: "", rationale: "",
+      },
+      positioningLandscape: { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" },
     },
-    threeCircleModel: {
-      ourValue: "", competitorValue: "", customerNeeds: "",
-      ourUnique: "", theirUnique: "", commonValue: "", unmetNeeds: "",
-      description: "", rationale: "",
+  };
+}
+
+/** Migrate old flat StrategicAnalyses format to new grouped format */
+export function migrateStrategicAnalyses(raw: any): StrategicAnalyses {
+  if (!raw) return createDefaultStrategicAnalyses();
+  // Already in new format
+  if (raw.ideaScoring && raw.tam && raw.sam && raw.som) return raw as StrategicAnalyses;
+  // Migrate from old flat format
+  const defaults = createDefaultStrategicAnalyses();
+  return {
+    ideaScoring: {
+      ansoff: raw.ansoff || defaults.ideaScoring.ansoff,
+      bcg: raw.bcg || defaults.ideaScoring.bcg,
+      mckinsey: raw.mckinsey || defaults.ideaScoring.mckinsey,
+      threeHorizons: raw.threeHorizons || defaults.ideaScoring.threeHorizons,
     },
-    positioningStatement: {
-      targetAudience: "", category: "", keyBenefit: "", reasonToBelieve: "",
-      competitiveAlternative: "", differentiator: "", statement: "",
-      description: "", rationale: "",
+    tam: {
+      marketResearch: raw.marketResearch,
+      pestel: raw.pestel || defaults.tam.pestel,
+      porter: raw.porter || defaults.tam.porter,
+      swot: raw.swot || defaults.tam.swot,
+      valueChain: raw.valueChain || defaults.tam.valueChain,
     },
-    threeHorizons: { horizon: "", description: "", rationale: "" },
-    internalAffiliateInterviews: { entries: [], description: "", rationale: "" },
-    internalBUInterviews: { entries: [], description: "", rationale: "" },
-    positioningLandscape: { xAxisLabel: "", yAxisLabel: "", entries: [], description: "", rationale: "" },
-    marketResearch: { secondaryResearch: "", primaryResearch: "", keyFigures: "", methodology: "", centralInsights: "", description: "", rationale: "" },
+    sam: {
+      customerSegmentation: raw.customerSegmentation || defaults.sam.customerSegmentation,
+      customerInterviewing: raw.customerInterviewing || defaults.sam.customerInterviewing,
+      internalAffiliateInterviews: raw.internalAffiliateInterviews,
+      internalBUInterviews: raw.internalBUInterviews,
+      businessModelling: raw.businessModelling || defaults.sam.businessModelling,
+      leanCanvas: raw.leanCanvas || defaults.sam.leanCanvas,
+    },
+    som: {
+      competitorAnalysis: raw.competitorAnalysis,
+      valuePropositionCanvas: raw.valuePropositionCanvas || defaults.som.valuePropositionCanvas,
+      customerBenefitAnalysis: raw.customerBenefitAnalysis || defaults.som.customerBenefitAnalysis,
+      threeCircleModel: raw.threeCircleModel || defaults.som.threeCircleModel,
+      positioningStatement: raw.positioningStatement || defaults.som.positioningStatement,
+      positioningLandscape: raw.positioningLandscape || defaults.som.positioningLandscape,
+    },
   };
 }
 
@@ -579,14 +632,14 @@ export interface Opportunity {
   ideaBringer?: string;
   stage: Stage;
   scoring: Scoring;                                  // UI: Idea Scoring data
-  detailedScoring?: DetailedScoring;                 // UI: Business Plan data
+  businessPlan?: BusinessPlanData;                    // UI: Business Plan data
   businessCase?: BusinessCase;                       // UI: Implementation and GTM Plan data
   strategicAnalyses?: StrategicAnalyses;
   goToMarketPlan?: GoToMarketPlan;
   implementReview?: ImplementReview;
-  roughScoringAnswers?: Record<string, number>;      // UI: Idea Scoring wizard answers
-  roughScoringComments?: Record<string, string>;     // UI: Idea Scoring wizard comments
-  roughScoringSources?: Record<string, string[]>;    // UI: Idea Scoring wizard source links
+  roughScoringAnswers?: Record<string, number>;
+  roughScoringComments?: Record<string, string>;
+  roughScoringSources?: Record<string, string[]>;
   gates: GateRecord[];
   createdAt: string;
 }
@@ -626,7 +679,7 @@ export function createDefaultScoring(): Scoring {
   };
 }
 
-export function createDefaultDetailedScoring(): DetailedScoring {
+export function createDefaultBusinessPlan(): BusinessPlanData {
   return {
     marketAttractiveness: {
       score: 3,
@@ -661,6 +714,11 @@ export function createDefaultDetailedScoring(): DetailedScoring {
   };
 }
 
+/** @deprecated Use createDefaultBusinessPlan instead */
+export function createDefaultDetailedScoring(): BusinessPlanData {
+  return createDefaultBusinessPlan();
+}
+
 export function createDefaultBusinessCase(): BusinessCase {
   return {
     investmentCost: 0,
@@ -677,7 +735,7 @@ export const STAGE_ORDER: Stage[] = [
   "idea",
   "rough_scoring",
   "gate1",
-  "detailed_scoring",
+  "business_plan",
   "gate2",
   "business_case",
   "implement_review",
