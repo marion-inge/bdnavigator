@@ -80,6 +80,7 @@ const translations = {
     revertConfirm: "Are you sure you want to go back to the previous stage?",
     moveToRoughScoring: "Move to Idea Scoring",
     moveToDetailedScoring: "Move to Business Plan",
+    moveToInvestmentCase: "Move to Business Case",
     moveToBusinessCase: "Move to Implementation and GTM Plan",
     moveToImplementReview: "Move to Implement & Review",
     // Filters
