@@ -1,4 +1,4 @@
-import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses } from "./types";
+import { Opportunity, Scoring, GateRecord, Stage, BusinessPlanData, BusinessCase, createDefaultStrategicAnalyses, StrategicAnalyses, InvestmentCaseData } from "./types";
 
 // Mock data uses old flat strategicAnalyses format; migrateStrategicAnalyses() in store handles conversion at runtime
 const sa = (data: Record<string, any>): StrategicAnalyses => data as unknown as StrategicAnalyses;
@@ -132,6 +132,28 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         notes: "Hapag-Lloyd is our anchor pilot customer with signed LoI. Nor Lines represents the coastal/crew-shortage value proposition. Focus next quarter on converting Nor Lines to LoI and progressing CMA CGM to interested stage.",
       },
     },
+    investmentCase: {
+      parameters: {
+        projectStart: 2025, startOfOperation: 2026, projectDuration: 6, isSoftwareOnly: false,
+        marketSize: 3000, marketGrowthRate: 18, portfolioCoverage: 40, visibility: 50,
+        visibilityGrowthRate: 5, hitrate: 30, gaExpensesPct: 10, sellingExpensesPct: 10,
+        rdDepreciationYears: 6, investDepreciationYears: 10, wacc: 10,
+      },
+      yearData: [
+        { year: 2025, investmentExternal: 800000, investmentInternal: 400000, rdExternal: 1200000, rdInternal: 600000, sales: 0, cogs: 0, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2026, investmentExternal: 200000, investmentInternal: 100000, rdExternal: 400000, rdInternal: 200000, sales: 12000000, cogs: 4800000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2027, investmentExternal: 0, investmentInternal: 0, rdExternal: 200000, rdInternal: 100000, sales: 30000000, cogs: 12000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2028, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 52000000, cogs: 20800000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2029, investmentExternal: 0, investmentInternal: 0, rdExternal: 50000, rdInternal: 25000, sales: 75000000, cogs: 30000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2030, investmentExternal: 0, investmentInternal: 0, rdExternal: 50000, rdInternal: 25000, sales: 100000000, cogs: 40000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2031, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 120000000, cogs: 48000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2032, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 140000000, cogs: 56000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2033, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 155000000, cogs: 62000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2034, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 170000000, cogs: 68000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2035, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 180000000, cogs: 72000000, grossMarginPct: 60, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+      ],
+      notes: "Based on SAM projections from Business Plan. R&D front-loaded in Y1-Y2 for sensor fusion development and DNV certification. Sales ramp assumes 24 vessels Y1, scaling to 360 vessels by Y6. Gross margin 60% at scale per SaaS + hardware model.",
+    } as InvestmentCaseData,
     businessCase: {
       investmentCost: 5000000,
       expectedRevenue: 12000000,
@@ -283,8 +305,9 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       },
     },
     gates: [
-      { id: "g-001a", gate: "gate1", decision: "go", comment: "Strong market pull confirmed through customer interviews. Team unanimously supports proceeding.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
-      { id: "g-001b", gate: "gate2", decision: "go", comment: "Detailed market analysis validates €3B SAM. Competitive differentiation clear. DNV partnership secured.", decider: "Michael Braun", date: "2026-01-10T14:00:00Z" },
+      { id: "g-001a", gate: "gate1" as const, decision: "go" as const, comment: "Strong market pull confirmed through customer interviews. Team unanimously supports proceeding.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
+      { id: "g-001b", gate: "gate2" as const, decision: "go" as const, comment: "Detailed market analysis validates €3B SAM. Competitive differentiation clear. DNV partnership secured.", decider: "Michael Braun", date: "2026-01-10T14:00:00Z" },
+      { id: "g-001c", gate: "gate3" as const, decision: "go" as const, comment: "Investment case approved. NPV strongly positive at 75M€. ROCE exceeds WACC hurdle rate. Payback within project duration. Board approved budget allocation.", decider: "Dr. Claudia Weiss", date: "2026-02-20T15:00:00Z" },
     ],
     roughScoringAnswers: {
       ma_market_size: 5, ma_growth_rate: 4, ma_customer_demand: 5, ma_competition: 4, ma_accessibility: 4,
@@ -888,6 +911,28 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
         gapsAndLevers: "Key gap: sales capacity (3 FTEs today, need 8 by Year 3). Key lever: Fraport reference visits convert 60% of prospects. Risk: competitor certification could compress our premium positioning. Mitigation: invest in next-gen features (AI-based turnaround optimization) to stay ahead.",
       },
     },
+    investmentCase: {
+      parameters: {
+        projectStart: 2024, startOfOperation: 2025, projectDuration: 6, isSoftwareOnly: false,
+        marketSize: 2500, marketGrowthRate: 22, portfolioCoverage: 35, visibility: 60,
+        visibilityGrowthRate: 8, hitrate: 35, gaExpensesPct: 8, sellingExpensesPct: 12,
+        rdDepreciationYears: 5, investDepreciationYears: 8, wacc: 10,
+      },
+      yearData: [
+        { year: 2024, investmentExternal: 2000000, investmentInternal: 1000000, rdExternal: 1500000, rdInternal: 800000, sales: 0, cogs: 0, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2025, investmentExternal: 3000000, investmentInternal: 500000, rdExternal: 800000, rdInternal: 400000, sales: 7680000, cogs: 2688000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2026, investmentExternal: 500000, investmentInternal: 200000, rdExternal: 400000, rdInternal: 200000, sales: 19200000, cogs: 6720000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2027, investmentExternal: 200000, investmentInternal: 100000, rdExternal: 200000, rdInternal: 100000, sales: 38400000, cogs: 13440000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2028, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 57600000, cogs: 20160000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2029, investmentExternal: 0, investmentInternal: 0, rdExternal: 100000, rdInternal: 50000, sales: 77000000, cogs: 26950000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2030, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 92000000, cogs: 32200000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2031, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 105000000, cogs: 36750000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2032, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 115000000, cogs: 40250000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2033, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 120000000, cogs: 42000000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+        { year: 2034, investmentExternal: 0, investmentInternal: 0, rdExternal: 0, rdInternal: 0, sales: 125000000, cogs: 43750000, grossMarginPct: 65, sellingExpenses: 0, gaExpenses: 0, otherExpenses: 0 },
+      ],
+      notes: "Heavy upfront investment in DO-178C certification and Foxconn production line setup. RaaS model with 65% gross margin drives strong recurring revenue. Fraport pilot data validates unit economics. Payback expected in Year 3.",
+    } as InvestmentCaseData,
     businessCase: {
       investmentCost: 8000000,
       expectedRevenue: 19200000,
@@ -898,8 +943,9 @@ export const MOCK_OPPORTUNITIES: (Omit<Opportunity, 'strategicAnalyses' | 'busin
       notes: "Year 1: 80 robots at Fraport + Swissport. Year 2: scale to 200 robots across 8 airports. Revenue: 100% RaaS recurring.",
     },
     gates: [
-      { id: "g-005a", gate: "gate1", decision: "go", comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
-      { id: "g-005b", gate: "gate2", decision: "go", comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
+      { id: "g-005a", gate: "gate1" as const, decision: "go" as const, comment: "Excellent market fit confirmed. Labor shortage is an acute pain point. Unanimous go.", decider: "Dr. Claudia Weiss", date: "2025-07-20T09:00:00Z" },
+      { id: "g-005b", gate: "gate2" as const, decision: "go" as const, comment: "Outstanding detail scoring. Competitive moat through aviation certification is unique.", decider: "Michael Braun", date: "2025-10-10T14:00:00Z" },
+      { id: "g-005c", gate: "gate3" as const, decision: "go" as const, comment: "Investment case compelling — NPV €120M+, ROCE far exceeds hurdle rate. RaaS model provides revenue visibility. Full budget approved for production ramp-up.", decider: "Dr. Claudia Weiss", date: "2025-11-15T10:00:00Z" },
     ],
     implementReview: {
       status: "in_progress",
