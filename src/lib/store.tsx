@@ -251,12 +251,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             if (gate.decision === "go") stage = "business_plan";
             else if (gate.decision === "no-go") stage = "closed";
           } else if (gate.gate === "gate2") {
+            if (gate.decision === "go") stage = "investment_case";
+            else if (gate.decision === "no-go") stage = "closed";
+          } else if (gate.gate === "gate3") {
             if (gate.decision === "go") stage = "business_case";
             else if (gate.decision === "no-go") stage = "closed";
           }
           const updates: Partial<Opportunity> = { gates, stage };
           if (stage === "business_plan" && !o.businessPlan) {
             updates.businessPlan = createDefaultBusinessPlan();
+          }
+          if (stage === "investment_case" && !o.investmentCase) {
+            updates.investmentCase = createDefaultInvestmentCase();
           }
           if (stage === "business_case" && !o.businessCase) {
             updates.businessCase = createDefaultBusinessCase();
