@@ -335,7 +335,7 @@ export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: 
           <CardContent className="space-y-4">
             <div><Label>{bp("Gap Analysis", "Lückenanalyse")}</Label><Textarea value={tc.gapAnalysis} onChange={e => updateTc({ gapAnalysis: e.target.value })} disabled={readonly} rows={4} placeholder={bp("Where are the biggest cost gaps and why?", "Wo liegen die größten Kostenlücken und warum?")} /></div>
             <div><Label>{bp("Action Plan", "Maßnahmenplan")}</Label><Textarea value={tc.actionPlan} onChange={e => updateTc({ actionPlan: e.target.value })} disabled={readonly} rows={4} placeholder={bp("What measures will close the gaps?", "Welche Maßnahmen schließen die Lücken?")} /></div>
-            <div><Label>{bp("Overall Assessment", "Gesamtbewertung")}</Label><Textarea value={tc.description} onChange={e => updateTc({ description: e.target.value })} disabled={readonly} rows={3} /></div>
+            <div><Label>{bp("Overall Assessment", "Gesamtbewertung")}</Label><Textarea value={tc.overallAssessment} onChange={e => updateTc({ overallAssessment: e.target.value })} disabled={readonly} rows={3} /></div>
           </CardContent>
         </Card>
       </div>
