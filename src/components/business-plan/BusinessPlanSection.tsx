@@ -18,7 +18,7 @@ import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab
 
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
-import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape } from "./embedded/SomModels";
+import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
 import { AgentPanel } from "@/components/agents/AgentPanel";
 
