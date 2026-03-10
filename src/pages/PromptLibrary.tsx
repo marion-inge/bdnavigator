@@ -4,7 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Bot, Brain, BarChart3, FileText, TrendingUp, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Bot, Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
 import idaAvatar from "@/assets/ida-robot.png";
 import markAvatar from "@/assets/mark-robot.png";
 
