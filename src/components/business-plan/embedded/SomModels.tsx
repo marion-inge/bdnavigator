@@ -326,6 +326,48 @@ export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: 
                 </table>
               </div>
             )}
+            {tc.components.length > 0 && (
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold mb-3">{bp("Cost Gap Visualization", "Kostenlücken-Visualisierung")}</h4>
+                <ResponsiveContainer width="100%" height={Math.max(250, tc.components.length * 45 + 60)}>
+                  <BarChart
+                    data={tc.components.map(c => ({
+                      name: c.name || bp("Unnamed", "Unbenannt"),
+                      current: c.currentCost || 0,
+                      allowable: c.allowableCost || 0,
+                      gap: (c.currentCost || 0) - (c.allowableCost || 0),
+                    }))}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis type="number" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} className="text-xs" />
+                    <YAxis type="category" dataKey="name" width={140} className="text-xs" tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      formatter={(value: number, name: string) => [
+                        `€${value.toLocaleString("de-DE")}`,
+                        name === "current" ? bp("Current Cost", "Ist-Kosten") : name === "allowable" ? bp("Allowable Cost", "Zulässige Kosten") : bp("Gap", "Lücke")
+                      ]}
+                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }}
+                      labelStyle={{ color: "hsl(var(--foreground))" }}
+                    />
+                    <Legend formatter={(value) => value === "current" ? bp("Current Cost", "Ist-Kosten") : bp("Allowable Cost", "Zulässige Kosten")} />
+                    <Bar dataKey="current" fill="hsl(var(--destructive))" opacity={0.7} radius={[0, 4, 4, 0]} name="current" />
+                    <Bar dataKey="allowable" fill="hsl(var(--primary))" opacity={0.7} radius={[0, 4, 4, 0]} name="allowable" />
+                  </BarChart>
+                </ResponsiveContainer>
+                {totalGap > 0 && (
+                  <div className="mt-3 flex items-center gap-2 text-sm">
+                    <div className="rounded-full px-3 py-1 bg-destructive/10 text-destructive font-medium">
+                      {bp("Total Gap", "Gesamtlücke")}: €{totalGap.toLocaleString("de-DE", { minimumFractionDigits: 2 })}
+                    </div>
+                    <span className="text-muted-foreground">
+                      ({((totalGap / totalCurrent) * 100).toFixed(1)}% {bp("above allowable", "über zulässig")})
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
