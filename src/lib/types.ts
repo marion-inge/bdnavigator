@@ -543,6 +543,26 @@ export interface SamModels {
   leanCanvas?: LeanCanvas;
 }
 
+export interface TargetCostingComponent {
+  id: string;
+  name: string;
+  currentCost: number;
+  allowableCost: number;
+  actions: string;
+}
+
+export interface TargetCostingData {
+  marketPrice: number;
+  targetMarginPct: number;
+  allowableCost: number; // computed: marketPrice * (1 - targetMarginPct/100)
+  components: TargetCostingComponent[];
+  marketPriceRationale: string;
+  marginRationale: string;
+  gapAnalysis: string;
+  actionPlan: string;
+  description: string;
+}
+
 export interface SomModels {
   competitorAnalysis?: { entries: CompetitorAnalysisEntry[]; description: string; rationale: string };
   valuePropositionCanvas?: ValuePropositionCanvas;
@@ -550,6 +570,7 @@ export interface SomModels {
   threeCircleModel?: ThreeCircleModel;
   positioningStatement?: PositioningStatement;
   positioningLandscape?: PositioningLandscapeData;
+  targetCosting?: TargetCostingData;
 }
 
 export interface StrategicAnalyses {
