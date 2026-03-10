@@ -164,6 +164,7 @@ export default function OpportunityDetail() {
         { key: "som-threecircles", label: bp("Three Circles", "Drei Kreise") },
         { key: "som-positioning", label: bp("Positioning", "Positionierung") },
         { key: "som-landscape", label: bp("Pos. Landscape", "Pos. Landschaft") },
+        { key: "som-targetcosting", label: "Target Costing" },
       ],
     },
   ];
