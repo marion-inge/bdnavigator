@@ -291,12 +291,6 @@ export default function Index() {
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
-                  {assessments[opp.id] && (
-                    <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
-                      <img src={idaRobot} alt="IDA" className="h-3 w-3 shrink-0 mt-0.5" />
-                      <span>{assessments[opp.id].summary}</span>
-                    </div>
-                  )}
                 </div>
               );
             })}
