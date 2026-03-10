@@ -195,9 +195,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="som-positioning">
             <EmbeddedPositioning {...somProps} />
           </TabsContent>
-          <TabsContent value="som-landscape">
-            <EmbeddedPositioningLandscape {...somProps} />
-          </TabsContent>
           <TabsContent value="som-targetcosting">
             <EmbeddedTargetCosting {...somProps} />
           </TabsContent>
