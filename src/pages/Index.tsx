@@ -17,8 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, X, BookOpen, Sparkles, HelpCircle, Library } from "lucide-react";
-import { getRatingColor } from "@/lib/aiAssessmentService";
-import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo-v4.png";
 
@@ -32,24 +30,6 @@ export default function Index() {
   const [geographyFilter, setGeographyFilter] = useState<string>("all");
   const [technologyFilter, setTechnologyFilter] = useState<string>("all");
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
-  const [assessments, setAssessments] = useState<Record<string, { summary: string; overallRating: string }>>({});
-
-  // Fetch all AI assessments in bulk
-  useEffect(() => {
-    if (opportunities.length === 0) return;
-    (supabase as any)
-      .from("ai_assessments")
-      .select("opportunity_id, summary, overall_rating, basis")
-      .eq("basis", "idea_scoring")
-      .then(({ data }: any) => {
-        if (!data) return;
-        const map: Record<string, { summary: string; overallRating: string }> = {};
-        for (const row of data) {
-          map[row.opportunity_id] = { summary: row.summary, overallRating: row.overall_rating };
-        }
-        setAssessments(map);
-      });
-  }, [opportunities]);
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of STAGE_ORDER) counts[s] = 0;
@@ -311,12 +291,6 @@ export default function Index() {
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
-                  {assessments[opp.id] && (
-                    <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
-                      <img src={idaRobot} alt="IDA" className="h-3 w-3 shrink-0 mt-0.5" />
-                      <span>{assessments[opp.id].summary}</span>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -331,9 +305,6 @@ export default function Index() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[240px]">
-                    <span className="flex items-center gap-1"><img src={idaRobot} alt="IDA" className="h-3 w-3" />{language === "de" ? "IDAs Empfehlung" : "IDA's Recommendation"}</span>
-                  </th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
@@ -361,7 +332,7 @@ export default function Index() {
                     }
                     return null;
                   })() : opp.businessCase?.paybackPeriod || null;
-                  const assessment = assessments[opp.id];
+                  
                   return (
                     <tr
                       key={opp.id}
@@ -378,16 +349,6 @@ export default function Index() {
                       <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        {assessment ? (
-                          <div className="flex items-start gap-1.5">
-                            <img src={idaRobot} alt="IDA" className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                            <span className="text-xs text-muted-foreground leading-relaxed">{assessment.summary}</span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground/50">—</span>
-                        )}
                       </td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal || "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal || "—"}</td>
