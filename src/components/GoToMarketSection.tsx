@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Rocket, DollarSign, BarChart3 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AgentPanel } from "@/components/agents/AgentPanel";
+
 
 import { PilotCustomerGtmSection } from "./gtm/PilotCustomerGtmSection";
 import { LeadGenerationSection } from "./gtm/LeadGenerationSection";
