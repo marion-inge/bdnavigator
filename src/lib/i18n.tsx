@@ -860,6 +860,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     stage_rough_scoring: "Ideen-Scoring",
     stage_gate1: "Gate 1",
     stage_detailed_scoring: "Business Plan",
+    stage_business_plan: "Business Plan",
     stage_gate2: "Gate 2",
     stage_investment_case: "Business Case",
     stage_gate3: "Gate 3",
