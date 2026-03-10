@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { SomModels, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement, PositioningLandscapeData, PositioningLandscapeEntry } from "@/lib/types";
+import { SomModels, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement, PositioningLandscapeData, PositioningLandscapeEntry, TargetCostingData, TargetCostingComponent } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
