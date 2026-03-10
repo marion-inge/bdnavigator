@@ -35,8 +35,12 @@ interface Props {
   onTabChange?: (mainTab: string, subTab?: string) => void;
   opportunityTitle?: string;
   opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
