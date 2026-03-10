@@ -46,6 +46,8 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
     };
   });
   const [editing, setEditing] = useState(false);
+  const [showParameters, setShowParameters] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const readonly = propReadonly || !editing;
 
   // ═══ Import from Business Plan ═══
