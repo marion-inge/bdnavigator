@@ -350,16 +350,6 @@ export default function Index() {
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
-                      <td className="px-4 py-3">
-                        {assessment ? (
-                          <div className="flex items-start gap-1.5">
-                            <img src={idaRobot} alt="IDA" className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                            <span className="text-xs text-muted-foreground leading-relaxed">{assessment.summary}</span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground/50">—</span>
-                        )}
-                      </td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal || "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal || "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
