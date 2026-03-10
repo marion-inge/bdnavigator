@@ -16,7 +16,7 @@ import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, X, BookOpen, Sparkles } from "lucide-react";
+import { Search, X, BookOpen, Sparkles, HelpCircle } from "lucide-react";
 import { getRatingColor } from "@/lib/aiAssessmentService";
 import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -135,6 +135,10 @@ export default function Index() {
             <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/guide")}>
               <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline ml-1.5">{t("guideLink")}</span>
+            </Button>
+            <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={() => navigate("/faq")}>
+              <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline ml-1.5">FAQ</span>
             </Button>
             <LanguageSwitch />
             <NewOpportunityDialog />
