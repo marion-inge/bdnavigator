@@ -289,6 +289,88 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </CardContent>
         </Card>
 
+        {/* IDA TAM Estimation */}
+        {!tamEstimation ? (
+          <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
+            <div className="flex flex-col items-center text-center gap-3">
+              <img src={idaRobot} alt="IDA" className="w-16 h-16" />
+              <div>
+                <h3 className="font-semibold text-card-foreground">
+                  IDA – TAM Estimation
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                  {bp(
+                    "IDA analyzes your opportunity context and supporting models (Market Research, PESTEL, Porter's, SWOT, Value Chain) to estimate the TAM in 3 scenarios.",
+                    "IDA analysiert deinen Opportunity-Kontext und die unterstützenden Modelle (Market Research, PESTEL, Porter's, SWOT, Value Chain), um den TAM in 3 Szenarien zu schätzen."
+                  )}
+                </p>
+              </div>
+              <Button onClick={handleEstimateTam} disabled={estimating} className="mt-2">
+                {estimating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {bp("IDA is analyzing...", "IDA analysiert...")}
+                  </>
+                ) : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-4 w-4 mr-2" />
+                    {bp("Estimate TAM", "TAM schätzen")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-border bg-card p-5 space-y-5">
+            {/* Header */}
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <img src={idaRobot} alt="IDA" className="h-6 w-6" />
+                <h3 className="font-semibold text-card-foreground">
+                  {bp("IDA's TAM Estimation", "IDAs TAM-Schätzung")}
+                </h3>
+              </div>
+            </div>
+
+            {/* Methodology */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Methodology", "Methodik")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{tamEstimation.methodology}</p>
+            </div>
+
+            {/* Scenario Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {renderScenarioCard(bp("Conservative", "Konservativ"), tamEstimation.conservative, "orange", "🔻")}
+              {renderScenarioCard(bp("Base Case", "Basisszenario"), tamEstimation.base, "blue", "📊")}
+              {renderScenarioCard(bp("Optimistic", "Optimistisch"), tamEstimation.optimistic, "emerald", "🔺")}
+            </div>
+
+            {/* Key Differentiators */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Key Scenario Differentiators", "Wesentliche Szenario-Unterschiede")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{tamEstimation.keyDifferentiators}</p>
+            </div>
+
+            {/* Footer with Re-analyze */}
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <div className="flex items-center gap-1.5">
+                <img src={idaRobot} alt="IDA" className="h-4 w-4" />
+                <p className="text-[10px] text-muted-foreground">
+                  IDA – Intelligent Data Analyst
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleEstimateTam} disabled={estimating}>
+                {estimating ? <Loader2 className="h-3 w-3 animate-spin" /> : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-3 w-3 mr-1" />
+                    {bp("Re-analyze", "Neu analysieren")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Supporting Models Note */}
         <Card className="border-dashed">
           <CardContent className="p-4">
