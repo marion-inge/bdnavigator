@@ -347,6 +347,47 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </CardContent>
         </Card>
 
+        {/* IDA SAM Estimation */}
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                {bp("IDA SAM Estimation", "IDA SAM-Schätzung")}
+              </CardTitle>
+              <Button onClick={handleEstimateSam} disabled={estimating || !hasTamData} size="sm" className="gap-2">
+                {estimating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {estimating
+                  ? bp("Analyzing...", "Analysiere...")
+                  : bp("Estimate SAM", "SAM schätzen")}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {bp(
+                "IDA analyzes TAM, Customer Landscape, Strategic Fit, Feasibility, Interviews, BMC and Lean Canvas to estimate the SAM in 3 scenarios.",
+                "IDA analysiert TAM, Customer Landscape, Strategic Fit, Feasibility, Interviews, BMC und Lean Canvas, um den SAM in 3 Szenarien zu schätzen."
+              )}
+            </p>
+          </CardHeader>
+          {samEstimation && (
+            <CardContent className="space-y-4">
+              <div className="rounded-lg border bg-card p-3">
+                <p className="text-xs font-semibold mb-1">{bp("Methodology", "Methodik")}</p>
+                <p className="text-xs text-muted-foreground">{samEstimation.methodology}</p>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                {renderScenarioCard(bp("Conservative", "Konservativ"), samEstimation.conservative, "orange", "🔻")}
+                {renderScenarioCard(bp("Base Case", "Basisszenario"), samEstimation.base, "blue", "📊")}
+                {renderScenarioCard(bp("Optimistic", "Optimistisch"), samEstimation.optimistic, "emerald", "🔺")}
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <p className="text-xs font-semibold mb-1">{bp("Key Scenario Differentiators", "Wesentliche Szenario-Unterschiede")}</p>
+                <p className="text-xs text-muted-foreground">{samEstimation.keyDifferentiators}</p>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+
         <Card className="border-dashed">
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">
