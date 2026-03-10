@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { SomOverviewData, createDefaultSomOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,13 +8,38 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, TrendingUp, ShoppingCart, Eye, Rocket } from "lucide-react";
+import { Plus, Trash2, TrendingUp, ShoppingCart, Eye, Rocket, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import idaRobot from "@/assets/ida-robot.png";
+
+interface SomScenario {
+  projections: MarketYearValue[];
+  cagr: string;
+  assumptions: string[];
+  rationale: string;
+}
+
+interface SomEstimation {
+  methodology: string;
+  keyDifferentiators: string;
+  conservative: SomScenario;
+  base: SomScenario;
+  optimistic: SomScenario;
+}
 
 interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  strategicAnalyses?: StrategicAnalyses;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
 
 function calcCagr(values: MarketYearValue[]): string {
@@ -26,7 +51,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / (sorted.length - 1)) - 1) * 100).toFixed(1)}%`;
 }
 
-export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -40,6 +65,8 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   );
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(somOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
+  const [somEstimation, setSomEstimation] = useState<SomEstimation | null>((scoring as any).somEstimation || null);
+  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   const markDirty = () => setDirty(true);
@@ -53,6 +80,125 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
     onUpdate(updated);
     setDirty(false);
   };
+
+  const handleEstimateSom = async () => {
+    setEstimating(true);
+    try {
+      const analysis = scoring.marketAttractiveness?.analysis;
+      const { data, error } = await supabase.functions.invoke("som-estimation", {
+        body: {
+          opportunityTitle: opportunityTitle || "",
+          opportunityDescription: opportunityDescription || "",
+          solutionDescription: solutionDescription || "",
+          industry: industry || "",
+          geography: geography || "",
+          technology: technology || "",
+          language,
+          tamData: {
+            tamProjections: analysis?.tamProjections,
+            tamOverview: (scoring as any).tamOverview,
+          },
+          samData: {
+            samProjections: analysis?.samProjections,
+            samDescription: analysis?.samDescription,
+            samVsTamExplanation: (scoring as any).samOverview?.samVsTamExplanation,
+            targetGroups: (scoring as any).samOverview?.targetGroups,
+            geographicFocus: (scoring as any).samOverview?.geographicFocus,
+          },
+          scoringData: {
+            customerLandscape: scoring.marketAttractiveness?.analysis,
+            strategicFit: scoring.strategicFit,
+            portfolioFit: scoring.portfolioFit,
+            feasibility: scoring.feasibility,
+            organisationalReadiness: scoring.organisationalReadiness,
+            risk: scoring.risk,
+            competitorLandscape: scoring.competitorLandscape,
+            pilotCustomer: scoring.pilotCustomer,
+          },
+          strategicData: strategicAnalyses ? {
+            tam: {
+              marketResearch: strategicAnalyses.tam?.marketResearch,
+              pestel: strategicAnalyses.tam?.pestel,
+              valueChain: strategicAnalyses.tam?.valueChain,
+              porter: strategicAnalyses.tam?.porter,
+              swot: strategicAnalyses.tam?.swot,
+            },
+            sam: {
+              customerInterviewing: strategicAnalyses.sam?.customerInterviewing,
+              internalAffiliateInterviews: strategicAnalyses.sam?.internalAffiliateInterviews,
+              internalBUInterviews: strategicAnalyses.sam?.internalBUInterviews,
+              businessModelling: strategicAnalyses.sam?.businessModelling,
+              leanCanvas: strategicAnalyses.sam?.leanCanvas,
+            },
+            som: {
+              valuePropositionCanvas: strategicAnalyses.som?.valuePropositionCanvas,
+              customerBenefitAnalysis: strategicAnalyses.som?.customerBenefitAnalysis,
+              threeCircleModel: strategicAnalyses.som?.threeCircleModel,
+              positioningStatement: strategicAnalyses.som?.positioningStatement,
+              positioningLandscape: strategicAnalyses.som?.positioningLandscape,
+              targetCosting: strategicAnalyses.som?.targetCosting,
+              competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
+            },
+          } : undefined,
+        },
+      });
+      if (error) throw error;
+      setSomEstimation(data as SomEstimation);
+      const updated: any = { ...scoring, somEstimation: data };
+      onUpdate(updated);
+      toast.success(bp("SOM estimation completed!", "SOM-Schätzung abgeschlossen!"));
+    } catch (e: any) {
+      console.error("SOM estimation error:", e);
+      toast.error(e.message || bp("Failed to estimate SOM", "SOM-Schätzung fehlgeschlagen"));
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const handleApplySomScenario = (scenario: SomScenario) => {
+    setLocalProj(scenario.projections);
+    markDirty();
+    toast.success(bp("SOM projections applied! Click Save to persist.", "SOM-Projektionen übernommen! Klicke Speichern zum Sichern."));
+  };
+
+  function formatValue(v: number): string {
+    if (v >= 1_000) return `${(v / 1_000).toFixed(1)} B€`;
+    if (v > 0) return `${v} M€`;
+    return `0 M€`;
+  }
+
+  const renderScenarioCard = (label: string, scenario: SomScenario, color: string, icon: string) => (
+    <Card className={`border-${color}-500/30`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <span>{icon}</span> {label}
+          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
+            CAGR: {scenario.cagr}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-5 gap-1 text-center text-xs">
+          {scenario.projections.map(p => (
+            <div key={p.year} className="space-y-0.5">
+              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
+              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatValue(p.value)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
+        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplySomScenario(scenario)}>
+          {bp("Apply as SOM", "Als SOM übernehmen")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   const addRegion = () => { setLocalRegions(prev => [...prev, { region: "", potential: 3, marketSize: "", notes: "" }]); markDirty(); };
   const removeRegion = (i: number) => { setLocalRegions(prev => prev.filter((_, idx) => idx !== i)); markDirty(); };
@@ -218,6 +364,83 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
             )}
           </CardContent>
         </Card>
+
+        {/* IDA SOM Estimation */}
+        {!somEstimation ? (
+          <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
+            <div className="flex flex-col items-center text-center gap-3">
+              <img src={idaRobot} alt="IDA" className="w-16 h-16" />
+              <div>
+                <h3 className="font-semibold text-card-foreground">
+                  IDA – SOM Estimation
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                  {bp(
+                    "IDA analyzes all available data (TAM, SAM, Market Research, PESTEL, Porter's, SWOT, Value Chain, Customer Landscape, Scoring, Interviews, BMC, Lean Canvas, Competitors, VPC, Positioning, Target Costing) to estimate the SOM in 3 scenarios.",
+                    "IDA analysiert alle verfügbaren Daten (TAM, SAM, Market Research, PESTEL, Porter's, SWOT, Value Chain, Customer Landscape, Scoring, Interviews, BMC, Lean Canvas, Wettbewerber, VPC, Positionierung, Target Costing), um den SOM in 3 Szenarien zu schätzen."
+                  )}
+                </p>
+              </div>
+              <Button onClick={handleEstimateSom} disabled={estimating} className="mt-2">
+                {estimating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {bp("IDA is analyzing...", "IDA analysiert...")}
+                  </>
+                ) : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-4 w-4 mr-2" />
+                    {bp("Estimate SOM", "SOM schätzen")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-border bg-card p-5 space-y-5">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <img src={idaRobot} alt="IDA" className="h-6 w-6" />
+                <h3 className="font-semibold text-card-foreground">
+                  {bp("IDA's SOM Estimation", "IDAs SOM-Schätzung")}
+                </h3>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Methodology", "Methodik")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{somEstimation.methodology}</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {renderScenarioCard(bp("Conservative", "Konservativ"), somEstimation.conservative, "orange", "🔻")}
+              {renderScenarioCard(bp("Base Case", "Basisszenario"), somEstimation.base, "blue", "📊")}
+              {renderScenarioCard(bp("Optimistic", "Optimistisch"), somEstimation.optimistic, "emerald", "🔺")}
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Key Scenario Differentiators", "Wesentliche Szenario-Unterschiede")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{somEstimation.keyDifferentiators}</p>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <div className="flex items-center gap-1.5">
+                <img src={idaRobot} alt="IDA" className="h-4 w-4" />
+                <p className="text-[10px] text-muted-foreground">
+                  IDA – Intelligent Data Analyst
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleEstimateSom} disabled={estimating}>
+                {estimating ? <Loader2 className="h-3 w-3 animate-spin" /> : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-3 w-3 mr-1" />
+                    {bp("Re-analyze", "Neu analysieren")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
 
         <Card className="border-dashed">
           <CardContent className="p-4">
