@@ -342,30 +342,15 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         />
       </div>
 
-      <Tabs defaultValue="parameters" className="w-full">
-        <TabsList className="w-full justify-start flex-wrap h-auto gap-1 bg-muted/50 p-1">
-          <TabsTrigger value="parameters" className="gap-1.5 text-xs">
-            <Settings className="h-3 w-3" /> {bp("Parameters", "Parameter")}
-          </TabsTrigger>
-          <TabsTrigger value="investment" className="gap-1.5 text-xs">
-            <Calculator className="h-3 w-3" /> {bp("Investment & R&D", "Investment & F&E")}
-          </TabsTrigger>
-          <TabsTrigger value="pl" className="gap-1.5 text-xs">
-            <DollarSign className="h-3 w-3" /> {bp("P&L / Business Case", "GuV / Business Case")}
-          </TabsTrigger>
-          <TabsTrigger value="roce" className="gap-1.5 text-xs">
-            <TrendingUp className="h-3 w-3" /> {bp("ROCE & NPV", "ROCE & NPV")}
-          </TabsTrigger>
-          <TabsTrigger value="notes" className="gap-1.5 text-xs">
-            <FileText className="h-3 w-3" /> {bp("Notes", "Notizen")}
-          </TabsTrigger>
-          <TabsTrigger value="ida" className="gap-1.5 text-xs">
-            <Bot className="h-3 w-3" /> IDA Assessment
-          </TabsTrigger>
-        </TabsList>
-
-        {/* ═══ Parameters Tab ═══ */}
-        <TabsContent value="parameters" className="space-y-6 mt-4">
+      {/* ═══ Parameters (Collapsible) ═══ */}
+      <Collapsible open={showParameters} onOpenChange={setShowParameters}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm" className="w-full justify-between gap-1.5 text-xs">
+            <span className="flex items-center gap-1.5"><Settings className="h-3 w-3" /> {bp("Parameters", "Parameter")}</span>
+            {showParameters ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-6 mt-4">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Project Parameters", "Projekt-Parameter")}</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
