@@ -64,10 +64,110 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [localSamDesc, setLocalSamDesc] = useState(analysis.samDescription || "");
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(samOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
+  const [samEstimation, setSamEstimation] = useState<SamEstimation | null>(null);
+  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<SamOverviewData>) => { setLocalOv(prev => ({ ...prev, ...patch })); markDirty(); };
+
+  const tamProj = scoring.marketAttractiveness?.analysis?.tamProjections || [];
+  const hasTamData = tamProj.some(p => p.value > 0);
+
+  const handleEstimateSam = async () => {
+    if (!hasTamData) {
+      toast.error(bp("Please enter TAM projections first.", "Bitte zuerst TAM-Projektionen eingeben."));
+      return;
+    }
+    setEstimating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("sam-estimation", {
+        body: {
+          opportunityTitle: opportunityTitle || "",
+          opportunityDescription: opportunityDescription || "",
+          solutionDescription: solutionDescription || "",
+          industry: industry || "",
+          geography: geography || "",
+          technology: technology || "",
+          language,
+          tamData: {
+            tamProjections: tamProj,
+            tamOverview: (scoring as any).tamOverview,
+          },
+          scoringData: {
+            strategicFit: scoring.strategicFit,
+            portfolioFit: scoring.portfolioFit,
+            feasibility: scoring.feasibility,
+            organisationalReadiness: scoring.organisationalReadiness,
+            risk: scoring.risk,
+            marketAnalysis: scoring.marketAttractiveness?.analysis,
+          },
+          strategicData: strategicAnalyses ? {
+            customerInterviewing: strategicAnalyses.sam?.customerInterviewing,
+            internalAffiliateInterviews: strategicAnalyses.sam?.internalAffiliateInterviews,
+            internalBUInterviews: strategicAnalyses.sam?.internalBUInterviews,
+            businessModelling: strategicAnalyses.sam?.businessModelling,
+            leanCanvas: strategicAnalyses.sam?.leanCanvas,
+            customerSegmentation: strategicAnalyses.sam?.customerSegmentation,
+            competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
+          } : undefined,
+        },
+      });
+      if (error) throw error;
+      setSamEstimation(data as SamEstimation);
+      toast.success(bp("SAM estimation completed!", "SAM-Schätzung abgeschlossen!"));
+    } catch (e: any) {
+      console.error("SAM estimation error:", e);
+      toast.error(e.message || bp("Failed to estimate SAM", "SAM-Schätzung fehlgeschlagen"));
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const handleApplyScenario = (scenario: SamScenario) => {
+    setLocalProj(scenario.projections);
+    markDirty();
+    toast.success(bp("SAM projections applied! Click Save to persist.", "SAM-Projektionen übernommen! Klicke Speichern zum Sichern."));
+  };
+
+  function formatValue(v: number): string {
+    if (v >= 1_000) return `${(v / 1_000).toFixed(1)} B€`;
+    if (v > 0) return `${v} M€`;
+    return `0 M€`;
+  }
+
+  const renderScenarioCard = (label: string, scenario: SamScenario, color: string, icon: string) => (
+    <Card className={`border-${color}-500/30`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <span>{icon}</span> {label}
+          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
+            CAGR: {scenario.cagr}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-5 gap-1 text-center text-xs">
+          {scenario.projections.map(p => (
+            <div key={p.year} className="space-y-0.5">
+              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
+              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatValue(p.value)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
+        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplyScenario(scenario)}>
+          {bp("Apply as SAM", "Als SAM übernehmen")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   const handleSave = () => {
     const updated: any = {
