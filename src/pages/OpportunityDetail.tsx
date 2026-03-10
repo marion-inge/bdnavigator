@@ -13,13 +13,14 @@ import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection"
 import { GoToMarketSection } from "@/components/GoToMarketSection";
 import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { FileAttachments } from "@/components/FileAttachments";
+import { GateMeetingNotesEditor } from "@/components/GateMeetingNotesEditor";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 
-type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +36,7 @@ export default function OpportunityDetail() {
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
   const [scoringExpanded, setScoringExpanded] = useState(false);
   const [forceWizardMode, setForceWizardMode] = useState(false);
+  const [gatesExpanded, setGatesExpanded] = useState(false);
 
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -83,6 +85,9 @@ export default function OpportunityDetail() {
     business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
+    gates_g1_notes:      "implement_review",
+    gates_g2_notes:      "implement_review",
+    gates_g3_notes:      "implement_review",
     strategic_analyses:  "implement_review",
     files:               "closed",
   };
@@ -98,6 +103,9 @@ export default function OpportunityDetail() {
     business_case:      "business_case",
     implement_review:   "implement_review",
     gates:              "gate1",
+    gates_g1_notes:     "",
+    gates_g2_notes:     "",
+    gates_g3_notes:     "",
     strategic_analyses: "",
     files:              "",
   };
@@ -256,12 +264,13 @@ export default function OpportunityDetail() {
           </div>
 
           {navItems.map((item) => {
-            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_"));
+            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_")) || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
             const isBpItem = item.key === "business_plan";
             const isScoringItem = item.key === "scoring";
-            const hasExpander = isBpItem || isScoringItem;
+            const isGatesItem = item.key === "gates";
+            const hasExpander = isBpItem || isScoringItem || isGatesItem;
 
             return (
               <div key={item.key}>
@@ -274,12 +283,19 @@ export default function OpportunityDetail() {
                     if (isBpItem) {
                       setBpExpanded(!bpExpanded);
                       setScoringExpanded(false);
+                      setGatesExpanded(false);
                     } else if (isScoringItem) {
                       setScoringExpanded(!scoringExpanded);
                       setBpExpanded(false);
+                      setGatesExpanded(false);
+                    } else if (isGatesItem) {
+                      setGatesExpanded(!gatesExpanded);
+                      setBpExpanded(false);
+                      setScoringExpanded(false);
                     } else {
                       setBpExpanded(false);
                       setScoringExpanded(false);
+                      setGatesExpanded(false);
                     }
                   }}
                   className={`
@@ -305,7 +321,7 @@ export default function OpportunityDetail() {
                     <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
                   )}
                   {hasExpander ? (
-                    (isBpItem ? bpExpanded : scoringExpanded) && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                    (isBpItem ? bpExpanded : isScoringItem ? scoringExpanded : gatesExpanded) && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   ) : (
                     isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   )}
@@ -426,6 +442,37 @@ export default function OpportunityDetail() {
                     })}
                   </div>
                 )}
+
+                {/* Gates Sub-Navigation (Meeting Notes) */}
+                {isGatesItem && gatesExpanded && isActive && (
+                  <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes"] as TabKey[]).map((subKey) => {
+                      const label = subKey === "gates_g1_notes" ? bp("G1 Meeting Notes", "G1 Protokoll") :
+                                    subKey === "gates_g2_notes" ? bp("G2 Meeting Notes", "G2 Protokoll") :
+                                    bp("G3 Meeting Notes", "G3 Protokoll");
+                      const isSubActive = activeTab === subKey;
+                      return (
+                        <button
+                          key={subKey}
+                          onClick={() => {
+                            setActiveTab(subKey);
+                            setSidebarOpen(false);
+                          }}
+                          className={`
+                            w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
+                            ${isSubActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                            }
+                          `}
+                        >
+                          <ClipboardList className="h-3 w-3 shrink-0" />
+                          <span className="flex-1">{label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -534,6 +581,13 @@ export default function OpportunityDetail() {
                 onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
                 onDeleteDecision={(gateId) => deleteGateDecision(opp.id, gateId)}
                 onRevertStage={() => revertStage(opp.id)}
+              />
+            )}
+            {(activeTab === "gates_g1_notes" || activeTab === "gates_g2_notes" || activeTab === "gates_g3_notes") && (
+              <GateMeetingNotesEditor
+                gate={activeTab === "gates_g1_notes" ? "gate1" : activeTab === "gates_g2_notes" ? "gate2" : "gate3"}
+                gates={opp.gates}
+                onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
               />
             )}
             {activeTab === "strategic_analyses" && (
