@@ -3,172 +3,172 @@ import { useNavigate } from "react-router-dom";
 import { useI18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Search, Copy, Check } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowLeft, Bot, Brain, BarChart3, FileText, TrendingUp, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import idaAvatar from "@/assets/ida-robot.png";
 import markAvatar from "@/assets/mark-robot.png";
 
-interface Prompt {
+interface PromptEntry {
   id: string;
-  agent: "ida" | "mark";
-  category: string;
-  titleEn: string;
-  titleDe: string;
-  promptEn: string;
-  promptDe: string;
+  agent: "ida" | "mark" | "system";
+  triggerEn: string;
+  triggerDe: string;
+  contextEn: string;
+  contextDe: string;
+  systemPromptSummaryEn: string;
+  systemPromptSummaryDe: string;
+  inputDataEn: string[];
+  inputDataDe: string[];
+  outputEn: string;
+  outputDe: string;
+  icon: React.ReactNode;
 }
 
-const PROMPTS: Prompt[] = [
-  // IDA Prompts
+const ENTRIES: PromptEntry[] = [
   {
-    id: "ida-1", agent: "ida", category: "Analysis",
-    titleEn: "Strengths & Weaknesses Analysis",
-    titleDe: "Stärken- & Schwächenanalyse",
-    promptEn: "Analyze the strengths and weaknesses of this opportunity based on all available data. Highlight the top 3 strengths and top 3 weaknesses with specific evidence.",
-    promptDe: "Analysiere die Stärken und Schwächen dieser Opportunity basierend auf allen verfügbaren Daten. Hebe die Top 3 Stärken und Top 3 Schwächen mit konkreten Belegen hervor.",
+    id: "idea-scoring-assessment",
+    agent: "ida",
+    triggerEn: "After completing the Idea Scoring Questionnaire → Click 'AI Assessment'",
+    triggerDe: "Nach Abschluss des Idea Scoring Fragebogens → Klick auf 'KI-Bewertung'",
+    contextEn: "Idea Scoring",
+    contextDe: "Idea Scoring",
+    systemPromptSummaryEn: "IDA acts as a senior business innovation analyst. She evaluates the full 22-criteria scoring, reads all user comments per criterion, and combines them with opportunity metadata (industry, geography, technology, solution description) to produce a structured assessment.",
+    systemPromptSummaryDe: "IDA agiert als Senior Business Innovation Analystin. Sie wertet das vollständige 22-Kriterien-Scoring aus, liest alle Nutzerkommentare pro Kriterium und kombiniert diese mit den Opportunity-Metadaten (Branche, Geografie, Technologie, Lösungsbeschreibung) zu einer strukturierten Bewertung.",
+    inputDataEn: [
+      "22 criterion scores (1–5) with confidence levels",
+      "User comments per criterion",
+      "Opportunity metadata: title, description, solution, industry, geography, technology",
+      "Category scores (weighted averages)",
+    ],
+    inputDataDe: [
+      "22 Kriterien-Scores (1–5) mit Konfidenzniveaus",
+      "Nutzerkommentare pro Kriterium",
+      "Opportunity-Metadaten: Titel, Beschreibung, Lösung, Branche, Geografie, Technologie",
+      "Kategorie-Scores (gewichtete Durchschnitte)",
+    ],
+    outputEn: "Structured assessment: Summary (2–3 sentences), Strengths (2–4), Weaknesses (2–4), Next Steps (3–5), Pitfalls (2–3), Overall Rating (very_promising / promising / moderate / challenging / critical)",
+    outputDe: "Strukturierte Bewertung: Zusammenfassung (2–3 Sätze), Stärken (2–4), Schwächen (2–4), Nächste Schritte (3–5), Fallstricke (2–3), Gesamtbewertung (sehr vielversprechend / vielversprechend / moderat / herausfordernd / kritisch)",
+    icon: <Brain className="h-5 w-5" />,
   },
   {
-    id: "ida-2", agent: "ida", category: "Analysis",
-    titleEn: "Data Gap Analysis",
-    titleDe: "Datenlücken-Analyse",
-    promptEn: "Identify all missing or incomplete data fields in this section. Prioritize them by importance and suggest what information should be filled in first.",
-    promptDe: "Identifiziere alle fehlenden oder unvollständigen Datenfelder in diesem Bereich. Priorisiere sie nach Wichtigkeit und schlage vor, welche Informationen zuerst ausgefüllt werden sollten.",
+    id: "business-case-assessment",
+    agent: "ida",
+    triggerEn: "In Business Case section → Click 'AI Assessment'",
+    triggerDe: "Im Business Case Bereich → Klick auf 'KI-Bewertung'",
+    contextEn: "Business Case",
+    contextDe: "Business Case",
+    systemPromptSummaryEn: "IDA acts as a senior financial analyst and business case evaluator. She analyzes KPIs (ROCE, NPV, Payback, EBIT), reviews year-by-year financial projections, and evaluates assumptions for realism. She checks if ROCE exceeds the WACC hurdle rate, whether margins scale efficiently, and whether working capital is managed well.",
+    systemPromptSummaryDe: "IDA agiert als Senior Finanzanalystin und Business-Case-Bewerting. Sie analysiert KPIs (ROCE, NPV, Payback, EBIT), prüft die jährlichen Finanzprojektionen und bewertet Annahmen auf Realismus. Sie prüft, ob ROCE die WACC-Hürde übersteigt, ob Margen effizient skalieren und ob das Working Capital gut gemanagt wird.",
+    inputDataEn: [
+      "KPIs: Total ROCE, NPV, Payback Period, Total EBIT, Total Sales",
+      "Parameters: WACC, project duration, depreciation years, market size, growth rate",
+      "Year-by-year breakdown: Sales, EBIT, ROCE, Cash Flow, Capital Employed, Working Capital",
+      "Total Investment & R&D spend",
+      "Opportunity context: title, description, industry, technology",
+    ],
+    inputDataDe: [
+      "KPIs: Gesamt-ROCE, NPV, Amortisationsdauer, Gesamt-EBIT, Gesamtumsatz",
+      "Parameter: WACC, Projektdauer, Abschreibungsjahre, Marktgröße, Wachstumsrate",
+      "Jahresaufschlüsselung: Umsatz, EBIT, ROCE, Cashflow, Capital Employed, Working Capital",
+      "Gesamtinvestition & F&E-Ausgaben",
+      "Opportunity-Kontext: Titel, Beschreibung, Branche, Technologie",
+    ],
+    outputEn: "Financial assessment: Executive Summary (3–4 sentences with KPIs), Strengths (3–5 with numbers), Weaknesses (2–4 with numbers), Next Steps (3–5), Pitfalls (2–3), Overall Rating",
+    outputDe: "Finanzbewertung: Executive Summary (3–4 Sätze mit KPIs), Stärken (3–5 mit Zahlen), Schwächen (2–4 mit Zahlen), Nächste Schritte (3–5), Fallstricke (2–3), Gesamtbewertung",
+    icon: <BarChart3 className="h-5 w-5" />,
   },
   {
-    id: "ida-3", agent: "ida", category: "Analysis",
-    titleEn: "Consistency Check",
-    titleDe: "Konsistenzprüfung",
-    promptEn: "Check for inconsistencies across all data fields. Are the scoring values, market projections, and qualitative descriptions aligned? Flag any contradictions.",
-    promptDe: "Prüfe alle Datenfelder auf Inkonsistenzen. Sind Scoring-Werte, Marktprojektionen und qualitative Beschreibungen aufeinander abgestimmt? Markiere Widersprüche.",
+    id: "sam-estimation",
+    agent: "ida",
+    triggerEn: "In Business Plan → SAM → Overview → Click 'Estimate SAM'",
+    triggerDe: "Im Business Plan → SAM → Overview → Klick auf 'SAM schätzen'",
+    contextEn: "Business Plan – SAM",
+    contextDe: "Business Plan – SAM",
+    systemPromptSummaryEn: "IDA estimates the SAM by filtering the TAM through three lenses: geographic accessibility, service segment fit, and regulatory readiness. She creates three scenarios (Conservative, Base, Optimistic) with 5-year projections, each with different assumptions about market access and execution speed. SAM must always be smaller than TAM (typically 10–40%).",
+    systemPromptSummaryDe: "IDA schätzt den SAM, indem sie den TAM durch drei Linsen filtert: geografische Erreichbarkeit, Servicesegment-Fit und regulatorische Bereitschaft. Sie erstellt drei Szenarien (Konservativ, Basis, Optimistisch) mit 5-Jahres-Projektionen, jeweils mit unterschiedlichen Annahmen zu Marktzugang und Umsetzungsgeschwindigkeit. SAM muss immer kleiner als TAM sein (typisch 10–40%).",
+    inputDataEn: [
+      "TAM projections (5 years, M€) and TAM Overview (scope, regions, drivers)",
+      "Scoring data: Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk, Customer Landscape",
+      "Customer Interviews, Affiliate Interviews, BU Interviews",
+      "Business Model Canvas, Lean Canvas",
+      "Customer Segmentation, Competitor Analysis",
+      "Opportunity metadata: industry, geography, technology, solution",
+    ],
+    inputDataDe: [
+      "TAM-Projektionen (5 Jahre, M€) und TAM-Übersicht (Scope, Regionen, Treiber)",
+      "Scoring-Daten: Strategic Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risiko, Customer Landscape",
+      "Kundeninterviews, Affiliate-Interviews, BU-Interviews",
+      "Business Model Canvas, Lean Canvas",
+      "Kundensegmentierung, Wettbewerbsanalyse",
+      "Opportunity-Metadaten: Branche, Geografie, Technologie, Lösung",
+    ],
+    outputEn: "3 SAM scenarios (Conservative/Base/Optimistic) each with: 5-year projections (M€), CAGR, Assumptions (2–3), Rationale. Plus: Methodology description and Key Scenario Differentiators.",
+    outputDe: "3 SAM-Szenarien (Konservativ/Basis/Optimistisch) jeweils mit: 5-Jahres-Projektionen (M€), CAGR, Annahmen (2–3), Begründung. Plus: Methodikbeschreibung und wesentliche Szenario-Unterschiede.",
+    icon: <TrendingUp className="h-5 w-5" />,
   },
   {
-    id: "ida-4", agent: "ida", category: "Scoring",
-    titleEn: "Scoring Justification",
-    titleDe: "Scoring-Begründung",
-    promptEn: "Review the current scoring values. Are they justified by the qualitative data? Suggest adjustments where the scores seem too high or too low.",
-    promptDe: "Überprüfe die aktuellen Scoring-Werte. Sind sie durch die qualitativen Daten gerechtfertigt? Schlage Anpassungen vor, wo die Scores zu hoch oder zu niedrig erscheinen.",
+    id: "ida-chat",
+    agent: "ida",
+    triggerEn: "Click on IDA button in any section with agent panel",
+    triggerDe: "Klick auf IDA-Button in jedem Bereich mit Agent-Panel",
+    contextEn: "Contextual Chat (any section)",
+    contextDe: "Kontextueller Chat (beliebiger Bereich)",
+    systemPromptSummaryEn: "IDA analyzes ONLY the internal data provided in the current section context. She finds connections and patterns, identifies strengths/weaknesses/gaps/inconsistencies, and gives actionable recommendations. She never makes up external data. If data is missing, she flags it as a gap.",
+    systemPromptSummaryDe: "IDA analysiert NUR die internen Daten des aktuellen Bereichskontexts. Sie findet Verbindungen und Muster, identifiziert Stärken/Schwächen/Lücken/Inkonsistenzen und gibt handlungsorientierte Empfehlungen. Sie erfindet keine externen Daten. Fehlende Daten werden als Lücke markiert.",
+    inputDataEn: [
+      "All data fields from the current section (scoring, text fields, projections, etc.)",
+      "Section label for context awareness",
+    ],
+    inputDataDe: [
+      "Alle Datenfelder des aktuellen Bereichs (Scoring, Textfelder, Projektionen, etc.)",
+      "Bereichsbezeichnung für Kontextbewusstsein",
+    ],
+    outputEn: "Free-form conversational analysis with structured recommendations, streamed in real-time.",
+    outputDe: "Freie konversationelle Analyse mit strukturierten Empfehlungen, in Echtzeit gestreamt.",
+    icon: <MessageSquare className="h-5 w-5" />,
   },
   {
-    id: "ida-5", agent: "ida", category: "Scoring",
-    titleEn: "Risk Assessment Summary",
-    titleDe: "Risikobewertung Zusammenfassung",
-    promptEn: "Summarize all risk factors from the available data. Categorize them into technical, market, organizational, and financial risks. Rate each as low/medium/high.",
-    promptDe: "Fasse alle Risikofaktoren aus den verfügbaren Daten zusammen. Kategorisiere sie in technische, Markt-, organisatorische und finanzielle Risiken. Bewerte jedes als niedrig/mittel/hoch.",
-  },
-  {
-    id: "ida-6", agent: "ida", category: "Business Plan",
-    titleEn: "TAM-SAM-SOM Plausibility Check",
-    titleDe: "TAM-SAM-SOM Plausibilitätsprüfung",
-    promptEn: "Evaluate the TAM, SAM, and SOM projections. Are the ratios between them realistic? Is the growth rate (CAGR) plausible for this industry?",
-    promptDe: "Bewerte die TAM-, SAM- und SOM-Projektionen. Sind die Verhältnisse zueinander realistisch? Ist die Wachstumsrate (CAGR) für diese Branche plausibel?",
-  },
-  {
-    id: "ida-7", agent: "ida", category: "Business Plan",
-    titleEn: "Executive Summary Draft",
-    titleDe: "Executive Summary Entwurf",
-    promptEn: "Based on all available data, draft a concise executive summary (max 200 words) for this opportunity that could be presented to a steering committee.",
-    promptDe: "Erstelle basierend auf allen verfügbaren Daten eine prägnante Executive Summary (max. 200 Wörter) für diese Opportunity, die einem Steuerungskomitee präsentiert werden könnte.",
-  },
-  {
-    id: "ida-8", agent: "ida", category: "Business Case",
-    titleEn: "Investment Readiness Check",
-    titleDe: "Investitionsbereitschafts-Check",
-    promptEn: "Assess whether this opportunity is ready for investment based on the available data. What key questions remain unanswered? What would a decision-maker need to see?",
-    promptDe: "Bewerte, ob diese Opportunity basierend auf den verfügbaren Daten investitionsbereit ist. Welche Schlüsselfragen bleiben unbeantwortet? Was würde ein Entscheidungsträger sehen wollen?",
-  },
-  // Mark Prompts
-  {
-    id: "mark-1", agent: "mark", category: "Market Research",
-    titleEn: "Competitive Landscape Overview",
-    titleDe: "Wettbewerbslandschaft Überblick",
-    promptEn: "Based on the data, what does the competitive landscape look like? Identify direct and indirect competitors, and suggest areas where we should do deeper research.",
-    promptDe: "Wie sieht die Wettbewerbslandschaft basierend auf den Daten aus? Identifiziere direkte und indirekte Wettbewerber und schlage Bereiche für tiefere Recherche vor.",
-  },
-  {
-    id: "mark-2", agent: "mark", category: "Market Research",
-    titleEn: "Industry Trends & Drivers",
-    titleDe: "Branchentrends & Treiber",
-    promptEn: "What are the key industry trends and market drivers relevant to this opportunity? How should we position ourselves to capitalize on these trends?",
-    promptDe: "Was sind die wichtigsten Branchentrends und Markttreiber für diese Opportunity? Wie sollten wir uns positionieren, um von diesen Trends zu profitieren?",
-  },
-  {
-    id: "mark-3", agent: "mark", category: "Market Research",
-    titleEn: "Customer Pain Points Analysis",
-    titleDe: "Kunden-Schmerzpunkte Analyse",
-    promptEn: "What customer pain points does this solution address? Are there additional pain points we should consider? Suggest research methods to validate our assumptions.",
-    promptDe: "Welche Kunden-Schmerzpunkte adressiert diese Lösung? Gibt es weitere Schmerzpunkte, die wir berücksichtigen sollten? Schlage Forschungsmethoden zur Validierung vor.",
-  },
-  {
-    id: "mark-4", agent: "mark", category: "Strategy",
-    titleEn: "Go-to-Market Strategy Suggestions",
-    titleDe: "Go-to-Market Strategie Vorschläge",
-    promptEn: "Based on the current data, what go-to-market strategy would you recommend? Consider channels, pricing, partnerships, and launch sequence.",
-    promptDe: "Welche Go-to-Market-Strategie würdest du basierend auf den aktuellen Daten empfehlen? Berücksichtige Kanäle, Preisgestaltung, Partnerschaften und Launch-Sequenz.",
-  },
-  {
-    id: "mark-5", agent: "mark", category: "Strategy",
-    titleEn: "Differentiation Strategy",
-    titleDe: "Differenzierungsstrategie",
-    promptEn: "How can we differentiate from existing solutions? What unique value proposition should we emphasize? Suggest positioning frameworks.",
-    promptDe: "Wie können wir uns von bestehenden Lösungen differenzieren? Welches einzigartige Wertversprechen sollten wir betonen? Schlage Positionierungs-Frameworks vor.",
-  },
-  {
-    id: "mark-6", agent: "mark", category: "Strategy",
-    titleEn: "Pricing Strategy Research",
-    titleDe: "Preisstrategie-Recherche",
-    promptEn: "What pricing models are common in this market? Suggest a pricing strategy based on the competitive landscape and our value proposition.",
-    promptDe: "Welche Preismodelle sind in diesem Markt üblich? Schlage eine Preisstrategie basierend auf der Wettbewerbslandschaft und unserem Wertversprechen vor.",
-  },
-  {
-    id: "mark-7", agent: "mark", category: "Validation",
-    titleEn: "Market Assumption Validation",
-    titleDe: "Marktannahmen-Validierung",
-    promptEn: "Review the market assumptions in this section. Which ones are well-supported and which need validation? Suggest specific research activities.",
-    promptDe: "Überprüfe die Marktannahmen in diesem Bereich. Welche sind gut belegt und welche müssen validiert werden? Schlage konkrete Forschungsaktivitäten vor.",
-  },
-  {
-    id: "mark-8", agent: "mark", category: "Validation",
-    titleEn: "Pilot Customer Strategy",
-    titleDe: "Pilotkunden-Strategie",
-    promptEn: "What type of pilot customer would be ideal for validating this solution? Define the ideal profile and suggest an outreach approach.",
-    promptDe: "Welcher Pilotkundentyp wäre ideal zur Validierung dieser Lösung? Definiere das ideale Profil und schlage einen Ansprache-Ansatz vor.",
+    id: "mark-chat",
+    agent: "mark",
+    triggerEn: "Click on Mark button in any section with agent panel",
+    triggerDe: "Klick auf Mark-Button in jedem Bereich mit Agent-Panel",
+    contextEn: "Contextual Chat (any section)",
+    contextDe: "Kontextueller Chat (beliebiger Bereich)",
+    systemPromptSummaryEn: "Mark provides market research insights, industry trends, and competitive intelligence. He suggests improvements based on market best practices, points out relevant frameworks and benchmarks, and recommends external research directions. Currently knowledge-based (live web search marked with 🔍 for future integration).",
+    systemPromptSummaryDe: "Mark liefert Marktforschungs-Insights, Branchentrends und Wettbewerbsinformationen. Er schlägt Verbesserungen basierend auf Markt-Best-Practices vor, weist auf relevante Frameworks und Benchmarks hin und empfiehlt externe Forschungsrichtungen. Aktuell wissensbasiert (Live-Websuche mit 🔍 für zukünftige Integration markiert).",
+    inputDataEn: [
+      "All data fields from the current section",
+      "Section label for context awareness",
+    ],
+    inputDataDe: [
+      "Alle Datenfelder des aktuellen Bereichs",
+      "Bereichsbezeichnung für Kontextbewusstsein",
+    ],
+    outputEn: "Free-form market research analysis with trend insights and research suggestions, streamed in real-time.",
+    outputDe: "Freie Marktforschungs-Analyse mit Trend-Insights und Forschungsvorschlägen, in Echtzeit gestreamt.",
+    icon: <MessageSquare className="h-5 w-5" />,
   },
 ];
-
-const CATEGORIES_IDA = ["Analysis", "Scoring", "Business Plan", "Business Case"];
-const CATEGORIES_MARK = ["Market Research", "Strategy", "Validation"];
 
 export default function PromptLibrary() {
   const { language } = useI18n();
   const navigate = useNavigate();
   const bp = (en: string, de: string) => language === "de" ? de : en;
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const [search, setSearch] = useState("");
-  const [agentFilter, setAgentFilter] = useState<"all" | "ida" | "mark">("all");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const toggle = (id: string) => setExpandedId(prev => prev === id ? null : id);
 
-  const filtered = PROMPTS.filter(p => {
-    if (agentFilter !== "all" && p.agent !== agentFilter) return false;
-    if (search) {
-      const s = search.toLowerCase();
-      const title = language === "de" ? p.titleDe : p.titleEn;
-      const prompt = language === "de" ? p.promptDe : p.promptEn;
-      return title.toLowerCase().includes(s) || prompt.toLowerCase().includes(s) || p.category.toLowerCase().includes(s);
-    }
-    return true;
-  });
-
-  const handleCopy = (p: Prompt) => {
-    const text = language === "de" ? p.promptDe : p.promptEn;
-    navigator.clipboard.writeText(text);
-    setCopiedId(p.id);
-    toast.success(bp("Copied to clipboard!", "In Zwischenablage kopiert!"));
-    setTimeout(() => setCopiedId(null), 2000);
+  const agentLabel = (agent: string) => {
+    if (agent === "ida") return "IDA";
+    if (agent === "mark") return "Mark";
+    return "System";
   };
 
-  const categories = agentFilter === "mark" ? CATEGORIES_MARK : agentFilter === "ida" ? CATEGORIES_IDA : [...CATEGORIES_IDA, ...CATEGORIES_MARK];
+  const agentColor = (agent: string) => {
+    if (agent === "ida") return "bg-agent-ida text-white";
+    if (agent === "mark") return "bg-agent-mark text-white";
+    return "bg-muted text-muted-foreground";
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -177,6 +177,7 @@ export default function PromptLibrary() {
           <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
+          <Bot className="h-5 w-5 text-primary" />
           <h1 className="text-lg font-bold text-foreground">
             {bp("Prompt Library", "Prompt-Bibliothek")}
           </h1>
@@ -184,109 +185,130 @@ export default function PromptLibrary() {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 sm:px-6 py-6 space-y-6">
-        {/* Description */}
-        <p className="text-sm text-muted-foreground">
-          {bp(
-            "Pre-built prompts for the IDA and Mark AI agents. Copy a prompt and paste it into the agent chat on any opportunity.",
-            "Vorgefertigte Prompts für die KI-Agenten IDA und Mark. Kopiere einen Prompt und füge ihn im Agenten-Chat bei einer beliebigen Opportunity ein."
-          )}
-        </p>
+        {/* Intro */}
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-4 space-y-2">
+            <p className="text-sm text-foreground font-medium">
+              {bp(
+                "This page documents the system prompts that IDA and Mark use behind the scenes in each context. It provides full transparency into what data the AI agents receive, how they process it, and what output they generate.",
+                "Diese Seite dokumentiert die System-Prompts, die IDA und Mark im Hintergrund in jedem Kontext verwenden. Sie bietet volle Transparenz darüber, welche Daten die KI-Agenten erhalten, wie sie diese verarbeiten und welchen Output sie erzeugen."
+              )}
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <img src={idaAvatar} alt="IDA" className="h-4 w-4 rounded-full" />
+                IDA = {bp("Internal Data Analyst", "Interne Datenanalystin")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <img src={markAvatar} alt="Mark" className="h-4 w-4 rounded-full" />
+                Mark = {bp("Market Researcher", "Marktforscher")}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={bp("Search prompts...", "Prompts suchen...")}
-              className="pl-9"
-            />
-          </div>
-          <div className="flex gap-1.5">
-            <Button
-              variant={agentFilter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setAgentFilter("all")}
-            >
-              {bp("All", "Alle")}
-            </Button>
-            <Button
-              variant={agentFilter === "ida" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setAgentFilter("ida")}
-              className={agentFilter === "ida" ? "bg-agent-ida hover:bg-agent-ida/90" : ""}
-            >
-              <img src={idaAvatar} alt="IDA" className="h-4 w-4 rounded-full mr-1.5" />
-              IDA
-            </Button>
-            <Button
-              variant={agentFilter === "mark" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setAgentFilter("mark")}
-              className={agentFilter === "mark" ? "bg-agent-mark hover:bg-agent-mark/90" : ""}
-            >
-              <img src={markAvatar} alt="Mark" className="h-4 w-4 rounded-full mr-1.5" />
-              Mark
-            </Button>
+        {/* Automated Analyses */}
+        <div>
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            {bp("Automated AI Analyses", "Automatisierte KI-Analysen")}
+          </h2>
+          <div className="space-y-3">
+            {ENTRIES.filter(e => e.id !== "ida-chat" && e.id !== "mark-chat").map(entry => (
+              <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
+            ))}
           </div>
         </div>
 
-        {/* Prompts by Category */}
-        {categories.filter((c, i, arr) => arr.indexOf(c) === i).map(category => {
-          const categoryPrompts = filtered.filter(p => p.category === category);
-          if (categoryPrompts.length === 0) return null;
-          return (
-            <div key={category} className="space-y-3">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{category}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {categoryPrompts.map(p => (
-                  <Card key={p.id} className="group hover:border-primary/30 transition-colors">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={p.agent === "ida" ? idaAvatar : markAvatar}
-                          alt={p.agent === "ida" ? "IDA" : "Mark"}
-                          className="h-5 w-5 rounded-full"
-                        />
-                        <CardTitle className="text-sm flex-1">
-                          {language === "de" ? p.titleDe : p.titleEn}
-                        </CardTitle>
-                        <Badge variant="outline" className="text-[10px]">
-                          {p.agent === "ida" ? "IDA" : "Mark"}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-xs text-muted-foreground mb-3 line-clamp-3">
-                        {language === "de" ? p.promptDe : p.promptEn}
-                      </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full gap-1.5"
-                        onClick={() => handleCopy(p)}
-                      >
-                        {copiedId === p.id ? (
-                          <><Check className="h-3.5 w-3.5" /> {bp("Copied!", "Kopiert!")}</>
-                        ) : (
-                          <><Copy className="h-3.5 w-3.5" /> {bp("Copy Prompt", "Prompt kopieren")}</>
-                        )}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-
-        {filtered.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            {bp("No prompts found.", "Keine Prompts gefunden.")}
+        {/* Contextual Chats */}
+        <div>
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            {bp("Contextual Agent Chats", "Kontextuelle Agenten-Chats")}
+          </h2>
+          <div className="space-y-3">
+            {ENTRIES.filter(e => e.id === "ida-chat" || e.id === "mark-chat").map(entry => (
+              <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
+            ))}
           </div>
-        )}
+        </div>
       </main>
     </div>
+  );
+}
+
+function PromptCard({ entry, expanded, onToggle, bp, agentLabel, agentColor, language }: {
+  entry: PromptEntry;
+  expanded: boolean;
+  onToggle: () => void;
+  bp: (en: string, de: string) => string;
+  agentLabel: (a: string) => string;
+  agentColor: (a: string) => string;
+  language: string;
+}) {
+  const lang = language === "de" ? "de" : "en";
+
+  return (
+    <Card className="overflow-hidden transition-all">
+      <button
+        onClick={onToggle}
+        className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-muted/50 transition-colors"
+      >
+        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+          {entry.icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-sm text-foreground">
+              {lang === "de" ? entry.contextDe : entry.contextEn}
+            </span>
+            <Badge className={`text-[10px] ${agentColor(entry.agent)}`}>
+              {agentLabel(entry.agent)}
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground truncate mt-0.5">
+            {lang === "de" ? entry.triggerDe : entry.triggerEn}
+          </p>
+        </div>
+        {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+      </button>
+
+      {expanded && (
+        <CardContent className="border-t pt-4 space-y-4">
+          {/* System Prompt Summary */}
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-1.5">
+              {bp("System Prompt", "System-Prompt")}
+            </h4>
+            <div className="rounded-lg bg-muted/50 p-3 text-sm text-foreground">
+              {lang === "de" ? entry.systemPromptSummaryDe : entry.systemPromptSummaryEn}
+            </div>
+          </div>
+
+          {/* Input Data */}
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-1.5">
+              {bp("Input Data (what IDA/Mark receives)", "Eingabedaten (was IDA/Mark erhält)")}
+            </h4>
+            <ul className="space-y-1">
+              {(lang === "de" ? entry.inputDataDe : entry.inputDataEn).map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <span className="text-primary mt-0.5">•</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Output */}
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-1.5">
+              {bp("Output Format", "Ausgabeformat")}
+            </h4>
+            <p className="text-xs text-muted-foreground">
+              {lang === "de" ? entry.outputDe : entry.outputEn}
+            </p>
+          </div>
+        </CardContent>
+      )}
+    </Card>
   );
 }
