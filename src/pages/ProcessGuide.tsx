@@ -48,8 +48,8 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{bp("Stage-Gate Process", "Stage-Gate-Prozess")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "Each idea progresses through 7 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
-              "Jede Idee durchläuft 7 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
+              "Each idea progresses through 9 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
+              "Jede Idee durchläuft 9 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
           <StageFlowDiagram bp={bp} />
