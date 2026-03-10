@@ -332,7 +332,7 @@ export default function Index() {
                     }
                     return null;
                   })() : opp.businessCase?.paybackPeriod || null;
-                  const assessment = assessments[opp.id];
+                  
                   return (
                     <tr
                       key={opp.id}
