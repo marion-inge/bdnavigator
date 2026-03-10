@@ -130,10 +130,10 @@ const ENTRIES: PromptEntry[] = [
   {
     id: "mark-chat",
     agent: "mark",
-    triggerEn: "Click on Mark button in any section with agent panel",
-    triggerDe: "Klick auf Mark-Button in jedem Bereich mit Agent-Panel",
-    contextEn: "Contextual Chat (any section)",
-    contextDe: "Kontextueller Chat (beliebiger Bereich)",
+    triggerEn: "Click on Mark button in Implementation & GTM Plan or Implement & Review sections",
+    triggerDe: "Klick auf Mark-Button in den Bereichen Umsetzungs- & GTM-Plan oder Implement & Review",
+    contextEn: "Contextual Chat (GTM, Implement & Review)",
+    contextDe: "Kontextueller Chat (GTM, Implement & Review)",
     systemPromptSummaryEn: "Mark provides market research insights, industry trends, and competitive intelligence. He suggests improvements based on market best practices, points out relevant frameworks and benchmarks, and recommends external research directions. Currently knowledge-based (live web search marked with 🔍 for future integration).",
     systemPromptSummaryDe: "Mark liefert Marktforschungs-Insights, Branchentrends und Wettbewerbsinformationen. Er schlägt Verbesserungen basierend auf Markt-Best-Practices vor, weist auf relevante Frameworks und Benchmarks hin und empfiehlt externe Forschungsrichtungen. Aktuell wissensbasiert (Live-Websuche mit 🔍 für zukünftige Integration markiert).",
     inputDataEn: [
