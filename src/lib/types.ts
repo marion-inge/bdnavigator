@@ -682,6 +682,7 @@ export function migrateStrategicAnalyses(raw: any): StrategicAnalyses {
       threeCircleModel: raw.threeCircleModel || defaults.som.threeCircleModel,
       positioningStatement: raw.positioningStatement || defaults.som.positioningStatement,
       positioningLandscape: raw.positioningLandscape || defaults.som.positioningLandscape,
+      targetCosting: raw.targetCosting || defaults.som.targetCosting,
     },
   };
 }
