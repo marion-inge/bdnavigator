@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { TamOverviewData, createDefaultTamOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,16 +8,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, TrendingUp, Globe, FileText } from "lucide-react";
+import { Plus, Trash2, TrendingUp, Globe, FileText, Loader2 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import idaRobot from "@/assets/ida-robot.png";
+
+interface TamScenario {
+  projections: MarketYearValue[];
+  cagr: string;
+  assumptions: string[];
+  rationale: string;
+}
+
+interface TamEstimation {
+  methodology: string;
+  keyDifferentiators: string;
+  conservative: TamScenario;
+  base: TamScenario;
+  optimistic: TamScenario;
+}
 
 interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  strategicAnalyses?: StrategicAnalyses;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
 
 function calcCagr(values: MarketYearValue[]): string {
@@ -30,7 +55,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / n) - 1) * 100).toFixed(1)}%`;
 }
 
-export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -45,6 +70,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   const [localTamDesc, setLocalTamDesc] = useState(analysis.tamDescription || "");
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(tamOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
+  const [tamEstimation, setTamEstimation] = useState<TamEstimation | null>((scoring as any).tamEstimation || null);
+  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   const markDirty = () => setDirty(true);
@@ -70,6 +97,79 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
     onUpdate(updated);
     setDirty(false);
   };
+
+  const handleEstimateTam = async () => {
+    setEstimating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("tam-estimation", {
+        body: {
+          opportunityTitle: opportunityTitle || "",
+          opportunityDescription: opportunityDescription || "",
+          solutionDescription: solutionDescription || "",
+          industry: industry || "",
+          geography: geography || "",
+          technology: technology || "",
+          language,
+          strategicData: strategicAnalyses ? {
+            marketResearch: strategicAnalyses.tam?.marketResearch,
+            pestel: strategicAnalyses.tam?.pestel,
+            valueChain: strategicAnalyses.tam?.valueChain,
+            porter: strategicAnalyses.tam?.porter,
+            swot: strategicAnalyses.tam?.swot,
+          } : undefined,
+        },
+      });
+      if (error) throw error;
+      setTamEstimation(data as TamEstimation);
+      const updated: any = { ...scoring, tamEstimation: data };
+      onUpdate(updated);
+      toast.success(bp("TAM estimation completed!", "TAM-Schätzung abgeschlossen!"));
+    } catch (e: any) {
+      console.error("TAM estimation error:", e);
+      toast.error(e.message || bp("Failed to estimate TAM", "TAM-Schätzung fehlgeschlagen"));
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const handleApplyTamScenario = (scenario: TamScenario) => {
+    setLocalProj(scenario.projections);
+    markDirty();
+    toast.success(bp("TAM projections applied! Click Save to persist.", "TAM-Projektionen übernommen! Klicke Speichern zum Sichern."));
+  };
+
+  const renderScenarioCard = (label: string, scenario: TamScenario, color: string, icon: string) => (
+    <Card className={`border-${color}-500/30`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <span>{icon}</span> {label}
+          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
+            CAGR: {scenario.cagr}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-5 gap-1 text-center text-xs">
+          {scenario.projections.map(p => (
+            <div key={p.year} className="space-y-0.5">
+              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
+              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatM(p.value)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
+        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplyTamScenario(scenario)}>
+          {bp("Apply as TAM", "Als TAM übernehmen")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   const addRegion = () => { setLocalRegions(prev => [...prev, { region: "", potential: 3, marketSize: "", notes: "" }]); markDirty(); };
   const removeRegion = (i: number) => { setLocalRegions(prev => prev.filter((_, idx) => idx !== i)); markDirty(); };
@@ -261,6 +361,88 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
             </div>
           </CardContent>
         </Card>
+
+        {/* IDA TAM Estimation */}
+        {!tamEstimation ? (
+          <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
+            <div className="flex flex-col items-center text-center gap-3">
+              <img src={idaRobot} alt="IDA" className="w-16 h-16" />
+              <div>
+                <h3 className="font-semibold text-card-foreground">
+                  IDA – TAM Estimation
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                  {bp(
+                    "IDA analyzes your opportunity context and supporting models (Market Research, PESTEL, Porter's, SWOT, Value Chain) to estimate the TAM in 3 scenarios.",
+                    "IDA analysiert deinen Opportunity-Kontext und die unterstützenden Modelle (Market Research, PESTEL, Porter's, SWOT, Value Chain), um den TAM in 3 Szenarien zu schätzen."
+                  )}
+                </p>
+              </div>
+              <Button onClick={handleEstimateTam} disabled={estimating} className="mt-2">
+                {estimating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {bp("IDA is analyzing...", "IDA analysiert...")}
+                  </>
+                ) : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-4 w-4 mr-2" />
+                    {bp("Estimate TAM", "TAM schätzen")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-border bg-card p-5 space-y-5">
+            {/* Header */}
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <img src={idaRobot} alt="IDA" className="h-6 w-6" />
+                <h3 className="font-semibold text-card-foreground">
+                  {bp("IDA's TAM Estimation", "IDAs TAM-Schätzung")}
+                </h3>
+              </div>
+            </div>
+
+            {/* Methodology */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Methodology", "Methodik")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{tamEstimation.methodology}</p>
+            </div>
+
+            {/* Scenario Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {renderScenarioCard(bp("Conservative", "Konservativ"), tamEstimation.conservative, "orange", "🔻")}
+              {renderScenarioCard(bp("Base Case", "Basisszenario"), tamEstimation.base, "blue", "📊")}
+              {renderScenarioCard(bp("Optimistic", "Optimistisch"), tamEstimation.optimistic, "emerald", "🔺")}
+            </div>
+
+            {/* Key Differentiators */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-card-foreground">{bp("Key Scenario Differentiators", "Wesentliche Szenario-Unterschiede")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{tamEstimation.keyDifferentiators}</p>
+            </div>
+
+            {/* Footer with Re-analyze */}
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <div className="flex items-center gap-1.5">
+                <img src={idaRobot} alt="IDA" className="h-4 w-4" />
+                <p className="text-[10px] text-muted-foreground">
+                  IDA – Intelligent Data Analyst
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleEstimateTam} disabled={estimating}>
+                {estimating ? <Loader2 className="h-3 w-3 animate-spin" /> : (
+                  <>
+                    <img src={idaRobot} alt="" className="h-3 w-3 mr-1" />
+                    {bp("Re-analyze", "Neu analysieren")}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Supporting Models Note */}
         <Card className="border-dashed">

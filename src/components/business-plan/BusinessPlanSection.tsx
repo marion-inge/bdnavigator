@@ -100,7 +100,10 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       <TabsContent value="tam">
         <Tabs value={getSubTab("tam", "tam-overview")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-overview">
-            <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
+            <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
+              strategicAnalyses={saData}
+              opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+              solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
           <TabsContent value="tam-research">
             <EmbeddedMarketResearch {...tamProps} />
