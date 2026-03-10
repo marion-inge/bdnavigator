@@ -427,10 +427,11 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </table>
             </CardContent>
           </Card>
-        </TabsContent>
+        </CollapsibleContent>
+      </Collapsible>
 
-        {/* ═══ P&L / Business Case Tab ═══ */}
-        <TabsContent value="pl" className="space-y-6 mt-4">
+      {/* ═══ Investment & R&D Summary ═══ */}
+      <div className="space-y-6">
           {/* Business Case Calculation Table */}
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Business Case Calculation", "Business Case Berechnung")}</CardTitle></CardHeader>
