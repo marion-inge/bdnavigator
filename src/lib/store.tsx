@@ -196,7 +196,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             implementReview: dbOpp.implementReview || mock.implementReview,
             roughScoringComments: dbOpp.roughScoringComments || mock.roughScoringComments,
             roughScoringSources: dbOpp.roughScoringSources || mock.roughScoringSources,
-            strategicAnalyses: dbOpp.strategicAnalyses || mock.strategicAnalyses,
+            strategicAnalyses: mergeStrategicAnalyses(dbOpp.strategicAnalyses, mock.strategicAnalyses),
             goToMarketPlan: dbOpp.goToMarketPlan || mock.goToMarketPlan,
           };
           return updated;
