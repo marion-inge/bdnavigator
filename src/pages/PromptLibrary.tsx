@@ -171,19 +171,7 @@ export default function PromptLibrary() {
             {bp("Automated AI Analyses", "Automatisierte KI-Analysen")}
           </h2>
           <div className="space-y-3">
-            {ENTRIES.filter(e => e.id !== "ida-chat" && e.id !== "mark-chat").map(entry => (
-              <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
-            ))}
-          </div>
-        </div>
-
-        {/* Contextual Chats */}
-        <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {bp("Contextual Agent Chats", "Kontextuelle Agenten-Chats")}
-          </h2>
-          <div className="space-y-3">
-            {ENTRIES.filter(e => e.id === "ida-chat" || e.id === "mark-chat").map(entry => (
+            {ENTRIES.map(entry => (
               <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
             ))}
           </div>
