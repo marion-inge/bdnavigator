@@ -139,7 +139,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
             feasibility: scoring.feasibility,
             organisationalReadiness: scoring.organisationalReadiness,
             risk: scoring.risk,
-            customerLandscape: scoring.customerLandscape,
+            marketAnalysis: scoring.marketAttractiveness?.analysis,
           },
           strategicData: strategicAnalyses ? {
             customerInterviewing: strategicAnalyses.sam?.customerInterviewing,
