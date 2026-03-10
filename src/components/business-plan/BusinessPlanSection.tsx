@@ -20,7 +20,7 @@ import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, E
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
-import { AgentPanel } from "@/components/agents/AgentPanel";
+
 
 export type StrategicAnalysisTab = string;
 
