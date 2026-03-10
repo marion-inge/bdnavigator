@@ -519,10 +519,10 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </table>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ ROCE & NPV Tab ═══ */}
-        <TabsContent value="roce" className="space-y-6 mt-4">
+      {/* ═══ ROCE & NPV ═══ */}
+      <div className="space-y-6">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("ROCE & NPV Calculation", "ROCE & NPV Berechnung")}</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
