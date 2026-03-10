@@ -19,9 +19,12 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     features: [
       { en: "Pipeline Funnel Visualization", de: "Pipeline-Trichter-Visualisierung", detail: "Interactive funnel chart showing opportunity distribution across stages", detailDe: "Interaktives Trichterdiagramm zur Verteilung der Opportunities über Phasen" },
       { en: "KPI Dashboard Cards", de: "KPI-Dashboard-Karten", detail: "Total opportunities, top scorer at a glance", detailDe: "Gesamtzahl Opportunities, Top-Scorer auf einen Blick" },
+      { en: "Market Potential Chart (TAM/SAM/SOM)", de: "Marktpotenzial-Diagramm (TAM/SAM/SOM)", detail: "Aggregated 5-year TAM, SAM, SOM bar chart across the entire portfolio", detailDe: "Aggregiertes 5-Jahres-TAM/SAM/SOM-Balkendiagramm über das gesamte Portfolio" },
+      { en: "Distribution Charts (Industry, Geography, Technology)", de: "Verteilungsdiagramme (Branche, Geografie, Technologie)", detail: "Pie and bar charts showing portfolio composition", detailDe: "Kreis- und Balkendiagramme zur Portfolio-Zusammensetzung" },
       { en: "Ansoff Matrix Dashboard", de: "Ansoff-Matrix-Dashboard", detail: "Strategic categorization of opportunities by market/product newness", detailDe: "Strategische Einordnung nach Markt-/Produktneuheit" },
       { en: "Three Horizons View", de: "Drei-Horizonte-Ansicht", detail: "Portfolio view across innovation horizons", detailDe: "Portfolio-Ansicht über Innovationshorizonte" },
-      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 7-stage gate process with status indicators", detailDe: "Visueller 7-Phasen-Gate-Prozess mit Statusanzeigen" },
+      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 9-stage gate process with status indicators", detailDe: "Visueller 9-Phasen-Gate-Prozess mit Statusanzeigen" },
+      { en: "Opportunity Table with Financial Metrics", de: "Opportunity-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
     ],
   },
   {

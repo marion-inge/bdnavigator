@@ -48,8 +48,8 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{bp("Stage-Gate Process", "Stage-Gate-Prozess")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "Each idea progresses through 7 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
-              "Jede Idee durchläuft 7 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
+              "Each idea progresses through 9 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
+              "Jede Idee durchläuft 9 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
           <StageFlowDiagram bp={bp} />
@@ -318,8 +318,16 @@ export default function ProcessGuide() {
               icon={<span className="text-lg">📊</span>}
               title={bp("Pipeline Funnel", "Pipeline-Trichter")}
               description={bp(
-                "Visual funnel showing how many ideas are in each stage of the process.",
-                "Visueller Trichter, der zeigt, wie viele Ideen sich in jeder Prozessphase befinden."
+                "Visual funnel showing how many ideas are in each stage of the process. Click a stage to filter the table below.",
+                "Visueller Trichter, der zeigt, wie viele Ideen sich in jeder Prozessphase befinden. Klicken Sie auf eine Phase, um die Tabelle zu filtern."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">📈</span>}
+              title={bp("Market Potential Chart", "Marktpotenzial-Diagramm")}
+              description={bp(
+                "Summarizing bar chart showing the aggregated TAM, SAM, and SOM across the entire portfolio over 5 years (in M€/B€).",
+                "Zusammenfassendes Balkendiagramm, das das aggregierte TAM, SAM und SOM über das gesamte Portfolio über 5 Jahre anzeigt (in M€/B€)."
               )}
             />
             <FeatureCard
@@ -331,11 +339,27 @@ export default function ProcessGuide() {
               )}
             />
             <FeatureCard
-              icon={<span className="text-lg">📈</span>}
+              icon={<span className="text-lg">🗂️</span>}
+              title={bp("KPI Cards & Distribution Charts", "KPI-Karten & Verteilungsdiagramme")}
+              description={bp(
+                "Quick-glance KPI cards (total ideas, top scorer) plus pie/bar charts showing idea distribution by industry, geography, and technology.",
+                "KPI-Karten auf einen Blick (Gesamtzahl Ideen, Top-Scorer) plus Kreis-/Balkendiagramme zur Verteilung nach Branche, Geografie und Technologie."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">📋</span>}
+              title={bp("Opportunity Table", "Opportunity-Tabelle")}
+              description={bp(
+                "Central table with key columns: Stage, Industry, Owner, Rough Scoring, TAM, SAM, SOM, Growth Rate, Payback Period, and IDA AI Assessment summary.",
+                "Zentrale Tabelle mit wichtigen Spalten: Phase, Branche, Owner, Rough Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit und IDA-KI-Assessment-Zusammenfassung."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">🧭</span>}
               title={bp("Strategic Dashboards", "Strategische Dashboards")}
               description={bp(
-                "Portfolio-level views with Ansoff Matrix, BCG Matrix, McKinsey Matrix, and Three Horizons Model across all ideas.",
-                "Portfolio-Ansichten mit Ansoff-Matrix, BCG-Matrix, McKinsey-Matrix und Drei-Horizonte-Modell über alle Ideen."
+                "Portfolio-level views with Ansoff Matrix, Three Horizons Model, and strategic analyses across all ideas.",
+                "Portfolio-Ansichten mit Ansoff-Matrix, Drei-Horizonte-Modell und strategischen Analysen über alle Ideen."
               )}
             />
           </div>
