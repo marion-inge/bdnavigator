@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { SomOverviewData, createDefaultSomOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,13 +8,38 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, TrendingUp, ShoppingCart, Eye, Rocket } from "lucide-react";
+import { Plus, Trash2, TrendingUp, ShoppingCart, Eye, Rocket, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import idaRobot from "@/assets/ida-robot.png";
+
+interface SomScenario {
+  projections: MarketYearValue[];
+  cagr: string;
+  assumptions: string[];
+  rationale: string;
+}
+
+interface SomEstimation {
+  methodology: string;
+  keyDifferentiators: string;
+  conservative: SomScenario;
+  base: SomScenario;
+  optimistic: SomScenario;
+}
 
 interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  strategicAnalyses?: StrategicAnalyses;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
 
 function calcCagr(values: MarketYearValue[]): string {
