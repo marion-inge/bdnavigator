@@ -1,17 +1,18 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { SamOverviewData, createDefaultSamOverview } from "@/lib/businessPlanTypes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, Target, Building2, Users, MapPin, RefreshCw, Sparkles, Loader2 } from "lucide-react";
+import { Plus, Trash2, Target, Building2, Users, MapPin, RefreshCw, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import idaRobot from "@/assets/ida-robot.png";
 
 interface SamScenario {
   projections: MarketYearValue[];
