@@ -224,7 +224,7 @@ export function EmbeddedPositioningLandscape({ data, onSave, readonly: propReado
 const defaultTargetCosting: TargetCostingData = {
   marketPrice: 0, targetMarginPct: 0, allowableCost: 0,
   components: [], marketPriceRationale: "", marginRationale: "",
-  gapAnalysis: "", actionPlan: "", description: "",
+  gapAnalysis: "", actionPlan: "", overallAssessment: "",
 };
 
 export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
