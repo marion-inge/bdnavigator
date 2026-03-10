@@ -110,6 +110,12 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             leanCanvas: strategicAnalyses.sam?.leanCanvas,
             customerSegmentation: strategicAnalyses.sam?.customerSegmentation,
             competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
+            // TAM supporting models
+            marketResearch: strategicAnalyses.tam?.marketResearch,
+            pestel: strategicAnalyses.tam?.pestel,
+            valueChain: strategicAnalyses.tam?.valueChain,
+            porter: strategicAnalyses.tam?.porter,
+            swot: strategicAnalyses.tam?.swot,
           } : undefined,
         },
       });
@@ -364,8 +370,8 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {bp(
-                "IDA analyzes TAM, Customer Landscape, Strategic Fit, Feasibility, Interviews, BMC and Lean Canvas to estimate the SAM in 3 scenarios.",
-                "IDA analysiert TAM, Customer Landscape, Strategic Fit, Feasibility, Interviews, BMC und Lean Canvas, um den SAM in 3 Szenarien zu schätzen."
+                "IDA analyzes TAM (incl. Market Research, PESTEL, Porter's, SWOT, Value Chain), Customer Landscape, Strategic Fit, Feasibility, Customer Interviews, BMC and Lean Canvas to estimate the SAM in 3 scenarios.",
+                "IDA analysiert TAM (inkl. Market Research, PESTEL, Porter's, SWOT, Value Chain), Customer Landscape, Strategic Fit, Feasibility, Kundeninterviews, BMC und Lean Canvas, um den SAM in 3 Szenarien zu schätzen."
               )}
             </p>
           </CardHeader>
