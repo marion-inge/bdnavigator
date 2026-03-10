@@ -441,6 +441,37 @@ export default function OpportunityDetail() {
                     })}
                   </div>
                 )}
+
+                {/* Gates Sub-Navigation (Meeting Notes) */}
+                {isGatesItem && gatesExpanded && isActive && (
+                  <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes"] as TabKey[]).map((subKey) => {
+                      const label = subKey === "gates_g1_notes" ? bp("G1 Meeting Notes", "G1 Protokoll") :
+                                    subKey === "gates_g2_notes" ? bp("G2 Meeting Notes", "G2 Protokoll") :
+                                    bp("G3 Meeting Notes", "G3 Protokoll");
+                      const isSubActive = activeTab === subKey;
+                      return (
+                        <button
+                          key={subKey}
+                          onClick={() => {
+                            setActiveTab(subKey);
+                            setSidebarOpen(false);
+                          }}
+                          className={`
+                            w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-left transition-colors
+                            ${isSubActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
+                            }
+                          `}
+                        >
+                          <ClipboardList className="h-3 w-3 shrink-0" />
+                          <span className="flex-1">{label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}
