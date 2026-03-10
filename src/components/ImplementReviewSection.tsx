@@ -58,7 +58,7 @@ export function ImplementReviewSection({ implementReview, onSave, readonly: prop
           <RefreshCw className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-bold text-foreground">{t("irTitle")}</h2>
         </div>
-        <AgentPanel context={agentContext} sectionLabel="Implement & Review" />
+        
       </div>
 
       {/* Status & Review */}
