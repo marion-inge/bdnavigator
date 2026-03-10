@@ -363,6 +363,8 @@ export default function Index() {
                       <td className="px-4 py-3">
                         <StageBadge stage={opp.stage} />
                       </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
