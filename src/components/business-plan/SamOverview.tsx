@@ -122,6 +122,12 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
       });
       if (error) throw error;
       setSamEstimation(data as SamEstimation);
+      // Persist estimation to scoring
+      const updated: any = {
+        ...scoring,
+        samEstimation: data,
+      };
+      onUpdate(updated);
       toast.success(bp("SAM estimation completed!", "SAM-Schätzung abgeschlossen!"));
     } catch (e: any) {
       console.error("SAM estimation error:", e);
