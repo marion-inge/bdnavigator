@@ -93,8 +93,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* Combined Overview */}
       <TabsContent value="combined">
         <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
-          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
-          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology}
           onSaveDetailed={handleUpdateScoring} />
       </TabsContent>
 
@@ -126,7 +124,10 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       <TabsContent value="sam">
         <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-overview">
-            <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
+            <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
+              strategicAnalyses={saData}
+              opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+              solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
           <TabsContent value="sam-customers">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
