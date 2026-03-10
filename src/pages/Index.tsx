@@ -258,12 +258,23 @@ export default function Index() {
           <div className="space-y-3 sm:hidden">
             {filtered.map((opp) => {
               const roughScore = calculateTotalScore(opp.scoring);
-              const ds = opp.businessPlan;
-              const detailedScore = ds
-                ? Math.round(
-                    ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
-                  ) / 10
-                : null;
+              const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
+              const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
+              const somProj = opp.businessPlan?.somOverview?.projections;
+              const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+              const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || opp.investmentCase?.parameters?.marketGrowthRate;
+              const payback = opp.investmentCase ? (() => {
+                const yd = opp.investmentCase.yearData;
+                let cumCf = 0;
+                for (const y of yd) {
+                  const gm = y.sales - y.cogs;
+                  const opex = y.sellingExpenses + y.gaExpenses + y.otherExpenses;
+                  const invest = y.investmentExternal + y.investmentInternal + y.rdExternal + y.rdInternal;
+                  cumCf += gm - opex - invest;
+                  if (cumCf >= 0) return y.year - yd[0].year;
+                }
+                return null;
+              })() : opp.businessCase?.paybackPeriod || null;
               return (
                 <div
                   key={opp.id}
@@ -281,9 +292,13 @@ export default function Index() {
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
-                    {detailedScore !== null && (
-                      <span className="text-muted-foreground">{t("detailedScoring")}: <span className="font-semibold text-primary">{detailedScore.toFixed(1)}</span></span>
-                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                    {tamVal && <span>TAM: <span className="font-semibold text-card-foreground">{tamVal}{typeof tamVal === "number" ? " M€" : ""}</span></span>}
+                    {samVal && <span>SAM: <span className="font-semibold text-card-foreground">{samVal}{typeof samVal === "number" ? " M€" : ""}</span></span>}
+                    {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
+                    {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
+                    {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
                   {assessments[opp.id] && (
                     <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
@@ -297,30 +312,42 @@ export default function Index() {
           </div>
           {/* Desktop: Table layout */}
           <div className="rounded-lg border border-border bg-card overflow-x-auto hidden sm:block">
-            <table className="w-full min-w-[1100px]">
+            <table className="w-full min-w-[1200px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[280px]">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[240px]">
                     <span className="flex items-center gap-1"><img src={idaRobot} alt="IDA" className="h-3 w-3" />{language === "de" ? "IDAs Empfehlung" : "IDA's Recommendation"}</span>
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("detailedScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{language === "de" ? "Wachstum" : "Growth"}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payback</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((opp) => {
                   const roughScore = calculateTotalScore(opp.scoring);
-                  const ds = opp.businessPlan;
-                  const detailedScore = ds
-                    ? Math.round(
-                        ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
-                      ) / 10
-                    : null;
-                  const payback = opp.businessCase?.paybackPeriod;
+                  const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
+                  const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
+                  const somProj = opp.businessPlan?.somOverview?.projections;
+                  const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+                  const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || (opp.investmentCase?.parameters?.marketGrowthRate ? `${opp.investmentCase.parameters.marketGrowthRate}%` : "");
+                  const payback = opp.investmentCase ? (() => {
+                    const yd = opp.investmentCase!.yearData;
+                    let cumCf = 0;
+                    for (const y of yd) {
+                      const gm = y.sales - y.cogs;
+                      const opex = y.sellingExpenses + y.gaExpenses + y.otherExpenses;
+                      const invest = y.investmentExternal + y.investmentInternal + y.rdExternal + y.rdInternal;
+                      cumCf += gm - opex - invest;
+                      if (cumCf >= 0) return y.year - yd[0].year;
+                    }
+                    return null;
+                  })() : opp.businessCase?.paybackPeriod || null;
                   const assessment = assessments[opp.id];
                   return (
                     <tr
@@ -347,11 +374,11 @@ export default function Index() {
                           <span className="text-xs text-muted-foreground/50">—</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-primary">{detailedScore !== null ? detailedScore.toFixed(1) : "—"}</span>
-                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{growthRate || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
                     </tr>
                   );
                 })}
