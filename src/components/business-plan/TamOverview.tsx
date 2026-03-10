@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { TamOverviewData, createDefaultTamOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,16 +8,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, TrendingUp, Globe, FileText } from "lucide-react";
+import { Plus, Trash2, TrendingUp, Globe, FileText, Loader2 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import idaRobot from "@/assets/ida-robot.png";
+
+interface TamScenario {
+  projections: MarketYearValue[];
+  cagr: string;
+  assumptions: string[];
+  rationale: string;
+}
+
+interface TamEstimation {
+  methodology: string;
+  keyDifferentiators: string;
+  conservative: TamScenario;
+  base: TamScenario;
+  optimistic: TamScenario;
+}
 
 interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  strategicAnalyses?: StrategicAnalyses;
+  opportunityTitle?: string;
+  opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
 
 function calcCagr(values: MarketYearValue[]): string {
