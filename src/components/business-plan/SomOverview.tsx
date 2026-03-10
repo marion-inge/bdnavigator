@@ -106,7 +106,7 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             geographicFocus: (scoring as any).samOverview?.geographicFocus,
           },
           scoringData: {
-            customerLandscape: scoring.customerLandscape,
+            customerLandscape: scoring.marketAttractiveness?.analysis,
             strategicFit: scoring.strategicFit,
             portfolioFit: scoring.portfolioFit,
             feasibility: scoring.feasibility,
