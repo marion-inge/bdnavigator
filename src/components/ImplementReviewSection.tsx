@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, RefreshCw } from "lucide-react";
 import { EditableSection } from "@/components/EditableSection";
-import { AgentPanel } from "@/components/agents/AgentPanel";
+
 
 interface Props {
   implementReview?: ImplementReview;
@@ -58,7 +58,7 @@ export function ImplementReviewSection({ implementReview, onSave, readonly: prop
           <RefreshCw className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-bold text-foreground">{t("irTitle")}</h2>
         </div>
-        <AgentPanel context={agentContext} sectionLabel="Implement & Review" />
+        
       </div>
 
       {/* Status & Review */}

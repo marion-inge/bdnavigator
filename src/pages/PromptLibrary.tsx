@@ -4,7 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Bot, Brain, BarChart3, FileText, TrendingUp, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Bot, Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
 import idaAvatar from "@/assets/ida-robot.png";
 import markAvatar from "@/assets/mark-robot.png";
 
@@ -106,48 +106,6 @@ const ENTRIES: PromptEntry[] = [
     outputDe: "3 SAM-Szenarien (Konservativ/Basis/Optimistisch) jeweils mit: 5-Jahres-Projektionen (M€), CAGR, Annahmen (2–3), Begründung. Plus: Methodikbeschreibung und wesentliche Szenario-Unterschiede.",
     icon: <TrendingUp className="h-5 w-5" />,
   },
-  {
-    id: "ida-chat",
-    agent: "ida",
-    triggerEn: "Click on IDA button in Implementation & GTM Plan or Implement & Review sections",
-    triggerDe: "Klick auf IDA-Button in den Bereichen Umsetzungs- & GTM-Plan oder Implement & Review",
-    contextEn: "Contextual Chat (GTM, Implement & Review)",
-    contextDe: "Kontextueller Chat (GTM, Implement & Review)",
-    systemPromptSummaryEn: "IDA analyzes ONLY the internal data provided in the current section context. She finds connections and patterns, identifies strengths/weaknesses/gaps/inconsistencies, and gives actionable recommendations. She never makes up external data. If data is missing, she flags it as a gap.",
-    systemPromptSummaryDe: "IDA analysiert NUR die internen Daten des aktuellen Bereichskontexts. Sie findet Verbindungen und Muster, identifiziert Stärken/Schwächen/Lücken/Inkonsistenzen und gibt handlungsorientierte Empfehlungen. Sie erfindet keine externen Daten. Fehlende Daten werden als Lücke markiert.",
-    inputDataEn: [
-      "All data fields from the current section (scoring, text fields, projections, etc.)",
-      "Section label for context awareness",
-    ],
-    inputDataDe: [
-      "Alle Datenfelder des aktuellen Bereichs (Scoring, Textfelder, Projektionen, etc.)",
-      "Bereichsbezeichnung für Kontextbewusstsein",
-    ],
-    outputEn: "Free-form conversational analysis with structured recommendations, streamed in real-time.",
-    outputDe: "Freie konversationelle Analyse mit strukturierten Empfehlungen, in Echtzeit gestreamt.",
-    icon: <MessageSquare className="h-5 w-5" />,
-  },
-  {
-    id: "mark-chat",
-    agent: "mark",
-    triggerEn: "Click on Mark button in Implementation & GTM Plan or Implement & Review sections",
-    triggerDe: "Klick auf Mark-Button in den Bereichen Umsetzungs- & GTM-Plan oder Implement & Review",
-    contextEn: "Contextual Chat (GTM, Implement & Review)",
-    contextDe: "Kontextueller Chat (GTM, Implement & Review)",
-    systemPromptSummaryEn: "Mark provides market research insights, industry trends, and competitive intelligence. He suggests improvements based on market best practices, points out relevant frameworks and benchmarks, and recommends external research directions. Currently knowledge-based (live web search marked with 🔍 for future integration).",
-    systemPromptSummaryDe: "Mark liefert Marktforschungs-Insights, Branchentrends und Wettbewerbsinformationen. Er schlägt Verbesserungen basierend auf Markt-Best-Practices vor, weist auf relevante Frameworks und Benchmarks hin und empfiehlt externe Forschungsrichtungen. Aktuell wissensbasiert (Live-Websuche mit 🔍 für zukünftige Integration markiert).",
-    inputDataEn: [
-      "All data fields from the current section",
-      "Section label for context awareness",
-    ],
-    inputDataDe: [
-      "Alle Datenfelder des aktuellen Bereichs",
-      "Bereichsbezeichnung für Kontextbewusstsein",
-    ],
-    outputEn: "Free-form market research analysis with trend insights and research suggestions, streamed in real-time.",
-    outputDe: "Freie Marktforschungs-Analyse mit Trend-Insights und Forschungsvorschlägen, in Echtzeit gestreamt.",
-    icon: <MessageSquare className="h-5 w-5" />,
-  },
 ];
 
 export default function PromptLibrary() {
@@ -213,19 +171,7 @@ export default function PromptLibrary() {
             {bp("Automated AI Analyses", "Automatisierte KI-Analysen")}
           </h2>
           <div className="space-y-3">
-            {ENTRIES.filter(e => e.id !== "ida-chat" && e.id !== "mark-chat").map(entry => (
-              <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
-            ))}
-          </div>
-        </div>
-
-        {/* Contextual Chats */}
-        <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {bp("Contextual Agent Chats", "Kontextuelle Agenten-Chats")}
-          </h2>
-          <div className="space-y-3">
-            {ENTRIES.filter(e => e.id === "ida-chat" || e.id === "mark-chat").map(entry => (
+            {ENTRIES.map(entry => (
               <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
             ))}
           </div>

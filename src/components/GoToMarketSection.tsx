@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Rocket, DollarSign, BarChart3 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AgentPanel } from "@/components/agents/AgentPanel";
+
 
 import { PilotCustomerGtmSection } from "./gtm/PilotCustomerGtmSection";
 import { LeadGenerationSection } from "./gtm/LeadGenerationSection";
@@ -71,9 +71,8 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadon
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <AgentPanel context={agentContext} sectionLabel={bp("Implementation & GTM Plan", "Umsetzungs- & GTM-Plan")} />
-      </div>
+
+
     <Tabs defaultValue="gtm" className="space-y-6">
       <TabsList className="flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="gtm" className="text-xs sm:text-sm gap-1.5">
