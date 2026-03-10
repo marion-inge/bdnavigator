@@ -583,6 +583,13 @@ export default function OpportunityDetail() {
                 onRevertStage={() => revertStage(opp.id)}
               />
             )}
+            {(activeTab === "gates_g1_notes" || activeTab === "gates_g2_notes" || activeTab === "gates_g3_notes") && (
+              <GateMeetingNotesEditor
+                gate={activeTab === "gates_g1_notes" ? "gate1" : activeTab === "gates_g2_notes" ? "gate2" : "gate3"}
+                gates={opp.gates}
+                onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
+              />
+            )}
             {activeTab === "strategic_analyses" && (
               <StrategicAnalysesSection
                 strategicAnalyses={opp.strategicAnalyses}
