@@ -125,9 +125,9 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
                 <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000 ? `${(v/1_000).toFixed(0)}B€` : `${v}M€`} />
                 <Tooltip formatter={(v: number, name: string) => [`${formatValue(v)}`, name]} />
                 <Legend />
-                <Area type="monotone" dataKey="TAM" stackId="0" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.15} strokeWidth={2} />
-                <Area type="monotone" dataKey="SAM" stackId="0" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.2} strokeWidth={2} />
-                <Area type="monotone" dataKey="SOM" stackId="0" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
+                <Area type="monotone" dataKey="TAM" stroke="hsl(210, 80%, 55%)" fill="hsl(210, 80%, 55%)" fillOpacity={0.12} strokeWidth={2} />
+                <Area type="monotone" dataKey="SAM" stroke="hsl(160, 70%, 45%)" fill="hsl(160, 70%, 45%)" fillOpacity={0.18} strokeWidth={2} />
+                <Area type="monotone" dataKey="SOM" stroke="hsl(40, 85%, 50%)" fill="hsl(40, 85%, 50%)" fillOpacity={0.3} strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
