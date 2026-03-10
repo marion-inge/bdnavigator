@@ -109,10 +109,10 @@ const ENTRIES: PromptEntry[] = [
   {
     id: "ida-chat",
     agent: "ida",
-    triggerEn: "Click on IDA button in any section with agent panel",
-    triggerDe: "Klick auf IDA-Button in jedem Bereich mit Agent-Panel",
-    contextEn: "Contextual Chat (any section)",
-    contextDe: "Kontextueller Chat (beliebiger Bereich)",
+    triggerEn: "Click on IDA button in Implementation & GTM Plan or Implement & Review sections",
+    triggerDe: "Klick auf IDA-Button in den Bereichen Umsetzungs- & GTM-Plan oder Implement & Review",
+    contextEn: "Contextual Chat (GTM, Implement & Review)",
+    contextDe: "Kontextueller Chat (GTM, Implement & Review)",
     systemPromptSummaryEn: "IDA analyzes ONLY the internal data provided in the current section context. She finds connections and patterns, identifies strengths/weaknesses/gaps/inconsistencies, and gives actionable recommendations. She never makes up external data. If data is missing, she flags it as a gap.",
     systemPromptSummaryDe: "IDA analysiert NUR die internen Daten des aktuellen Bereichskontexts. Sie findet Verbindungen und Muster, identifiziert Stärken/Schwächen/Lücken/Inkonsistenzen und gibt handlungsorientierte Empfehlungen. Sie erfindet keine externen Daten. Fehlende Daten werden als Lücke markiert.",
     inputDataEn: [
