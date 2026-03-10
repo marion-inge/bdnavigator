@@ -110,6 +110,12 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             leanCanvas: strategicAnalyses.sam?.leanCanvas,
             customerSegmentation: strategicAnalyses.sam?.customerSegmentation,
             competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
+            // TAM supporting models
+            marketResearch: strategicAnalyses.tam?.marketResearch,
+            pestel: strategicAnalyses.tam?.pestel,
+            valueChain: strategicAnalyses.tam?.valueChain,
+            porter: strategicAnalyses.tam?.porter,
+            swot: strategicAnalyses.tam?.swot,
           } : undefined,
         },
       });

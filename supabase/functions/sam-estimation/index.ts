@@ -53,9 +53,54 @@ serve(async (req) => {
       if (s.customerLandscape) sections.push(`## Customer Landscape\n${formatCriteria(s.customerLandscape)}`);
     }
 
-    // Strategic analyses (interviews, BMC, Lean Canvas, etc.)
+    // Strategic analyses (interviews, BMC, Lean Canvas, TAM models, etc.)
     if (strategicData) {
       const sd = strategicData;
+
+      // TAM supporting models
+      if (sd.marketResearch) {
+        const mr = sd.marketResearch;
+        sections.push(`## Market Research (TAM)
+- Sources: ${mr.sources || "N/A"}
+- Key Findings: ${mr.keyFindings || "N/A"}
+- Description: ${mr.description || "N/A"}`);
+      }
+      if (sd.pestel) {
+        const p = sd.pestel;
+        sections.push(`## PESTEL Analysis (TAM)
+- Political: ${p.political || "N/A"}
+- Economic: ${p.economic || "N/A"}
+- Social: ${p.social || "N/A"}
+- Technological: ${p.technological || "N/A"}
+- Environmental: ${p.environmental || "N/A"}
+- Legal: ${p.legal || "N/A"}`);
+      }
+      if (sd.valueChain) {
+        const vc = sd.valueChain;
+        sections.push(`## Industry Value Chain (TAM)
+- Description: ${vc.description || "N/A"}
+- Rationale: ${vc.rationale || "N/A"}
+- Steps: ${JSON.stringify(vc.steps || [])}`);
+      }
+      if (sd.porter) {
+        const po = sd.porter;
+        sections.push(`## Porter's Five Forces (TAM)
+- Rivalry: ${po.rivalry || "N/A"}
+- New Entrants: ${po.newEntrants || "N/A"}
+- Substitutes: ${po.substitutes || "N/A"}
+- Buyer Power: ${po.buyerPower || "N/A"}
+- Supplier Power: ${po.supplierPower || "N/A"}`);
+      }
+      if (sd.swot) {
+        const sw = sd.swot;
+        sections.push(`## SWOT Analysis (TAM)
+- Strengths: ${sw.strengths || "N/A"}
+- Weaknesses: ${sw.weaknesses || "N/A"}
+- Opportunities: ${sw.opportunities || "N/A"}
+- Threats: ${sw.threats || "N/A"}`);
+      }
+
+      // SAM supporting models
       if (sd.customerInterviewing?.entries?.length) {
         sections.push(`## Customer Interviews\n${sd.customerInterviewing.entries.map((e: any) =>
           `- ${e.customerName} (${e.role}): ${e.keyInsights}. Pain points: ${e.painPoints}`
