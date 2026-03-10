@@ -7,12 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { BusinessCaseAssessment } from "@/components/BusinessCaseAssessment";
 
