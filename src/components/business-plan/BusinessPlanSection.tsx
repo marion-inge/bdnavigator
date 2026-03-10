@@ -93,8 +93,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
       {/* Combined Overview */}
       <TabsContent value="combined">
         <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
-          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
-          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology}
           onSaveDetailed={handleUpdateScoring} />
       </TabsContent>
 
