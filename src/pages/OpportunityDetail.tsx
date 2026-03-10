@@ -163,7 +163,7 @@ export default function OpportunityDetail() {
         { key: "som-cba", label: bp("Customer Benefit", "Kundennutzen") },
         { key: "som-threecircles", label: bp("Three Circles", "Drei Kreise") },
         { key: "som-positioning", label: bp("Positioning", "Positionierung") },
-        { key: "som-landscape", label: bp("Pos. Landscape", "Pos. Landschaft") },
+        
         { key: "som-targetcosting", label: "Target Costing" },
       ],
     },
