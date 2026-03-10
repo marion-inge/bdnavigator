@@ -21,12 +21,6 @@ interface Props {
   onSaveStrategic?: (sa: StrategicAnalyses) => void;
   onSaveDetailed?: (ds: DetailedScoring) => void;
   readonly?: boolean;
-  opportunityTitle?: string;
-  opportunityDescription?: string;
-  solutionDescription?: string;
-  industry?: string;
-  geography?: string;
-  technology?: string;
 }
 
 interface SamScenario {
