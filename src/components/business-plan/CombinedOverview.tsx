@@ -62,9 +62,6 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
   const storedInterp: CombinedInterpretation = (scoring as any).combinedInterpretation || defaultInterpretation;
   const [interp, setInterp] = useState<CombinedInterpretation>(storedInterp);
 
-  // SAM Estimation state
-  const [samEstimation, setSamEstimation] = useState<SamEstimation | null>(null);
-  const [estimating, setEstimating] = useState(false);
 
   // Geographic data aggregation
   const tamRegions = (scoring as any).tamOverview?.geographicalRegions || [];
