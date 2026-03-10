@@ -560,7 +560,7 @@ export interface TargetCostingData {
   marginRationale: string;
   gapAnalysis: string;
   actionPlan: string;
-  description: string;
+  overallAssessment: string;
 }
 
 export interface SomModels {
