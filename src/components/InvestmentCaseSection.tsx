@@ -486,10 +486,10 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ Investment & R&D Summary Tab ═══ */}
-        <TabsContent value="investment" className="space-y-6 mt-4">
+      {/* ═══ P&L / Business Case ═══ */}
+      <div className="space-y-6">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Investment & R&D Summary", "Investment & F&E Übersicht")}</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
