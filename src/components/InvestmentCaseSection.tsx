@@ -614,13 +614,19 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ Notes Tab ═══ */}
-        <TabsContent value="notes" className="space-y-4 mt-4">
+      {/* ═══ Notes (Collapsible) ═══ */}
+      <Collapsible open={showNotes} onOpenChange={setShowNotes}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm" className="w-full justify-between gap-1.5 text-xs">
+            <span className="flex items-center gap-1.5"><FileText className="h-3 w-3" /> {bp("Notes & Assumptions", "Notizen & Annahmen")}</span>
+            {showNotes ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4">
           <Card>
-            <CardHeader><CardTitle className="text-sm">{bp("Notes & Assumptions", "Notizen & Annahmen")}</CardTitle></CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <Textarea
                 value={data.notes}
                 onChange={(e) => update({ ...data, notes: e.target.value })}
@@ -631,28 +637,28 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               />
             </CardContent>
           </Card>
-        </TabsContent>
+        </CollapsibleContent>
+      </Collapsible>
 
-        {/* ═══ IDA Assessment Tab ═══ */}
-        <TabsContent value="ida" className="space-y-4 mt-4">
-          <BusinessCaseAssessment
-            opportunityId={opportunityId}
-            title={oppTitle}
-            description={oppDescription}
-            industry={industry}
-            technology={technology}
-            kpis={{
-              totalROCE,
-              npv,
-              paybackPeriod,
-              totalEbit,
-              totalSales,
-            }}
-            parameters={data.parameters}
-            yearData={calculations}
-          />
-        </TabsContent>
-      </Tabs>
+      {/* ═══ IDA Assessment ═══ */}
+      <div className="space-y-4">
+        <BusinessCaseAssessment
+          opportunityId={opportunityId}
+          title={oppTitle}
+          description={oppDescription}
+          industry={industry}
+          technology={technology}
+          kpis={{
+            totalROCE,
+            npv,
+            paybackPeriod,
+            totalEbit,
+            totalSales,
+          }}
+          parameters={data.parameters}
+          yearData={calculations}
+        />
+      </div>
     </div>
   );
 }
