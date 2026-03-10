@@ -89,7 +89,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* Combined Overview */}
       <TabsContent value="combined">
-        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly} />
+        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly} opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription} />
       </TabsContent>
 
       {/* ═══ TAM ═══ */}
