@@ -365,6 +365,7 @@ export default function ProcessGuide() {
           </div>
         </section>
 
+      </main>
     </div>
   );
 }
