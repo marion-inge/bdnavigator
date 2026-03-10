@@ -12,8 +12,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { TrendingUp, Globe, Target, Map, Sparkles, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { TrendingUp, Globe, Target, Map } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
