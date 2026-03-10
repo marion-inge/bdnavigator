@@ -86,9 +86,8 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <AgentPanel context={agentContext} sectionLabel="Business Plan" />
-      </div>
+
+
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* Combined Overview */}
