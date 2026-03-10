@@ -35,8 +35,12 @@ interface Props {
   onTabChange?: (mainTab: string, subTab?: string) => void;
   opportunityTitle?: string;
   opportunityDescription?: string;
+  solutionDescription?: string;
+  industry?: string;
+  geography?: string;
+  technology?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription }: Props) {
+export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -89,7 +93,10 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* Combined Overview */}
       <TabsContent value="combined">
-        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly} />
+        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
+          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology}
+          onSaveDetailed={handleUpdateScoring} />
       </TabsContent>
 
       {/* ═══ TAM ═══ */}

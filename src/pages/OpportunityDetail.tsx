@@ -489,6 +489,10 @@ export default function OpportunityDetail() {
                 }}
                 opportunityTitle={opp.title}
                 opportunityDescription={opp.description}
+                solutionDescription={opp.solutionDescription}
+                industry={opp.industry}
+                geography={opp.geography}
+                technology={opp.technology}
               />
             )}
             {activeTab === "investment_case" && (
