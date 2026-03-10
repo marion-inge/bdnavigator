@@ -84,6 +84,9 @@ export default function OpportunityDetail() {
     business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
+    gates_g1_notes:      "implement_review",
+    gates_g2_notes:      "implement_review",
+    gates_g3_notes:      "implement_review",
     strategic_analyses:  "implement_review",
     files:               "closed",
   };
@@ -99,6 +102,9 @@ export default function OpportunityDetail() {
     business_case:      "business_case",
     implement_review:   "implement_review",
     gates:              "gate1",
+    gates_g1_notes:     "",
+    gates_g2_notes:     "",
+    gates_g3_notes:     "",
     strategic_analyses: "",
     files:              "",
   };
