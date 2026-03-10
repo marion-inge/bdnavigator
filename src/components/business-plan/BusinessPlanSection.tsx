@@ -20,7 +20,7 @@ import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, E
 import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
-import { AgentPanel } from "@/components/agents/AgentPanel";
+
 
 export type StrategicAnalysisTab = string;
 
@@ -86,9 +86,8 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <AgentPanel context={agentContext} sectionLabel="Business Plan" />
-      </div>
+
+
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* Combined Overview */}
