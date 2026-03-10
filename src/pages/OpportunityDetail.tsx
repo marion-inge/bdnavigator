@@ -263,12 +263,13 @@ export default function OpportunityDetail() {
           </div>
 
           {navItems.map((item) => {
-            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_"));
+            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_")) || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
             const isBpItem = item.key === "business_plan";
             const isScoringItem = item.key === "scoring";
-            const hasExpander = isBpItem || isScoringItem;
+            const isGatesItem = item.key === "gates";
+            const hasExpander = isBpItem || isScoringItem || isGatesItem;
 
             return (
               <div key={item.key}>
@@ -281,12 +282,19 @@ export default function OpportunityDetail() {
                     if (isBpItem) {
                       setBpExpanded(!bpExpanded);
                       setScoringExpanded(false);
+                      setGatesExpanded(false);
                     } else if (isScoringItem) {
                       setScoringExpanded(!scoringExpanded);
                       setBpExpanded(false);
+                      setGatesExpanded(false);
+                    } else if (isGatesItem) {
+                      setGatesExpanded(!gatesExpanded);
+                      setBpExpanded(false);
+                      setScoringExpanded(false);
                     } else {
                       setBpExpanded(false);
                       setScoringExpanded(false);
+                      setGatesExpanded(false);
                     }
                   }}
                   className={`
