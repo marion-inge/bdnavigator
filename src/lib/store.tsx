@@ -122,12 +122,10 @@ function mergeBusinessPlan(dbBp: any, mockBp: any): any {
   return {
     ...mockBp,
     ...dbBp,
-    // Merge overview sections: prefer DB if present, fallback to mock
     tamOverview: dbBp.tamOverview || mockBp.tamOverview,
     samOverview: dbBp.samOverview || mockBp.samOverview,
     somOverview: dbBp.somOverview || mockBp.somOverview,
     combinedInterpretation: dbBp.combinedInterpretation || mockBp.combinedInterpretation,
-    // Deep-merge market analysis to preserve mock TAM/SAM projections
     marketAttractiveness: {
       ...(mockBp.marketAttractiveness || {}),
       ...(dbBp.marketAttractiveness || {}),
@@ -141,6 +139,31 @@ function mergeBusinessPlan(dbBp: any, mockBp: any): any {
         competitorEntries: dbBp.marketAttractiveness?.analysis?.competitorEntries?.length ? dbBp.marketAttractiveness.analysis.competitorEntries : (mockBp.marketAttractiveness?.analysis?.competitorEntries || []),
       },
     },
+  };
+}
+
+/** Deep-merge strategic analyses: DB wins per-field, but fill missing sub-objects from mock */
+function mergeStrategicAnalyses(dbSa: any, mockSa: any): any {
+  if (!dbSa) return mockSa;
+  if (!mockSa) return dbSa;
+  const mergeGroup = (dbGroup: any, mockGroup: any) => {
+    if (!dbGroup) return mockGroup;
+    if (!mockGroup) return dbGroup;
+    const result = { ...mockGroup };
+    for (const key of Object.keys(dbGroup)) {
+      if (dbGroup[key] != null) result[key] = dbGroup[key];
+    }
+    // Fill in keys from mock that DB doesn't have
+    for (const key of Object.keys(mockGroup)) {
+      if (result[key] == null) result[key] = mockGroup[key];
+    }
+    return result;
+  };
+  return {
+    ideaScoring: mergeGroup(dbSa.ideaScoring, mockSa.ideaScoring),
+    tam: mergeGroup(dbSa.tam, mockSa.tam),
+    sam: mergeGroup(dbSa.sam, mockSa.sam),
+    som: mergeGroup(dbSa.som, mockSa.som),
   };
 }
 export function StoreProvider({ children }: { children: ReactNode }) {
