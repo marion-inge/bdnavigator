@@ -47,7 +47,7 @@ const defaultInterpretation: CombinedInterpretation = {
   gapsAndLevers: "",
 };
 
-export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, onSaveDetailed, readonly: propReadonly, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, onSaveDetailed, readonly: propReadonly }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
