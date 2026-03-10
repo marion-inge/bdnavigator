@@ -401,7 +401,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
               <div className="flex items-center gap-2">
                 <img src={idaRobot} alt="IDA" className="h-6 w-6" />
                 <h3 className="font-semibold text-card-foreground">
-                  {bp("IDAs SAM-Schätzung", "IDA's SAM Estimation")}
+                  {bp("IDA's SAM Estimation", "IDAs SAM-Schätzung")}
                 </h3>
               </div>
             </div>
