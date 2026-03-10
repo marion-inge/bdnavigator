@@ -98,6 +98,79 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
     setDirty(false);
   };
 
+  const handleEstimateTam = async () => {
+    setEstimating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("tam-estimation", {
+        body: {
+          opportunityTitle: opportunityTitle || "",
+          opportunityDescription: opportunityDescription || "",
+          solutionDescription: solutionDescription || "",
+          industry: industry || "",
+          geography: geography || "",
+          technology: technology || "",
+          language,
+          strategicData: strategicAnalyses ? {
+            marketResearch: strategicAnalyses.tam?.marketResearch,
+            pestel: strategicAnalyses.tam?.pestel,
+            valueChain: strategicAnalyses.tam?.valueChain,
+            porter: strategicAnalyses.tam?.porter,
+            swot: strategicAnalyses.tam?.swot,
+          } : undefined,
+        },
+      });
+      if (error) throw error;
+      setTamEstimation(data as TamEstimation);
+      const updated: any = { ...scoring, tamEstimation: data };
+      onUpdate(updated);
+      toast.success(bp("TAM estimation completed!", "TAM-Schätzung abgeschlossen!"));
+    } catch (e: any) {
+      console.error("TAM estimation error:", e);
+      toast.error(e.message || bp("Failed to estimate TAM", "TAM-Schätzung fehlgeschlagen"));
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const handleApplyTamScenario = (scenario: TamScenario) => {
+    setLocalProj(scenario.projections);
+    markDirty();
+    toast.success(bp("TAM projections applied! Click Save to persist.", "TAM-Projektionen übernommen! Klicke Speichern zum Sichern."));
+  };
+
+  const renderScenarioCard = (label: string, scenario: TamScenario, color: string, icon: string) => (
+    <Card className={`border-${color}-500/30`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <span>{icon}</span> {label}
+          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
+            CAGR: {scenario.cagr}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-5 gap-1 text-center text-xs">
+          {scenario.projections.map(p => (
+            <div key={p.year} className="space-y-0.5">
+              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
+              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatM(p.value)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
+        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplyTamScenario(scenario)}>
+          {bp("Apply as TAM", "Als TAM übernehmen")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
   const addRegion = () => { setLocalRegions(prev => [...prev, { region: "", potential: 3, marketSize: "", notes: "" }]); markDirty(); };
   const removeRegion = (i: number) => { setLocalRegions(prev => prev.filter((_, idx) => idx !== i)); markDirty(); };
   const updateRegion = (i: number, patch: Partial<GeographicalRegion>) => {
