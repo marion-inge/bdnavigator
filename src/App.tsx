@@ -31,6 +31,7 @@ const App = () => (
                 <Route path="/guide" element={<ProcessGuide />} />
                 <Route path="/features" element={<FeatureOverview />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/prompts" element={<PromptLibrary />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
