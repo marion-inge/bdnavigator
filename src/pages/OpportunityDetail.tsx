@@ -320,7 +320,7 @@ export default function OpportunityDetail() {
                     <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--warning))] shrink-0" />
                   )}
                   {hasExpander ? (
-                    (isBpItem ? bpExpanded : scoringExpanded) && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                    (isBpItem ? bpExpanded : isScoringItem ? scoringExpanded : gatesExpanded) && isActive ? <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   ) : (
                     isActive && <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   )}
