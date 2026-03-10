@@ -30,24 +30,6 @@ export default function Index() {
   const [geographyFilter, setGeographyFilter] = useState<string>("all");
   const [technologyFilter, setTechnologyFilter] = useState<string>("all");
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
-  const [assessments, setAssessments] = useState<Record<string, { summary: string; overallRating: string }>>({});
-
-  // Fetch all AI assessments in bulk
-  useEffect(() => {
-    if (opportunities.length === 0) return;
-    (supabase as any)
-      .from("ai_assessments")
-      .select("opportunity_id, summary, overall_rating, basis")
-      .eq("basis", "idea_scoring")
-      .then(({ data }: any) => {
-        if (!data) return;
-        const map: Record<string, { summary: string; overallRating: string }> = {};
-        for (const row of data) {
-          map[row.opportunity_id] = { summary: row.summary, overallRating: row.overall_rating };
-        }
-        setAssessments(map);
-      });
-  }, [opportunities]);
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of STAGE_ORDER) counts[s] = 0;
