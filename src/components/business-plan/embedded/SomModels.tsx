@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2 } from "lucide-react";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ZAxis } from "recharts";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ZAxis, BarChart, Bar, Legend, ReferenceLine } from "recharts";
 
 interface EmbeddedModelProps {
   data: SomModels;
