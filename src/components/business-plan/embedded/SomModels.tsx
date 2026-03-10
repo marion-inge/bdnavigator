@@ -219,3 +219,126 @@ export function EmbeddedPositioningLandscape({ data, onSave, readonly: propReado
     </EditableSection>
   );
 }
+
+// ── Target Costing ──
+const defaultTargetCosting: TargetCostingData = {
+  marketPrice: 0, targetMarginPct: 0, allowableCost: 0,
+  components: [], marketPriceRationale: "", marginRationale: "",
+  gapAnalysis: "", actionPlan: "", description: "",
+};
+
+export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+  const { language } = useI18n();
+  const bp = (en: string, de: string) => language === "de" ? de : en;
+  const [editing, setEditing] = useState(false);
+  const readonly = propReadonly || !editing;
+  const tc: TargetCostingData = data.targetCosting || defaultTargetCosting;
+  const updateTc = (patch: Partial<TargetCostingData>) => {
+    const updated = { ...tc, ...patch };
+    updated.allowableCost = updated.marketPrice * (1 - updated.targetMarginPct / 100);
+    onSave({ ...data, targetCosting: updated });
+  };
+
+  const totalCurrent = tc.components.reduce((s, c) => s + (c.currentCost || 0), 0);
+  const totalAllowable = tc.components.reduce((s, c) => s + (c.allowableCost || 0), 0);
+  const totalGap = totalCurrent - totalAllowable;
+
+  const addComponent = () => updateTc({ components: [...tc.components, { id: crypto.randomUUID(), name: "", currentCost: 0, allowableCost: 0, actions: "" }] });
+  const removeComponent = (id: string) => updateTc({ components: tc.components.filter(c => c.id !== id) });
+  const updateComponent = (id: string, patch: Partial<TargetCostingComponent>) => updateTc({ components: tc.components.map(c => c.id === id ? { ...c, ...patch } : c) });
+
+  return (
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
+      <div className="space-y-4">
+        {/* Price & Margin */}
+        <Card>
+          <CardHeader><CardTitle>🎯 Target Costing</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-lg border p-3 bg-primary/5 border-primary/20">
+                <Label className="text-sm font-semibold">{bp("Market Price (€)", "Marktpreis (€)")}</Label>
+                <Input type="number" className="mt-1 bg-background" value={tc.marketPrice || ""} onChange={e => updateTc({ marketPrice: parseFloat(e.target.value) || 0 })} disabled={readonly} />
+                <p className="text-xs text-muted-foreground mt-1">{bp("Max achievable price from market research", "Max. erzielbarer Preis aus Marktanalyse")}</p>
+              </div>
+              <div className="rounded-lg border p-3 bg-accent/30 border-accent/50">
+                <Label className="text-sm font-semibold">{bp("Target Margin (%)", "Zielmarge (%)")}</Label>
+                <Input type="number" className="mt-1 bg-background" value={tc.targetMarginPct || ""} onChange={e => updateTc({ targetMarginPct: parseFloat(e.target.value) || 0 })} disabled={readonly} />
+                <p className="text-xs text-muted-foreground mt-1">{bp("Required profit margin", "Erforderliche Gewinnmarge")}</p>
+              </div>
+              <div className="rounded-lg border p-3 bg-secondary border-border">
+                <Label className="text-sm font-semibold">{bp("Allowable Cost (€)", "Zulässige Kosten (€)")}</Label>
+                <div className="mt-1 text-2xl font-bold text-foreground">{tc.allowableCost?.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "0,00"}</div>
+                <p className="text-xs text-muted-foreground mt-1">{bp("= Market Price × (1 - Margin%)", "= Marktpreis × (1 - Marge%)")}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>{bp("Market Price Rationale", "Begründung Marktpreis")}</Label><Textarea value={tc.marketPriceRationale} onChange={e => updateTc({ marketPriceRationale: e.target.value })} disabled={readonly} rows={3} placeholder={bp("How was the market price determined?", "Wie wurde der Marktpreis ermittelt?")} /></div>
+              <div><Label>{bp("Margin Rationale", "Begründung Zielmarge")}</Label><Textarea value={tc.marginRationale} onChange={e => updateTc({ marginRationale: e.target.value })} disabled={readonly} rows={3} placeholder={bp("Why this target margin?", "Warum diese Zielmarge?")} /></div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Cost Breakdown */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>📊 {bp("Cost Component Breakdown", "Kostenaufschlüsselung nach Komponenten")}</CardTitle>
+              {!readonly && <Button variant="outline" size="sm" onClick={addComponent}><Plus className="h-3.5 w-3.5 mr-1" />{bp("Add Component", "Komponente hinzufügen")}</Button>}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {tc.components.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{bp("Add cost components to analyze the gap.", "Fügen Sie Kostenkomponenten hinzu, um die Lücke zu analysieren.")}</p>}
+            {tc.components.length > 0 && (
+              <div className="rounded-lg border overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left p-2 font-medium">{bp("Component", "Komponente")}</th>
+                      <th className="text-right p-2 font-medium">{bp("Current Cost (€)", "Ist-Kosten (€)")}</th>
+                      <th className="text-right p-2 font-medium">{bp("Allowable Cost (€)", "Zulässig (€)")}</th>
+                      <th className="text-right p-2 font-medium">{bp("Gap (€)", "Lücke (€)")}</th>
+                      <th className="text-left p-2 font-medium">{bp("Actions", "Maßnahmen")}</th>
+                      {!readonly && <th className="p-2 w-10"></th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tc.components.map(comp => {
+                      const gap = (comp.currentCost || 0) - (comp.allowableCost || 0);
+                      return (
+                        <tr key={comp.id} className="border-t">
+                          <td className="p-2"><Input value={comp.name} onChange={e => updateComponent(comp.id, { name: e.target.value })} disabled={readonly} className="h-8" /></td>
+                          <td className="p-2"><Input type="number" value={comp.currentCost || ""} onChange={e => updateComponent(comp.id, { currentCost: parseFloat(e.target.value) || 0 })} disabled={readonly} className="h-8 text-right" /></td>
+                          <td className="p-2"><Input type="number" value={comp.allowableCost || ""} onChange={e => updateComponent(comp.id, { allowableCost: parseFloat(e.target.value) || 0 })} disabled={readonly} className="h-8 text-right" /></td>
+                          <td className={`p-2 text-right font-medium ${gap > 0 ? "text-destructive" : "text-primary"}`}>{gap.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</td>
+                          <td className="p-2"><Input value={comp.actions} onChange={e => updateComponent(comp.id, { actions: e.target.value })} disabled={readonly} className="h-8" placeholder={bp("Cost reduction measures", "Kostensenkungsmaßnahmen")} /></td>
+                          {!readonly && <td className="p-2"><Button variant="ghost" size="icon" onClick={() => removeComponent(comp.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button></td>}
+                        </tr>
+                      );
+                    })}
+                    <tr className="border-t bg-muted/30 font-semibold">
+                      <td className="p-2">{bp("Total", "Gesamt")}</td>
+                      <td className="p-2 text-right">{totalCurrent.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</td>
+                      <td className="p-2 text-right">{totalAllowable.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</td>
+                      <td className={`p-2 text-right ${totalGap > 0 ? "text-destructive" : "text-primary"}`}>{totalGap.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</td>
+                      <td className="p-2" colSpan={!readonly ? 2 : 1}></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Gap Analysis & Action Plan */}
+        <Card>
+          <CardHeader><CardTitle>🔍 {bp("Gap Analysis & Action Plan", "Lückenanalyse & Maßnahmenplan")}</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div><Label>{bp("Gap Analysis", "Lückenanalyse")}</Label><Textarea value={tc.gapAnalysis} onChange={e => updateTc({ gapAnalysis: e.target.value })} disabled={readonly} rows={4} placeholder={bp("Where are the biggest cost gaps and why?", "Wo liegen die größten Kostenlücken und warum?")} /></div>
+            <div><Label>{bp("Action Plan", "Maßnahmenplan")}</Label><Textarea value={tc.actionPlan} onChange={e => updateTc({ actionPlan: e.target.value })} disabled={readonly} rows={4} placeholder={bp("What measures will close the gaps?", "Welche Maßnahmen schließen die Lücken?")} /></div>
+            <div><Label>{bp("Overall Assessment", "Gesamtbewertung")}</Label><Textarea value={tc.description} onChange={e => updateTc({ description: e.target.value })} disabled={readonly} rows={3} /></div>
+          </CardContent>
+        </Card>
+      </div>
+    </EditableSection>
+  );
+}
