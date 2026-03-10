@@ -392,8 +392,8 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">
               💡 {bp(
-                "Use the supporting model tabs (Customer Segmentation, Interviews, Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk, Business Modelling) to substantiate the SAM.",
-                "Nutzen Sie die unterstützenden Modell-Tabs (Segmentierung, Interviews, Strategic Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risiko, Geschäftsmodellierung), um den SAM zu untermauern.",
+                "Use the supporting model tabs (Customer Landscape, Interviews, Strategic Fit, Portfolio Fit, Feasibility, Org Readiness, Risk, Business Modelling) to substantiate the SAM.",
+                "Nutzen Sie die unterstützenden Modell-Tabs (Customer Landscape, Interviews, Strategic Fit, Portfolio Fit, Machbarkeit, Org. Readiness, Risiko, Geschäftsmodellierung), um den SAM zu untermauern.",
               )}
             </p>
           </CardContent>

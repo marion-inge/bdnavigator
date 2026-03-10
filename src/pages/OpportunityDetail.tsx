@@ -142,7 +142,7 @@ export default function OpportunityDetail() {
         { key: "sam-feasibility", label: bp("Feasibility", "Machbarkeit") },
         { key: "sam-org", label: bp("Org Readiness", "Org. Readiness") },
         { key: "sam-risk", label: bp("Risk", "Risiko") },
-        { key: "sam-segmentation", label: bp("Segmentation", "Segmentierung") },
+        
         { key: "sam-interviews", label: bp("Interviews", "Interviews") },
         { key: "sam-affiliate", label: bp("Affiliate Interviews", "Affiliate-Interviews") },
         { key: "sam-bu", label: bp("BU Interviews", "BU-Interviews") },

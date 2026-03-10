@@ -17,7 +17,7 @@ import { CompetitorLandscapeTab } from "@/components/detailed-scoring/Competitor
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
 
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
-import { EmbeddedCustomerSegmentation, EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
+import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedPositioningLandscape, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
 
@@ -146,9 +146,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           </TabsContent>
           <TabsContent value="sam-risk">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
-          </TabsContent>
-          <TabsContent value="sam-segmentation">
-            <EmbeddedCustomerSegmentation {...samProps} />
           </TabsContent>
           <TabsContent value="sam-interviews">
             <EmbeddedCustomerInterviews {...samProps} />
