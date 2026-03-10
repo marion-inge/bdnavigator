@@ -258,12 +258,23 @@ export default function Index() {
           <div className="space-y-3 sm:hidden">
             {filtered.map((opp) => {
               const roughScore = calculateTotalScore(opp.scoring);
-              const ds = opp.businessPlan;
-              const detailedScore = ds
-                ? Math.round(
-                    ((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) * 10
-                  ) / 10
-                : null;
+              const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
+              const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
+              const somProj = opp.businessPlan?.somOverview?.projections;
+              const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+              const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || opp.investmentCase?.parameters?.marketGrowthRate;
+              const payback = opp.investmentCase ? (() => {
+                const yd = opp.investmentCase.yearData;
+                let cumCf = 0;
+                for (const y of yd) {
+                  const gm = y.sales - y.cogs;
+                  const opex = y.sellingExpenses + y.gaExpenses + y.otherExpenses;
+                  const invest = y.investmentExternal + y.investmentInternal + y.rdExternal + y.rdInternal;
+                  cumCf += gm - opex - invest;
+                  if (cumCf >= 0) return y.year - yd[0].year;
+                }
+                return null;
+              })() : opp.businessCase?.paybackPeriod || null;
               return (
                 <div
                   key={opp.id}
@@ -281,9 +292,13 @@ export default function Index() {
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
-                    {detailedScore !== null && (
-                      <span className="text-muted-foreground">{t("detailedScoring")}: <span className="font-semibold text-primary">{detailedScore.toFixed(1)}</span></span>
-                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                    {tamVal && <span>TAM: <span className="font-semibold text-card-foreground">{tamVal}{typeof tamVal === "number" ? " M€" : ""}</span></span>}
+                    {samVal && <span>SAM: <span className="font-semibold text-card-foreground">{samVal}{typeof samVal === "number" ? " M€" : ""}</span></span>}
+                    {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
+                    {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
+                    {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
                   {assessments[opp.id] && (
                     <div className="flex items-start gap-1.5 text-xs text-muted-foreground mt-1">
