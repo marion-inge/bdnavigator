@@ -13,6 +13,7 @@ import { StrategicAnalysesSection } from "@/components/StrategicAnalysesSection"
 import { GoToMarketSection } from "@/components/GoToMarketSection";
 import { ImplementReviewSection } from "@/components/ImplementReviewSection";
 import { FileAttachments } from "@/components/FileAttachments";
+import { GateMeetingNotesEditor } from "@/components/GateMeetingNotesEditor";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign } from "lucide-react";
