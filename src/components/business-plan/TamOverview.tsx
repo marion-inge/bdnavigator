@@ -55,7 +55,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / n) - 1) * 100).toFixed(1)}%`;
 }
 
-export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -70,6 +70,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   const [localTamDesc, setLocalTamDesc] = useState(analysis.tamDescription || "");
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(tamOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
+  const [tamEstimation, setTamEstimation] = useState<TamEstimation | null>((scoring as any).tamEstimation || null);
+  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   const markDirty = () => setDirty(true);
