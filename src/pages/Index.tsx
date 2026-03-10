@@ -17,8 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, X, BookOpen, Sparkles, HelpCircle, Library } from "lucide-react";
-import { getRatingColor } from "@/lib/aiAssessmentService";
-import idaRobot from "@/assets/ida-robot.png";
 import { supabase } from "@/integrations/supabase/client";
 import noviLogo from "@/assets/novi-logo-v4.png";
 
