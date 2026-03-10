@@ -147,9 +147,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="sam-risk">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-segmentation">
-            <EmbeddedCustomerSegmentation {...samProps} />
-          </TabsContent>
           <TabsContent value="sam-interviews">
             <EmbeddedCustomerInterviews {...samProps} />
           </TabsContent>
