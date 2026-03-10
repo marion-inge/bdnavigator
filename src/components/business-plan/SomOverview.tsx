@@ -51,7 +51,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / (sorted.length - 1)) - 1) * 100).toFixed(1)}%`;
 }
 
-export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -65,6 +65,8 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
   );
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(somOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
+  const [somEstimation, setSomEstimation] = useState<SomEstimation | null>((scoring as any).somEstimation || null);
+  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   const markDirty = () => setDirty(true);
@@ -78,6 +80,125 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly }: Props
     onUpdate(updated);
     setDirty(false);
   };
+
+  const handleEstimateSom = async () => {
+    setEstimating(true);
+    try {
+      const analysis = scoring.marketAttractiveness?.analysis;
+      const { data, error } = await supabase.functions.invoke("som-estimation", {
+        body: {
+          opportunityTitle: opportunityTitle || "",
+          opportunityDescription: opportunityDescription || "",
+          solutionDescription: solutionDescription || "",
+          industry: industry || "",
+          geography: geography || "",
+          technology: technology || "",
+          language,
+          tamData: {
+            tamProjections: analysis?.tamProjections,
+            tamOverview: (scoring as any).tamOverview,
+          },
+          samData: {
+            samProjections: analysis?.samProjections,
+            samDescription: analysis?.samDescription,
+            samVsTamExplanation: (scoring as any).samOverview?.samVsTamExplanation,
+            targetGroups: (scoring as any).samOverview?.targetGroups,
+            geographicFocus: (scoring as any).samOverview?.geographicFocus,
+          },
+          scoringData: {
+            customerLandscape: scoring.customerLandscape,
+            strategicFit: scoring.strategicFit,
+            portfolioFit: scoring.portfolioFit,
+            feasibility: scoring.feasibility,
+            organisationalReadiness: scoring.organisationalReadiness,
+            risk: scoring.risk,
+            competitorLandscape: scoring.competitorLandscape,
+            pilotCustomer: scoring.pilotCustomer,
+          },
+          strategicData: strategicAnalyses ? {
+            tam: {
+              marketResearch: strategicAnalyses.tam?.marketResearch,
+              pestel: strategicAnalyses.tam?.pestel,
+              valueChain: strategicAnalyses.tam?.valueChain,
+              porter: strategicAnalyses.tam?.porter,
+              swot: strategicAnalyses.tam?.swot,
+            },
+            sam: {
+              customerInterviewing: strategicAnalyses.sam?.customerInterviewing,
+              internalAffiliateInterviews: strategicAnalyses.sam?.internalAffiliateInterviews,
+              internalBUInterviews: strategicAnalyses.sam?.internalBUInterviews,
+              businessModelling: strategicAnalyses.sam?.businessModelling,
+              leanCanvas: strategicAnalyses.sam?.leanCanvas,
+            },
+            som: {
+              valuePropositionCanvas: strategicAnalyses.som?.valuePropositionCanvas,
+              customerBenefitAnalysis: strategicAnalyses.som?.customerBenefitAnalysis,
+              threeCircleModel: strategicAnalyses.som?.threeCircleModel,
+              positioningStatement: strategicAnalyses.som?.positioningStatement,
+              positioningLandscape: strategicAnalyses.som?.positioningLandscape,
+              targetCosting: strategicAnalyses.som?.targetCosting,
+              competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
+            },
+          } : undefined,
+        },
+      });
+      if (error) throw error;
+      setSomEstimation(data as SomEstimation);
+      const updated: any = { ...scoring, somEstimation: data };
+      onUpdate(updated);
+      toast.success(bp("SOM estimation completed!", "SOM-Schätzung abgeschlossen!"));
+    } catch (e: any) {
+      console.error("SOM estimation error:", e);
+      toast.error(e.message || bp("Failed to estimate SOM", "SOM-Schätzung fehlgeschlagen"));
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const handleApplySomScenario = (scenario: SomScenario) => {
+    setLocalProj(scenario.projections);
+    markDirty();
+    toast.success(bp("SOM projections applied! Click Save to persist.", "SOM-Projektionen übernommen! Klicke Speichern zum Sichern."));
+  };
+
+  function formatValue(v: number): string {
+    if (v >= 1_000) return `${(v / 1_000).toFixed(1)} B€`;
+    if (v > 0) return `${v} M€`;
+    return `0 M€`;
+  }
+
+  const renderScenarioCard = (label: string, scenario: SomScenario, color: string, icon: string) => (
+    <Card className={`border-${color}-500/30`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <span>{icon}</span> {label}
+          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
+            CAGR: {scenario.cagr}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-5 gap-1 text-center text-xs">
+          {scenario.projections.map(p => (
+            <div key={p.year} className="space-y-0.5">
+              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
+              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatValue(p.value)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
+        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplySomScenario(scenario)}>
+          {bp("Apply as SOM", "Als SOM übernehmen")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   const addRegion = () => { setLocalRegions(prev => [...prev, { region: "", potential: 3, marketSize: "", notes: "" }]); markDirty(); };
   const removeRegion = (i: number) => { setLocalRegions(prev => prev.filter((_, idx) => idx !== i)); markDirty(); };
