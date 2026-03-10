@@ -319,6 +319,22 @@ export function createDefaultInvestmentCase(): InvestmentCaseData {
   };
 }
 
+export interface GateActionItem {
+  id: string;
+  task: string;
+  responsible: string;
+  dueDate?: string;
+  done: boolean;
+}
+
+export interface GateMeetingNotes {
+  participants: string[];
+  agenda: string;
+  discussionNotes: string;
+  decisions: string;
+  actionItems: GateActionItem[];
+}
+
 export interface GateRecord {
   id: string;
   gate: "gate1" | "gate2" | "gate3";
@@ -326,6 +342,7 @@ export interface GateRecord {
   comment: string;
   decider: string;
   date: string;
+  meetingNotes?: GateMeetingNotes;
 }
 
 export interface PorterForce {
