@@ -23,20 +23,6 @@ interface Props {
   readonly?: boolean;
 }
 
-interface SamScenario {
-  projections: MarketYearValue[];
-  cagr: string;
-  assumptions: string[];
-  rationale: string;
-}
-
-interface SamEstimation {
-  methodology: string;
-  keyDifferentiators: string;
-  conservative: SamScenario;
-  base: SamScenario;
-  optimistic: SamScenario;
-}
 
 function calcCagr(values: MarketYearValue[]): string {
   const sorted = [...values].sort((a, b) => a.year - b.year);
