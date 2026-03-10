@@ -7,12 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, BarChart, Bar, ReferenceLine, ComposedChart, Area,
 } from "recharts";
-import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot } from "lucide-react";
+import { TrendingUp, DollarSign, Calculator, Settings, BarChart3, FileText, Download, Bot, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { BusinessCaseAssessment } from "@/components/BusinessCaseAssessment";
 
@@ -46,6 +46,8 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
     };
   });
   const [editing, setEditing] = useState(false);
+  const [showParameters, setShowParameters] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const readonly = propReadonly || !editing;
 
   // ═══ Import from Business Plan ═══
@@ -342,30 +344,15 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
         />
       </div>
 
-      <Tabs defaultValue="parameters" className="w-full">
-        <TabsList className="w-full justify-start flex-wrap h-auto gap-1 bg-muted/50 p-1">
-          <TabsTrigger value="parameters" className="gap-1.5 text-xs">
-            <Settings className="h-3 w-3" /> {bp("Parameters", "Parameter")}
-          </TabsTrigger>
-          <TabsTrigger value="investment" className="gap-1.5 text-xs">
-            <Calculator className="h-3 w-3" /> {bp("Investment & R&D", "Investment & F&E")}
-          </TabsTrigger>
-          <TabsTrigger value="pl" className="gap-1.5 text-xs">
-            <DollarSign className="h-3 w-3" /> {bp("P&L / Business Case", "GuV / Business Case")}
-          </TabsTrigger>
-          <TabsTrigger value="roce" className="gap-1.5 text-xs">
-            <TrendingUp className="h-3 w-3" /> {bp("ROCE & NPV", "ROCE & NPV")}
-          </TabsTrigger>
-          <TabsTrigger value="notes" className="gap-1.5 text-xs">
-            <FileText className="h-3 w-3" /> {bp("Notes", "Notizen")}
-          </TabsTrigger>
-          <TabsTrigger value="ida" className="gap-1.5 text-xs">
-            <Bot className="h-3 w-3" /> IDA Assessment
-          </TabsTrigger>
-        </TabsList>
-
-        {/* ═══ Parameters Tab ═══ */}
-        <TabsContent value="parameters" className="space-y-6 mt-4">
+      {/* ═══ Parameters (Collapsible) ═══ */}
+      <Collapsible open={showParameters} onOpenChange={setShowParameters}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm" className="w-full justify-between gap-1.5 text-xs">
+            <span className="flex items-center gap-1.5"><Settings className="h-3 w-3" /> {bp("Parameters", "Parameter")}</span>
+            {showParameters ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-6 mt-4">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Project Parameters", "Projekt-Parameter")}</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -440,10 +427,11 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </table>
             </CardContent>
           </Card>
-        </TabsContent>
+        </CollapsibleContent>
+      </Collapsible>
 
-        {/* ═══ P&L / Business Case Tab ═══ */}
-        <TabsContent value="pl" className="space-y-6 mt-4">
+      {/* ═══ Investment & R&D Summary ═══ */}
+      <div className="space-y-6">
           {/* Business Case Calculation Table */}
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Business Case Calculation", "Business Case Berechnung")}</CardTitle></CardHeader>
@@ -498,10 +486,10 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ Investment & R&D Summary Tab ═══ */}
-        <TabsContent value="investment" className="space-y-6 mt-4">
+      {/* ═══ P&L / Business Case ═══ */}
+      <div className="space-y-6">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("Investment & R&D Summary", "Investment & F&E Übersicht")}</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
@@ -531,10 +519,10 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </table>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ ROCE & NPV Tab ═══ */}
-        <TabsContent value="roce" className="space-y-6 mt-4">
+      {/* ═══ ROCE & NPV ═══ */}
+      <div className="space-y-6">
           <Card>
             <CardHeader><CardTitle className="text-sm">{bp("ROCE & NPV Calculation", "ROCE & NPV Berechnung")}</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
@@ -626,13 +614,19 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </TabsContent>
+      </div>
 
-        {/* ═══ Notes Tab ═══ */}
-        <TabsContent value="notes" className="space-y-4 mt-4">
+      {/* ═══ Notes (Collapsible) ═══ */}
+      <Collapsible open={showNotes} onOpenChange={setShowNotes}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm" className="w-full justify-between gap-1.5 text-xs">
+            <span className="flex items-center gap-1.5"><FileText className="h-3 w-3" /> {bp("Notes & Assumptions", "Notizen & Annahmen")}</span>
+            {showNotes ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4">
           <Card>
-            <CardHeader><CardTitle className="text-sm">{bp("Notes & Assumptions", "Notizen & Annahmen")}</CardTitle></CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <Textarea
                 value={data.notes}
                 onChange={(e) => update({ ...data, notes: e.target.value })}
@@ -643,28 +637,28 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
               />
             </CardContent>
           </Card>
-        </TabsContent>
+        </CollapsibleContent>
+      </Collapsible>
 
-        {/* ═══ IDA Assessment Tab ═══ */}
-        <TabsContent value="ida" className="space-y-4 mt-4">
-          <BusinessCaseAssessment
-            opportunityId={opportunityId}
-            title={oppTitle}
-            description={oppDescription}
-            industry={industry}
-            technology={technology}
-            kpis={{
-              totalROCE,
-              npv,
-              paybackPeriod,
-              totalEbit,
-              totalSales,
-            }}
-            parameters={data.parameters}
-            yearData={calculations}
-          />
-        </TabsContent>
-      </Tabs>
+      {/* ═══ IDA Assessment ═══ */}
+      <div className="space-y-4">
+        <BusinessCaseAssessment
+          opportunityId={opportunityId}
+          title={oppTitle}
+          description={oppDescription}
+          industry={industry}
+          technology={technology}
+          kpis={{
+            totalROCE,
+            npv,
+            paybackPeriod,
+            totalEbit,
+            totalSales,
+          }}
+          parameters={data.parameters}
+          yearData={calculations}
+        />
+      </div>
     </div>
   );
 }
