@@ -12,6 +12,7 @@ import ProcessGuide from "./pages/ProcessGuide";
 import FeatureOverview from "./pages/FeatureOverview";
 import FAQ from "./pages/FAQ";
 import PromptLibrary from "./pages/PromptLibrary";
+import TrainingAcademy from "./pages/TrainingAcademy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="/features" element={<FeatureOverview />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/prompts" element={<PromptLibrary />} />
+                <Route path="/training" element={<TrainingAcademy />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
