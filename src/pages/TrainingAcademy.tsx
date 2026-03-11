@@ -551,6 +551,18 @@ export default function TrainingAcademy() {
         ) : (
           /* ─── Module Detail ─── */
           <div className="space-y-6">
+            {moduleVideos[selectedModule.id] && (
+              <div className="rounded-xl overflow-hidden shadow-lg">
+                <video
+                  src={moduleVideos[selectedModule.id]}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-48 sm:h-64 object-cover"
+                />
+              </div>
+            )}
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" onClick={() => setActiveModule(null)}>
                 <ArrowLeft className="h-4 w-4 mr-1" />
