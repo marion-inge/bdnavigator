@@ -111,11 +111,16 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
   const update = (updated: typeof porter) => onSave({ ...data, porter: updated });
 
   const forces = [
-    { key: "competitiveRivalry" as const, label: bp("Competitive Rivalry", "Wettbewerbsrivalität"), icon: "⚔️" },
-    { key: "threatOfNewEntrants" as const, label: bp("Threat of New Entrants", "Neue Marktteilnehmer"), icon: "🚪" },
-    { key: "threatOfSubstitutes" as const, label: bp("Threat of Substitutes", "Substitute"), icon: "🔄" },
-    { key: "bargainingPowerBuyers" as const, label: bp("Bargaining Power Buyers", "Verhandlungsmacht Käufer"), icon: "🛒" },
-    { key: "bargainingPowerSuppliers" as const, label: bp("Bargaining Power Suppliers", "Verhandlungsmacht Lieferanten"), icon: "🏭" },
+    { key: "competitiveRivalry" as const, label: bp("Competitive Rivalry", "Wettbewerbsrivalität"), icon: "⚔️",
+      hint: bp("How intense is the competition? Price wars, innovation speed?", "Wie intensiv ist der Wettbewerb? Preiskämpfe, Innovationsgeschwindigkeit?") },
+    { key: "threatOfNewEntrants" as const, label: bp("Threat of New Entrants", "Neue Marktteilnehmer"), icon: "🚪",
+      hint: bp("How easy can new players enter? Low barriers = high threat.", "Wie leicht können neue Anbieter eintreten? Niedrige Barrieren = hohe Bedrohung.") },
+    { key: "threatOfSubstitutes" as const, label: bp("Threat of Substitutes", "Substitute"), icon: "🔄",
+      hint: bp("Which alternative technologies or approaches could replace your solution? Consider AI, automation, or entirely different methods solving the same problem.", "Welche alternativen Technologien oder Ansätze könnten deine Lösung ersetzen? Bedenke KI, Automatisierung oder völlig andere Methoden die das gleiche Problem lösen.") },
+    { key: "bargainingPowerBuyers" as const, label: bp("Bargaining Power Buyers", "Verhandlungsmacht Käufer"), icon: "🛒",
+      hint: bp("Can buyers easily switch? Few large customers = high power.", "Können Käufer leicht wechseln? Wenige Großkunden = hohe Macht.") },
+    { key: "bargainingPowerSuppliers" as const, label: bp("Bargaining Power Suppliers", "Verhandlungsmacht Lieferanten"), icon: "🏭",
+      hint: bp("How dependent are you on key suppliers or technologies?", "Wie abhängig bist du von Schlüssellieferanten oder Technologien?") },
   ];
   const radarData = forces.map(f => ({ force: f.label, value: porter[f.key].intensity }));
 
