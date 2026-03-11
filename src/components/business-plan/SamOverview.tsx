@@ -190,11 +190,16 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
         ...scoring.marketAttractiveness,
         analysis: { ...analysis, samProjections: localProj, samDescription: localSamDesc },
       },
-      samOverview: { ...localOv, geographicalRegions: localRegions },
+      samOverview: { ...localOv, geographicalRegions: localRegions, salesChannelAnalysis: localChannels },
     };
     onUpdate(updated);
     setDirty(false);
   };
+
+  const addChannel = () => { setLocalChannels(prev => ({ ...prev, entries: [...prev.entries, { id: crypto.randomUUID(), channelName: "", channelType: "direct", reach: "", costLevel: "medium", targetSegments: "", rating: 3, notes: "" }] })); markDirty(); };
+  const removeChannel = (id: string) => { setLocalChannels(prev => ({ ...prev, entries: prev.entries.filter(e => e.id !== id) })); markDirty(); };
+  const updateChannel = (id: string, patch: Partial<SalesChannelEntry>) => { setLocalChannels(prev => ({ ...prev, entries: prev.entries.map(e => e.id === id ? { ...e, ...patch } : e) })); markDirty(); };
+  const updateChannelMeta = (patch: Partial<SalesChannelAnalysis>) => { setLocalChannels(prev => ({ ...prev, ...patch })); markDirty(); };
 
   const addRegion = () => { setLocalRegions(prev => [...prev, { region: "", potential: 3, marketSize: "", notes: "" }]); markDirty(); };
   const removeRegion = (i: number) => { setLocalRegions(prev => prev.filter((_, idx) => idx !== i)); markDirty(); };
