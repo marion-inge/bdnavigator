@@ -141,7 +141,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
             </ResponsiveContainer>
           </div>
           <div className="space-y-3">
-            {forces.map(({ key, label, icon }) => {
+            {forces.map(({ key, label, icon, hint }) => {
               const force = porter[key];
               const intensityColor = force.intensity <= 2 ? "text-green-600" : force.intensity <= 3 ? "text-yellow-600" : "text-red-600";
               return (
@@ -150,6 +150,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
                     <Label className="text-sm font-semibold">{icon} {label}</Label>
                     <span className={`text-sm font-bold ${intensityColor}`}>{force.intensity}/5</span>
                   </div>
+                  <p className="text-xs text-muted-foreground italic">{hint}</p>
                   <Slider min={1} max={5} step={1} value={[force.intensity]} onValueChange={([v]) => update({ ...porter, [key]: { ...force, intensity: v } })} disabled={readonly} />
                   <Textarea value={force.description} onChange={e => update({ ...porter, [key]: { ...force, description: e.target.value } })} placeholder={`${label}...`} disabled={readonly} rows={2} />
                 </div>
