@@ -145,6 +145,27 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         ],
       },
       {
+        title: "Regulierung & Technologische Disruption",
+        description: "Risiken durch Regulierung und Obsoleszenz erkennen",
+        icon: ShieldCheck,
+        content: [
+          {
+            heading: "Warum ist das wichtig?",
+            body: "Zwei der größten externen Risiken für jede Innovation sind:\n1. Regulatorische Änderungen, die den Marktzugang erschweren oder das Produkt anpassen erfordern\n2. Technologische Disruption, die das eigene Angebot obsolet machen kann\n\nBeide Risiken werden oft unterschätzt, weil sie schleichend auftreten.",
+            example: "Die EU-Maschinenverordnung 2027 erfordert neue Cybersecurity-Anforderungen für vernetzte Messgeräte. Gleichzeitig könnten KI-basierte optische Prüfsysteme klassische taktile Messtechnik in bestimmten Anwendungen ersetzen.",
+          },
+          {
+            heading: "Wo im Tool dokumentieren?",
+            body: "• PESTEL → Political & Legal: Regulatorische Rahmenbedingungen und kommende Gesetzesänderungen\n• PESTEL → Technological: Disruptive Technologien und Innovationstrends\n• Porter's Five Forces → Threat of Substitutes: Alternative Lösungen und Technologien\n• Risk-Scoring (Business Plan): Konkrete Risikobewertung mit Eintrittswahrscheinlichkeit",
+            tip: "Nutze die Leitfragen in den PESTEL- und Porter's-Formularen, um systematisch über diese Risiken nachzudenken. Die Fragen helfen, keine blinden Flecken zu übersehen.",
+          },
+          {
+            heading: "Best Practice",
+            body: "1. Regulatorische Landschaft quartalsweise reviewen\n2. Technologie-Radar für das eigene Marktsegment pflegen\n3. 'What-if'-Szenarien in der SAM/SOM-Schätzung berücksichtigen\n4. Im Gate-Meeting explizit nach regulatorischen und technologischen Risiken fragen",
+          },
+        ],
+      },
+      {
         title: "Ansoff-Matrix",
         description: "Wachstumsstrategien klassifizieren",
         icon: Layers,
