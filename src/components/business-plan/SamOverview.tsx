@@ -118,6 +118,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             porter: strategicAnalyses.tam?.porter,
             swot: strategicAnalyses.tam?.swot,
           } : undefined,
+          salesChannelAnalysis: samOverview.salesChannelAnalysis || undefined,
         },
       });
       if (error) throw error;

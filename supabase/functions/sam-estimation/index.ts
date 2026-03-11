@@ -15,7 +15,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology, language, tamData, scoringData, strategicData } = await req.json();
+    const { opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology, language, tamData, scoringData, strategicData, salesChannelAnalysis } = await req.json();
 
     const lang = language === "de" ? "German" : "English";
 
@@ -148,6 +148,15 @@ serve(async (req) => {
       }
     }
 
+    // Sales Channel Analysis
+    if (salesChannelAnalysis?.entries?.length) {
+      sections.push(`## Sales Channel Analysis\n${salesChannelAnalysis.entries.map((e: any) =>
+        `- **${e.channelName}** (${e.channelType}, Cost: ${e.costLevel}, Rating: ${e.rating}/5): Reach: ${e.reach}. Target Segments: ${e.targetSegments}. Notes: ${e.notes}`
+      ).join("\n")}
+- Channel Strategy: ${salesChannelAnalysis.channelStrategy || "N/A"}
+- Channel Mix & Synergies: ${salesChannelAnalysis.channelMix || "N/A"}`);
+    }
+
     const systemPrompt = `You are IDA (Internal Data Analyst), a specialized AI for business development market analysis.
 Your task is to estimate the SAM (Serviceable Addressable Market) based on the provided TAM and qualitative business data.
 
@@ -169,6 +178,8 @@ Also provide:
 - Key factors that differentiate the scenarios
 
 IMPORTANT: The SAM must always be SMALLER than the TAM. SAM typically represents 10-40% of TAM depending on industry focus, geographic constraints, and customer segment accessibility.
+
+If sales channel data is provided, factor in channel reach, cost structure, and channel mix when estimating market accessibility in each scenario. Channels with higher reach and lower cost support optimistic scenarios; limited channels constrain conservative scenarios.
 
 Use the tool "sam_estimation" to return your structured response.`;
 
