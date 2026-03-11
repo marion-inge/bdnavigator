@@ -22,7 +22,37 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
+// Keys that belong to detailed scoring (not market modeling)
+const DETAILED_SCORING_KEYS = [
+  "strategicFit", "feasibility", "commercialViability", "risk",
+  "competitorLandscape", "organisationalReadiness", "pilotCustomer", "portfolioFit",
+] as const;
+
 function oppToRow(o: Opportunity) {
+  // Split: extract detailed scoring keys from businessPlan → scoring.detailed
+  const scoring: any = { ...o.scoring };
+  let businessPlan: any = o.businessPlan ? { ...o.businessPlan } : null;
+
+  if (businessPlan) {
+    const detailed: Record<string, any> = {};
+    for (const key of DETAILED_SCORING_KEYS) {
+      if (businessPlan[key] !== undefined) {
+        detailed[key] = businessPlan[key];
+      }
+    }
+    // Remove detailed keys from business_plan for DB storage
+    if (Object.keys(detailed).length > 0) {
+      scoring.detailed = detailed;
+      const cleaned: any = {};
+      for (const [k, v] of Object.entries(businessPlan)) {
+        if (!(DETAILED_SCORING_KEYS as readonly string[]).includes(k)) {
+          cleaned[k] = v;
+        }
+      }
+      businessPlan = cleaned;
+    }
+  }
+
   return {
     id: o.id,
     title: o.title,
@@ -34,8 +64,8 @@ function oppToRow(o: Opportunity) {
     owner: o.owner,
     idea_bringer: o.ideaBringer ?? "",
     stage: o.stage,
-    scoring: o.scoring as any,
-    business_plan: o.businessPlan ?? null,
+    scoring: scoring as any,
+    business_plan: businessPlan,
     investment_case: o.investmentCase ?? null,
     business_case: o.businessCase ?? null,
     strategic_analyses: o.strategicAnalyses ?? null,
