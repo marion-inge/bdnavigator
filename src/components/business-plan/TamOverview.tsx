@@ -363,6 +363,14 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </CardContent>
         </Card>
 
+        {/* Mark Web Search Placeholder */}
+        <MarkWebSearchPlaceholder
+          titleEn="TAM Market Research"
+          titleDe="TAM Marktrecherche"
+          descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports from public sources to provide a factual foundation for IDA's TAM estimation."
+          descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte aus öffentlichen Quellen als Faktengrundlage für IDAs TAM-Schätzung."
+        />
+
         {/* IDA TAM Estimation */}
         {!tamEstimation ? (
           <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
