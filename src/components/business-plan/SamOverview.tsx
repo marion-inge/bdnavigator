@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
-import { SamOverviewData, SalesChannelEntry, SalesChannelAnalysis, createDefaultSamOverview } from "@/lib/businessPlanTypes";
+import { SamOverviewData, createDefaultSamOverview } from "@/lib/businessPlanTypes";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
