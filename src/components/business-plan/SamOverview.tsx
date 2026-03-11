@@ -66,6 +66,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [localSamDesc, setLocalSamDesc] = useState(analysis.samDescription || "");
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(samOverview.geographicalRegions || []);
   const [localChannels, setLocalChannels] = useState<SalesChannelAnalysis>(samOverview.salesChannelAnalysis || { entries: [], channelStrategy: "", channelMix: "" });
+  const [dirty, setDirty] = useState(false);
   const [samEstimation, setSamEstimation] = useState<SamEstimation | null>((scoring as any).samEstimation || null);
   const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
