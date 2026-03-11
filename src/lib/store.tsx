@@ -80,6 +80,18 @@ function oppToRow(o: Opportunity) {
 }
 
 function rowToOpp(r: any): Opportunity {
+  // Merge: take detailed scoring from scoring.detailed → businessPlan
+  const rawScoring = r.scoring as any;
+  const detailed = rawScoring?.detailed || {};
+  
+  // Clean scoring: remove 'detailed' key for the Scoring type
+  const cleanScoring: any = { ...rawScoring };
+  delete cleanScoring.detailed;
+
+  // Merge detailed scoring keys back into businessPlan for in-memory use
+  const rawBp = r.business_plan;
+  const businessPlan = rawBp ? { ...rawBp, ...detailed } : (Object.keys(detailed).length > 0 ? detailed : undefined);
+
   return {
     id: r.id,
     title: r.title,
@@ -91,8 +103,8 @@ function rowToOpp(r: any): Opportunity {
     owner: r.owner ?? "",
     ideaBringer: r.idea_bringer ?? "",
     stage: r.stage as Stage,
-    scoring: r.scoring as Scoring,
-    businessPlan: r.business_plan ?? undefined,
+    scoring: cleanScoring as Scoring,
+    businessPlan: businessPlan ?? undefined,
     investmentCase: r.investment_case ?? undefined,
     businessCase: r.business_case ?? undefined,
     strategicAnalyses: r.strategic_analyses ? migrateStrategicAnalyses(r.strategic_analyses) : undefined,
