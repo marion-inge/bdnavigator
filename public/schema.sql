@@ -95,26 +95,111 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
 -- ]
 
 -- ============================================================
--- JSON Structure: business_plan
+-- JSON Structure: business_plan (vollständig)
+-- Typen definiert in: src/lib/businessPlanTypes.ts, src/lib/types.ts
 -- ============================================================
 -- {
---   "tamOverview": { "description": "", "methodology": "" },
---   "samOverview": { "description": "", "methodology": "" },
---   "somOverview": { "description": "", "methodology": "" },
---   "combinedInterpretation": "",
---   "marketAttractiveness": {
+--   "tamOverview": {                          -- TamOverviewData
+--     "scopeDefinition": "",
+--     "geographicCoverage": "",
+--     "assumptions": "",
+--     "scopeExclusions": "",
+--     "fullGlobalPotential": "",
+--     "marketDevelopment": "",
+--     "drivers": "",
+--     "sources": "",
+--     "sourceAssessment": "",
+--     "derivationMethod": "",
+--     "supportingModelNotes": "",
+--     "geographicalRegions": [               -- GeographicalRegion[]
+--       { "region": "", "potential": 3, "marketSize": "", "notes": "" }
+--     ]
+--   },
+--
+--   "samOverview": {                          -- SamOverviewData
+--     "samVsTamExplanation": "",
+--     "includedIndustries": "",
+--     "excludedIndustries": "",
+--     "geographicFocus": "",
+--     "geographicExclusions": "",
+--     "targetGroups": "",
+--     "unreachableGroups": "",
+--     "relevanceOutlook": "",
+--     "featureAdaptations": "",
+--     "priceEvolution": "",
+--     "resourceScenarios": "",
+--     "requiredInvestments": "",
+--     "geographicalRegions": [...],
+--     "salesChannelAnalysis": {               -- SalesChannelAnalysis (optional)
+--       "entries": [{                         -- SalesChannelEntry[]
+--         "id": "uuid",
+--         "channelName": "",
+--         "channelType": "direct|indirect|digital|partner|other",
+--         "reach": "",
+--         "costLevel": "low|medium|high",
+--         "targetSegments": "",
+--         "rating": 3,                        -- 1-5
+--         "notes": ""
+--       }],
+--       "channelStrategy": "",
+--       "channelMix": ""
+--     }
+--   },
+--
+--   "somOverview": {                          -- SomOverviewData
+--     "projections": [                        -- MarketYearValue[] (5 Jahre)
+--       { "year": 1, "value": 0 },
+--       { "year": 2, "value": 0 },
+--       { "year": 3, "value": 0 },
+--       { "year": 4, "value": 0 },
+--       { "year": 5, "value": 0 }
+--     ],
+--     "marketShareVsSam": "",
+--     "growthRate": "",
+--     "visibilityRate": "",
+--     "salesCapacity": "",
+--     "pipeline": "",
+--     "licenseToOperate": "",
+--     "salesCapacityScenario": "",
+--     "marketingBudgetScenario": "",
+--     "positioningScenario": "",
+--     "geographicalRegions": [...],
+--     "portfolioCoveragePct": 0,              -- optional, für Business Case Bridge
+--     "visibilityPct": 0,                     -- optional
+--     "visibilityGrowthPct": 0,               -- optional
+--     "hitratePct": 0                         -- optional
+--   },
+--
+--   "combinedInterpretation": {               -- CombinedInterpretation
+--     "overallPotential": "",
+--     "samDevelopment": "",
+--     "somDevelopment": "",
+--     "gapsAndLevers": ""
+--   },
+--
+--   "marketAttractiveness": {                 -- Detailed Scoring
 --     "score": 3,
---     "analysis": {
+--     "analysis": {                           -- DetailedMarketAnalysis
 --       "tam": "", "tamDescription": "",
 --       "tamProjections": [{"year":1,"value":0}],
 --       "sam": "", "samDescription": "",
 --       "samProjections": [{"year":1,"value":0}],
 --       "marketGrowthRate": "",
---       "targetCustomers": "", "customerRelationship": "",
---       "customerSegments": [{"name":"","size":0,"description":""}],
---       "competitors": "", "competitivePosition": "",
---       "competitorEntries": [{"name":"","marketShare":0,"threatLevel":3}],
---       "geographicalRegions": [{"region":"","potential":3,"marketSize":"","notes":""}]
+--       "targetCustomers": "",
+--       "customerRelationship": "",
+--       "customerSegments": [                 -- CustomerSegment[]
+--         { "name": "", "size": 0, "description": "" }
+--       ],
+--       "competitors": "",
+--       "competitivePosition": "",
+--       "competitorEntries": [                -- CompetitorEntry[]
+--         { "name": "", "marketShare": 0, "threatLevel": 3,
+--           "dimensionRatings": [             -- CompetitorDimensionRating[] (optional)
+--             { "dimension": "", "score": 3, "comment": "" }
+--           ]
+--         }
+--       ],
+--       "geographicalRegions": [...]
 --     }
 --   }
 -- }
