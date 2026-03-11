@@ -144,6 +144,7 @@ export default function OpportunityDetail() {
       icon: <Target className="h-3 w-3" />,
       children: [
         { key: "sam-overview", label: bp("Overview", "Übersicht") },
+        { key: "sam-channels", label: bp("Sales Channels", "Vertriebskanäle") },
         { key: "sam-customers", label: bp("Customer Landscape", "Kundenlandschaft") },
         { key: "sam-strategic", label: bp("Strategic Fit", "Strateg. Fit") },
         { key: "sam-portfolio", label: "Portfolio Fit" },
