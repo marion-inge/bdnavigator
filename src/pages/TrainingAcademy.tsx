@@ -510,6 +510,18 @@ export default function TrainingAcademy() {
                     className="cursor-pointer hover:shadow-md transition-all hover:border-primary/30 group"
                     onClick={() => setActiveModule(mod.id)}
                   >
+                    {moduleVideos[mod.id] && (
+                      <div className="overflow-hidden rounded-t-lg">
+                        <video
+                          src={moduleVideos[mod.id]}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-32 object-cover"
+                        />
+                      </div>
+                    )}
                     <CardHeader className="pb-3">
                       <div className="flex items-center gap-3">
                         <div className={`p-3 rounded-xl ${mod.color}`}>
