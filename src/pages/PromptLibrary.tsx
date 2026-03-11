@@ -199,6 +199,7 @@ const PLANNED_ENTRIES: PromptEntry[] = [
     outputDe: "3–6 Wettbewerber-Profile mit: Name, geschätzter Marktanteil, Bedrohungslevel (1–5), Dimensionsbewertungen (Preis, Tech-Features, Reichweite, Markenbekanntheit, Historie, USPs) und Quellenangaben.",
     icon: <Shield className="h-5 w-5" />,
   },
+];
 
 export default function PromptLibrary() {
   const { language } = useI18n();
