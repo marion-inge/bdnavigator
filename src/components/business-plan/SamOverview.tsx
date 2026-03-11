@@ -191,7 +191,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
         ...scoring.marketAttractiveness,
         analysis: { ...analysis, samProjections: localProj, samDescription: localSamDesc },
       },
-      samOverview: { ...localOv, geographicalRegions: localRegions, salesChannelAnalysis: localChannels },
+      samOverview: { ...localOv, geographicalRegions: localRegions },
     };
     onUpdate(updated);
     setDirty(false);
