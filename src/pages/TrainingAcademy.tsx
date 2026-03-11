@@ -11,6 +11,17 @@ import {
   ShieldCheck, Layers, Calculator, Rocket, Settings,
 } from "lucide-react";
 import noviLogo from "@/assets/novi-logo-v4.png";
+import trainingMarketVideo from "@/assets/training-market-modeling.mp4";
+import trainingStrategyVideo from "@/assets/training-strategic-frameworks.mp4";
+import trainingBusinessVideo from "@/assets/training-business-case.mp4";
+import trainingToolVideo from "@/assets/training-tool-usage.mp4";
+
+const moduleVideos: Record<string, string> = {
+  market: trainingMarketVideo,
+  strategic: trainingStrategyVideo,
+  scoring: trainingBusinessVideo,
+  tool: trainingToolVideo,
+};
 
 interface LessonCard {
   title: string;
