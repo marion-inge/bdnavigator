@@ -110,6 +110,96 @@ const ENTRIES: PromptEntry[] = [
   },
 ];
 
+const PLANNED_ENTRIES: PromptEntry[] = [
+  {
+    id: "mark-pestel-research",
+    agent: "mark",
+    triggerEn: "In Business Plan → TAM → PESTEL → Click 'Research with Mark'",
+    triggerDe: "Im Business Plan → TAM → PESTEL → Klick auf 'Mit Mark recherchieren'",
+    contextEn: "PESTEL Web Research",
+    contextDe: "PESTEL Web-Recherche",
+    systemPromptSummaryEn: "Mark acts as a market researcher. He uses web search (Perplexity) to find current political, economic, social, technological, environmental, and legal trends relevant to the opportunity's industry and geography. He structures findings into the six PESTEL dimensions with source citations.",
+    systemPromptSummaryDe: "Mark agiert als Marktforscher. Er nutzt Web-Suche (Perplexity), um aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends relevant für die Branche und Geografie der Opportunity zu finden. Er strukturiert die Ergebnisse in die sechs PESTEL-Dimensionen mit Quellenangaben.",
+    inputDataEn: [
+      "Opportunity metadata: industry, geography, technology, solution description",
+      "Existing PESTEL entries (if any) to avoid duplication",
+    ],
+    inputDataDe: [
+      "Opportunity-Metadaten: Branche, Geografie, Technologie, Lösungsbeschreibung",
+      "Bestehende PESTEL-Einträge (falls vorhanden) zur Vermeidung von Duplikaten",
+    ],
+    outputEn: "Structured PESTEL analysis with 2–4 findings per dimension, each with source URL. Summary rationale describing the macro-environment.",
+    outputDe: "Strukturierte PESTEL-Analyse mit 2–4 Erkenntnissen pro Dimension, jeweils mit Quell-URL. Zusammenfassende Begründung zur Makroumgebung.",
+    icon: <Search className="h-5 w-5" />,
+  },
+  {
+    id: "mark-porter-research",
+    agent: "mark",
+    triggerEn: "In Business Plan → TAM → Porter's Five Forces → Click 'Research with Mark'",
+    triggerDe: "Im Business Plan → TAM → Porter's Five Forces → Klick auf 'Mit Mark recherchieren'",
+    contextEn: "Porter's Five Forces Research",
+    contextDe: "Wettbewerbskräfte-Recherche",
+    systemPromptSummaryEn: "Mark researches competitive dynamics for the target industry using web search. He investigates competitor landscape, market entry barriers, substitute threats, and supplier/buyer power. He provides intensity ratings (1–5) backed by real data and sources.",
+    systemPromptSummaryDe: "Mark recherchiert Wettbewerbsdynamiken für die Zielbranche mittels Web-Suche. Er untersucht Wettbewerbslandschaft, Markteintrittsbarrieren, Substitutionsbedrohungen und Lieferanten-/Käufermacht. Er liefert Intensitätsbewertungen (1–5) gestützt auf reale Daten und Quellen.",
+    inputDataEn: [
+      "Opportunity metadata: industry, geography, technology",
+      "Existing Porter entries and intensity ratings (if any)",
+    ],
+    inputDataDe: [
+      "Opportunity-Metadaten: Branche, Geografie, Technologie",
+      "Bestehende Porter-Einträge und Intensitätsbewertungen (falls vorhanden)",
+    ],
+    outputEn: "Five Forces analysis with intensity rating (1–5), description, and 1–3 source citations per force. Overall competitive environment assessment.",
+    outputDe: "Five-Forces-Analyse mit Intensitätsbewertung (1–5), Beschreibung und 1–3 Quellenangaben pro Kraft. Gesamtbewertung des Wettbewerbsumfelds.",
+    icon: <Shield className="h-5 w-5" />,
+  },
+  {
+    id: "mark-tam-research",
+    agent: "mark",
+    triggerEn: "In Business Plan → TAM → Overview → Click 'Research with Mark'",
+    triggerDe: "Im Business Plan → TAM → Overview → Klick auf 'Mit Mark recherchieren'",
+    contextEn: "TAM Market Research",
+    contextDe: "TAM Marktrecherche",
+    systemPromptSummaryEn: "Mark searches for market size data, growth rates (CAGR), and industry reports from public sources. He provides a factual foundation of market figures that IDA can then use for her TAM estimation. He prioritizes recent reports (< 2 years old) and cites all sources.",
+    systemPromptSummaryDe: "Mark sucht nach Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichten aus öffentlichen Quellen. Er liefert eine Faktengrundlage mit Marktzahlen, die IDA dann für ihre TAM-Schätzung nutzen kann. Er priorisiert aktuelle Berichte (< 2 Jahre alt) und zitiert alle Quellen.",
+    inputDataEn: [
+      "Opportunity metadata: industry, geography, technology, solution description",
+      "TAM description and scope (if defined)",
+      "Existing market research data (if any)",
+    ],
+    inputDataDe: [
+      "Opportunity-Metadaten: Branche, Geografie, Technologie, Lösungsbeschreibung",
+      "TAM-Beschreibung und Scope (falls definiert)",
+      "Bestehende Marktforschungsdaten (falls vorhanden)",
+    ],
+    outputEn: "Market size estimates from 2–5 sources with publication date, publisher, and URL. Growth rate (CAGR) range. Key market drivers and constraints. Data quality assessment.",
+    outputDe: "Marktgrößen-Schätzungen aus 2–5 Quellen mit Veröffentlichungsdatum, Herausgeber und URL. Wachstumsrate (CAGR)-Spanne. Zentrale Markttreiber und -einschränkungen. Datenqualitätsbewertung.",
+    icon: <Globe className="h-5 w-5" />,
+  },
+  {
+    id: "mark-competitor-research",
+    agent: "mark",
+    triggerEn: "In Idea Scoring → Competitor Landscape → Click 'Research with Mark'",
+    triggerDe: "Im Idea Scoring → Competitor Landscape → Klick auf 'Mit Mark recherchieren'",
+    contextEn: "Competitor Web Research",
+    contextDe: "Wettbewerber Web-Recherche",
+    systemPromptSummaryEn: "Mark researches competitor profiles including market shares, pricing strategies, product portfolios, and key differentiators from public web sources, press releases, and industry databases. He creates structured competitor entries ready for import into the Competitor Landscape.",
+    systemPromptSummaryDe: "Mark recherchiert Wettbewerber-Profile einschließlich Marktanteile, Preisstrategien, Produktportfolios und wesentliche Differenzierungsmerkmale aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken. Er erstellt strukturierte Wettbewerber-Einträge zum Import in die Competitor Landscape.",
+    inputDataEn: [
+      "Opportunity metadata: industry, geography, technology, solution description",
+      "Existing competitor entries (if any) to enrich or avoid duplication",
+      "Competitor names mentioned in scoring comments (if any)",
+    ],
+    inputDataDe: [
+      "Opportunity-Metadaten: Branche, Geografie, Technologie, Lösungsbeschreibung",
+      "Bestehende Wettbewerber-Einträge (falls vorhanden) zum Anreichern oder zur Duplikat-Vermeidung",
+      "In Scoring-Kommentaren erwähnte Wettbewerbernamen (falls vorhanden)",
+    ],
+    outputEn: "3–6 competitor profiles with: name, estimated market share, threat level (1–5), dimension ratings (price, tech features, reach, brand awareness, history, USPs), and source citations.",
+    outputDe: "3–6 Wettbewerber-Profile mit: Name, geschätzter Marktanteil, Bedrohungslevel (1–5), Dimensionsbewertungen (Preis, Tech-Features, Reichweite, Markenbekanntheit, Historie, USPs) und Quellenangaben.",
+    icon: <Shield className="h-5 w-5" />,
+  },
+
 export default function PromptLibrary() {
   const { language } = useI18n();
   const navigate = useNavigate();
