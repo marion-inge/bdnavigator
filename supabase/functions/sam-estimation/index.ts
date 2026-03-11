@@ -179,6 +179,8 @@ Also provide:
 
 IMPORTANT: The SAM must always be SMALLER than the TAM. SAM typically represents 10-40% of TAM depending on industry focus, geographic constraints, and customer segment accessibility.
 
+If sales channel data is provided, factor in channel reach, cost structure, and channel mix when estimating market accessibility in each scenario. Channels with higher reach and lower cost support optimistic scenarios; limited channels constrain conservative scenarios.
+
 Use the tool "sam_estimation" to return your structured response.`;
 
     const userPrompt = `# Opportunity: ${opportunityTitle}
