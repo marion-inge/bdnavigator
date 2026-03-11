@@ -268,6 +268,19 @@ export default function PromptLibrary() {
             ))}
           </div>
         </div>
+
+        {/* Planned: Mark Web Search */}
+        <div>
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            {bp("Planned – Mark Web Search", "Geplant – Mark Web-Recherche")}
+            <Badge variant="outline" className="text-[10px] border-agent-mark/40 text-agent-mark">Coming Soon</Badge>
+          </h2>
+          <div className="space-y-3">
+            {PLANNED_ENTRIES.map(entry => (
+              <PromptCard key={entry.id} entry={entry} expanded={expandedId === entry.id} onToggle={() => toggle(entry.id)} bp={bp} agentLabel={agentLabel} agentColor={agentColor} language={language} />
+            ))}
+          </div>
+        </div>
       </main>
     </div>
   );
