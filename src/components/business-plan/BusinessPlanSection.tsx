@@ -133,6 +133,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
               opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
               solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
+          <TabsContent value="sam-channels">
+            <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
+          </TabsContent>
           <TabsContent value="sam-customers">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
