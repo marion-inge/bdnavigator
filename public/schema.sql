@@ -76,7 +76,31 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
 --   "strategicFit":         { "score": 3, "comment": "" },
 --   "feasibility":          { "score": 3, "comment": "" },
 --   "commercialViability":  { "score": 3, "comment": "" },
---   "risk":                 { "score": 3, "comment": "" }
+--   "risk":                 { "score": 3, "comment": "" },
+--
+--   "detailed": {                              -- Detailed Scoring (populated during Business Plan)
+--     "strategicFit": {                        -- Strategic Fit analysis
+--       "score": 3, "details": "",
+--       "alignmentDimensions": [{ "key": "", "label": "", "current": 3, "required": 4 }],
+--       "capabilityGaps": [{ "id": "", "capability": "", "currentLevel": 0, "requiredLevel": 0, "action": "", "priority": "high" }]
+--     },
+--     "feasibility": {                         -- Feasibility analysis
+--       "score": 3, "details": "", "trl": 0,
+--       "milestones": [{ "id": "", "name": "", "targetDate": "", "status": "planned" }]
+--     },
+--     "commercialViability": {                 -- Commercial viability
+--       "score": 3, "details": "", "pricingModel": "", "unitPrice": 0, "grossMargin": 0,
+--       "projections": [{ "year": 1, "revenue": 0, "costs": 0 }], "breakEvenUnits": 0
+--     },
+--     "risk": {                                -- Risk assessment
+--       "score": 3, "details": "",
+--       "riskItems": [{ "id": "", "name": "", "category": "market", "probability": 0, "impact": 0, "mitigation": "" }]
+--     },
+--     "competitorLandscape": { "score": 3, "analysis": { ... } },
+--     "organisationalReadiness": { "score": 3, "culture": "", "processes": "", "skills": "", "leadership": "", "resources": "", "stakeholders": "", "details": "" },
+--     "pilotCustomer": { "score": 3, "entries": [...], "notes": "" },
+--     "portfolioFit": { "score": 3, "dimensions": [...], "cannibalizationRisk": "", "crossSellingPotential": "", "sharedResources": "", "notes": "" }
+--   }
 -- }
 
 -- ============================================================
@@ -95,8 +119,10 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
 -- ]
 
 -- ============================================================
--- JSON Structure: business_plan (vollständig)
--- Typen definiert in: src/lib/businessPlanTypes.ts, src/lib/types.ts
+-- JSON Structure: business_plan
+-- Nur Marktmodellierung (TAM/SAM/SOM) + KI-Estimations.
+-- Detailed Scoring Keys wurden nach scoring.detailed verschoben.
+-- Typen: src/lib/businessPlanTypes.ts, src/lib/types.ts
 -- ============================================================
 -- {
 --   "tamOverview": {                          -- TamOverviewData
@@ -111,7 +137,7 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
 --     "sourceAssessment": "",
 --     "derivationMethod": "",
 --     "supportingModelNotes": "",
---     "geographicalRegions": [               -- GeographicalRegion[]
+--     "geographicalRegions": [
 --       { "region": "", "potential": 3, "marketSize": "", "notes": "" }
 --     ]
 --   },
@@ -130,78 +156,42 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
 --     "resourceScenarios": "",
 --     "requiredInvestments": "",
 --     "geographicalRegions": [...],
---     "salesChannelAnalysis": {               -- SalesChannelAnalysis (optional)
---       "entries": [{                         -- SalesChannelEntry[]
---         "id": "uuid",
---         "channelName": "",
---         "channelType": "direct|indirect|digital|partner|other",
---         "reach": "",
---         "costLevel": "low|medium|high",
---         "targetSegments": "",
---         "rating": 3,                        -- 1-5
---         "notes": ""
---       }],
+--     "salesChannelAnalysis": {               -- optional
+--       "entries": [{ "id": "", "channelName": "", "channelType": "direct|indirect|digital|partner|other", "reach": "", "costLevel": "low|medium|high", "targetSegments": "", "rating": 3, "notes": "" }],
 --       "channelStrategy": "",
 --       "channelMix": ""
 --     }
 --   },
 --
 --   "somOverview": {                          -- SomOverviewData
---     "projections": [                        -- MarketYearValue[] (5 Jahre)
---       { "year": 1, "value": 0 },
---       { "year": 2, "value": 0 },
---       { "year": 3, "value": 0 },
---       { "year": 4, "value": 0 },
---       { "year": 5, "value": 0 }
---     ],
---     "marketShareVsSam": "",
---     "growthRate": "",
---     "visibilityRate": "",
---     "salesCapacity": "",
---     "pipeline": "",
---     "licenseToOperate": "",
---     "salesCapacityScenario": "",
---     "marketingBudgetScenario": "",
---     "positioningScenario": "",
+--     "projections": [{ "year": 1, "value": 0 }, ...],
+--     "marketShareVsSam": "", "growthRate": "", "visibilityRate": "",
+--     "salesCapacity": "", "pipeline": "", "licenseToOperate": "",
+--     "salesCapacityScenario": "", "marketingBudgetScenario": "", "positioningScenario": "",
 --     "geographicalRegions": [...],
---     "portfolioCoveragePct": 0,              -- optional, für Business Case Bridge
---     "visibilityPct": 0,                     -- optional
---     "visibilityGrowthPct": 0,               -- optional
---     "hitratePct": 0                         -- optional
+--     "portfolioCoveragePct": 0, "visibilityPct": 0, "visibilityGrowthPct": 0, "hitratePct": 0
 --   },
 --
---   "combinedInterpretation": {               -- CombinedInterpretation
---     "overallPotential": "",
---     "samDevelopment": "",
---     "somDevelopment": "",
---     "gapsAndLevers": ""
---   },
+--   "combinedInterpretation": { "overallPotential": "", "samDevelopment": "", "somDevelopment": "", "gapsAndLevers": "" },
 --
---   "marketAttractiveness": {                 -- Detailed Scoring
+--   "marketAttractiveness": {                 -- Customer/Market Landscape (bleibt in business_plan)
 --     "score": 3,
 --     "analysis": {                           -- DetailedMarketAnalysis
 --       "tam": "", "tamDescription": "",
 --       "tamProjections": [{"year":1,"value":0}],
 --       "sam": "", "samDescription": "",
 --       "samProjections": [{"year":1,"value":0}],
---       "marketGrowthRate": "",
---       "targetCustomers": "",
---       "customerRelationship": "",
---       "customerSegments": [                 -- CustomerSegment[]
---         { "name": "", "size": 0, "description": "" }
---       ],
---       "competitors": "",
---       "competitivePosition": "",
---       "competitorEntries": [                -- CompetitorEntry[]
---         { "name": "", "marketShare": 0, "threatLevel": 3,
---           "dimensionRatings": [             -- CompetitorDimensionRating[] (optional)
---             { "dimension": "", "score": 3, "comment": "" }
---           ]
---         }
---       ],
+--       "marketGrowthRate": "", "targetCustomers": "", "customerRelationship": "",
+--       "customerSegments": [{ "name": "", "size": 0, "description": "" }],
+--       "competitors": "", "competitivePosition": "",
+--       "competitorEntries": [{ "name": "", "marketShare": 0, "threatLevel": 3, "dimensionRatings": [...] }],
 --       "geographicalRegions": [...]
 --     }
---   }
+--   },
+--
+--   "tamEstimation": { ... },                 -- IDA KI-Schätzung (persistiert)
+--   "samEstimation": { ... },                 -- IDA KI-Schätzung (persistiert)
+--   "somEstimation": { ... }                  -- IDA KI-Schätzung (persistiert)
 -- }
 
 -- ============================================================
