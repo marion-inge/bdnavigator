@@ -15,6 +15,23 @@ export interface TamOverviewData {
   supportingModelNotes: string;
 }
 
+export interface SalesChannelEntry {
+  id: string;
+  channelName: string;
+  channelType: "direct" | "indirect" | "digital" | "partner" | "other";
+  reach: string;
+  costLevel: "low" | "medium" | "high";
+  targetSegments: string;
+  rating: number; // 1-5
+  notes: string;
+}
+
+export interface SalesChannelAnalysis {
+  entries: SalesChannelEntry[];
+  channelStrategy: string;
+  channelMix: string;
+}
+
 export interface SamOverviewData {
   samVsTamExplanation: string;
   includedIndustries: string;
@@ -29,6 +46,7 @@ export interface SamOverviewData {
   resourceScenarios: string;
   requiredInvestments: string;
   geographicalRegions: GeographicalRegion[];
+  salesChannelAnalysis?: SalesChannelAnalysis;
 }
 
 export interface SomOverviewData {
