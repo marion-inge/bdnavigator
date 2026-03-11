@@ -209,21 +209,6 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         ],
       },
       {
-        title: "Detailed Scoring (Business Plan)",
-        description: "Vertiefende Bewertung in 8 Dimensionen",
-        icon: BarChart3,
-        content: [
-          {
-            heading: "Die 8 Bewertungsdimensionen",
-            body: "Nach Gate 1 wird die Bewertung vertieft:\n1. Strategic Fit: Strategische Passung & Capability Gaps\n2. Feasibility: TRL, Umsetzungsplan, Ressourcen\n3. Commercial Viability: Preismodell, Margen, Break-Even\n4. Risk: Markt-, Technologie- und Umsetzungsrisiken\n5. Competitor Landscape: Wettbewerbsanalyse\n6. Organisational Readiness: Organisatorische Bereitschaft\n7. Pilot Customer: Pilotkunden-Bewertung\n8. Portfolio Fit: Passung zum bestehenden Portfolio",
-          },
-          {
-            heading: "Scoring-Übersicht",
-            body: "Das Radar-Chart auf dem Scoring-Tab zeigt alle 8 Dimensionen auf einen Blick. So erkennen Sie schnell, wo Stärken und Schwächen liegen.",
-          },
-        ],
-      },
-      {
         title: "Investment Case & Business Case",
         description: "Von der Idee zur Investitionsentscheidung",
         icon: Calculator,
@@ -399,13 +384,6 @@ const modulesEN: typeof modulesDE = [
         content: [
           { heading: "The 22-Criteria Questionnaire", body: "Idea Scoring evaluates new ideas across 22 questions in 5 categories:\n1. Strategic Fit\n2. Market Potential\n3. Technical Feasibility\n4. Commercial Viability\n5. Risk\n\nEach question is rated on a scale. Category weights can be adjusted.", tip: "A score above 60% is typically considered 'Go' for Gate 1. Below 40%, the idea should be reworked or dropped." },
           { heading: "IDA Assessment", body: "The AI agent IDA analyzes your scoring results and provides an assessment with strengths, weaknesses, risks and next steps." },
-        ],
-      },
-      {
-        title: "Detailed Scoring (Business Plan)", description: "In-depth assessment across 8 dimensions", icon: BarChart3,
-        content: [
-          { heading: "The 8 Dimensions", body: "After Gate 1, the assessment deepens:\n1. Strategic Fit\n2. Feasibility: TRL, implementation plan, resources\n3. Commercial Viability: Pricing, margins, break-even\n4. Risk: Market, technology and execution risks\n5. Competitor Landscape\n6. Organisational Readiness\n7. Pilot Customer assessment\n8. Portfolio Fit" },
-          { heading: "Scoring Overview", body: "The radar chart on the Scoring tab shows all 8 dimensions at a glance." },
         ],
       },
       {
