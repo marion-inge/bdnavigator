@@ -387,13 +387,6 @@ const modulesEN: typeof modulesDE = [
         ],
       },
       {
-        title: "Detailed Scoring (Business Plan)", description: "In-depth assessment across 8 dimensions", icon: BarChart3,
-        content: [
-          { heading: "The 8 Dimensions", body: "After Gate 1, the assessment deepens:\n1. Strategic Fit\n2. Feasibility: TRL, implementation plan, resources\n3. Commercial Viability: Pricing, margins, break-even\n4. Risk: Market, technology and execution risks\n5. Competitor Landscape\n6. Organisational Readiness\n7. Pilot Customer assessment\n8. Portfolio Fit" },
-          { heading: "Scoring Overview", body: "The radar chart on the Scoring tab shows all 8 dimensions at a glance." },
-        ],
-      },
-      {
         title: "Investment Case & Business Case", description: "From idea to investment decision", icon: Calculator,
         content: [
           { heading: "Investment Case", body: "Summarizes why to invest: expected ROI, required investment, timeline and risk assessment. Created before Gate 2." },
