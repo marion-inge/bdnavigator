@@ -16,6 +16,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
+import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
 
 interface TamScenario {
   projections: MarketYearValue[];
@@ -361,6 +362,14 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             </div>
           </CardContent>
         </Card>
+
+        {/* Mark Web Search Placeholder */}
+        <MarkWebSearchPlaceholder
+          titleEn="TAM Market Research"
+          titleDe="TAM Marktrecherche"
+          descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports from public sources to provide a factual foundation for IDA's TAM estimation."
+          descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte aus öffentlichen Quellen als Faktengrundlage für IDAs TAM-Schätzung."
+        />
 
         {/* IDA TAM Estimation */}
         {!tamEstimation ? (

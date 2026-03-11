@@ -1,4 +1,5 @@
 import { useI18n } from "@/lib/i18n";
+import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
 import { DetailedScoring, CompetitorEntry, CompetitorDimensionRating } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -342,6 +343,14 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
           ) : null)}
         </div>
       )}
+
+      {/* Mark Web Search Placeholder */}
+      <MarkWebSearchPlaceholder
+        titleEn="Competitor Web Research"
+        titleDe="Wettbewerber Web-Recherche"
+        descriptionEn="Mark will research competitor profiles, market shares, pricing strategies, and product differentiators from public web sources, press releases, and industry databases."
+        descriptionDe="Mark recherchiert Wettbewerber-Profile, Marktanteile, Preisstrategien und Produktdifferenzierungen aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken."
+      />
 
     </div>
     </EditableSection>

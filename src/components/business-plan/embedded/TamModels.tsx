@@ -1,4 +1,5 @@
 import { useI18n } from "@/lib/i18n";
+import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
 import { StrategicAnalyses, createDefaultStrategicAnalyses, createDefaultValueChain, ValueChainStage, TamModels } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,6 +84,12 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly }: Embedde
           <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={pestel.rationale} onChange={e => update({ rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
+      <MarkWebSearchPlaceholder
+        titleEn="PESTEL Web Research"
+        titleDe="PESTEL Web-Recherche"
+        descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources."
+        descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends relevant für deine Branche und Geografie aus öffentlichen Webquellen."
+      />
     </EditableSection>
   );
 }
@@ -141,6 +148,12 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
           <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={porter.rationale} onChange={e => update({ ...porter, rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
+      <MarkWebSearchPlaceholder
+        titleEn="Competitive Forces Research"
+        titleDe="Wettbewerbskräfte-Recherche"
+        descriptionEn="Mark will research competitor landscape, market entry barriers, substitute products, and supplier/buyer dynamics from industry reports and public sources."
+        descriptionDe="Mark recherchiert Wettbewerbslandschaft, Markteintrittsbarrieren, Substitutionsprodukte und Lieferanten-/Käufer-Dynamiken aus Branchenberichten und öffentlichen Quellen."
+      />
     </EditableSection>
   );
 }
