@@ -59,12 +59,18 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly }: Embedde
   const update = (patch: Partial<typeof pestel>) => onSave({ ...data, pestel: { ...pestel, ...patch } });
 
   const factors = [
-    { key: "political" as const, label: bp("Political", "Politisch"), icon: "🏛️" },
-    { key: "economic" as const, label: bp("Economic", "Ökonomisch"), icon: "💰" },
-    { key: "social" as const, label: bp("Social", "Sozial"), icon: "👥" },
-    { key: "technological" as const, label: bp("Technological", "Technologisch"), icon: "⚙️" },
-    { key: "environmental" as const, label: bp("Environmental", "Ökologisch"), icon: "🌍" },
-    { key: "legal" as const, label: bp("Legal", "Rechtlich"), icon: "⚖️" },
+    { key: "political" as const, label: bp("Political", "Politisch"), icon: "🏛️",
+      hint: bp("Consider: What regulations could restrict or enable your market? Trade policies, subsidies, political stability?", "Bedenke: Welche Regulierungen könnten deinen Markt einschränken oder fördern? Handelspolitik, Subventionen, politische Stabilität?") },
+    { key: "economic" as const, label: bp("Economic", "Ökonomisch"), icon: "💰",
+      hint: bp("Consider: How do interest rates, inflation, or economic cycles affect demand?", "Bedenke: Wie beeinflussen Zinsen, Inflation oder Konjunkturzyklen die Nachfrage?") },
+    { key: "social" as const, label: bp("Social", "Sozial"), icon: "👥",
+      hint: bp("Consider: Demographic shifts, changing work habits, sustainability awareness?", "Bedenke: Demographischer Wandel, veränderte Arbeitsgewohnheiten, Nachhaltigkeitsbewusstsein?") },
+    { key: "technological" as const, label: bp("Technological", "Technologisch"), icon: "⚙️",
+      hint: bp("Consider: Which technologies could make your offering obsolete? AI, automation, new standards? What disruptive innovations are emerging?", "Bedenke: Welche Technologien könnten dein Angebot obsolet machen? KI, Automatisierung, neue Standards? Welche disruptiven Innovationen zeichnen sich ab?") },
+    { key: "environmental" as const, label: bp("Environmental", "Ökologisch"), icon: "🌍",
+      hint: bp("Consider: Sustainability requirements, carbon regulations, circular economy trends?", "Bedenke: Nachhaltigkeitsanforderungen, CO₂-Regulierung, Kreislaufwirtschaft?") },
+    { key: "legal" as const, label: bp("Legal", "Rechtlich"), icon: "⚖️",
+      hint: bp("Consider: Upcoming laws, compliance requirements (ISO, GDPR), industry-specific norms that could impact your product or market access?", "Bedenke: Kommende Gesetze, Compliance-Anforderungen (ISO, DSGVO), branchenspezifische Normen die dein Produkt oder den Marktzugang beeinflussen?") },
   ];
 
   return (
