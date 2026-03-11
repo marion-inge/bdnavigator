@@ -376,6 +376,14 @@ const modulesEN: typeof modulesDE = [
         ],
       },
       {
+        title: "Regulation & Technological Disruption", description: "Identifying risks from regulation and obsolescence", icon: ShieldCheck,
+        content: [
+          { heading: "Why does it matter?", body: "Two of the biggest external risks for any innovation:\n1. Regulatory changes that restrict market access or require product adaptation\n2. Technological disruption that can make your offering obsolete\n\nBoth risks are often underestimated because they develop gradually.", example: "The EU Machinery Regulation 2027 requires new cybersecurity standards for connected instruments. Meanwhile, AI-based optical inspection could replace traditional tactile measurement in certain applications." },
+          { heading: "Where to document in the tool?", body: "• PESTEL → Political & Legal: Regulatory frameworks and upcoming legislation\n• PESTEL → Technological: Disruptive technologies and innovation trends\n• Porter's Five Forces → Threat of Substitutes: Alternative solutions and technologies\n• Risk Scoring (Business Plan): Concrete risk assessment with likelihood", tip: "Use the guiding questions in the PESTEL and Porter's forms to systematically think through these risks." },
+          { heading: "Best Practice", body: "1. Review the regulatory landscape quarterly\n2. Maintain a technology radar for your market segment\n3. Consider 'what-if' scenarios in SAM/SOM estimation\n4. Explicitly ask about regulatory and technological risks in gate meetings" },
+        ],
+      },
+      {
         title: "Ansoff Matrix", description: "Classifying growth strategies", icon: Layers,
         content: [
           { heading: "4 Strategy Fields", body: "• Market Penetration: Existing product, existing market (lowest risk)\n• Market Development: Existing product, new market\n• Product Development: New product, existing market\n• Diversification: New product, new market (highest risk)" },
