@@ -79,10 +79,11 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly }: Embedde
         <CardHeader><CardTitle>🏛️ PESTEL</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {factors.map(({ key, label, icon }) => (
+            {factors.map(({ key, label, icon, hint }) => (
               <div key={key} className="rounded-lg border border-border p-3 bg-card">
                 <Label className="text-sm font-semibold">{icon} {label}</Label>
-                <Textarea className="mt-2" value={pestel[key]} onChange={e => update({ [key]: e.target.value })} placeholder={`${label}...`} disabled={readonly} rows={3} />
+                <p className="text-xs text-muted-foreground mt-1 mb-2 italic">{hint}</p>
+                <Textarea value={pestel[key]} onChange={e => update({ [key]: e.target.value })} placeholder={`${label}...`} disabled={readonly} rows={3} />
               </div>
             ))}
           </div>
