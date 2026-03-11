@@ -148,6 +148,15 @@ serve(async (req) => {
       }
     }
 
+    // Sales Channel Analysis
+    if (salesChannelAnalysis?.entries?.length) {
+      sections.push(`## Sales Channel Analysis\n${salesChannelAnalysis.entries.map((e: any) =>
+        `- **${e.channelName}** (${e.channelType}, Cost: ${e.costLevel}, Rating: ${e.rating}/5): Reach: ${e.reach}. Target Segments: ${e.targetSegments}. Notes: ${e.notes}`
+      ).join("\n")}
+- Channel Strategy: ${salesChannelAnalysis.channelStrategy || "N/A"}
+- Channel Mix & Synergies: ${salesChannelAnalysis.channelMix || "N/A"}`);
+    }
+
     const systemPrompt = `You are IDA (Internal Data Analyst), a specialized AI for business development market analysis.
 Your task is to estimate the SAM (Serviceable Addressable Market) based on the provided TAM and qualitative business data.
 
