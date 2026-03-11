@@ -209,21 +209,6 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         ],
       },
       {
-        title: "Detailed Scoring (Business Plan)",
-        description: "Vertiefende Bewertung in 8 Dimensionen",
-        icon: BarChart3,
-        content: [
-          {
-            heading: "Die 8 Bewertungsdimensionen",
-            body: "Nach Gate 1 wird die Bewertung vertieft:\n1. Strategic Fit: Strategische Passung & Capability Gaps\n2. Feasibility: TRL, Umsetzungsplan, Ressourcen\n3. Commercial Viability: Preismodell, Margen, Break-Even\n4. Risk: Markt-, Technologie- und Umsetzungsrisiken\n5. Competitor Landscape: Wettbewerbsanalyse\n6. Organisational Readiness: Organisatorische Bereitschaft\n7. Pilot Customer: Pilotkunden-Bewertung\n8. Portfolio Fit: Passung zum bestehenden Portfolio",
-          },
-          {
-            heading: "Scoring-Übersicht",
-            body: "Das Radar-Chart auf dem Scoring-Tab zeigt alle 8 Dimensionen auf einen Blick. So erkennen Sie schnell, wo Stärken und Schwächen liegen.",
-          },
-        ],
-      },
-      {
         title: "Investment Case & Business Case",
         description: "Von der Idee zur Investitionsentscheidung",
         icon: Calculator,
