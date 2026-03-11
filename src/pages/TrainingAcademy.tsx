@@ -145,6 +145,27 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         ],
       },
       {
+        title: "Regulierung & Technologische Disruption",
+        description: "Risiken durch Regulierung und Obsoleszenz erkennen",
+        icon: ShieldCheck,
+        content: [
+          {
+            heading: "Warum ist das wichtig?",
+            body: "Zwei der größten externen Risiken für jede Innovation sind:\n1. Regulatorische Änderungen, die den Marktzugang erschweren oder das Produkt anpassen erfordern\n2. Technologische Disruption, die das eigene Angebot obsolet machen kann\n\nBeide Risiken werden oft unterschätzt, weil sie schleichend auftreten.",
+            example: "Die EU-Maschinenverordnung 2027 erfordert neue Cybersecurity-Anforderungen für vernetzte Messgeräte. Gleichzeitig könnten KI-basierte optische Prüfsysteme klassische taktile Messtechnik in bestimmten Anwendungen ersetzen.",
+          },
+          {
+            heading: "Wo im Tool dokumentieren?",
+            body: "• PESTEL → Political & Legal: Regulatorische Rahmenbedingungen und kommende Gesetzesänderungen\n• PESTEL → Technological: Disruptive Technologien und Innovationstrends\n• Porter's Five Forces → Threat of Substitutes: Alternative Lösungen und Technologien\n• Risk-Scoring (Business Plan): Konkrete Risikobewertung mit Eintrittswahrscheinlichkeit",
+            tip: "Nutze die Leitfragen in den PESTEL- und Porter's-Formularen, um systematisch über diese Risiken nachzudenken. Die Fragen helfen, keine blinden Flecken zu übersehen.",
+          },
+          {
+            heading: "Best Practice",
+            body: "1. Regulatorische Landschaft quartalsweise reviewen\n2. Technologie-Radar für das eigene Marktsegment pflegen\n3. 'What-if'-Szenarien in der SAM/SOM-Schätzung berücksichtigen\n4. Im Gate-Meeting explizit nach regulatorischen und technologischen Risiken fragen",
+          },
+        ],
+      },
+      {
         title: "Ansoff-Matrix",
         description: "Wachstumsstrategien klassifizieren",
         icon: Layers,
@@ -352,6 +373,14 @@ const modulesEN: typeof modulesDE = [
         title: "Porter's Five Forces", description: "Industry structure analysis", icon: ShieldCheck,
         content: [
           { heading: "The 5 Forces", body: "1. Threat of new entrants\n2. Bargaining power of suppliers\n3. Bargaining power of customers\n4. Threat of substitutes\n5. Rivalry among existing competitors", tip: "High entry barriers + few substitutes = attractive market. In the tool, rate each force on a 1-5 scale." },
+        ],
+      },
+      {
+        title: "Regulation & Technological Disruption", description: "Identifying risks from regulation and obsolescence", icon: ShieldCheck,
+        content: [
+          { heading: "Why does it matter?", body: "Two of the biggest external risks for any innovation:\n1. Regulatory changes that restrict market access or require product adaptation\n2. Technological disruption that can make your offering obsolete\n\nBoth risks are often underestimated because they develop gradually.", example: "The EU Machinery Regulation 2027 requires new cybersecurity standards for connected instruments. Meanwhile, AI-based optical inspection could replace traditional tactile measurement in certain applications." },
+          { heading: "Where to document in the tool?", body: "• PESTEL → Political & Legal: Regulatory frameworks and upcoming legislation\n• PESTEL → Technological: Disruptive technologies and innovation trends\n• Porter's Five Forces → Threat of Substitutes: Alternative solutions and technologies\n• Risk Scoring (Business Plan): Concrete risk assessment with likelihood", tip: "Use the guiding questions in the PESTEL and Porter's forms to systematically think through these risks." },
+          { heading: "Best Practice", body: "1. Review the regulatory landscape quarterly\n2. Maintain a technology radar for your market segment\n3. Consider 'what-if' scenarios in SAM/SOM estimation\n4. Explicitly ask about regulatory and technological risks in gate meetings" },
         ],
       },
       {

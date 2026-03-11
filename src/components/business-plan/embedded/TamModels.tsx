@@ -59,12 +59,18 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly }: Embedde
   const update = (patch: Partial<typeof pestel>) => onSave({ ...data, pestel: { ...pestel, ...patch } });
 
   const factors = [
-    { key: "political" as const, label: bp("Political", "Politisch"), icon: "🏛️" },
-    { key: "economic" as const, label: bp("Economic", "Ökonomisch"), icon: "💰" },
-    { key: "social" as const, label: bp("Social", "Sozial"), icon: "👥" },
-    { key: "technological" as const, label: bp("Technological", "Technologisch"), icon: "⚙️" },
-    { key: "environmental" as const, label: bp("Environmental", "Ökologisch"), icon: "🌍" },
-    { key: "legal" as const, label: bp("Legal", "Rechtlich"), icon: "⚖️" },
+    { key: "political" as const, label: bp("Political", "Politisch"), icon: "🏛️",
+      hint: bp("Consider: What regulations could restrict or enable your market? Trade policies, subsidies, political stability?", "Bedenke: Welche Regulierungen könnten deinen Markt einschränken oder fördern? Handelspolitik, Subventionen, politische Stabilität?") },
+    { key: "economic" as const, label: bp("Economic", "Ökonomisch"), icon: "💰",
+      hint: bp("Consider: How do interest rates, inflation, or economic cycles affect demand?", "Bedenke: Wie beeinflussen Zinsen, Inflation oder Konjunkturzyklen die Nachfrage?") },
+    { key: "social" as const, label: bp("Social", "Sozial"), icon: "👥",
+      hint: bp("Consider: Demographic shifts, changing work habits, sustainability awareness?", "Bedenke: Demographischer Wandel, veränderte Arbeitsgewohnheiten, Nachhaltigkeitsbewusstsein?") },
+    { key: "technological" as const, label: bp("Technological", "Technologisch"), icon: "⚙️",
+      hint: bp("Consider: Which technologies could make your offering obsolete? AI, automation, new standards? What disruptive innovations are emerging?", "Bedenke: Welche Technologien könnten dein Angebot obsolet machen? KI, Automatisierung, neue Standards? Welche disruptiven Innovationen zeichnen sich ab?") },
+    { key: "environmental" as const, label: bp("Environmental", "Ökologisch"), icon: "🌍",
+      hint: bp("Consider: Sustainability requirements, carbon regulations, circular economy trends?", "Bedenke: Nachhaltigkeitsanforderungen, CO₂-Regulierung, Kreislaufwirtschaft?") },
+    { key: "legal" as const, label: bp("Legal", "Rechtlich"), icon: "⚖️",
+      hint: bp("Consider: Upcoming laws, compliance requirements (ISO, GDPR), industry-specific norms that could impact your product or market access?", "Bedenke: Kommende Gesetze, Compliance-Anforderungen (ISO, DSGVO), branchenspezifische Normen die dein Produkt oder den Marktzugang beeinflussen?") },
   ];
 
   return (
@@ -73,10 +79,11 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly }: Embedde
         <CardHeader><CardTitle>🏛️ PESTEL</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {factors.map(({ key, label, icon }) => (
+            {factors.map(({ key, label, icon, hint }) => (
               <div key={key} className="rounded-lg border border-border p-3 bg-card">
                 <Label className="text-sm font-semibold">{icon} {label}</Label>
-                <Textarea className="mt-2" value={pestel[key]} onChange={e => update({ [key]: e.target.value })} placeholder={`${label}...`} disabled={readonly} rows={3} />
+                <p className="text-xs text-muted-foreground mt-1 mb-2 italic">{hint}</p>
+                <Textarea value={pestel[key]} onChange={e => update({ [key]: e.target.value })} placeholder={`${label}...`} disabled={readonly} rows={3} />
               </div>
             ))}
           </div>
@@ -104,11 +111,16 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
   const update = (updated: typeof porter) => onSave({ ...data, porter: updated });
 
   const forces = [
-    { key: "competitiveRivalry" as const, label: bp("Competitive Rivalry", "Wettbewerbsrivalität"), icon: "⚔️" },
-    { key: "threatOfNewEntrants" as const, label: bp("Threat of New Entrants", "Neue Marktteilnehmer"), icon: "🚪" },
-    { key: "threatOfSubstitutes" as const, label: bp("Threat of Substitutes", "Substitute"), icon: "🔄" },
-    { key: "bargainingPowerBuyers" as const, label: bp("Bargaining Power Buyers", "Verhandlungsmacht Käufer"), icon: "🛒" },
-    { key: "bargainingPowerSuppliers" as const, label: bp("Bargaining Power Suppliers", "Verhandlungsmacht Lieferanten"), icon: "🏭" },
+    { key: "competitiveRivalry" as const, label: bp("Competitive Rivalry", "Wettbewerbsrivalität"), icon: "⚔️",
+      hint: bp("How intense is the competition? Price wars, innovation speed?", "Wie intensiv ist der Wettbewerb? Preiskämpfe, Innovationsgeschwindigkeit?") },
+    { key: "threatOfNewEntrants" as const, label: bp("Threat of New Entrants", "Neue Marktteilnehmer"), icon: "🚪",
+      hint: bp("How easy can new players enter? Low barriers = high threat.", "Wie leicht können neue Anbieter eintreten? Niedrige Barrieren = hohe Bedrohung.") },
+    { key: "threatOfSubstitutes" as const, label: bp("Threat of Substitutes", "Substitute"), icon: "🔄",
+      hint: bp("Which alternative technologies or approaches could replace your solution? Consider AI, automation, or entirely different methods solving the same problem.", "Welche alternativen Technologien oder Ansätze könnten deine Lösung ersetzen? Bedenke KI, Automatisierung oder völlig andere Methoden die das gleiche Problem lösen.") },
+    { key: "bargainingPowerBuyers" as const, label: bp("Bargaining Power Buyers", "Verhandlungsmacht Käufer"), icon: "🛒",
+      hint: bp("Can buyers easily switch? Few large customers = high power.", "Können Käufer leicht wechseln? Wenige Großkunden = hohe Macht.") },
+    { key: "bargainingPowerSuppliers" as const, label: bp("Bargaining Power Suppliers", "Verhandlungsmacht Lieferanten"), icon: "🏭",
+      hint: bp("How dependent are you on key suppliers or technologies?", "Wie abhängig bist du von Schlüssellieferanten oder Technologien?") },
   ];
   const radarData = forces.map(f => ({ force: f.label, value: porter[f.key].intensity }));
 
@@ -129,7 +141,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
             </ResponsiveContainer>
           </div>
           <div className="space-y-3">
-            {forces.map(({ key, label, icon }) => {
+            {forces.map(({ key, label, icon, hint }) => {
               const force = porter[key];
               const intensityColor = force.intensity <= 2 ? "text-green-600" : force.intensity <= 3 ? "text-yellow-600" : "text-red-600";
               return (
@@ -138,6 +150,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: Embedde
                     <Label className="text-sm font-semibold">{icon} {label}</Label>
                     <span className={`text-sm font-bold ${intensityColor}`}>{force.intensity}/5</span>
                   </div>
+                  <p className="text-xs text-muted-foreground italic">{hint}</p>
                   <Slider min={1} max={5} step={1} value={[force.intensity]} onValueChange={([v]) => update({ ...porter, [key]: { ...force, intensity: v } })} disabled={readonly} />
                   <Textarea value={force.description} onChange={e => update({ ...porter, [key]: { ...force, description: e.target.value } })} placeholder={`${label}...`} disabled={readonly} rows={2} />
                 </div>
