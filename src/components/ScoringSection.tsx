@@ -13,6 +13,11 @@ interface ScoringProps {
     comments: Record<string, string>;
     sources: Record<string, string[]>;
   }) => void;
+  onAutoSave?: (data: {
+    answers: Record<string, number>;
+    comments: Record<string, string>;
+    sources: Record<string, string[]>;
+  }) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
