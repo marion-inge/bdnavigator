@@ -531,6 +531,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
                   onClick={() => {
                     const updated = (sources[currentQuestion.id] || []).filter((_, i) => i !== idx);
                     setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                    triggerAutoSave();
                   }}
                 >
                   <X className="h-3 w-3" />
