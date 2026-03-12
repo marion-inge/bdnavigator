@@ -517,6 +517,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
                   const updated = [...(sources[currentQuestion.id] || [])];
                   updated[idx] = e.target.value;
                   setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                  triggerAutoSave();
                 }}
                 placeholder="https://..."
                 disabled={readonly}
