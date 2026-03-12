@@ -128,6 +128,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
   const handleAnswer = (value: number) => {
     if (readonly) return;
     setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }));
+    triggerAutoSave();
   };
 
   const handleNext = () => {
