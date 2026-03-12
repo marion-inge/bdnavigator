@@ -42,7 +42,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
+export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
   const { language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
 
