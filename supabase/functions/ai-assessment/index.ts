@@ -106,7 +106,7 @@ Based on the scores, the opportunity context, AND the user's own comments, provi
                   pitfalls: {
                     type: "array",
                     items: { type: "string" },
-                    description: "List of 2-3 potential pitfalls or risks to watch out for.",
+                    description: "List of 5-6 potential pitfalls or risks to watch out for.",
                   },
                   overallRating: {
                     type: "string",
