@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
 import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuestions";
@@ -13,6 +13,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 interface RoughScoringWizardProps {
   scoring: Scoring;
   onSave: (scoring: Scoring, answers: Record<string, number>, comments: Record<string, string>, sources: Record<string, string[]>) => void;
+  onAutoSave?: (data: { answers: Record<string, number>; comments: Record<string, string>; sources: Record<string, string[]> }) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
@@ -52,12 +53,21 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Find first unanswered question index for resuming
+  const resumeIndex = useMemo(() => {
+    if (initialAnswers && Object.keys(initialAnswers).length > 0) {
+      const idx = allQuestions.findIndex((q) => !initialAnswers[q.id] || initialAnswers[q.id] === 0);
+      return idx >= 0 ? idx : 0;
+    }
+    return 0;
+  }, []);
+
+  const [currentIndex, setCurrentIndex] = useState(startWithSummary ? 0 : resumeIndex);
   const [answers, setAnswers] = useState<Answers>(() => {
     if (initialAnswers && Object.keys(initialAnswers).length > 0) {
       return { ...initialAnswers };
@@ -75,6 +85,27 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
     return initialSources && Object.keys(initialSources).length > 0 ? { ...initialSources } : {};
   });
   const [showSummary, setShowSummary] = useState(!!startWithSummary);
+
+  // Auto-save with debounce
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const answersRef = useRef(answers);
+  const commentsRef = useRef(comments);
+  const sourcesRef = useRef(sources);
+  answersRef.current = answers;
+  commentsRef.current = comments;
+  sourcesRef.current = sources;
+
+  const triggerAutoSave = useCallback(() => {
+    if (!onAutoSave) return;
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => {
+      onAutoSave({
+        answers: answersRef.current,
+        comments: commentsRef.current,
+        sources: sourcesRef.current,
+      });
+    }, 500);
+  }, [onAutoSave]);
 
   const totalQuestions = allQuestions.length;
   const currentQuestion = allQuestions[currentIndex];
@@ -97,6 +128,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
   const handleAnswer = (value: number) => {
     if (readonly) return;
     setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }));
+    triggerAutoSave();
   };
 
   const handleNext = () => {
@@ -438,7 +470,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
           )}
           <Textarea
             value={comments[currentQuestion.id] || ""}
-            onChange={(e) => setComments((prev) => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+            onChange={(e) => { setComments((prev) => ({ ...prev, [currentQuestion.id]: e.target.value })); triggerAutoSave(); }}
             placeholder={language === "de" ? "Begründung, Notizen, Anmerkungen..." : "Rationale, notes, remarks..."}
             disabled={readonly}
             rows={2}
@@ -485,6 +517,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                   const updated = [...(sources[currentQuestion.id] || [])];
                   updated[idx] = e.target.value;
                   setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                  triggerAutoSave();
                 }}
                 placeholder="https://..."
                 disabled={readonly}
@@ -498,6 +531,7 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
                   onClick={() => {
                     const updated = (sources[currentQuestion.id] || []).filter((_, i) => i !== idx);
                     setSources((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+                    triggerAutoSave();
                   }}
                 >
                   <X className="h-3 w-3" />

@@ -13,6 +13,11 @@ interface ScoringProps {
     comments: Record<string, string>;
     sources: Record<string, string[]>;
   }) => void;
+  onAutoSave?: (data: {
+    answers: Record<string, number>;
+    comments: Record<string, string>;
+    sources: Record<string, string[]>;
+  }) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
@@ -37,7 +42,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
+export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
   const { language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
 
@@ -55,6 +60,7 @@ export function ScoringSection({ scoring, onSaveAll, readonly, initialAnswers, i
       <RoughScoringWizard
         scoring={local}
         onSave={handleWizardSave}
+        onAutoSave={onAutoSave}
         readonly={readonly}
         initialAnswers={initialAnswers}
         initialComments={initialComments}
