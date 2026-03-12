@@ -470,7 +470,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           )}
           <Textarea
             value={comments[currentQuestion.id] || ""}
-            onChange={(e) => setComments((prev) => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+            onChange={(e) => { setComments((prev) => ({ ...prev, [currentQuestion.id]: e.target.value })); triggerAutoSave(); }}
             placeholder={language === "de" ? "Begründung, Notizen, Anmerkungen..." : "Rationale, notes, remarks..."}
             disabled={readonly}
             rows={2}
