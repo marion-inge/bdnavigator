@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
 import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuestions";
