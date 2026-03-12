@@ -238,7 +238,50 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Map className="h-4 w-4" /> {bp("Geographic Breakdown", "Geografische Aufschlüsselung")}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
+            {/* Stacked bar chart per region */}
+            {(() => {
+              const geoChartData = allRegionNames.map((region: string) => {
+                const tamR = tamRegions.find((r: any) => r.region === region);
+                const samR = samRegions.find((r: any) => r.region === region);
+                const somR = somRegions.find((r: any) => r.region === region);
+                const parseSize = (s: string | undefined): number => {
+                  if (!s) return 0;
+                  const cleaned = s.replace(/[^0-9.,]/g, "").replace(",", ".");
+                  return parseFloat(cleaned) || 0;
+                };
+                return {
+                  region,
+                  TAM: parseSize(tamR?.marketSize),
+                  SAM: parseSize(samR?.marketSize),
+                  SOM: parseSize(somR?.marketSize),
+                  tamPotential: tamR?.potential || 0,
+                  samPotential: samR?.potential || 0,
+                  somPotential: somR?.potential || 0,
+                };
+              });
+              const hasNumericData = geoChartData.some(d => d.TAM > 0 || d.SAM > 0 || d.SOM > 0);
+              
+              return hasNumericData ? (
+                <div className="rounded-lg border border-border bg-background/50 p-4">
+                  <h4 className="text-sm font-semibold text-muted-foreground mb-3">{bp("Market Size by Region (M€)", "Marktgröße nach Region (M€)")}</h4>
+                  <ResponsiveContainer width="100%" height={Math.max(180, allRegionNames.length * 50)}>
+                    <BarChart data={geoChartData} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                      <XAxis type="number" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1_000 ? `${(v/1_000).toFixed(0)}B€` : `${v}M€`} />
+                      <YAxis type="category" dataKey="region" width={100} tick={{ fontSize: 12, fill: "hsl(var(--foreground))" }} />
+                      <Tooltip formatter={(v: number, name: string) => [`${formatValue(v)}`, name]} />
+                      <Legend />
+                      <Bar dataKey="TAM" fill="hsl(210, 80%, 55%)" radius={[0, 3, 3, 0]} maxBarSize={20} fillOpacity={0.7} />
+                      <Bar dataKey="SAM" fill="hsl(160, 70%, 45%)" radius={[0, 3, 3, 0]} maxBarSize={20} fillOpacity={0.7} />
+                      <Bar dataKey="SOM" fill="hsl(40, 85%, 50%)" radius={[0, 3, 3, 0]} maxBarSize={20} fillOpacity={0.7} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : null;
+            })()}
+
+            {/* Detail table */}
             <Table>
               <TableHeader>
                 <TableRow>
@@ -246,6 +289,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
                   <TableHead className="text-center">{bp("TAM Size", "TAM-Größe")}</TableHead>
                   <TableHead className="text-center">{bp("SAM Size", "SAM-Größe")}</TableHead>
                   <TableHead className="text-center">{bp("SOM Size", "SOM-Größe")}</TableHead>
+                  <TableHead className="text-center">{bp("Potential", "Potenzial")}</TableHead>
                   <TableHead>{bp("Notes", "Anmerkungen")}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -254,12 +298,22 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
                   const tamR = tamRegions.find((r: any) => r.region === region);
                   const samR = samRegions.find((r: any) => r.region === region);
                   const somR = somRegions.find((r: any) => r.region === region);
+                  const potential = tamR?.potential || samR?.potential || somR?.potential || 0;
                   return (
                     <TableRow key={region}>
                       <TableCell className="font-medium">{region}</TableCell>
                       <TableCell className="text-center text-blue-600 dark:text-blue-400">{tamR?.marketSize || "–"}</TableCell>
                       <TableCell className="text-center text-emerald-600 dark:text-emerald-400">{samR?.marketSize || "–"}</TableCell>
                       <TableCell className="text-center text-amber-600 dark:text-amber-400">{somR?.marketSize || "–"}</TableCell>
+                      <TableCell className="text-center">
+                        {potential > 0 ? (
+                          <div className="flex items-center justify-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map(v => (
+                              <div key={v} className={`w-2 h-2 rounded-full ${v <= potential ? "bg-primary" : "bg-muted"}`} />
+                            ))}
+                          </div>
+                        ) : "–"}
+                      </TableCell>
                       <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{tamR?.notes || samR?.notes || somR?.notes || "–"}</TableCell>
                     </TableRow>
                   );
