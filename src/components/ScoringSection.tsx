@@ -60,6 +60,7 @@ export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initi
       <RoughScoringWizard
         scoring={local}
         onSave={handleWizardSave}
+        onAutoSave={onAutoSave}
         readonly={readonly}
         initialAnswers={initialAnswers}
         initialComments={initialComments}
