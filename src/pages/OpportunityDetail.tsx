@@ -498,6 +498,13 @@ export default function OpportunityDetail() {
                     roughScoringSources: sources,
                   });
                 }}
+                onAutoSave={({ answers, comments, sources }) => {
+                  updateOpportunity(opp.id, {
+                    roughScoringAnswers: answers,
+                    roughScoringComments: comments,
+                    roughScoringSources: sources,
+                  });
+                }}
                 readonly={opp.stage === "closed"}
                 initialAnswers={opp.roughScoringAnswers}
                 initialComments={opp.roughScoringComments}
