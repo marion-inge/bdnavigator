@@ -53,12 +53,21 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Find first unanswered question index for resuming
+  const resumeIndex = useMemo(() => {
+    if (initialAnswers && Object.keys(initialAnswers).length > 0) {
+      const idx = allQuestions.findIndex((q) => !initialAnswers[q.id] || initialAnswers[q.id] === 0);
+      return idx >= 0 ? idx : 0;
+    }
+    return 0;
+  }, []);
+
+  const [currentIndex, setCurrentIndex] = useState(startWithSummary ? 0 : resumeIndex);
   const [answers, setAnswers] = useState<Answers>(() => {
     if (initialAnswers && Object.keys(initialAnswers).length > 0) {
       return { ...initialAnswers };
@@ -76,6 +85,27 @@ export function RoughScoringWizard({ scoring, onSave, readonly, initialAnswers, 
     return initialSources && Object.keys(initialSources).length > 0 ? { ...initialSources } : {};
   });
   const [showSummary, setShowSummary] = useState(!!startWithSummary);
+
+  // Auto-save with debounce
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const answersRef = useRef(answers);
+  const commentsRef = useRef(comments);
+  const sourcesRef = useRef(sources);
+  answersRef.current = answers;
+  commentsRef.current = comments;
+  sourcesRef.current = sources;
+
+  const triggerAutoSave = useCallback(() => {
+    if (!onAutoSave) return;
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => {
+      onAutoSave({
+        answers: answersRef.current,
+        comments: commentsRef.current,
+        sources: sourcesRef.current,
+      });
+    }, 500);
+  }, [onAutoSave]);
 
   const totalQuestions = allQuestions.length;
   const currentQuestion = allQuestions[currentIndex];
