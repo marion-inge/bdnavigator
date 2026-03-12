@@ -13,6 +13,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 interface RoughScoringWizardProps {
   scoring: Scoring;
   onSave: (scoring: Scoring, answers: Record<string, number>, comments: Record<string, string>, sources: Record<string, string[]>) => void;
+  onAutoSave?: (data: { answers: Record<string, number>; comments: Record<string, string>; sources: Record<string, string[]> }) => void;
   readonly?: boolean;
   initialAnswers?: Record<string, number>;
   initialComments?: Record<string, string>;
