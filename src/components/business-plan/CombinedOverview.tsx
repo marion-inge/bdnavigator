@@ -314,7 +314,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
                           </div>
                         ) : "–"}
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{tamR?.notes || samR?.notes || somR?.notes || "–"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground min-w-[150px] whitespace-normal break-words">{tamR?.notes || samR?.notes || somR?.notes || "–"}</TableCell>
                     </TableRow>
                   );
                 })}
