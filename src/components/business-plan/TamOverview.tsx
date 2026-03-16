@@ -118,6 +118,27 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             porter: strategicAnalyses.tam?.porter,
             swot: strategicAnalyses.tam?.swot,
           } : undefined,
+          tamPageData: {
+            scopeDefinition: localOverview.scopeDefinition,
+            scopeExclusions: localOverview.scopeExclusions,
+            fullGlobalPotential: localOverview.fullGlobalPotential,
+            assumptions: localOverview.assumptions,
+            marketDevelopment: localOverview.marketDevelopment,
+            drivers: localOverview.drivers,
+            geographicCoverage: localOverview.geographicCoverage,
+            sources: localOverview.sources,
+            sourceAssessment: localOverview.sourceAssessment,
+            derivationMethod: localOverview.derivationMethod,
+            tamDescription: localTamDesc,
+            marketGrowthRate: localGrowthRate,
+            geographicalRegions: localRegions.map(r => ({
+              region: r.region,
+              marketSize: r.marketSize,
+              potential: r.potential,
+              notes: r.notes,
+            })),
+            manualProjections: localProj,
+          },
         },
       });
       if (error) throw error;
