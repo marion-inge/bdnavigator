@@ -120,7 +120,7 @@ Also provide:
 - A methodology section explaining how you derived the TAM
 - Key factors that differentiate the scenarios
 
-IMPORTANT: Base your estimation on the industry context, geographic scope, technology area, and all available strategic analyses (Market Research, PESTEL, Porter's Five Forces, SWOT, Value Chain). If data is sparse, make reasonable assumptions and note them clearly.
+IMPORTANT: Base your estimation on ALL available data — including the user's own TAM definitions (scope, exclusions, assumptions, geographic breakdown, drivers & trends, manual projections), industry context, geographic scope, technology area, and strategic analyses (Market Research, PESTEL, Porter's Five Forces, SWOT, Value Chain). The user-entered TAM data represents their domain knowledge and should be respected and built upon, not contradicted without strong reasoning. If data is sparse, make reasonable assumptions and note them clearly.
 
 Use the tool "tam_estimation" to return your structured response.`;
 
