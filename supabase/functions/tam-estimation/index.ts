@@ -15,11 +15,39 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology, language, strategicData } = await req.json();
+    const { opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology, language, strategicData, tamPageData } = await req.json();
 
     const lang = language === "de" ? "German" : "English";
 
     const sections: string[] = [];
+
+    // TAM page user-entered data
+    if (tamPageData) {
+      const tp = tamPageData;
+      const tamFields: string[] = [];
+      if (tp.scopeDefinition) tamFields.push(`- TAM Scope & Definition: ${tp.scopeDefinition}`);
+      if (tp.scopeExclusions) tamFields.push(`- Scope Exclusions: ${tp.scopeExclusions}`);
+      if (tp.fullGlobalPotential) tamFields.push(`- Full Global Potential: ${tp.fullGlobalPotential}`);
+      if (tp.assumptions) tamFields.push(`- Market Assumptions: ${tp.assumptions}`);
+      if (tp.marketDevelopment) tamFields.push(`- Market Development: ${tp.marketDevelopment}`);
+      if (tp.drivers) tamFields.push(`- Drivers & Trends: ${tp.drivers}`);
+      if (tp.geographicCoverage) tamFields.push(`- Geographic Coverage: ${tp.geographicCoverage}`);
+      if (tp.tamDescription) tamFields.push(`- TAM Description: ${tp.tamDescription}`);
+      if (tp.marketGrowthRate) tamFields.push(`- Market Growth Rate: ${tp.marketGrowthRate}`);
+      if (tp.sources) tamFields.push(`- Sources: ${tp.sources}`);
+      if (tp.sourceAssessment) tamFields.push(`- Source Assessment: ${tp.sourceAssessment}`);
+      if (tp.derivationMethod) tamFields.push(`- Derivation Method: ${tp.derivationMethod}`);
+      if (tp.geographicalRegions?.length) {
+        tamFields.push(`- Geographic Breakdown:\n${tp.geographicalRegions.map((r: any) => `  • ${r.region}: ${r.marketSize || "N/A"} (Potential: ${r.potential}/5) ${r.notes ? `— ${r.notes}` : ""}`).join("\n")}`);
+      }
+      if (tp.manualProjections?.length) {
+        const projStr = tp.manualProjections.map((p: any) => `Year ${p.year}: ${p.value} M€`).join(", ");
+        tamFields.push(`- User's Manual TAM Projections: ${projStr}`);
+      }
+      if (tamFields.length > 0) {
+        sections.push(`## User-Entered TAM Data\n${tamFields.join("\n")}`);
+      }
+    }
 
     // TAM supporting models
     if (strategicData) {
@@ -92,7 +120,7 @@ Also provide:
 - A methodology section explaining how you derived the TAM
 - Key factors that differentiate the scenarios
 
-IMPORTANT: Base your estimation on the industry context, geographic scope, technology area, and all available strategic analyses (Market Research, PESTEL, Porter's Five Forces, SWOT, Value Chain). If data is sparse, make reasonable assumptions and note them clearly.
+IMPORTANT: Base your estimation on ALL available data — including the user's own TAM definitions (scope, exclusions, assumptions, geographic breakdown, drivers & trends, manual projections), industry context, geographic scope, technology area, and strategic analyses (Market Research, PESTEL, Porter's Five Forces, SWOT, Value Chain). The user-entered TAM data represents their domain knowledge and should be respected and built upon, not contradicted without strong reasoning. If data is sparse, make reasonable assumptions and note them clearly.
 
 Use the tool "tam_estimation" to return your structured response.`;
 
