@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2, TrendingUp, ShoppingCart, Eye, Rocket, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 

@@ -7,7 +7,7 @@ import {
   saveAssessment,
   loadAssessment,
 } from "@/lib/aiAssessmentService";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/lib/backendAdapter";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, AlertTriangle, ArrowRight, Shield, Loader2 } from "lucide-react";
 import idaRobot from "@/assets/ida-robot.png";
