@@ -80,21 +80,18 @@ export async function saveAssessment(
   basis: string,
   result: AIAssessmentResult
 ): Promise<void> {
-  const { supabase } = await import("@/integrations/supabase/client");
+  const { upsertAiAssessment } = await import("./backendAdapter");
 
-  const { error } = await (supabase as any).from("ai_assessments").upsert(
-    {
-      opportunity_id: opportunityId,
-      basis,
-      summary: result.summary,
-      strengths: result.strengths,
-      weaknesses: result.weaknesses,
-      next_steps: result.nextSteps,
-      pitfalls: result.pitfalls,
-      overall_rating: result.overallRating,
-    },
-    { onConflict: "opportunity_id,basis" }
-  );
+  const { error } = await upsertAiAssessment({
+    opportunity_id: opportunityId,
+    basis,
+    summary: result.summary,
+    strengths: result.strengths,
+    weaknesses: result.weaknesses,
+    next_steps: result.nextSteps,
+    pitfalls: result.pitfalls,
+    overall_rating: result.overallRating,
+  });
 
   if (error) {
     console.error("Failed to save assessment:", error);
@@ -105,26 +102,20 @@ export async function loadAssessment(
   opportunityId: string,
   basis: string
 ): Promise<AIAssessmentResult | null> {
-  const { supabase } = await import("@/integrations/supabase/client");
+  const { fetchAiAssessments } = await import("./backendAdapter");
 
-  const { data, error } = await (supabase as any)
-    .from("ai_assessments")
-    .select("*")
-    .eq("opportunity_id", opportunityId)
-    .eq("basis", basis)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const { data, error } = await fetchAiAssessments(opportunityId, basis);
 
-  if (error || !data) return null;
+  if (error || !data || (data as any[]).length === 0) return null;
 
+  const row = (data as any[])[0];
   return {
-    summary: data.summary,
-    strengths: data.strengths,
-    weaknesses: data.weaknesses,
-    nextSteps: data.next_steps,
-    pitfalls: data.pitfalls,
-    overallRating: data.overall_rating,
+    summary: row.summary,
+    strengths: row.strengths,
+    weaknesses: row.weaknesses,
+    nextSteps: row.next_steps,
+    pitfalls: row.pitfalls,
+    overallRating: row.overall_rating,
   };
 }
 

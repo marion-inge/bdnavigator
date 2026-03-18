@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useI18n } from "@/lib/i18n";
+import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl } from "@/lib/backendAdapter";
+import { getBackendType } from "@/lib/backendAdapter";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,22 +60,18 @@ export function FileAttachments({ opportunityId }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewType, setPreviewType] = useState<string>("");
 
-  const fetchFiles = useCallback(async () => {
-    const { data, error } = await (supabase as any)
-      .from("opportunity_files")
-      .select("*")
-      .eq("opportunity_id", opportunityId)
-      .order("created_at", { ascending: false });
+  const loadFiles = useCallback(async () => {
+    const { data, error } = await fetchOpportunityFiles(opportunityId);
     if (error) {
       console.error("Failed to fetch files:", error);
       return;
     }
-    setFiles(data ?? []);
+    setFiles((data as FileRecord[]) ?? []);
   }, [opportunityId]);
 
   useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
+    loadFiles();
+  }, [loadFiles]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -87,33 +85,14 @@ export function FileAttachments({ opportunityId }: Props) {
           continue;
         }
 
-        const filePath = `${opportunityId}/${Date.now()}_${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from(BUCKET)
-          .upload(filePath, file);
-
-        if (uploadError) {
+        const { error } = await uploadOpportunityFile(opportunityId, file);
+        if (error) {
           toast.error(`Upload failed: ${file.name}`);
-          console.error(uploadError);
-          continue;
-        }
-
-        const { error: dbError } = await (supabase as any)
-          .from("opportunity_files")
-          .insert({
-            opportunity_id: opportunityId,
-            file_name: file.name,
-            file_path: filePath,
-            file_size: file.size,
-            mime_type: file.type || "application/octet-stream",
-          });
-
-        if (dbError) {
-          console.error("Failed to save file record:", dbError);
+          console.error(error);
           continue;
         }
       }
-      await fetchFiles();
+      await loadFiles();
       toast.success("Upload complete");
     } finally {
       setUploading(false);
@@ -121,33 +100,40 @@ export function FileAttachments({ opportunityId }: Props) {
     }
   };
 
-  const handleDownload = async (file: FileRecord) => {
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(file.file_path);
-    if (data?.publicUrl) {
-      window.open(data.publicUrl, "_blank");
-    }
+  const handleDownload = (file: FileRecord) => {
+    const url = getFileUrl(file.file_path);
+    window.open(url, "_blank");
   };
 
   const handlePreview = (file: FileRecord) => {
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(file.file_path);
-    if (data?.publicUrl) {
-      setPreviewUrl(data.publicUrl);
-      setPreviewType(file.mime_type);
-    }
+    const url = getFileUrl(file.file_path);
+    setPreviewUrl(url);
+    setPreviewType(file.mime_type);
   };
 
   const handleDelete = async (file: FileRecord) => {
-    await supabase.storage.from(BUCKET).remove([file.file_path]);
-    await (supabase as any).from("opportunity_files").delete().eq("id", file.id);
+    if (getBackendType() === "supabase") {
+      await supabase.storage.from(BUCKET).remove([file.file_path]);
+    }
+    await deleteOpportunityFile(file.id);
     setFiles((prev) => prev.filter((f) => f.id !== file.id));
     toast.success("File deleted");
   };
 
   const handleSaveComment = async (fileId: string) => {
-    await (supabase as any)
-      .from("opportunity_files")
-      .update({ comment: commentDraft })
-      .eq("id", fileId);
+    if (getBackendType() === "sqlite") {
+      const API_BASE = import.meta.env.VITE_API_URL || "/api";
+      await fetch(`${API_BASE}/opportunity-files/${fileId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comment: commentDraft }),
+      });
+    } else {
+      await (supabase as any)
+        .from("opportunity_files")
+        .update({ comment: commentDraft })
+        .eq("id", fileId);
+    }
     setFiles((prev) =>
       prev.map((f) => (f.id === fileId ? { ...f, comment: commentDraft } : f))
     );
