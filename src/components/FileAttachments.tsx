@@ -110,28 +110,13 @@ export function FileAttachments({ opportunityId }: Props) {
   };
 
   const handleDelete = async (file: FileRecord) => {
-    if (getBackendType() === "supabase") {
-      await supabase.storage.from(BUCKET).remove([file.file_path]);
-    }
-    await deleteOpportunityFile(file.id);
+    await deleteOpportunityFile(file.id, file.file_path);
     setFiles((prev) => prev.filter((f) => f.id !== file.id));
     toast.success("File deleted");
   };
 
   const handleSaveComment = async (fileId: string) => {
-    if (getBackendType() === "sqlite") {
-      const API_BASE = import.meta.env.VITE_API_URL || "/api";
-      await fetch(`${API_BASE}/opportunity-files/${fileId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: commentDraft }),
-      });
-    } else {
-      await (supabase as any)
-        .from("opportunity_files")
-        .update({ comment: commentDraft })
-        .eq("id", fileId);
-    }
+    await updateFileComment(fileId, commentDraft);
     setFiles((prev) =>
       prev.map((f) => (f.id === fileId ? { ...f, comment: commentDraft } : f))
     );
