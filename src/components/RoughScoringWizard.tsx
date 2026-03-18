@@ -473,9 +473,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
             placeholder={language === "de" ? "Begründung, Notizen, Anmerkungen..." : "Rationale, notes, remarks..."}
             disabled={readonly}
             rows={2}
-            className={`text-sm resize-none ${
-              !comments[currentQuestion.id]?.trim() && currentAnswer > 0 ? "border-destructive/50" : ""
-            }`}
+            className="text-sm resize-none"
           />
           {!comments[currentQuestion.id]?.trim() && currentAnswer > 0 && (
             <p className="text-xs text-destructive mt-1">
