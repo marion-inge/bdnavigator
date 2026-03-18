@@ -1,90 +1,70 @@
-# BD Navigator – Self-Hosting (Windows IIS)
+# BD Navigator – Express API Server
 
-## Architektur
+Self-hosted backend for BD Navigator, running on Node.js with SQLite.
 
-```
-IIS Server
-├── index.html          ← React SPA (Vite build output)
-├── assets/             ← Static JS/CSS
-├── server/
-│   ├── index.js        ← Express API (via iisnode)
-│   ├── web.config      ← IIS URL Rewrite + iisnode config
-│   ├── BDNavigator.db  ← SQLite Datenbank
-│   └── uploads/        ← Dateianhänge
-```
+## Requirements
 
-## Voraussetzungen
+- **Node.js 18+** (required for built-in `fetch`)
+- Windows IIS with [iisnode](https://github.com/Azure/iisnode) (for production)
 
-1. **Node.js** (v18+) auf dem Server installiert
-2. **iisnode** Modul für IIS installiert ([Download](https://github.com/azure/iisnode/releases))
-3. **URL Rewrite** Modul für IIS installiert
-
-## Deployment
-
-### 1. Frontend bauen
+## Quick Start
 
 ```bash
-# Im Projektverzeichnis
-VITE_BACKEND=sqlite VITE_API_URL=/api npm run build
-```
-
-### 2. Server vorbereiten
-
-```bash
-cd server
 npm install
+node index.js
 ```
 
-### 3. Dateien auf IIS kopieren
+Server runs on port 3001 (or `PORT` env var).
 
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `PORT` | No | Server port (default: 3001, ignored by iisnode) |
+| `DB_PATH` | No | Path to SQLite database (default: `./BDNavigator.db`) |
+| `UPLOAD_DIR` | No | File upload directory (default: `./uploads`) |
+| `OPENAI_API_KEY` | For AI | OpenAI API key for IDA assessments & estimations |
+| `AI_BASE_URL` | No | Override AI endpoint (default: `https://api.openai.com/v1/chat/completions`) |
+| `AI_MODEL` | No | Override AI model (default: `gpt-4o-mini`) |
+| `PERPLEXITY_API_KEY` | For AI | Perplexity API key for Mark web research |
+
+## AI Proxy Routes
+
+These routes replace the Supabase Edge Functions for self-hosted deployments:
+
+| Route | Agent | Description |
+|---|---|---|
+| `POST /api/ai-assessment` | IDA | Idea scoring assessment |
+| `POST /api/business-case-assessment` | IDA | Financial / business case assessment |
+| `POST /api/mark-web-research` | Mark | Web research (PESTEL, Porter, TAM, Competitor) |
+| `POST /api/tam-estimation` | IDA | TAM market sizing (3 scenarios) |
+| `POST /api/sam-estimation` | IDA | SAM market sizing (3 scenarios) |
+| `POST /api/som-estimation` | IDA | SOM market sizing (3 scenarios) |
+
+### Using a different AI provider
+
+Set `AI_BASE_URL` to any OpenAI-compatible endpoint:
+
+```bash
+# Azure OpenAI
+AI_BASE_URL=https://my-resource.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01
+
+# Local LLM (Ollama, LM Studio, etc.)
+AI_BASE_URL=http://localhost:11434/v1/chat/completions
+AI_MODEL=llama3
+
+# Anthropic via proxy
+AI_BASE_URL=https://my-proxy.example.com/v1/chat/completions
 ```
-IIS Site Root/
-├── index.html              ← aus dist/
-├── assets/                 ← aus dist/assets/
-├── index.js                ← aus server/
-├── web.config              ← aus server/
-├── node_modules/           ← aus server/
-├── package.json            ← aus server/
-├── BDNavigator.db          ← aus Projektroot (oder leer lassen, wird erstellt)
-└── uploads/                ← wird automatisch erstellt
-```
 
-### 4. IIS konfigurieren
+## Data Routes
 
-- Neue Website oder Application erstellen
-- Physical Path auf das Deployment-Verzeichnis setzen
-- Application Pool: "No Managed Code"
-- Sicherstellen, dass der App Pool-User Schreibrechte auf DB und uploads/ hat
-
-### 5. Umgebungsvariablen (optional)
-
-| Variable     | Default              | Beschreibung                 |
-|-------------|----------------------|------------------------------|
-| `PORT`      | 3001                 | API Port (ignoriert von IIS) |
-| `DB_PATH`   | `./BDNavigator.db`   | Pfad zur SQLite-Datei        |
-| `UPLOAD_DIR`| `./uploads`          | Upload-Verzeichnis           |
-
-## Backend umschalten
-
-Im Frontend wird über `VITE_BACKEND` gesteuert, welches Backend genutzt wird:
-
-- `VITE_BACKEND=supabase` (Default) → Lovable Cloud
-- `VITE_BACKEND=sqlite` → Express/SQLite API
-
-## API Endpunkte
-
-| Methode | Pfad                          | Beschreibung              |
-|---------|-------------------------------|---------------------------|
-| GET     | `/api/opportunities`          | Alle Ideen laden          |
-| GET     | `/api/opportunities/:id`      | Eine Idee laden           |
-| POST    | `/api/opportunities`          | Neue Idee erstellen       |
-| PUT     | `/api/opportunities/:id`      | Idee aktualisieren        |
-| DELETE  | `/api/opportunities/:id`      | Idee löschen              |
-| GET     | `/api/ai-assessments`         | KI-Bewertungen laden      |
-| POST    | `/api/ai-assessments`         | KI-Bewertung erstellen    |
-| PUT     | `/api/ai-assessments/:id`     | KI-Bewertung aktualisieren|
-| DELETE  | `/api/ai-assessments/:id`     | KI-Bewertung löschen      |
-| GET     | `/api/opportunity-files`      | Dateien laden             |
-| POST    | `/api/opportunity-files`      | Datei hochladen           |
-| DELETE  | `/api/opportunity-files/:id`  | Datei löschen             |
-| GET     | `/api/health`                 | Health Check              |
+| Route | Method | Description |
+|---|---|---|
+| `/api/opportunities` | GET, POST | List / create opportunities |
+| `/api/opportunities/:id` | GET, PUT, DELETE | Read / update / delete opportunity |
+| `/api/ai-assessments` | GET, POST | List / create AI assessments |
+| `/api/ai-assessments/:id` | PUT, DELETE | Update / delete assessment |
+| `/api/opportunity-files` | GET, POST | List / upload files |
+| `/api/opportunity-files/:id` | PATCH, DELETE | Update comment / delete file |
+| `/api/health` | GET | Health check |
