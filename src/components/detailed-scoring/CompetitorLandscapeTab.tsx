@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
+import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { DetailedScoring, CompetitorEntry, CompetitorDimensionRating } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
