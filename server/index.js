@@ -260,6 +260,15 @@ app.post("/api/opportunity-files", upload.single("file"), (req, res) => {
   res.status(201).json(parseRow(row));
 });
 
+// PATCH update comment
+app.patch("/api/opportunity-files/:id", (req, res) => {
+  const { comment } = req.body;
+  db.prepare("UPDATE opportunity_files SET comment = ? WHERE id = ?").run(comment ?? "", req.params.id);
+  const row = db.prepare("SELECT * FROM opportunity_files WHERE id = ?").get(req.params.id);
+  if (!row) return res.status(404).json({ error: "Not found" });
+  res.json(parseRow(row));
+});
+
 app.delete("/api/opportunity-files/:id", (req, res) => {
   const row = db.prepare("SELECT file_path FROM opportunity_files WHERE id = ?").get(req.params.id);
   if (row) {
