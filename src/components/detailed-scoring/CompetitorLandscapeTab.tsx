@@ -17,6 +17,14 @@ interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  opportunity?: {
+    title: string;
+    description: string;
+    solutionDescription?: string;
+    industry: string;
+    geography: string;
+    technology: string;
+  };
 }
 
 const DIMENSION_KEYS = ["price", "techFeatures", "reach", "brandAwareness", "history", "usps"] as const;
