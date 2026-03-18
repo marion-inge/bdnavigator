@@ -100,7 +100,7 @@ async function main() {
 
   // 4. Copy server files
   log("Copying server files...");
-  const serverFiles = ["index.js", "web.config", "package.json"];
+  const serverFiles = ["index.js", "ai-proxy.js", "web.config", "package.json"];
   for (const file of serverFiles) {
     const src = path.join(SERVER_DIR, file);
     if (copyFile(src, path.join(OUTPUT_DIR, file))) {
@@ -156,7 +156,11 @@ async function main() {
   console.log("     - BDNavigator.db");
   console.log("     - uploads/");
   console.log("  5. Install iisnode if not already installed");
-  console.log("  6. (Optional) Test locally: node index.js");
+  console.log("  6. Set environment variables for AI features:");
+  console.log("     - OPENAI_API_KEY (for IDA assessments)");
+  console.log("     - PERPLEXITY_API_KEY (for Mark web research)");
+  console.log("     - AI_BASE_URL / AI_MODEL (optional, for custom AI providers)");
+  console.log("  7. (Optional) Test locally: node index.js");
   console.log("");
 }
 
