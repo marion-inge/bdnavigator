@@ -13,7 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
@@ -102,7 +102,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const handleEstimateTam = async () => {
     setEstimating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("tam-estimation", {
+      const { data, error } = await invokeFunction("tam-estimation", {
         body: {
           opportunityTitle: opportunityTitle || "",
           opportunityDescription: opportunityDescription || "",

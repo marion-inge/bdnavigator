@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useI18n } from "@/lib/i18n";
-import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl } from "@/lib/backendAdapter";
-import { getBackendType } from "@/lib/backendAdapter";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl, updateFileComment } from "@/lib/backendAdapter";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, Download, Trash2, FileText, FileSpreadsheet, Presentation, Mail, Image, File, MessageSquare, X, Eye } from "lucide-react";
@@ -112,28 +110,13 @@ export function FileAttachments({ opportunityId }: Props) {
   };
 
   const handleDelete = async (file: FileRecord) => {
-    if (getBackendType() === "supabase") {
-      await supabase.storage.from(BUCKET).remove([file.file_path]);
-    }
-    await deleteOpportunityFile(file.id);
+    await deleteOpportunityFile(file.id, file.file_path);
     setFiles((prev) => prev.filter((f) => f.id !== file.id));
     toast.success("File deleted");
   };
 
   const handleSaveComment = async (fileId: string) => {
-    if (getBackendType() === "sqlite") {
-      const API_BASE = import.meta.env.VITE_API_URL || "/api";
-      await fetch(`${API_BASE}/opportunity-files/${fileId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: commentDraft }),
-      });
-    } else {
-      await (supabase as any)
-        .from("opportunity_files")
-        .update({ comment: commentDraft })
-        .eq("id", fileId);
-    }
+    await updateFileComment(fileId, commentDraft);
     setFiles((prev) =>
       prev.map((f) => (f.id === fileId ? { ...f, comment: commentDraft } : f))
     );

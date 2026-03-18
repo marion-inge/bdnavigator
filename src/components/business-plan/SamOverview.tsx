@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2, Target, Building2, Users, MapPin, RefreshCw, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 
@@ -82,7 +82,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
     }
     setEstimating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("sam-estimation", {
+      const { data, error } = await invokeFunction("sam-estimation", {
         body: {
           opportunityTitle: opportunityTitle || "",
           opportunityDescription: opportunityDescription || "",
