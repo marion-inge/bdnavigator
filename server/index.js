@@ -283,6 +283,12 @@ app.delete("/api/opportunity-files/:id", (req, res) => {
 app.use("/api/uploads", express.static(UPLOAD_DIR));
 
 // ========================
+// AI Proxy (Edge Function replacements)
+// ========================
+const aiProxy = require("./ai-proxy");
+app.use("/api", aiProxy);
+
+// ========================
 // Health check
 // ========================
 app.get("/api/health", (req, res) => {
