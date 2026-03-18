@@ -133,8 +133,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
 
   const handleNext = () => {
     const answer = answers[currentQuestion?.id] || 0;
-    const commentMissing = answer > 0 && !comments[currentQuestion?.id]?.trim();
-    if (commentMissing) return;
+    if (answer === 0) return;
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
@@ -351,7 +350,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
 
   // Question view
   const currentAnswer = answers[currentQuestion.id] || 0;
-  const currentCommentMissing = currentAnswer > 0 && !comments[currentQuestion.id]?.trim();
+  const canProceed = currentAnswer > 0;
 
   // Count questions before this category
   let questionsBeforeCategory = 0;
@@ -455,12 +454,12 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           ))}
         </div>
 
-        {/* Comment field (mandatory) */}
+        {/* Comment field (optional) */}
         <div className="mt-4 pt-3 border-t border-border">
           <div className="flex items-center gap-1.5 mb-2">
             <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
             <label className="text-xs font-medium text-muted-foreground">
-              {language === "de" ? "Kommentar" : "Comment"} <span className="text-destructive">*</span>
+              {language === "de" ? "Kommentar (optional)" : "Comment (optional)"}
             </label>
           </div>
           {currentQuestion.commentHint && (
@@ -474,9 +473,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
             placeholder={language === "de" ? "Begründung, Notizen, Anmerkungen..." : "Rationale, notes, remarks..."}
             disabled={readonly}
             rows={2}
-            className={`text-sm resize-none ${
-              !comments[currentQuestion.id]?.trim() && currentAnswer > 0 ? "border-destructive/50" : ""
-            }`}
+            className="text-sm resize-none"
           />
           {!comments[currentQuestion.id]?.trim() && currentAnswer > 0 && (
             <p className="text-xs text-destructive mt-1">
@@ -553,7 +550,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           {t("back")}
         </Button>
 
-        <Button onClick={handleNext} disabled={currentCommentMissing}>
+        <Button onClick={handleNext} disabled={!canProceed}>
           {currentIndex === totalQuestions - 1 ? (
             <>
               {language === "de" ? "Ergebnis anzeigen" : "Show Results"}
