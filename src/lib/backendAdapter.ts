@@ -176,3 +176,35 @@ export function getFileUrl(filePath: string): string {
   const { data } = supabase.storage.from("opportunity-files").getPublicUrl(filePath);
   return data.publicUrl;
 }
+
+// ===== Edge Function / Backend Function Invocation =====
+
+/**
+ * Invoke a backend function. In Supabase mode, calls edge functions.
+ * In SQLite mode, calls the local Express API proxy at /api/<functionName>.
+ */
+export async function invokeFunction(
+  functionName: string,
+  body: Record<string, any>
+): Promise<{ data: any; error: any }> {
+  if (getBackendType() === "sqlite") {
+    try {
+      const res = await fetch(`${API_BASE}/${functionName}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.statusText }));
+        return { data: null, error: err };
+      }
+      const data = await res.json();
+      return { data, error: null };
+    } catch (e: any) {
+      return { data: null, error: { message: e.message } };
+    }
+  }
+  // Supabase: use edge functions
+  const { data, error } = await supabase.functions.invoke(functionName, { body });
+  return { data, error };
+}
