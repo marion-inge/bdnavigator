@@ -14,7 +14,7 @@ const translations = {
     solutionDescription: "Solution Idea & Differentiator",
     industry: "Industry",
     geography: "Target Geography",
-    technology: "Technology",
+    technology: "Business Field",
     owner: "BD Team Owner",
     ideaBringer: "Idea Bringer",
     stage: "Stage",
