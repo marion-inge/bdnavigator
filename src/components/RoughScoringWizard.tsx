@@ -350,7 +350,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
 
   // Question view
   const currentAnswer = answers[currentQuestion.id] || 0;
-  const currentCommentMissing = currentAnswer > 0 && !comments[currentQuestion.id]?.trim();
+  const canProceed = currentAnswer > 0;
 
   // Count questions before this category
   let questionsBeforeCategory = 0;
