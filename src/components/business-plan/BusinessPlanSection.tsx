@@ -183,7 +183,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
               solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
           <TabsContent value="som-competitor">
-            <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
+            <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
           </TabsContent>
           <TabsContent value="som-pilot">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />

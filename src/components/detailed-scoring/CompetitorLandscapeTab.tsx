@@ -352,13 +352,18 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
         </div>
       )}
 
-      {/* Mark Web Search Placeholder */}
-      <MarkWebSearchPlaceholder
-        titleEn="Competitor Web Research"
-        titleDe="Wettbewerber Web-Recherche"
-        descriptionEn="Mark will research competitor profiles, market shares, pricing strategies, and product differentiators from public web sources, press releases, and industry databases."
-        descriptionDe="Mark recherchiert Wettbewerber-Profile, Marktanteile, Preisstrategien und Produktdifferenzierungen aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken."
-      />
+      {/* Mark Web Search */}
+      {opportunity && (
+        <MarkWebSearch
+          researchType="competitor"
+          titleEn="Competitor Web Research"
+          titleDe="Wettbewerber Web-Recherche"
+          descriptionEn="Mark will research competitor profiles, market shares, pricing strategies, and product differentiators from public web sources, press releases, and industry databases."
+          descriptionDe="Mark recherchiert Wettbewerber-Profile, Marktanteile, Preisstrategien und Produktdifferenzierungen aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken."
+          opportunity={opportunity}
+          extra={compEntries.some(c => c.name) ? { competitorNames: compEntries.filter(c => c.name).map(c => c.name).join(", ") } : undefined}
+        />
+      )}
 
     </div>
     </EditableSection>
