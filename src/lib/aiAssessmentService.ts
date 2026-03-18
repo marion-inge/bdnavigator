@@ -80,21 +80,18 @@ export async function saveAssessment(
   basis: string,
   result: AIAssessmentResult
 ): Promise<void> {
-  const { supabase } = await import("@/integrations/supabase/client");
+  const { upsertAiAssessment } = await import("./backendAdapter");
 
-  const { error } = await (supabase as any).from("ai_assessments").upsert(
-    {
-      opportunity_id: opportunityId,
-      basis,
-      summary: result.summary,
-      strengths: result.strengths,
-      weaknesses: result.weaknesses,
-      next_steps: result.nextSteps,
-      pitfalls: result.pitfalls,
-      overall_rating: result.overallRating,
-    },
-    { onConflict: "opportunity_id,basis" }
-  );
+  const { error } = await upsertAiAssessment({
+    opportunity_id: opportunityId,
+    basis,
+    summary: result.summary,
+    strengths: result.strengths,
+    weaknesses: result.weaknesses,
+    next_steps: result.nextSteps,
+    pitfalls: result.pitfalls,
+    overall_rating: result.overallRating,
+  });
 
   if (error) {
     console.error("Failed to save assessment:", error);
@@ -105,26 +102,20 @@ export async function loadAssessment(
   opportunityId: string,
   basis: string
 ): Promise<AIAssessmentResult | null> {
-  const { supabase } = await import("@/integrations/supabase/client");
+  const { fetchAiAssessments } = await import("./backendAdapter");
 
-  const { data, error } = await (supabase as any)
-    .from("ai_assessments")
-    .select("*")
-    .eq("opportunity_id", opportunityId)
-    .eq("basis", basis)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const { data, error } = await fetchAiAssessments(opportunityId, basis);
 
-  if (error || !data) return null;
+  if (error || !data || (data as any[]).length === 0) return null;
 
+  const row = (data as any[])[0];
   return {
-    summary: data.summary,
-    strengths: data.strengths,
-    weaknesses: data.weaknesses,
-    nextSteps: data.next_steps,
-    pitfalls: data.pitfalls,
-    overallRating: data.overall_rating,
+    summary: row.summary,
+    strengths: row.strengths,
+    weaknesses: row.weaknesses,
+    nextSteps: row.next_steps,
+    pitfalls: row.pitfalls,
+    overallRating: row.overall_rating,
   };
 }
 
@@ -135,6 +126,7 @@ export async function loadAssessment(
  * Calls the ai-assessment edge function which uses Lovable AI.
  */
 export async function generateAssessment(input: AssessmentInput): Promise<AIAssessmentResult> {
+  const { getBackendType } = await import("./backendAdapter");
   const { supabase } = await import("@/integrations/supabase/client");
 
   // Build question texts map from scoring questions
@@ -144,6 +136,33 @@ export async function generateAssessment(input: AssessmentInput): Promise<AIAsse
     questionTexts[q.id] = q.question;
   }
 
+  if (getBackendType() === "sqlite") {
+    // For SQLite/self-hosted: call the local API proxy (which must forward to an AI endpoint)
+    const API_BASE = import.meta.env.VITE_API_URL || "/api";
+    const res = await fetch(`${API_BASE}/ai-assessment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scoring: input.scoring,
+        answers: input.answers,
+        comments: input.comments || {},
+        questionTexts,
+        title: input.title,
+        description: input.description,
+        solutionDescription: input.solutionDescription,
+        industry: input.industry,
+        geography: input.geography,
+        technology: input.technology,
+        ideaBringer: input.ideaBringer,
+        owner: input.owner,
+        language: input.language,
+      }),
+    });
+    if (!res.ok) throw new Error("AI assessment failed");
+    return await res.json() as AIAssessmentResult;
+  }
+
+  // Supabase/Lovable Cloud: use edge function
   const { data, error } = await supabase.functions.invoke("ai-assessment", {
     body: {
       scoring: input.scoring,
