@@ -85,7 +85,7 @@ export function NewOpportunityDialog() {
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">{t("technology")}</label>
-              <Input value={technology} onChange={(e) => setTechnology(e.target.value)} placeholder="e.g. AI, Robotics" />
+              <Input value={technology} onChange={(e) => setTechnology(e.target.value)} placeholder="e.g. Automotive, Energy, Healthcare" />
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">{t("ideaBringer")}</label>

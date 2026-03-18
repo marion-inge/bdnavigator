@@ -838,7 +838,7 @@ guideRI_s5: "Very high risk; hostile regulatory environment; breakthrough techno
     solutionDescription: "Lösungsidee & Differenzierung",
     industry: "Branche",
     geography: "Zielgeografie",
-    technology: "Technologie",
+    technology: "Geschäftsfeld",
     owner: "BD Team Owner",
     ideaBringer: "Ideengeber",
     stage: "Phase",
