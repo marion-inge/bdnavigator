@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
+import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { DetailedScoring, CompetitorEntry, CompetitorDimensionRating } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,14 @@ interface Props {
   scoring: DetailedScoring;
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
+  opportunity?: {
+    title: string;
+    description: string;
+    solutionDescription?: string;
+    industry: string;
+    geography: string;
+    technology: string;
+  };
 }
 
 const DIMENSION_KEYS = ["price", "techFeatures", "reach", "brandAwareness", "history", "usps"] as const;
@@ -31,7 +39,7 @@ const RADAR_COLORS = [
   "hsl(280, 60%, 55%)",
 ];
 
-export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadonly, opportunity }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
@@ -344,13 +352,18 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
         </div>
       )}
 
-      {/* Mark Web Search Placeholder */}
-      <MarkWebSearchPlaceholder
-        titleEn="Competitor Web Research"
-        titleDe="Wettbewerber Web-Recherche"
-        descriptionEn="Mark will research competitor profiles, market shares, pricing strategies, and product differentiators from public web sources, press releases, and industry databases."
-        descriptionDe="Mark recherchiert Wettbewerber-Profile, Marktanteile, Preisstrategien und Produktdifferenzierungen aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken."
-      />
+      {/* Mark Web Search */}
+      {opportunity && (
+        <MarkWebSearch
+          researchType="competitor"
+          titleEn="Competitor Web Research"
+          titleDe="Wettbewerber Web-Recherche"
+          descriptionEn="Mark will research competitor profiles, market shares, pricing strategies, and product differentiators from public web sources, press releases, and industry databases."
+          descriptionDe="Mark recherchiert Wettbewerber-Profile, Marktanteile, Preisstrategien und Produktdifferenzierungen aus öffentlichen Webquellen, Pressemitteilungen und Branchendatenbanken."
+          opportunity={opportunity}
+          extra={compEntries.some(c => c.name) ? { competitorNames: compEntries.filter(c => c.name).map(c => c.name).join(", ") } : undefined}
+        />
+      )}
 
     </div>
     </EditableSection>

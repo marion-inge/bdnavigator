@@ -9,5 +9,8 @@ verify_jwt = false
 [functions.business-case-assessment]
 verify_jwt = false
 
+[functions.mark-web-research]
+verify_jwt = false
+
 [functions.sam-estimation]
 verify_jwt = false
