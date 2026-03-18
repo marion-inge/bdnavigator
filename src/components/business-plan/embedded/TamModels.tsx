@@ -116,7 +116,7 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportuni
 }
 
 // ── Porter's Five Forces ──
-export function EmbeddedPorter({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
+export function EmbeddedPorter({ data, onSave, readonly: propReadonly, opportunity }: EmbeddedModelProps) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
