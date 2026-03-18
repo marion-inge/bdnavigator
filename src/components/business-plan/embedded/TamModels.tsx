@@ -12,10 +12,20 @@ import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2, MapPin } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
 
+interface OpportunityContext {
+  title: string;
+  description: string;
+  solutionDescription?: string;
+  industry: string;
+  geography: string;
+  technology: string;
+}
+
 interface EmbeddedModelProps {
   data: TamModels;
   onSave: (data: TamModels) => void;
   readonly?: boolean;
+  opportunity?: OpportunityContext;
 }
 
 // ── Market Research ──
