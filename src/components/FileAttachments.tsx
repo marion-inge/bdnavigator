@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useI18n } from "@/lib/i18n";
-import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl } from "@/lib/backendAdapter";
-import { getBackendType } from "@/lib/backendAdapter";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl, updateFileComment } from "@/lib/backendAdapter";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, Download, Trash2, FileText, FileSpreadsheet, Presentation, Mail, Image, File, MessageSquare, X, Eye } from "lucide-react";

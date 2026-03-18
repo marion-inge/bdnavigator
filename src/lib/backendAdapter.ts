@@ -158,13 +158,31 @@ export async function uploadOpportunityFile(
   return { data: { file_path: filePath }, error };
 }
 
-export async function deleteOpportunityFile(id: string) {
+export async function deleteOpportunityFile(id: string, filePath?: string) {
   if (getBackendType() === "sqlite") {
     return apiFetch<null>(`/opportunity-files/${id}`, { method: "DELETE" });
+  }
+  // Remove from storage first
+  if (filePath) {
+    await supabase.storage.from("opportunity-files").remove([filePath]);
   }
   const { error } = await (supabase as any)
     .from("opportunity_files")
     .delete()
+    .eq("id", id);
+  return { data: null, error };
+}
+
+export async function updateFileComment(id: string, comment: string) {
+  if (getBackendType() === "sqlite") {
+    return apiFetch<any>(`/opportunity-files/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ comment }),
+    });
+  }
+  const { error } = await (supabase as any)
+    .from("opportunity_files")
+    .update({ comment })
     .eq("id", id);
   return { data: null, error };
 }
