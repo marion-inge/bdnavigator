@@ -39,7 +39,7 @@ const RADAR_COLORS = [
   "hsl(280, 60%, 55%)",
 ];
 
-export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
+export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadonly, opportunity }: Props) {
   const { t } = useI18n();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
