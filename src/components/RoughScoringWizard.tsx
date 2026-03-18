@@ -454,12 +454,12 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           ))}
         </div>
 
-        {/* Comment field (mandatory) */}
+        {/* Comment field (optional) */}
         <div className="mt-4 pt-3 border-t border-border">
           <div className="flex items-center gap-1.5 mb-2">
             <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
             <label className="text-xs font-medium text-muted-foreground">
-              {language === "de" ? "Kommentar" : "Comment"} <span className="text-destructive">*</span>
+              {language === "de" ? "Kommentar (optional)" : "Comment (optional)"}
             </label>
           </div>
           {currentQuestion.commentHint && (
