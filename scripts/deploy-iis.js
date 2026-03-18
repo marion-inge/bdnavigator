@@ -156,7 +156,11 @@ async function main() {
   console.log("     - BDNavigator.db");
   console.log("     - uploads/");
   console.log("  5. Install iisnode if not already installed");
-  console.log("  6. (Optional) Test locally: node index.js");
+  console.log("  6. Set environment variables for AI features:");
+  console.log("     - OPENAI_API_KEY (for IDA assessments)");
+  console.log("     - PERPLEXITY_API_KEY (for Mark web research)");
+  console.log("     - AI_BASE_URL / AI_MODEL (optional, for custom AI providers)");
+  console.log("  7. (Optional) Test locally: node index.js");
   console.log("");
 }
 
