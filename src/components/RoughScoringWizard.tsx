@@ -550,7 +550,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           {t("back")}
         </Button>
 
-        <Button onClick={handleNext} disabled={currentCommentMissing}>
+        <Button onClick={handleNext} disabled={!canProceed}>
           {currentIndex === totalQuestions - 1 ? (
             <>
               {language === "de" ? "Ergebnis anzeigen" : "Show Results"}
