@@ -16,7 +16,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
-import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
+import { MarkWebSearch } from "@/components/MarkWebSearch";
 
 interface TamScenario {
   projections: MarketYearValue[];
