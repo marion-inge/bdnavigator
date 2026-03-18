@@ -384,13 +384,24 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </CardContent>
         </Card>
 
-        {/* Mark Web Search Placeholder */}
-        <MarkWebSearchPlaceholder
-          titleEn="TAM Market Research"
-          titleDe="TAM Marktrecherche"
-          descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports from public sources to provide a factual foundation for IDA's TAM estimation."
-          descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte aus öffentlichen Quellen als Faktengrundlage für IDAs TAM-Schätzung."
-        />
+        {/* Mark Web Search */}
+        {opportunityTitle && (
+          <MarkWebSearch
+            researchType="tam"
+            titleEn="TAM Market Research"
+            titleDe="TAM Marktrecherche"
+            descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports from public sources to provide a factual foundation for IDA's TAM estimation."
+            descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte aus öffentlichen Quellen als Faktengrundlage für IDAs TAM-Schätzung."
+            opportunity={{
+              title: opportunityTitle,
+              description: opportunityDescription || "",
+              solutionDescription,
+              industry: industry || "",
+              geography: geography || "",
+              technology: technology || "",
+            }}
+          />
+        )}
 
         {/* IDA TAM Estimation */}
         {!tamEstimation ? (

@@ -63,7 +63,8 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     onSaveStrategic(updated);
   };
 
-  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly };
+  const oppContext = opportunityTitle ? { title: opportunityTitle, description: opportunityDescription || "", solutionDescription, industry: industry || "", geography: geography || "", technology: technology || "" } : undefined;
+  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly, opportunity: oppContext };
   const samProps = { data: saData.sam, onSave: (d: any) => handleUpdateSa({ ...saData, sam: d }), readonly };
   const somProps = { data: saData.som, onSave: (d: any) => handleUpdateSa({ ...saData, som: d }), readonly };
 
