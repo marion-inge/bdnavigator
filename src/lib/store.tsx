@@ -119,11 +119,7 @@ function rowToOpp(r: any): Opportunity {
 }
 
 async function fetchOpportunities(): Promise<Opportunity[]> {
-  const { data, error } = await (supabase as any)
-    .from("opportunities")
-    .select("*")
-    .order("created_at", { ascending: false });
-
+  const { data, error } = await fetchAllOpportunities();
   if (error) {
     console.error("Failed to fetch opportunities:", error);
     return [];
@@ -132,19 +128,12 @@ async function fetchOpportunities(): Promise<Opportunity[]> {
 }
 
 async function upsertOpportunity(opp: Opportunity) {
-  const { error } = await (supabase as any)
-    .from("opportunities")
-    .upsert(oppToRow(opp), { onConflict: "id" });
-
+  const { error } = await upsertOpportunityRow(oppToRow(opp));
   if (error) console.error("Failed to upsert opportunity:", error);
 }
 
 async function deleteOpportunityFromDb(id: string) {
-  const { error } = await (supabase as any)
-    .from("opportunities")
-    .delete()
-    .eq("id", id);
-
+  const { error } = await deleteOpportunityRow(id);
   if (error) console.error("Failed to delete opportunity:", error);
 }
 
