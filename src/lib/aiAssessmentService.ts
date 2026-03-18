@@ -126,6 +126,7 @@ export async function loadAssessment(
  * Calls the ai-assessment edge function which uses Lovable AI.
  */
 export async function generateAssessment(input: AssessmentInput): Promise<AIAssessmentResult> {
+  const { getBackendType } = await import("./backendAdapter");
   const { supabase } = await import("@/integrations/supabase/client");
 
   // Build question texts map from scoring questions
@@ -135,6 +136,33 @@ export async function generateAssessment(input: AssessmentInput): Promise<AIAsse
     questionTexts[q.id] = q.question;
   }
 
+  if (getBackendType() === "sqlite") {
+    // For SQLite/self-hosted: call the local API proxy (which must forward to an AI endpoint)
+    const API_BASE = import.meta.env.VITE_API_URL || "/api";
+    const res = await fetch(`${API_BASE}/ai-assessment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scoring: input.scoring,
+        answers: input.answers,
+        comments: input.comments || {},
+        questionTexts,
+        title: input.title,
+        description: input.description,
+        solutionDescription: input.solutionDescription,
+        industry: input.industry,
+        geography: input.geography,
+        technology: input.technology,
+        ideaBringer: input.ideaBringer,
+        owner: input.owner,
+        language: input.language,
+      }),
+    });
+    if (!res.ok) throw new Error("AI assessment failed");
+    return await res.json() as AIAssessmentResult;
+  }
+
+  // Supabase/Lovable Cloud: use edge function
   const { data, error } = await supabase.functions.invoke("ai-assessment", {
     body: {
       scoring: input.scoring,
