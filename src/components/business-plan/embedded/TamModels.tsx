@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { MarkWebSearchPlaceholder } from "@/components/MarkWebSearchPlaceholder";
+import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { StrategicAnalyses, createDefaultStrategicAnalyses, createDefaultValueChain, ValueChainStage, TamModels } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
