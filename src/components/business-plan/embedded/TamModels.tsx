@@ -101,12 +101,16 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportuni
           <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={pestel.rationale} onChange={e => update({ rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
-      <MarkWebSearchPlaceholder
-        titleEn="PESTEL Web Research"
-        titleDe="PESTEL Web-Recherche"
-        descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources."
-        descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends relevant für deine Branche und Geografie aus öffentlichen Webquellen."
-      />
+      {opportunity && (
+        <MarkWebSearch
+          researchType="pestel"
+          titleEn="PESTEL Web Research"
+          titleDe="PESTEL Web-Recherche"
+          descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources."
+          descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends relevant für deine Branche und Geografie aus öffentlichen Webquellen."
+          opportunity={opportunity}
+        />
+      )}
     </EditableSection>
   );
 }
