@@ -102,7 +102,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const handleEstimateTam = async () => {
     setEstimating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("tam-estimation", {
+      const { data, error } = await invokeFunction("tam-estimation", {
         body: {
           opportunityTitle: opportunityTitle || "",
           opportunityDescription: opportunityDescription || "",

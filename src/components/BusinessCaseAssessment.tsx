@@ -48,7 +48,7 @@ export function BusinessCaseAssessment({ opportunityId, title, description, indu
     setLoading(true);
     setError(null);
     try {
-      const { data, error: fnError } = await supabase.functions.invoke("business-case-assessment", {
+      const { data, error: fnError } = await invokeFunction("business-case-assessment", {
         body: { kpis, parameters, yearData, title, description, industry, technology, language },
       });
       if (fnError) throw new Error(fnError.message);

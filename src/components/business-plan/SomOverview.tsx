@@ -85,7 +85,7 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strateg
     setEstimating(true);
     try {
       const analysis = scoring.marketAttractiveness?.analysis;
-      const { data, error } = await supabase.functions.invoke("som-estimation", {
+      const { data, error } = await invokeFunction("som-estimation", {
         body: {
           opportunityTitle: opportunityTitle || "",
           opportunityDescription: opportunityDescription || "",

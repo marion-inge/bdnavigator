@@ -42,7 +42,7 @@ export function MarkWebSearch({
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("mark-web-research", {
+      const { data, error } = await invokeFunction("mark-web-research", {
         body: {
           researchType,
           opportunity,

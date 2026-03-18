@@ -82,7 +82,7 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
     }
     setEstimating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("sam-estimation", {
+      const { data, error } = await invokeFunction("sam-estimation", {
         body: {
           opportunityTitle: opportunityTitle || "",
           opportunityDescription: opportunityDescription || "",
