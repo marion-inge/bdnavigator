@@ -100,7 +100,7 @@ async function main() {
 
   // 4. Copy server files
   log("Copying server files...");
-  const serverFiles = ["index.js", "web.config", "package.json"];
+  const serverFiles = ["index.js", "ai-proxy.js", "web.config", "package.json"];
   for (const file of serverFiles) {
     const src = path.join(SERVER_DIR, file);
     if (copyFile(src, path.join(OUTPUT_DIR, file))) {
