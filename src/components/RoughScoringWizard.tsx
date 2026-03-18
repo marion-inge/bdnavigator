@@ -133,8 +133,7 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
 
   const handleNext = () => {
     const answer = answers[currentQuestion?.id] || 0;
-    const commentMissing = answer > 0 && !comments[currentQuestion?.id]?.trim();
-    if (commentMissing) return;
+    if (answer === 0) return;
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
