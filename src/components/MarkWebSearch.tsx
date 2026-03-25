@@ -43,12 +43,10 @@ export function MarkWebSearch({
     setLoading(true);
     try {
       const { data, error } = await invokeFunction("mark-web-research", {
-        body: {
-          researchType,
-          opportunity,
-          extra,
-          language: language as "en" | "de",
-        },
+        researchType,
+        opportunity,
+        extra,
+        language: language as "en" | "de",
       });
 
       if (error) throw error;
