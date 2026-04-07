@@ -1,6 +1,8 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Opportunity, calculateTotalScore, STAGE_ORDER } from "./types";
+import { Opportunity, Scoring, calculateTotalScore, SCORING_WEIGHTS, STAGE_ORDER } from "./types";
+import { getQuestionsByCategory, ROUGH_SCORING_QUESTIONS } from "./roughScoringQuestions";
+import { loadAssessment, AIAssessmentResult, getRatingLabel } from "./aiAssessmentService";
 
 const STAGE_LABELS: Record<string, string> = {
   idea: "Idee",
@@ -15,6 +17,17 @@ const STAGE_LABELS: Record<string, string> = {
 
 const PRIMARY_COLOR: [number, number, number] = [59, 130, 246];
 const HEADER_BG: [number, number, number] = [241, 245, 249];
+const SUCCESS_COLOR: [number, number, number] = [34, 197, 94];
+const WARNING_COLOR: [number, number, number] = [234, 179, 8];
+const DANGER_COLOR: [number, number, number] = [239, 68, 68];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  marketAttractiveness: "Marktattraktivität",
+  strategicFit: "Strategischer Fit",
+  feasibility: "Machbarkeit",
+  commercialViability: "Kommerzielle Tragfähigkeit",
+  risk: "Risiko",
+};
 
 function fmt(n: number | undefined, suffix = ""): string {
   if (n === undefined || n === null) return "—";
@@ -47,6 +60,21 @@ function addSectionTitle(doc: jsPDF, y: number, title: string): number {
   return y + 8;
 }
 
+function addSubSectionTitle(doc: jsPDF, y: number, title: string): number {
+  if (y > doc.internal.pageSize.getHeight() - 25) {
+    doc.addPage();
+    y = 20;
+  }
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(80, 80, 80);
+  doc.text(title, 14, y);
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  return y + 6;
+}
+
 function addKeyValue(doc: jsPDF, y: number, key: string, value: string): number {
   if (y > doc.internal.pageSize.getHeight() - 15) {
     doc.addPage();
@@ -60,9 +88,23 @@ function addKeyValue(doc: jsPDF, y: number, key: string, value: string): number 
   return y + 6;
 }
 
+function ensureSpace(doc: jsPDF, y: number, needed: number): number {
+  if (y + needed > doc.internal.pageSize.getHeight() - 15) {
+    doc.addPage();
+    return 20;
+  }
+  return y;
+}
+
+function getScoreColorRgb(score: number): [number, number, number] {
+  if (score >= 4) return SUCCESS_COLOR;
+  if (score >= 3) return WARNING_COLOR;
+  return DANGER_COLOR;
+}
+
 // ── Single Opportunity PDF ──
 
-export function exportOpportunityPdf(opp: Opportunity) {
+export async function exportOpportunityPdf(opp: Opportunity) {
   const doc = new jsPDF();
   const pw = doc.internal.pageSize.getWidth();
 
@@ -91,29 +133,246 @@ export function exportOpportunityPdf(opp: Opportunity) {
     y += lines.length * 5 + 4;
   }
 
-  // Rough Scoring
+  // ─── IDEA SCORING SECTION ───────────────────────────────────────────
   y += 4;
-  y = addSectionTitle(doc, y, "Idea Scoring");
+  y = addSectionTitle(doc, y, "Idea Scoring – Ergebnis");
+
   const roughScore = calculateTotalScore(opp.scoring);
+  const answers: Record<string, number> = opp.roughScoringAnswers || {};
+  const comments: Record<string, string> = opp.roughScoringComments || {};
+  const scoringSources: Record<string, string[]> = opp.roughScoringSources || {};
+  const categorizedQuestions = getQuestionsByCategory();
+
+  // Total Score
+  const scoreColor = getScoreColorRgb(roughScore);
+  y = ensureSpace(doc, y, 20);
+  doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
+  doc.roundedRect(14, y - 2, pw - 28, 16, 3, 3, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Gesamtbewertung: ${roughScore.toFixed(1)} / 5.0`, pw / 2, y + 8, { align: "center" });
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  y += 22;
+
+  // Category Overview Table
+  const categoryAverages = categorizedQuestions.map(({ category, questions }) => {
+    const catAnswered = questions.filter((q) => answers[q.id] > 0);
+    const avg = catAnswered.length > 0
+      ? catAnswered.reduce((sum, q) => sum + answers[q.id], 0) / catAnswered.length
+      : opp.scoring[category].score;
+    return {
+      category,
+      avg: Math.round(avg * 10) / 10,
+      finalScore: Math.round(avg),
+      answered: catAnswered.length,
+      total: questions.length,
+      weight: SCORING_WEIGHTS[category],
+    };
+  });
 
   autoTable(doc, {
     startY: y,
-    head: [["Kriterium", "Score (1–5)", "Gewicht", "Kommentar"]],
-    body: [
-      ["Marktattraktivität", String(opp.scoring.marketAttractiveness.score), "3", opp.scoring.marketAttractiveness.comment || "—"],
-      ["Strategischer Fit", String(opp.scoring.strategicFit.score), "3", opp.scoring.strategicFit.comment || "—"],
-      ["Machbarkeit", String(opp.scoring.feasibility.score), "2", opp.scoring.feasibility.comment || "—"],
-      ["Kommerzielle Tragfähigkeit", String(opp.scoring.commercialViability.score), "2", opp.scoring.commercialViability.comment || "—"],
-      ["Risiko (invertiert)", String(opp.scoring.risk.score), "1", opp.scoring.risk.comment || "—"],
-    ],
-    headStyles: { fillColor: PRIMARY_COLOR },
+    head: [["Kategorie", "Ø Score", "Gewicht", "Beantwortet", "Gewichtet"]],
+    body: categoryAverages.map(({ category, avg, weight, answered, total }) => {
+      const displayScore = category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg;
+      return [
+        CATEGORY_LABELS[category],
+        String(avg),
+        `${weight}x`,
+        `${answered}/${total}`,
+        (displayScore * weight).toFixed(1),
+      ];
+    }),
+    headStyles: { fillColor: PRIMARY_COLOR, fontSize: 9 },
     styles: { fontSize: 9 },
     margin: { left: 14 },
   });
   y = (doc as any).lastAutoTable.finalY + 4;
-  y = addKeyValue(doc, y, "Gesamtbewertung", roughScore.toFixed(1) + " / 5.0");
 
-  // Detailed Scoring
+  // Weighted Calculation
+  y = ensureSpace(doc, y, 20);
+  const totalWeight = Object.values(SCORING_WEIGHTS).reduce((a, b) => a + b, 0);
+  const weightedParts = categoryAverages.map(({ category, avg, weight }) => {
+    const displayScore = category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg;
+    return `${displayScore.toFixed(1)}×${weight}`;
+  });
+  doc.setFontSize(8);
+  doc.setTextColor(100, 100, 100);
+  doc.text(`Berechnung: (${weightedParts.join(" + ")}) ÷ ${totalWeight} = ${roughScore.toFixed(1)}`, 14, y);
+  doc.text("Hinweis: Risiko ist invertiert (Score 6 − Wert)", 14, y + 4);
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
+  y += 12;
+
+  // ─── DETAILED Q&A PER CATEGORY ──────────────────────────────────────
+  for (const { category, questions } of categorizedQuestions) {
+    const catData = categoryAverages.find(c => c.category === category)!;
+
+    y = ensureSpace(doc, y, 15);
+    y = addSubSectionTitle(doc, y, `${CATEGORY_LABELS[category]} (Ø ${catData.avg} · Gewicht ${catData.weight}x)`);
+
+    for (const q of questions) {
+      const answer = answers[q.id] || 0;
+      const comment = comments[q.id] || "";
+      const qSources = scoringSources[q.id] || [];
+
+      // Calculate needed space
+      const questionLines = doc.splitTextToSize(q.question.de, pw - 45);
+      let neededSpace = questionLines.length * 4 + 8;
+      if (answer > 0) neededSpace += 5;
+      if (comment) neededSpace += doc.splitTextToSize(comment, pw - 40).length * 4 + 4;
+      if (qSources.length > 0) neededSpace += qSources.length * 4 + 2;
+
+      y = ensureSpace(doc, y, neededSpace);
+
+      // Question text
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.text(questionLines, 16, y);
+      y += questionLines.length * 4 + 2;
+
+      // Answer
+      if (answer > 0) {
+        const desc = q.descriptions[answer as 1 | 2 | 3 | 4 | 5].de;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        const ansColor = getScoreColorRgb(answer);
+        doc.setFillColor(ansColor[0], ansColor[1], ansColor[2]);
+        doc.roundedRect(18, y - 3.5, 10, 5, 1, 1, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.text(String(answer), 23, y, { align: "center" });
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "normal");
+        const descLines = doc.splitTextToSize(desc, pw - 60);
+        doc.text(descLines, 32, y);
+        y += Math.max(descLines.length * 4, 5) + 2;
+      } else {
+        doc.setFontSize(9);
+        doc.setTextColor(150, 150, 150);
+        doc.text("Nicht beantwortet", 18, y);
+        doc.setTextColor(0, 0, 0);
+        y += 5;
+      }
+
+      // Comment
+      if (comment) {
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.setFont("helvetica", "italic");
+        const commentLines = doc.splitTextToSize(`Kommentar: ${comment}`, pw - 40);
+        y = ensureSpace(doc, y, commentLines.length * 4);
+        doc.text(commentLines, 18, y);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        y += commentLines.length * 4 + 2;
+      }
+
+      // Sources
+      if (qSources.filter(Boolean).length > 0) {
+        doc.setFontSize(7);
+        doc.setTextColor(59, 130, 246);
+        for (const src of qSources.filter(Boolean)) {
+          y = ensureSpace(doc, y, 4);
+          doc.textWithLink(src.length > 80 ? src.substring(0, 77) + "..." : src, 18, y, { url: src });
+          y += 4;
+        }
+        doc.setTextColor(0, 0, 0);
+        y += 1;
+      }
+
+      doc.setFontSize(10);
+      y += 2;
+    }
+
+    y += 4;
+  }
+
+  // ─── IDA ASSESSMENT ─────────────────────────────────────────────────
+  let idaAssessment: AIAssessmentResult | null = null;
+  try {
+    idaAssessment = await loadAssessment(opp.id, "idea_scoring");
+  } catch (e) {
+    console.warn("Could not load IDA assessment for PDF:", e);
+  }
+
+  if (idaAssessment) {
+    y = ensureSpace(doc, y, 30);
+    y = addSectionTitle(doc, y, "IDA – Intelligent Data Analyst");
+
+    // Rating badge
+    const ratingLabel = getRatingLabel(idaAssessment.overallRating, "de");
+    y = addKeyValue(doc, y, "Gesamteinschätzung", ratingLabel);
+    y += 2;
+
+    // Summary
+    if (idaAssessment.summary) {
+      y = ensureSpace(doc, y, 15);
+      doc.setFontSize(9);
+      const summaryLines = doc.splitTextToSize(idaAssessment.summary, pw - 28);
+      y = ensureSpace(doc, y, summaryLines.length * 4);
+      doc.text(summaryLines, 14, y);
+      y += summaryLines.length * 4 + 4;
+      doc.setFontSize(10);
+    }
+
+    // Strengths & Weaknesses side by side via table
+    const maxLen = Math.max(idaAssessment.strengths.length, idaAssessment.weaknesses.length);
+    const swBody: string[][] = [];
+    for (let i = 0; i < maxLen; i++) {
+      swBody.push([
+        idaAssessment.strengths[i] ? `✓ ${idaAssessment.strengths[i]}` : "",
+        idaAssessment.weaknesses[i] ? `⚠ ${idaAssessment.weaknesses[i]}` : "",
+      ]);
+    }
+    if (swBody.length > 0) {
+      y = ensureSpace(doc, y, 15);
+      autoTable(doc, {
+        startY: y,
+        head: [["Stärken", "Schwächen"]],
+        body: swBody,
+        headStyles: { fillColor: PRIMARY_COLOR, fontSize: 9 },
+        styles: { fontSize: 8, cellPadding: 3 },
+        columnStyles: { 0: { cellWidth: (pw - 28) / 2 }, 1: { cellWidth: (pw - 28) / 2 } },
+        margin: { left: 14 },
+      });
+      y = (doc as any).lastAutoTable.finalY + 4;
+    }
+
+    // Next Steps
+    if (idaAssessment.nextSteps.length > 0) {
+      y = ensureSpace(doc, y, 15);
+      autoTable(doc, {
+        startY: y,
+        head: [["#", "Nächste Schritte"]],
+        body: idaAssessment.nextSteps.map((s, i) => [String(i + 1), s]),
+        headStyles: { fillColor: PRIMARY_COLOR, fontSize: 9 },
+        styles: { fontSize: 8 },
+        columnStyles: { 0: { cellWidth: 10 } },
+        margin: { left: 14 },
+      });
+      y = (doc as any).lastAutoTable.finalY + 4;
+    }
+
+    // Pitfalls
+    if (idaAssessment.pitfalls.length > 0) {
+      y = ensureSpace(doc, y, 15);
+      autoTable(doc, {
+        startY: y,
+        head: [["Stolpersteine"]],
+        body: idaAssessment.pitfalls.map(p => [`⚠ ${p}`]),
+        headStyles: { fillColor: [220, 38, 38], fontSize: 9 },
+        styles: { fontSize: 8 },
+        margin: { left: 14 },
+      });
+      y = (doc as any).lastAutoTable.finalY + 4;
+    }
+  }
+
+  // ─── BUSINESS PLAN (existing) ───────────────────────────────────────
   const ds = opp.businessPlan;
   if (ds) {
     y += 4;
