@@ -138,9 +138,9 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   y = addSectionTitle(doc, y, "Idea Scoring – Ergebnis");
 
   const roughScore = calculateTotalScore(opp.scoring);
-  const answers: Record<string, number> = (opp as any).roughScoringAnswers || {};
-  const comments: Record<string, string> = (opp as any).roughScoringComments || {};
-  const scoringSources: Record<string, string[]> = (opp as any).roughScoringSources || {};
+  const answers: Record<string, number> = opp.roughScoringAnswers || {};
+  const comments: Record<string, string> = opp.roughScoringComments || {};
+  const scoringSources: Record<string, string[]> = opp.roughScoringSources || {};
   const categorizedQuestions = getQuestionsByCategory();
 
   // Total Score
