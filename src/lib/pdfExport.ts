@@ -152,10 +152,20 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   if (opp.description) {
     y += 2;
     doc.setFont("helvetica", "bold");
-    doc.text("Description:", 14, y);
+    doc.text("Problem Description:", 14, y);
     doc.setFont("helvetica", "normal");
     y += 5;
     const result = addWrappedText(doc, opp.description, 14, y, pw - 28, 5);
+    y = result.y + 4;
+  }
+
+  if (opp.solutionDescription) {
+    y += 2;
+    doc.setFont("helvetica", "bold");
+    doc.text("Solution Idea & Differentiator:", 14, y);
+    doc.setFont("helvetica", "normal");
+    y += 5;
+    const result = addWrappedText(doc, opp.solutionDescription, 14, y, pw - 28, 5);
     y = result.y + 4;
   }
 
