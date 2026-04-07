@@ -4,15 +4,15 @@ import { Opportunity, Scoring, calculateTotalScore, SCORING_WEIGHTS, STAGE_ORDER
 import { getQuestionsByCategory, ROUGH_SCORING_QUESTIONS } from "./roughScoringQuestions";
 import { loadAssessment, AIAssessmentResult, getRatingLabel } from "./aiAssessmentService";
 
-const STAGE_LABELS: Record<string, string> = {
-  idea: "Idee",
+const STAGE_LABELS_EN: Record<string, string> = {
+  idea: "Idea",
   rough_scoring: "Idea Scoring",
   gate1: "Gate 1",
   detailed_scoring: "Business Plan",
   gate2: "Gate 2",
-  business_case: "Umsetzungs- und GTM-Plan",
-  implement_review: "Umsetzung & Review",
-  closed: "Geschlossen",
+  business_case: "Implementation & GTM Plan",
+  implement_review: "Implementation & Review",
+  closed: "Closed",
 };
 
 const PRIMARY_COLOR: [number, number, number] = [59, 130, 246];
@@ -21,17 +21,32 @@ const SUCCESS_COLOR: [number, number, number] = [34, 197, 94];
 const WARNING_COLOR: [number, number, number] = [234, 179, 8];
 const DANGER_COLOR: [number, number, number] = [239, 68, 68];
 
-const CATEGORY_LABELS: Record<string, string> = {
-  marketAttractiveness: "Marktattraktivität",
-  strategicFit: "Strategischer Fit",
-  feasibility: "Machbarkeit",
-  commercialViability: "Kommerzielle Tragfähigkeit",
-  risk: "Risiko",
+const CATEGORY_LABELS_EN: Record<string, string> = {
+  marketAttractiveness: "Market Attractiveness",
+  strategicFit: "Strategic Fit",
+  feasibility: "Feasibility",
+  commercialViability: "Commercial Viability",
+  risk: "Risk",
 };
+
+/** Decode HTML entities like &amp; &lt; &gt; &quot; &#39; etc. */
+function decodeHtmlEntities(text: string): string {
+  if (!text) return text;
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, "/")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
+}
 
 function fmt(n: number | undefined, suffix = ""): string {
   if (n === undefined || n === null) return "—";
-  return n.toLocaleString("de-DE") + suffix;
+  return n.toLocaleString("en-US") + suffix;
 }
 
 function addHeader(doc: jsPDF, title: string) {
@@ -102,6 +117,18 @@ function getScoreColorRgb(score: number): [number, number, number] {
   return DANGER_COLOR;
 }
 
+/** Safely render wrapped text with proper spacing */
+function addWrappedText(doc: jsPDF, text: string, x: number, y: number, maxWidth: number, lineHeight: number = 4): { y: number } {
+  const decoded = decodeHtmlEntities(text);
+  const lines = doc.splitTextToSize(decoded, maxWidth);
+  for (let i = 0; i < lines.length; i++) {
+    y = ensureSpace(doc, y, lineHeight + 2);
+    doc.text(lines[i], x, y);
+    y += lineHeight;
+  }
+  return { y };
+}
+
 // ── Single Opportunity PDF ──
 
 export async function exportOpportunityPdf(opp: Opportunity) {
@@ -113,29 +140,28 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   let y = 38;
 
   // Meta info
-  y = addSectionTitle(doc, y, "Übersicht");
-  y = addKeyValue(doc, y, "Titel", opp.title);
-  y = addKeyValue(doc, y, "Phase", STAGE_LABELS[opp.stage] || opp.stage);
-  y = addKeyValue(doc, y, "Branche", opp.industry);
-  y = addKeyValue(doc, y, "Geografie", opp.geography);
-  y = addKeyValue(doc, y, "Technologie", opp.technology);
-  y = addKeyValue(doc, y, "Verantwortlicher", opp.owner);
-  y = addKeyValue(doc, y, "Erstellt", new Date(opp.createdAt).toLocaleDateString("de-DE"));
+  y = addSectionTitle(doc, y, "Overview");
+  y = addKeyValue(doc, y, "Title", opp.title);
+  y = addKeyValue(doc, y, "Stage", STAGE_LABELS_EN[opp.stage] || opp.stage);
+  y = addKeyValue(doc, y, "Industry", opp.industry);
+  y = addKeyValue(doc, y, "Geography", opp.geography);
+  y = addKeyValue(doc, y, "Business Field", opp.technology);
+  y = addKeyValue(doc, y, "Owner", opp.owner);
+  y = addKeyValue(doc, y, "Created", new Date(opp.createdAt).toLocaleDateString("en-US"));
 
   if (opp.description) {
     y += 2;
     doc.setFont("helvetica", "bold");
-    doc.text("Beschreibung:", 14, y);
+    doc.text("Description:", 14, y);
     doc.setFont("helvetica", "normal");
     y += 5;
-    const lines = doc.splitTextToSize(opp.description, pw - 28);
-    doc.text(lines, 14, y);
-    y += lines.length * 5 + 4;
+    const result = addWrappedText(doc, opp.description, 14, y, pw - 28, 5);
+    y = result.y + 4;
   }
 
   // ─── IDEA SCORING SECTION ───────────────────────────────────────────
   y += 4;
-  y = addSectionTitle(doc, y, "Idea Scoring – Ergebnis");
+  y = addSectionTitle(doc, y, "Idea Scoring – Results");
 
   const roughScore = calculateTotalScore(opp.scoring);
   const answers: Record<string, number> = opp.roughScoringAnswers || {};
@@ -151,7 +177,7 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text(`Gesamtbewertung: ${roughScore.toFixed(1)} / 5.0`, pw / 2, y + 8, { align: "center" });
+  doc.text(`Overall Score: ${roughScore.toFixed(1)} / 5.0`, pw / 2, y + 8, { align: "center" });
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
@@ -175,11 +201,11 @@ export async function exportOpportunityPdf(opp: Opportunity) {
 
   autoTable(doc, {
     startY: y,
-    head: [["Kategorie", "Ø Score", "Gewicht", "Beantwortet", "Gewichtet"]],
+    head: [["Category", "Avg Score", "Weight", "Answered", "Weighted"]],
     body: categoryAverages.map(({ category, avg, weight, answered, total }) => {
       const displayScore = category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg;
       return [
-        CATEGORY_LABELS[category],
+        CATEGORY_LABELS_EN[category],
         String(avg),
         `${weight}x`,
         `${answered}/${total}`,
@@ -197,12 +223,12 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   const totalWeight = Object.values(SCORING_WEIGHTS).reduce((a, b) => a + b, 0);
   const weightedParts = categoryAverages.map(({ category, avg, weight }) => {
     const displayScore = category === "risk" ? (avg > 0 ? 6 - avg : 0) : avg;
-    return `${displayScore.toFixed(1)}×${weight}`;
+    return `${displayScore.toFixed(1)} x ${weight}`;
   });
   doc.setFontSize(8);
   doc.setTextColor(100, 100, 100);
-  doc.text(`Berechnung: (${weightedParts.join(" + ")}) ÷ ${totalWeight} = ${roughScore.toFixed(1)}`, 14, y);
-  doc.text("Hinweis: Risiko ist invertiert (Score 6 − Wert)", 14, y + 4);
+  doc.text(`Calculation: (${weightedParts.join(" + ")}) / ${totalWeight} = ${roughScore.toFixed(1)}`, 14, y);
+  doc.text("Note: Risk is inverted (Score = 6 - Value)", 14, y + 4);
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
   y += 12;
@@ -212,7 +238,7 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     const catData = categoryAverages.find(c => c.category === category)!;
 
     y = ensureSpace(doc, y, 15);
-    y = addSubSectionTitle(doc, y, `${CATEGORY_LABELS[category]} (Ø ${catData.avg} · Gewicht ${catData.weight}x)`);
+    y = addSubSectionTitle(doc, y, `${CATEGORY_LABELS_EN[category]} (Avg ${catData.avg} | Weight ${catData.weight}x)`);
 
     for (const q of questions) {
       const answer = answers[q.id] || 0;
@@ -220,23 +246,24 @@ export async function exportOpportunityPdf(opp: Opportunity) {
       const qSources = scoringSources[q.id] || [];
 
       // Calculate needed space
-      const questionLines = doc.splitTextToSize(q.question.de, pw - 45);
-      let neededSpace = questionLines.length * 4 + 8;
-      if (answer > 0) neededSpace += 5;
-      if (comment) neededSpace += doc.splitTextToSize(comment, pw - 40).length * 4 + 4;
-      if (qSources.length > 0) neededSpace += qSources.length * 4 + 2;
+      const questionText = decodeHtmlEntities(q.question.en);
+      const questionLines = doc.splitTextToSize(questionText, pw - 45);
+      let neededSpace = questionLines.length * 5 + 10;
+      if (answer > 0) neededSpace += 10;
+      if (comment) neededSpace += doc.splitTextToSize(comment, pw - 40).length * 5 + 6;
+      if (qSources.length > 0) neededSpace += qSources.length * 5 + 4;
 
-      y = ensureSpace(doc, y, neededSpace);
+      y = ensureSpace(doc, y, Math.min(neededSpace, 60));
 
       // Question text
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
       doc.text(questionLines, 16, y);
-      y += questionLines.length * 4 + 2;
+      y += questionLines.length * 4.5 + 3;
 
       // Answer
       if (answer > 0) {
-        const desc = q.descriptions[answer as 1 | 2 | 3 | 4 | 5].de;
+        const desc = decodeHtmlEntities(q.descriptions[answer as 1 | 2 | 3 | 4 | 5].en);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9);
         const ansColor = getScoreColorRgb(answer);
@@ -249,13 +276,13 @@ export async function exportOpportunityPdf(opp: Opportunity) {
         doc.setFont("helvetica", "normal");
         const descLines = doc.splitTextToSize(desc, pw - 60);
         doc.text(descLines, 32, y);
-        y += Math.max(descLines.length * 4, 5) + 2;
+        y += Math.max(descLines.length * 4.5, 6) + 3;
       } else {
         doc.setFontSize(9);
         doc.setTextColor(150, 150, 150);
-        doc.text("Nicht beantwortet", 18, y);
+        doc.text("Not answered", 18, y);
         doc.setTextColor(0, 0, 0);
-        y += 5;
+        y += 6;
       }
 
       // Comment
@@ -263,12 +290,13 @@ export async function exportOpportunityPdf(opp: Opportunity) {
         doc.setFontSize(8);
         doc.setTextColor(100, 100, 100);
         doc.setFont("helvetica", "italic");
-        const commentLines = doc.splitTextToSize(`Kommentar: ${comment}`, pw - 40);
-        y = ensureSpace(doc, y, commentLines.length * 4);
+        const commentText = decodeHtmlEntities(`Comment: ${comment}`);
+        const commentLines = doc.splitTextToSize(commentText, pw - 40);
+        y = ensureSpace(doc, y, commentLines.length * 4.5 + 2);
         doc.text(commentLines, 18, y);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(0, 0, 0);
-        y += commentLines.length * 4 + 2;
+        y += commentLines.length * 4.5 + 3;
       }
 
       // Sources
@@ -276,19 +304,19 @@ export async function exportOpportunityPdf(opp: Opportunity) {
         doc.setFontSize(7);
         doc.setTextColor(59, 130, 246);
         for (const src of qSources.filter(Boolean)) {
-          y = ensureSpace(doc, y, 4);
+          y = ensureSpace(doc, y, 5);
           doc.textWithLink(src.length > 80 ? src.substring(0, 77) + "..." : src, 18, y, { url: src });
           y += 4;
         }
         doc.setTextColor(0, 0, 0);
-        y += 1;
+        y += 2;
       }
 
       doc.setFontSize(10);
-      y += 2;
+      y += 3;
     }
 
-    y += 4;
+    y += 5;
   }
 
   // ─── IDA ASSESSMENT ─────────────────────────────────────────────────
@@ -304,18 +332,16 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     y = addSectionTitle(doc, y, "IDA – Intelligent Data Analyst");
 
     // Rating badge
-    const ratingLabel = getRatingLabel(idaAssessment.overallRating, "de");
-    y = addKeyValue(doc, y, "Gesamteinschätzung", ratingLabel);
+    const ratingLabel = getRatingLabel(idaAssessment.overallRating, "en");
+    y = addKeyValue(doc, y, "Overall Rating", ratingLabel);
     y += 2;
 
     // Summary
     if (idaAssessment.summary) {
       y = ensureSpace(doc, y, 15);
       doc.setFontSize(9);
-      const summaryLines = doc.splitTextToSize(idaAssessment.summary, pw - 28);
-      y = ensureSpace(doc, y, summaryLines.length * 4);
-      doc.text(summaryLines, 14, y);
-      y += summaryLines.length * 4 + 4;
+      const result = addWrappedText(doc, idaAssessment.summary, 14, y, pw - 28, 4.5);
+      y = result.y + 4;
       doc.setFontSize(10);
     }
 
@@ -324,22 +350,22 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     const swBody: string[][] = [];
     for (let i = 0; i < maxLen; i++) {
       swBody.push([
-        idaAssessment.strengths[i] ? `✓ ${idaAssessment.strengths[i]}` : "",
-        idaAssessment.weaknesses[i] ? `⚠ ${idaAssessment.weaknesses[i]}` : "",
+        idaAssessment.strengths[i] ? decodeHtmlEntities(idaAssessment.strengths[i]) : "",
+        idaAssessment.weaknesses[i] ? decodeHtmlEntities(idaAssessment.weaknesses[i]) : "",
       ]);
     }
     if (swBody.length > 0) {
       y = ensureSpace(doc, y, 15);
       autoTable(doc, {
         startY: y,
-        head: [["Stärken", "Schwächen"]],
+        head: [["Strengths", "Weaknesses"]],
         body: swBody,
         headStyles: { fillColor: PRIMARY_COLOR, fontSize: 9 },
         styles: { fontSize: 8, cellPadding: 3 },
         columnStyles: { 0: { cellWidth: (pw - 28) / 2 }, 1: { cellWidth: (pw - 28) / 2 } },
         margin: { left: 14 },
       });
-      y = (doc as any).lastAutoTable.finalY + 4;
+      y = (doc as any).lastAutoTable.finalY + 6;
     }
 
     // Next Steps
@@ -347,14 +373,14 @@ export async function exportOpportunityPdf(opp: Opportunity) {
       y = ensureSpace(doc, y, 15);
       autoTable(doc, {
         startY: y,
-        head: [["#", "Nächste Schritte"]],
-        body: idaAssessment.nextSteps.map((s, i) => [String(i + 1), s]),
+        head: [["#", "Next Steps"]],
+        body: idaAssessment.nextSteps.map((s, i) => [String(i + 1), decodeHtmlEntities(s)]),
         headStyles: { fillColor: PRIMARY_COLOR, fontSize: 9 },
-        styles: { fontSize: 8 },
+        styles: { fontSize: 8, cellPadding: 3 },
         columnStyles: { 0: { cellWidth: 10 } },
         margin: { left: 14 },
       });
-      y = (doc as any).lastAutoTable.finalY + 4;
+      y = (doc as any).lastAutoTable.finalY + 6;
     }
 
     // Pitfalls
@@ -362,13 +388,13 @@ export async function exportOpportunityPdf(opp: Opportunity) {
       y = ensureSpace(doc, y, 15);
       autoTable(doc, {
         startY: y,
-        head: [["Stolpersteine"]],
-        body: idaAssessment.pitfalls.map(p => [`⚠ ${p}`]),
+        head: [["Pitfalls"]],
+        body: idaAssessment.pitfalls.map(p => [decodeHtmlEntities(p)]),
         headStyles: { fillColor: [220, 38, 38], fontSize: 9 },
-        styles: { fontSize: 8 },
+        styles: { fontSize: 8, cellPadding: 3 },
         margin: { left: 14 },
       });
-      y = (doc as any).lastAutoTable.finalY + 4;
+      y = (doc as any).lastAutoTable.finalY + 6;
     }
   }
 
@@ -381,36 +407,36 @@ export async function exportOpportunityPdf(opp: Opportunity) {
 
     autoTable(doc, {
       startY: y,
-      head: [["Kriterium", "Score (1–5)"]],
+      head: [["Criterion", "Score (1-5)"]],
       body: [
-        ["Marktattraktivität", String(ds.marketAttractiveness.score)],
-        ["Strategischer Fit", String(ds.strategicFit.score)],
-        ["Machbarkeit", String(ds.feasibility.score)],
-        ["Kommerzielle Tragfähigkeit", String(ds.commercialViability.score)],
-        ["Risiko (invertiert)", String(ds.risk.score)],
+        ["Market Attractiveness", String(ds.marketAttractiveness.score)],
+        ["Strategic Fit", String(ds.strategicFit.score)],
+        ["Feasibility", String(ds.feasibility.score)],
+        ["Commercial Viability", String(ds.commercialViability.score)],
+        ["Risk (inverted)", String(ds.risk.score)],
       ],
       headStyles: { fillColor: PRIMARY_COLOR },
       styles: { fontSize: 9 },
       margin: { left: 14 },
     });
     y = (doc as any).lastAutoTable.finalY + 4;
-    y = addKeyValue(doc, y, "Business-Plan-Gesamtbewertung", detailedTotal.toFixed(1) + " / 5.0");
+    y = addKeyValue(doc, y, "Business Plan Overall Score", detailedTotal.toFixed(1) + " / 5.0");
 
     // TAM/SAM
     const ma = ds.marketAttractiveness.analysis;
     if (ma.tamProjections?.some(p => p.value > 0) || ma.samProjections?.some(p => p.value > 0)) {
       y += 4;
-      y = addSectionTitle(doc, y, "TAM / SAM Projektionen");
+      y = addSectionTitle(doc, y, "TAM / SAM Projections");
       if (ma.tamDescription) {
-        y = addKeyValue(doc, y, "TAM-Definition", ma.tamDescription.substring(0, 100));
+        y = addKeyValue(doc, y, "TAM Definition", ma.tamDescription.substring(0, 100));
       }
       if (ma.samDescription) {
-        y = addKeyValue(doc, y, "SAM-Definition", ma.samDescription.substring(0, 100));
+        y = addKeyValue(doc, y, "SAM Definition", ma.samDescription.substring(0, 100));
       }
 
       autoTable(doc, {
         startY: y,
-        head: [["Jahr", "TAM (M€)", "SAM (M€)"]],
+        head: [["Year", "TAM (M EUR)", "SAM (M EUR)"]],
         body: ma.tamProjections.map((tp, i) => [
           String(tp.year),
           fmt(tp.value),
@@ -426,10 +452,10 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     // Commercial viability projections
     if (ds.commercialViability.projections?.some(p => p.revenue > 0)) {
       y += 2;
-      y = addSectionTitle(doc, y, "Umsatzprojektion (5 Jahre)");
+      y = addSectionTitle(doc, y, "Revenue Projection (5 Years)");
       autoTable(doc, {
         startY: y,
-        head: [["Jahr", "Umsatz (€)", "Kosten (€)", "Gewinn (€)"]],
+        head: [["Year", "Revenue (EUR)", "Costs (EUR)", "Profit (EUR)"]],
         body: ds.commercialViability.projections.map(p => [
           String(p.year),
           fmt(p.revenue),
@@ -446,10 +472,10 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     // Risk items
     if (ds.risk.riskItems && ds.risk.riskItems.length > 0) {
       y += 2;
-      y = addSectionTitle(doc, y, "Risikoregister");
+      y = addSectionTitle(doc, y, "Risk Register");
       autoTable(doc, {
         startY: y,
-        head: [["Risiko", "Kategorie", "P", "I", "Mitigation"]],
+        head: [["Risk", "Category", "P", "I", "Mitigation"]],
         body: ds.risk.riskItems.map(r => [
           r.name, r.category, String(r.probability), String(r.impact), r.mitigation || "—"
         ]),
@@ -469,14 +495,14 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     y = addSectionTitle(doc, y, "Business Case");
     autoTable(doc, {
       startY: y,
-      head: [["Kennzahl", "Wert"]],
+      head: [["Metric", "Value"]],
       body: [
-        ["Investitionskosten", fmt(bc.investmentCost, " €")],
-        ["Erwarteter Jahresumsatz", fmt(bc.expectedRevenue, " €")],
+        ["Investment Cost", fmt(bc.investmentCost, " EUR")],
+        ["Expected Annual Revenue", fmt(bc.expectedRevenue, " EUR")],
         ["ROI", fmt(bc.roi, " %")],
-        ["Break-Even", fmt(bc.breakEvenMonths, " Monate")],
-        ["Amortisationszeit", fmt(bc.paybackPeriod, " Monate")],
-        ["NPV", fmt(bc.npv, " €")],
+        ["Break-Even", fmt(bc.breakEvenMonths, " months")],
+        ["Payback Period", fmt(bc.paybackPeriod, " months")],
+        ["NPV", fmt(bc.npv, " EUR")],
       ],
       headStyles: { fillColor: PRIMARY_COLOR },
       styles: { fontSize: 9 },
@@ -484,22 +510,22 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     });
     y = (doc as any).lastAutoTable.finalY + 4;
     if (bc.notes) {
-      y = addKeyValue(doc, y, "Anmerkungen", bc.notes.substring(0, 200));
+      y = addKeyValue(doc, y, "Notes", bc.notes.substring(0, 200));
     }
   }
 
   // Gate Decisions
   if (opp.gates.length > 0) {
     y += 4;
-    y = addSectionTitle(doc, y, "Gate-Entscheidungen");
+    y = addSectionTitle(doc, y, "Gate Decisions");
     autoTable(doc, {
       startY: y,
-      head: [["Gate", "Entscheidung", "Entscheider", "Datum", "Kommentar"]],
+      head: [["Gate", "Decision", "Decider", "Date", "Comment"]],
       body: opp.gates.map(g => [
         g.gate.toUpperCase().replace("GATE", "Gate "),
         g.decision.toUpperCase(),
         g.decider || "—",
-        g.date ? new Date(g.date).toLocaleDateString("de-DE") : "—",
+        g.date ? new Date(g.date).toLocaleDateString("en-US") : "—",
         g.comment || "—",
       ]),
       headStyles: { fillColor: PRIMARY_COLOR },
@@ -515,12 +541,12 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `NOVI – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
+      `NOVI – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
 
-  doc.save(`${opp.title.replace(/[^a-zA-Z0-9äöüÄÖÜß ]/g, "_")}_Report.pdf`);
+  doc.save(`${opp.title.replace(/[^a-zA-Z0-9 ]/g, "_")}_Report.pdf`);
 }
 
 // ── Dashboard Overview PDF ──
@@ -529,34 +555,34 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
   const doc = new jsPDF({ orientation: "landscape" });
   const pw = doc.internal.pageSize.getWidth();
 
-  addHeader(doc, "NOVI – Pipeline-Übersicht");
+  addHeader(doc, "NOVI – Pipeline Overview");
 
   let y = 38;
 
   // Summary KPIs
-  y = addSectionTitle(doc, y, "Zusammenfassung");
+  y = addSectionTitle(doc, y, "Summary");
   const active = opportunities.filter(o => o.stage !== "closed").length;
   const gtm = opportunities.filter(o => o.stage === "implement_review").length;
   const avgScore = opportunities.length > 0
     ? (opportunities.reduce((s, o) => s + calculateTotalScore(o.scoring), 0) / opportunities.length).toFixed(1)
     : "—";
 
-  y = addKeyValue(doc, y, "Gesamt-Opportunities", String(opportunities.length));
-  y = addKeyValue(doc, y, "Aktiv", String(active));
-  y = addKeyValue(doc, y, "In Umsetzung", String(gtm));
-  y = addKeyValue(doc, y, "Durchschnittlicher Score", avgScore);
+  y = addKeyValue(doc, y, "Total Opportunities", String(opportunities.length));
+  y = addKeyValue(doc, y, "Active", String(active));
+  y = addKeyValue(doc, y, "In Implementation", String(gtm));
+  y = addKeyValue(doc, y, "Average Score", avgScore);
 
   // Stage distribution
   y += 4;
-  y = addSectionTitle(doc, y, "Verteilung nach Phase");
+  y = addSectionTitle(doc, y, "Distribution by Stage");
   const stageCounts = STAGE_ORDER.map(s => ({
-    stage: STAGE_LABELS[s] || s,
+    stage: STAGE_LABELS_EN[s] || s,
     count: opportunities.filter(o => o.stage === s).length,
   })).filter(s => s.count > 0);
 
   autoTable(doc, {
     startY: y,
-    head: [["Phase", "Anzahl"]],
+    head: [["Stage", "Count"]],
     body: stageCounts.map(s => [s.stage, String(s.count)]),
     headStyles: { fillColor: PRIMARY_COLOR },
     styles: { fontSize: 9 },
@@ -566,11 +592,11 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
   y = (doc as any).lastAutoTable.finalY + 8;
 
   // Full pipeline table
-  y = addSectionTitle(doc, y, "Alle Opportunities");
+  y = addSectionTitle(doc, y, "All Opportunities");
 
   autoTable(doc, {
     startY: y,
-    head: [["Titel", "Phase", "Branche", "Geografie", "Technologie", "Verantwortl.", "Idea Score", "BP Score", "Payback"]],
+    head: [["Title", "Stage", "Industry", "Geography", "Business Field", "Owner", "Idea Score", "BP Score", "Payback"]],
     body: opportunities
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map(opp => {
@@ -579,10 +605,10 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
         const detScore = ds
           ? (((ds.marketAttractiveness.score + ds.strategicFit.score + ds.feasibility.score + ds.commercialViability.score + (6 - ds.risk.score)) / 5) ).toFixed(1)
           : "—";
-        const payback = opp.businessCase?.paybackPeriod ? `${opp.businessCase.paybackPeriod} Mo` : "—";
+        const payback = opp.businessCase?.paybackPeriod ? `${opp.businessCase.paybackPeriod} mo` : "—";
         return [
           opp.title,
-          STAGE_LABELS[opp.stage] || opp.stage,
+          STAGE_LABELS_EN[opp.stage] || opp.stage,
           opp.industry || "—",
           opp.geography || "—",
           opp.technology || "—",
@@ -607,7 +633,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `NOVI – Exportiert am ${new Date().toLocaleDateString("de-DE")} – Seite ${i}/${pageCount}`,
+      `NOVI – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
