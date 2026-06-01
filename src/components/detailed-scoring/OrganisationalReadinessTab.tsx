@@ -57,6 +57,41 @@ export function OrganisationalReadinessTab({ scoring, onUpdate, readonly: propRe
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
 
+      {/* Overall Score */}
+      <div className="rounded-xl border-2 border-border bg-card p-6 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Building2 className="h-5 w-5 text-primary" />
+            </div>
+            <h3 className="text-lg font-bold text-card-foreground">{t("overallScore" as any) || "Overall Score"}</h3>
+          </div>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+            local.score >= 4 ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" :
+            local.score >= 3 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300" :
+            "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
+          }`}>
+            {local.score}/5
+          </span>
+        </div>
+        <div className="flex gap-0.5">
+          {[1, 2, 3, 4, 5].map((v) => (
+            <button
+              key={v}
+              disabled={readonly}
+              onClick={() => updateField("score", v)}
+              className={`flex-1 h-10 rounded text-sm font-bold transition-all ${
+                local.score === v
+                  ? "bg-primary text-primary-foreground scale-105"
+                  : "bg-secondary text-secondary-foreground hover:bg-accent"
+              } ${readonly ? "cursor-default" : "cursor-pointer"}`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Readiness Dimensions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {dimensions.map(({ key, label, placeholder, icon, color }) => (
