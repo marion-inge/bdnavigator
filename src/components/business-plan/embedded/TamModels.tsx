@@ -106,9 +106,21 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportuni
           researchType="pestel"
           titleEn="PESTEL Web Research"
           titleDe="PESTEL Web-Recherche"
-          descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources."
-          descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends relevant für deine Branche und Geografie aus öffentlichen Webquellen."
+          descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources — and auto-fill the fields above."
+          descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends für deine Branche und Geografie aus öffentlichen Webquellen — und füllt die obigen Felder automatisch aus."
           opportunity={opportunity}
+          onStructuredFill={(s) => {
+            update({
+              political: s.political ?? pestel.political,
+              economic: s.economic ?? pestel.economic,
+              social: s.social ?? pestel.social,
+              technological: s.technological ?? pestel.technological,
+              environmental: s.environmental ?? pestel.environmental,
+              legal: s.legal ?? pestel.legal,
+              description: s.description ?? pestel.description,
+              rationale: s.rationale ?? pestel.rationale,
+            });
+          }}
         />
       )}
     </EditableSection>
