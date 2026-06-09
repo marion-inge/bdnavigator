@@ -163,7 +163,10 @@ serve(async (req) => {
       });
     }
 
-    const prompt = buildPrompt(body);
+    const langLabel = body.language === "de" ? "German" : "English";
+    const prompt = body.structured
+      ? buildPrompt(body) + structuredInstruction(body.researchType, langLabel)
+      : buildPrompt(body);
 
     const response = await fetch("https://api.perplexity.ai/chat/completions", {
       method: "POST",
@@ -193,8 +196,9 @@ serve(async (req) => {
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
     const citations = data.citations || [];
+    const structured = body.structured ? parseStructured(content) : null;
 
-    return new Response(JSON.stringify({ content, citations }), {
+    return new Response(JSON.stringify({ content, citations, structured }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
