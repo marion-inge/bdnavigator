@@ -32,7 +32,7 @@ interface Props {
 
 export function MarkWebSearch({
   researchType, titleEn, titleDe, descriptionEn, descriptionDe,
-  opportunity, extra, onResult,
+  opportunity, extra, onResult, onStructuredFill,
 }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
