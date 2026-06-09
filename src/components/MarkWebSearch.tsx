@@ -37,32 +37,50 @@ export function MarkWebSearch({
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ content: string; citations: string[] } | null>(null);
+  const [result, setResult] = useState<{ content: string; citations: string[]; structured?: any } | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [filled, setFilled] = useState(false);
 
   const handleSearch = async () => {
     setLoading(true);
+    setFilled(false);
     try {
       const { data, error } = await invokeFunction("mark-web-research", {
         researchType,
         opportunity,
         extra,
         language: language as "en" | "de",
+        structured: !!onStructuredFill,
       });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      setResult({ content: data.content, citations: data.citations || [] });
+      setResult({ content: data.content, citations: data.citations || [], structured: data.structured });
       onResult?.(data.content, data.citations || []);
-      toast.success(bp("Research completed!", "Recherche abgeschlossen!"));
+
+      // Auto-fill form fields if structured data is available
+      if (onStructuredFill && data.structured) {
+        onStructuredFill(data.structured);
+        setFilled(true);
+        toast.success(bp("Research completed and form auto-filled!", "Recherche abgeschlossen und Formular automatisch ausgefüllt!"));
+      } else {
+        toast.success(bp("Research completed!", "Recherche abgeschlossen!"));
+      }
     } catch (err: any) {
       console.error("Mark web search error:", err);
       toast.error(bp("Research failed. Please try again.", "Recherche fehlgeschlagen. Bitte erneut versuchen."));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleApply = () => {
+    if (!result?.structured || !onStructuredFill) return;
+    onStructuredFill(result.structured);
+    setFilled(true);
+    toast.success(bp("Form fields auto-filled!", "Formularfelder automatisch ausgefüllt!"));
   };
 
   const handleCopy = async () => {
