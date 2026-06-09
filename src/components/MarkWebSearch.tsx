@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2, ExternalLink, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { Search, Loader2, ExternalLink, ChevronDown, ChevronUp, Copy, Check, Wand2 } from "lucide-react";
 import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import markRobot from "@/assets/mark-robot.png";
@@ -26,6 +26,8 @@ interface Props {
   opportunity: OpportunityContext;
   extra?: Record<string, string>;
   onResult?: (content: string, citations: string[]) => void;
+  /** When provided, Mark requests a structured JSON block and exposes an "Auto-fill form" button. */
+  onStructuredFill?: (structured: any) => void;
 }
 
 export function MarkWebSearch({
