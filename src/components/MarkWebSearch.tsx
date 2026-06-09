@@ -130,10 +130,18 @@ export function MarkWebSearch({
               {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               {bp("Research Results", "Recherche-Ergebnisse")}
             </button>
-            <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 text-xs">
-              {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
-              {copied ? bp("Copied", "Kopiert") : bp("Copy", "Kopieren")}
-            </Button>
+            <div className="flex items-center gap-2">
+              {onStructuredFill && result.structured && (
+                <Button variant="default" size="sm" onClick={handleApply} className="h-7 text-xs">
+                  {filled ? <Check className="h-3 w-3 mr-1" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                  {filled ? bp("Re-apply to form", "Erneut anwenden") : bp("Auto-fill form", "Formular ausfüllen")}
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 text-xs">
+                {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
+                {copied ? bp("Copied", "Kopiert") : bp("Copy", "Kopieren")}
+              </Button>
+            </div>
           </div>
 
           {expanded && (
