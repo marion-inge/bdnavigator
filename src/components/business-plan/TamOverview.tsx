@@ -390,8 +390,8 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             researchType="tam"
             titleEn="TAM Market Research"
             titleDe="TAM Marktrecherche"
-            descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports from public sources to provide a factual foundation for IDA's TAM estimation."
-            descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte aus öffentlichen Quellen als Faktengrundlage für IDAs TAM-Schätzung."
+            descriptionEn="Mark will research market size data, growth rates (CAGR), and industry reports — and auto-fill the global potential, market development, drivers, and sources fields above."
+            descriptionDe="Mark recherchiert Marktgrößendaten, Wachstumsraten (CAGR) und Branchenberichte — und füllt die Felder für globales Potenzial, Marktentwicklung, Treiber und Quellen automatisch aus."
             opportunity={{
               title: opportunityTitle,
               description: opportunityDescription || "",
@@ -399,6 +399,14 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
               industry: industry || "",
               geography: geography || "",
               technology: technology || "",
+            }}
+            onStructuredFill={(s) => {
+              updateOv({
+                fullGlobalPotential: s.fullGlobalPotential ?? localOverview.fullGlobalPotential,
+                marketDevelopment: s.marketDevelopment ?? localOverview.marketDevelopment,
+                drivers: s.drivers ?? localOverview.drivers,
+                sources: s.sources ?? localOverview.sources,
+              });
             }}
           />
         )}

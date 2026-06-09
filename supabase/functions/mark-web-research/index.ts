@@ -20,6 +20,61 @@ interface RequestBody {
   /** Extra context, e.g. competitor names */
   extra?: Record<string, string>;
   language?: "en" | "de";
+  /** When true, model also returns a JSON block to auto-fill form fields */
+  structured?: boolean;
+}
+
+function structuredInstruction(researchType: string, lang: string): string {
+  const intro = `\n\nIMPORTANT — After the human-readable analysis, append a fenced JSON code block (\`\`\`json ... \`\`\`) containing concise field values (in ${lang}, max 4 sentences per field, plain text, no markdown inside JSON strings) using EXACTLY this schema:`;
+  switch (researchType) {
+    case "pestel":
+      return `${intro}
+{
+  "political": "...",
+  "economic": "...",
+  "social": "...",
+  "technological": "...",
+  "environmental": "...",
+  "legal": "...",
+  "description": "1-2 sentence summary of overall PESTEL situation",
+  "rationale": "1-2 sentence rationale of how PESTEL impacts this opportunity"
+}`;
+    case "porter":
+      return `${intro}
+{
+  "competitiveRivalry":        { "intensity": 1-5, "description": "..." },
+  "threatOfNewEntrants":       { "intensity": 1-5, "description": "..." },
+  "threatOfSubstitutes":       { "intensity": 1-5, "description": "..." },
+  "bargainingPowerBuyers":     { "intensity": 1-5, "description": "..." },
+  "bargainingPowerSuppliers":  { "intensity": 1-5, "description": "..." },
+  "description": "1-2 sentence overall summary",
+  "rationale": "1-2 sentence rationale for this opportunity"
+}`;
+    case "tam":
+      return `${intro}
+{
+  "fullGlobalPotential": "Current global market size with year and currency",
+  "marketDevelopment": "Forecast / CAGR over next 3-5 years",
+  "drivers": "Key growth drivers and constraints",
+  "sources": "List of cited sources (Statista, Gartner, etc.)"
+}`;
+    case "competitor":
+      return `${intro}
+{
+  "summary": "1-2 sentence competitive landscape summary",
+  "competitors": [
+    { "name": "...", "marketShare": "estimate or 'unknown'", "strengths": "...", "weaknesses": "..." }
+  ]
+}`;
+    default:
+      return "";
+  }
+}
+
+function parseStructured(content: string): any | null {
+  const m = content.match(/```json\s*([\s\S]*?)```/i);
+  if (!m) return null;
+  try { return JSON.parse(m[1].trim()); } catch { return null; }
 }
 
 function buildPrompt(body: RequestBody): string {
@@ -108,7 +163,10 @@ serve(async (req) => {
       });
     }
 
-    const prompt = buildPrompt(body);
+    const langLabel = body.language === "de" ? "German" : "English";
+    const prompt = body.structured
+      ? buildPrompt(body) + structuredInstruction(body.researchType, langLabel)
+      : buildPrompt(body);
 
     const response = await fetch("https://api.perplexity.ai/chat/completions", {
       method: "POST",
@@ -138,8 +196,9 @@ serve(async (req) => {
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
     const citations = data.citations || [];
+    const structured = body.structured ? parseStructured(content) : null;
 
-    return new Response(JSON.stringify({ content, citations }), {
+    return new Response(JSON.stringify({ content, citations, structured }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

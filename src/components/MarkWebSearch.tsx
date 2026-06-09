@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2, ExternalLink, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { Search, Loader2, ExternalLink, ChevronDown, ChevronUp, Copy, Check, Wand2 } from "lucide-react";
 import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import markRobot from "@/assets/mark-robot.png";
@@ -26,41 +26,61 @@ interface Props {
   opportunity: OpportunityContext;
   extra?: Record<string, string>;
   onResult?: (content: string, citations: string[]) => void;
+  /** When provided, Mark requests a structured JSON block and exposes an "Auto-fill form" button. */
+  onStructuredFill?: (structured: any) => void;
 }
 
 export function MarkWebSearch({
   researchType, titleEn, titleDe, descriptionEn, descriptionDe,
-  opportunity, extra, onResult,
+  opportunity, extra, onResult, onStructuredFill,
 }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ content: string; citations: string[] } | null>(null);
+  const [result, setResult] = useState<{ content: string; citations: string[]; structured?: any } | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [filled, setFilled] = useState(false);
 
   const handleSearch = async () => {
     setLoading(true);
+    setFilled(false);
     try {
       const { data, error } = await invokeFunction("mark-web-research", {
         researchType,
         opportunity,
         extra,
         language: language as "en" | "de",
+        structured: !!onStructuredFill,
       });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      setResult({ content: data.content, citations: data.citations || [] });
+      setResult({ content: data.content, citations: data.citations || [], structured: data.structured });
       onResult?.(data.content, data.citations || []);
-      toast.success(bp("Research completed!", "Recherche abgeschlossen!"));
+
+      // Auto-fill form fields if structured data is available
+      if (onStructuredFill && data.structured) {
+        onStructuredFill(data.structured);
+        setFilled(true);
+        toast.success(bp("Research completed and form auto-filled!", "Recherche abgeschlossen und Formular automatisch ausgefüllt!"));
+      } else {
+        toast.success(bp("Research completed!", "Recherche abgeschlossen!"));
+      }
     } catch (err: any) {
       console.error("Mark web search error:", err);
       toast.error(bp("Research failed. Please try again.", "Recherche fehlgeschlagen. Bitte erneut versuchen."));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleApply = () => {
+    if (!result?.structured || !onStructuredFill) return;
+    onStructuredFill(result.structured);
+    setFilled(true);
+    toast.success(bp("Form fields auto-filled!", "Formularfelder automatisch ausgefüllt!"));
   };
 
   const handleCopy = async () => {
@@ -110,10 +130,18 @@ export function MarkWebSearch({
               {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               {bp("Research Results", "Recherche-Ergebnisse")}
             </button>
-            <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 text-xs">
-              {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
-              {copied ? bp("Copied", "Kopiert") : bp("Copy", "Kopieren")}
-            </Button>
+            <div className="flex items-center gap-2">
+              {onStructuredFill && result.structured && (
+                <Button variant="default" size="sm" onClick={handleApply} className="h-7 text-xs">
+                  {filled ? <Check className="h-3 w-3 mr-1" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                  {filled ? bp("Re-apply to form", "Erneut anwenden") : bp("Auto-fill form", "Formular ausfüllen")}
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 text-xs">
+                {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
+                {copied ? bp("Copied", "Kopiert") : bp("Copy", "Kopieren")}
+              </Button>
+            </div>
           </div>
 
           {expanded && (
