@@ -105,28 +105,32 @@ export async function upsertAiAssessment(row: Record<string, any>) {
 
 // ===== Opportunity Files =====
 
-export async function fetchOpportunityFiles(opportunityId: string) {
+export async function fetchOpportunityFiles(opportunityId: string, category?: string) {
   if (getBackendType() === "sqlite") {
-    return apiFetch<any[]>(`/opportunity-files?opportunity_id=${opportunityId}`);
+    const catParam = category !== undefined ? `&category=${encodeURIComponent(category)}` : "";
+    return apiFetch<any[]>(`/opportunity-files?opportunity_id=${opportunityId}${catParam}`);
   }
-  const { data, error } = await (supabase as any)
+  let query = (supabase as any)
     .from("opportunity_files")
     .select("*")
-    .eq("opportunity_id", opportunityId)
-    .order("created_at", { ascending: false });
+    .eq("opportunity_id", opportunityId);
+  if (category !== undefined) query = query.eq("category", category);
+  const { data, error } = await query.order("created_at", { ascending: false });
   return { data: data ?? [], error };
 }
 
 export async function uploadOpportunityFile(
   opportunityId: string,
   file: File,
-  comment: string = ""
+  comment: string = "",
+  category: string = ""
 ) {
   if (getBackendType() === "sqlite") {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("opportunity_id", opportunityId);
     formData.append("comment", comment);
+    formData.append("category", category);
     try {
       const res = await fetch(`${API_BASE}/opportunity-files`, {
         method: "POST",
@@ -154,6 +158,7 @@ export async function uploadOpportunityFile(
       file_size: file.size,
       mime_type: file.type,
       comment,
+      category,
     });
   return { data: { file_path: filePath }, error };
 }
