@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
 import { FileAttachments } from "@/components/FileAttachments";
+import { IdaFrameworkButton } from "@/components/IdaFrameworkButton";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
@@ -14,9 +15,10 @@ interface Props {
   readonly?: boolean;
   defaultTab?: string;
   opportunityId?: string;
+  opportunityContext?: Record<string, any>;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId, opportunityContext }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
   const [editing, setEditing] = useState(false);
