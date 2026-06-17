@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
+import idaRobot from "@/assets/ida-robot.png";
 
 type Framework = "ansoff" | "bcg" | "mckinsey" | "three_horizons";
 
@@ -35,7 +36,6 @@ export function IdaFrameworkButton({ opportunityId, framework, context, onResult
       });
       if (error) {
         const msg = (error as any).message || "IDA failed";
-        // Try to surface server error message
         try {
           const ctx = (error as any).context;
           if (ctx?.body) {
@@ -53,7 +53,11 @@ export function IdaFrameworkButton({ opportunityId, framework, context, onResult
       }
       onResult(data as FrameworkResult);
       const fileNote = data.filesUsed?.length ? ` (${data.filesUsed.length} file${data.filesUsed.length > 1 ? "s" : ""})` : "";
-      toast.success(`IDA filled the framework from attachments${fileNote}`);
+      toast.success(
+        language === "de"
+          ? `IDA hat das Framework aus den Anhängen ausgefüllt${fileNote}`
+          : `IDA filled the framework from attachments${fileNote}`
+      );
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "IDA failed");
@@ -62,10 +66,23 @@ export function IdaFrameworkButton({ opportunityId, framework, context, onResult
     }
   };
 
+  const askLabel = language === "de" ? "IDA fragen" : "Ask IDA";
+  const loadingLabel = language === "de" ? "IDA analysiert..." : "IDA is analyzing...";
+
   return (
-    <Button type="button" size="sm" variant="secondary" onClick={run} disabled={loading} className="gap-1.5">
-      {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-      {loading ? "IDA analyzing…" : "IDA: Analyze attachments"}
+    <Button
+      type="button"
+      size="sm"
+      onClick={run}
+      disabled={loading}
+      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+    >
+      {loading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <img src={idaRobot} alt="" className="h-4 w-4" />
+      )}
+      {loading ? loadingLabel : askLabel}
     </Button>
   );
 }

@@ -50,37 +50,52 @@ function categoryFor(fw: Framework): string {
   return fw === "three_horizons" ? "sa_three_horizons" : `sa_${fw}`;
 }
 
-async function fileToContentBlock(supabase: any, bucket: string, path: string, mime: string, name: string): Promise<any | null> {
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB hard cap per file to avoid OOM
+
+function classify(mime: string, name: string): "text" | "image" | "pdf" | "unsupported" {
+  const lower = name.toLowerCase();
+  if (mime.startsWith("text/") || mime === "application/json" || /\.(txt|md|csv|json|log|html|xml)$/i.test(lower)) return "text";
+  if (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp)$/i.test(lower)) return "image";
+  if (mime === "application/pdf" || lower.endsWith(".pdf")) return "pdf";
+  return "unsupported";
+}
+
+function bufToBase64(buf: Uint8Array): string {
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < buf.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, buf.subarray(i, i + CHUNK) as any);
+  }
+  return btoa(bin);
+}
+
+async function fileToContentBlock(supabase: any, bucket: string, path: string, mime: string, name: string, size: number): Promise<any | null> {
+  const kind = classify(mime, name);
+  if (kind === "unsupported") {
+    return { type: "text", text: `[Attachment "${name}" (${mime || "binary"}) cannot be read directly by the AI. Please convert to PDF, plain text, or image.]` };
+  }
+  if (size && size > MAX_BYTES) {
+    return { type: "text", text: `[Attachment "${name}" is too large (${Math.round(size / 1024 / 1024)} MB, limit 8 MB) and was skipped.]` };
+  }
   try {
     const { data, error } = await supabase.storage.from(bucket).download(path);
     if (error || !data) return null;
     const buf = new Uint8Array(await data.arrayBuffer());
-
-    // Plain text-ish files: include as text
-    if (mime.startsWith("text/") || mime === "application/json" || mime === "text/csv" || name.match(/\.(txt|md|csv|json|log)$/i)) {
+    if (buf.byteLength > MAX_BYTES) {
+      return { type: "text", text: `[Attachment "${name}" exceeded the 8 MB cap and was skipped.]` };
+    }
+    if (kind === "text") {
       const text = new TextDecoder().decode(buf).slice(0, 80_000);
       return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End of ${name} ---` };
     }
-
-    // Base64 for binary
-    let bin = "";
-    for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
-    const b64 = btoa(bin);
-
-    if (mime.startsWith("image/")) {
-      return { type: "image_url", image_url: { url: `data:${mime};base64,${b64}` } };
+    const b64 = bufToBase64(buf);
+    if (kind === "image") {
+      return { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${b64}` } };
     }
-    if (mime === "application/pdf" || name.toLowerCase().endsWith(".pdf")) {
-      return {
-        type: "file",
-        file: { filename: name, file_data: `data:application/pdf;base64,${b64}` },
-      };
-    }
-    // Unsupported binary format – just note its presence
-    return { type: "text", text: `[Attachment "${name}" (${mime}) was uploaded but cannot be read directly by the AI. Consider converting to PDF/TXT/image.]` };
+    return { type: "file", file: { filename: name, file_data: `data:application/pdf;base64,${b64}` } };
   } catch (e) {
     console.error("file download error", name, e);
-    return null;
+    return { type: "text", text: `[Attachment "${name}" could not be loaded.]` };
   }
 }
 
@@ -114,7 +129,7 @@ serve(async (req) => {
     const category = categoryFor(framework);
     const { data: files, error: filesErr } = await supabase
       .from("opportunity_files")
-      .select("id, file_name, file_path, mime_type, comment")
+      .select("id, file_name, file_path, mime_type, file_size, comment")
       .eq("opportunity_id", opportunityId)
       .eq("category", category);
 
@@ -130,13 +145,16 @@ serve(async (req) => {
 
     // Build multimodal content blocks
     const contentBlocks: any[] = [];
+    const usedFiles: string[] = [];
     for (const f of fileList) {
-      const block = await fileToContentBlock(supabase, "opportunity-files", f.file_path, f.mime_type || "", f.file_name);
+      const block = await fileToContentBlock(supabase, "opportunity-files", f.file_path, f.mime_type || "", f.file_name, f.file_size || 0);
       if (block) {
         if (f.comment) contentBlocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
         contentBlocks.push(block);
+        if (classify(f.mime_type || "", f.file_name) !== "unsupported") usedFiles.push(f.file_name);
       }
     }
+
 
     const ctx = context || {};
     const contextSummary = [
@@ -221,7 +239,7 @@ Use the fill_framework tool to return the result.`;
       delete result.position;
     }
     result.framework = framework;
-    result.filesUsed = fileList.map((f: any) => f.file_name);
+    result.filesUsed = usedFiles;
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
