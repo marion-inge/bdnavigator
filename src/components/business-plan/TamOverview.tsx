@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses, TamModels } from "@/lib/types";
 import { TamOverviewData, createDefaultTamOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
+import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 
 interface TamScenario {
   projections: MarketYearValue[];
@@ -38,6 +39,7 @@ interface Props {
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
   strategicAnalyses?: StrategicAnalyses;
+  onSaveTam?: (tam: TamModels) => void;
   opportunityTitle?: string;
   opportunityDescription?: string;
   solutionDescription?: string;
@@ -56,7 +58,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / n) - 1) * 100).toFixed(1)}%`;
 }
 
-export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, onSaveTam, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -491,6 +493,15 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
               </Button>
             </div>
           </div>
+        )}
+
+        {/* Customers Found */}
+        {onSaveTam && (
+          <CustomersFoundTab
+            data={(strategicAnalyses?.tam || {}) as TamModels}
+            onSave={onSaveTam}
+            readonly={readonly}
+          />
         )}
 
         {/* Supporting Models Note */}
