@@ -605,6 +605,7 @@ export default function OpportunityDetail() {
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 defaultTab={saDefaultTab}
+                opportunityId={opp.id}
               />
             )}
             {activeTab === "files" && (
