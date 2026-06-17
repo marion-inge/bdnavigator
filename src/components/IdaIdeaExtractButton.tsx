@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import idaRobot from "@/assets/ida-robot.png";
+import { IdaFilePickerDialog } from "@/components/IdaFilePickerDialog";
 
 export interface ExtractedIdea {
   title?: string;
@@ -19,9 +20,8 @@ export interface ExtractedIdea {
 interface Props {
   /** Inline files (used before opportunity exists, e.g. New Opportunity dialog). */
   files?: File[];
-  /** Saved opportunity to pull files from category "idea". */
+  /** Saved opportunity – will open a picker over its existing attachments. */
   opportunityId?: string;
-  category?: string;
   onResult: (r: ExtractedIdea) => void;
   size?: "sm" | "default";
   className?: string;
@@ -37,26 +37,17 @@ async function fileToBase64(file: File): Promise<string> {
   return btoa(bin);
 }
 
-export function IdaIdeaExtractButton({ files, opportunityId, category, onResult, size = "sm", className }: Props) {
+export function IdaIdeaExtractButton({ files, opportunityId, onResult, size = "sm", className }: Props) {
   const { language } = useI18n();
   const [loading, setLoading] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
-  const disabled = loading || ((!files || files.length === 0) && !opportunityId);
+  const inlineMode = (files && files.length > 0) || !opportunityId;
+  const disabledInline = loading || (inlineMode && (!files || files.length === 0));
 
-  const run = async () => {
+  const invoke = async (body: any) => {
     setLoading(true);
     try {
-      let body: any = { language };
-      if (files && files.length > 0) {
-        const encoded = await Promise.all(
-          files.map(async (f) => ({ name: f.name, mime: f.type, dataBase64: await fileToBase64(f) }))
-        );
-        body.files = encoded;
-      } else if (opportunityId) {
-        body.opportunityId = opportunityId;
-        body.category = category || "idea";
-      }
-
       const { data, error } = await supabase.functions.invoke("ida-idea-extraction", { body });
       if (error) {
         const msg = (error as any).message || "IDA failed";
@@ -82,6 +73,7 @@ export function IdaIdeaExtractButton({ files, opportunityId, category, onResult,
           ? `IDA hat die Felder aus ${n} Datei${n === 1 ? "" : "en"} extrahiert`
           : `IDA extracted fields from ${n} file${n === 1 ? "" : "s"}`
       );
+      setPickerOpen(false);
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "IDA failed");
@@ -90,19 +82,46 @@ export function IdaIdeaExtractButton({ files, opportunityId, category, onResult,
     }
   };
 
+  const handleClick = async () => {
+    if (inlineMode) {
+      if (!files || files.length === 0) return;
+      const encoded = await Promise.all(
+        files.map(async (f) => ({ name: f.name, mime: f.type, dataBase64: await fileToBase64(f) }))
+      );
+      await invoke({ language, files: encoded });
+    } else {
+      setPickerOpen(true);
+    }
+  };
+
+  const handlePickerConfirm = async (fileIds: string[]) => {
+    await invoke({ language, opportunityId, fileIds });
+  };
+
   const askLabel = language === "de" ? "IDA ausfüllen lassen" : "Fill with IDA";
   const loadingLabel = language === "de" ? "IDA analysiert..." : "IDA is analyzing...";
 
   return (
-    <Button
-      type="button"
-      size={size}
-      onClick={run}
-      disabled={disabled}
-      className={`bg-primary hover:bg-primary/90 text-primary-foreground gap-2 ${className ?? ""}`}
-    >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <img src={idaRobot} alt="" className="h-4 w-4" />}
-      {loading ? loadingLabel : askLabel}
-    </Button>
+    <>
+      <Button
+        type="button"
+        size={size}
+        onClick={handleClick}
+        disabled={disabledInline}
+        className={`bg-primary hover:bg-primary/90 text-primary-foreground gap-2 ${className ?? ""}`}
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <img src={idaRobot} alt="" className="h-4 w-4" />}
+        {loading ? loadingLabel : askLabel}
+      </Button>
+      {opportunityId && (
+        <IdaFilePickerDialog
+          open={pickerOpen}
+          onOpenChange={(v) => !loading && setPickerOpen(v)}
+          opportunityId={opportunityId}
+          onConfirm={(ids) => handlePickerConfirm(ids)}
+          running={loading}
+        />
+      )}
+    </>
   );
 }

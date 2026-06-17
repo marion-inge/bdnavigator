@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import idaRobot from "@/assets/ida-robot.png";
+import { IdaFilePickerDialog } from "@/components/IdaFilePickerDialog";
 
 type Framework = "ansoff" | "bcg" | "mckinsey" | "three_horizons";
 
@@ -26,13 +27,14 @@ interface Props {
 
 export function IdaFrameworkButton({ opportunityId, framework, context, onResult }: Props) {
   const { language } = useI18n();
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const run = async () => {
+  const run = async (fileIds: string[]) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ida-framework-analysis", {
-        body: { opportunityId, framework, language, context },
+        body: { opportunityId, framework, language, context, fileIds },
       });
       if (error) {
         const msg = (error as any).message || "IDA failed";
@@ -58,6 +60,7 @@ export function IdaFrameworkButton({ opportunityId, framework, context, onResult
           ? `IDA hat das Framework aus den Anhängen ausgefüllt${fileNote}`
           : `IDA filled the framework from attachments${fileNote}`
       );
+      setOpen(false);
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "IDA failed");
@@ -67,22 +70,25 @@ export function IdaFrameworkButton({ opportunityId, framework, context, onResult
   };
 
   const askLabel = language === "de" ? "IDA fragen" : "Ask IDA";
-  const loadingLabel = language === "de" ? "IDA analysiert..." : "IDA is analyzing...";
 
   return (
-    <Button
-      type="button"
-      size="sm"
-      onClick={run}
-      disabled={loading}
-      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-    >
-      {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <img src={idaRobot} alt="" className="h-4 w-4" />
-      )}
-      {loading ? loadingLabel : askLabel}
-    </Button>
+    <>
+      <Button
+        type="button"
+        size="sm"
+        onClick={() => setOpen(true)}
+        className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <img src={idaRobot} alt="" className="h-4 w-4" />}
+        {askLabel}
+      </Button>
+      <IdaFilePickerDialog
+        open={open}
+        onOpenChange={(v) => !loading && setOpen(v)}
+        opportunityId={opportunityId}
+        onConfirm={(ids) => run(ids)}
+        running={loading}
+      />
+    </>
   );
 }

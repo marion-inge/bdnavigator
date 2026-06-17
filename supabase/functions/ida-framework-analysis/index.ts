@@ -108,11 +108,12 @@ serve(async (req) => {
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const { opportunityId, framework, language, context } = await req.json() as {
+    const { opportunityId, framework, language, context, fileIds } = await req.json() as {
       opportunityId: string;
       framework: Framework;
       language?: "en" | "de";
       context?: Record<string, any>;
+      fileIds?: string[];
     };
 
     if (!opportunityId || !FRAMEWORK_SCHEMA[framework]) {
@@ -121,24 +122,29 @@ serve(async (req) => {
       });
     }
 
+    if (!fileIds || fileIds.length === 0) {
+      return new Response(JSON.stringify({ error: "no_files", message: "Please select at least one attachment for IDA to analyze." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const fw = FRAMEWORK_SCHEMA[framework];
     const lang = language === "de" ? "German" : "English";
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Fetch attached files for this framework's category
-    const category = categoryFor(framework);
+    // Fetch the selected files
     const { data: files, error: filesErr } = await supabase
       .from("opportunity_files")
       .select("id, file_name, file_path, mime_type, file_size, comment")
       .eq("opportunity_id", opportunityId)
-      .eq("category", category);
+      .in("id", fileIds);
 
     if (filesErr) console.error("files query error", filesErr);
 
     const fileList = files ?? [];
 
     if (fileList.length === 0) {
-      return new Response(JSON.stringify({ error: "no_files", message: "No attachments found for this framework. Upload supporting documents first." }), {
+      return new Response(JSON.stringify({ error: "no_files", message: "Selected files not found." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

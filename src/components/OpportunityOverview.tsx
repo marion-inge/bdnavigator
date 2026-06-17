@@ -13,7 +13,6 @@ import {
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
   DollarSign, Target, ChevronRight, ChevronLeft, Pencil, Check, X, BarChart2,
 } from "lucide-react";
-import { FileAttachments } from "@/components/FileAttachments";
 import { IdaIdeaExtractButton } from "@/components/IdaIdeaExtractButton";
 
 interface OpportunityOverviewProps {
@@ -133,29 +132,20 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
         </div>
       </div>
 
-      {/* Idea attachments + IDA extract */}
+      {/* IDA: extract idea fields from existing attachments */}
       {onUpdate && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-end">
-            <IdaIdeaExtractButton
-              opportunityId={opp.id}
-              category="idea"
-              onResult={(r) => {
-                const updates: any = {};
-                if (r.description) updates.description = r.description;
-                if (r.solutionDescription) updates.solutionDescription = r.solutionDescription;
-                if (r.industry) updates.industry = r.industry;
-                if (r.geography) updates.geography = r.geography;
-                if (r.technology) updates.technology = r.technology;
-                if (Object.keys(updates).length) onUpdate(updates);
-              }}
-            />
-          </div>
-          <FileAttachments
+        <div className="flex items-center justify-end">
+          <IdaIdeaExtractButton
             opportunityId={opp.id}
-            category="idea"
-            title={language === "de" ? "Ideen-Anhänge" : "Idea attachments"}
-            compact
+            onResult={(r) => {
+              const updates: any = {};
+              if (r.description) updates.description = r.description;
+              if (r.solutionDescription) updates.solutionDescription = r.solutionDescription;
+              if (r.industry) updates.industry = r.industry;
+              if (r.geography) updates.geography = r.geography;
+              if (r.technology) updates.technology = r.technology;
+              if (Object.keys(updates).length) onUpdate(updates);
+            }}
           />
         </div>
       )}
