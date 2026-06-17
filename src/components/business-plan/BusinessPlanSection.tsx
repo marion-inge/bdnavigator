@@ -17,6 +17,8 @@ import { CompetitorLandscapeTab } from "@/components/detailed-scoring/Competitor
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
 
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
+import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
+
 import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
@@ -122,7 +124,11 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="tam-swot">
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
+          <TabsContent value="tam-customers">
+            <CustomersFoundTab {...tamProps} />
+          </TabsContent>
         </Tabs>
+
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
