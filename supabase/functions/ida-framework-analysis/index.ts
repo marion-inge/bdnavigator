@@ -129,7 +129,7 @@ serve(async (req) => {
     const category = categoryFor(framework);
     const { data: files, error: filesErr } = await supabase
       .from("opportunity_files")
-      .select("id, file_name, file_path, mime_type, comment")
+      .select("id, file_name, file_path, mime_type, file_size, comment")
       .eq("opportunity_id", opportunityId)
       .eq("category", category);
 
@@ -145,13 +145,16 @@ serve(async (req) => {
 
     // Build multimodal content blocks
     const contentBlocks: any[] = [];
+    const usedFiles: string[] = [];
     for (const f of fileList) {
-      const block = await fileToContentBlock(supabase, "opportunity-files", f.file_path, f.mime_type || "", f.file_name);
+      const block = await fileToContentBlock(supabase, "opportunity-files", f.file_path, f.mime_type || "", f.file_name, f.file_size || 0);
       if (block) {
         if (f.comment) contentBlocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
         contentBlocks.push(block);
+        if (classify(f.mime_type || "", f.file_name) !== "unsupported") usedFiles.push(f.file_name);
       }
     }
+
 
     const ctx = context || {};
     const contextSummary = [
