@@ -142,11 +142,23 @@ export async function uploadOpportunityFile(
       return { data: null, error: { message: e.message } };
     }
   }
-  // Supabase storage upload
-  const filePath = `${opportunityId}/${crypto.randomUUID()}-${file.name}`;
+  // Supabase storage upload — sanitize filename (storage rejects non-ASCII like en-dash)
+  const extMatch = file.name.match(/\.[^.]+$/);
+  const ext = extMatch ? extMatch[0] : "";
+  const base = file.name.slice(0, file.name.length - ext.length);
+  const safeBase = base
+    .normalize("NFKD")
+    .replace(/[\u2010-\u2015]/g, "-")
+    .replace(/[^\x20-\x7E]/g, "")
+    .replace(/[^a-zA-Z0-9._-]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80) || "file";
+  const safeExt = ext.replace(/[^a-zA-Z0-9.]+/g, "");
+  const filePath = `${opportunityId}/${crypto.randomUUID()}-${safeBase}${safeExt}`;
   const { error: uploadError } = await supabase.storage
     .from("opportunity-files")
-    .upload(filePath, file);
+    .upload(filePath, file, { contentType: file.type || undefined });
   if (uploadError) return { data: null, error: uploadError };
 
   const { error } = await (supabase as any)
