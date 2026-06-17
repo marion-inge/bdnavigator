@@ -239,7 +239,7 @@ Use the fill_framework tool to return the result.`;
       delete result.position;
     }
     result.framework = framework;
-    result.filesUsed = fileList.map((f: any) => f.file_name);
+    result.filesUsed = usedFiles;
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
