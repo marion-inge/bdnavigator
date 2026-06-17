@@ -498,7 +498,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
         {/* Customers Found */}
         {onSaveTam && (
           <CustomersFoundTab
-            data={strategicAnalyses?.tam || { marketResearch: {}, pestel: {}, porter: {}, swot: {}, valueChain: {} }}
+            data={(strategicAnalyses?.tam || {}) as TamModels}
             onSave={onSaveTam}
             readonly={readonly}
           />
