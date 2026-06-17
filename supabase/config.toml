@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.ida-framework-analysis]
 verify_jwt = false
+
+[functions.ida-idea-extraction]
+verify_jwt = false
