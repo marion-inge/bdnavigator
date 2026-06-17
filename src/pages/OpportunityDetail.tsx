@@ -528,6 +528,7 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
                 opportunityId={opp.id}
+                opportunityContext={{ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription, industry: opp.industry, geography: opp.geography, technology: opp.technology }}
               />
             )}
             {activeTab === "business_plan" && (
@@ -606,6 +607,7 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 defaultTab={saDefaultTab}
                 opportunityId={opp.id}
+                opportunityContext={{ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription, industry: opp.industry, geography: opp.geography, technology: opp.technology }}
               />
             )}
             {activeTab === "files" && (

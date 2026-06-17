@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
 import { FileAttachments } from "@/components/FileAttachments";
+import { IdaFrameworkButton } from "@/components/IdaFrameworkButton";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
@@ -14,9 +15,10 @@ interface Props {
   readonly?: boolean;
   defaultTab?: string;
   opportunityId?: string;
+  opportunityContext?: Record<string, any>;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId, opportunityContext }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
   const [editing, setEditing] = useState(false);
@@ -76,6 +78,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 <div><Label>{t("saDescription")}</Label><Textarea value={is.ansoff.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                 <div><Label>{t("saRationale")}</Label><Textarea value={is.ansoff.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
               </div>
+              {opportunityId && !readonly && (
+                <IdaFrameworkButton
+                  opportunityId={opportunityId}
+                  framework="ansoff"
+                  context={opportunityContext}
+                  onResult={(r) => update({ ...data, ideaScoring: { ...is, ansoff: { position: r.position || is.ansoff.position, description: r.description, rationale: r.rationale } } })}
+                />
+              )}
               {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_ansoff" title={`${t("filesTitle")} – ${t("saAnsoff")}`} compact />}
             </CardContent>
           </Card>
@@ -114,6 +124,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.bcg.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.bcg.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && !readonly && (
+              <IdaFrameworkButton
+                opportunityId={opportunityId}
+                framework="bcg"
+                context={opportunityContext}
+                onResult={(r) => update({ ...data, ideaScoring: { ...is, bcg: { position: r.position || is.bcg.position, description: r.description, rationale: r.rationale } } })}
+              />
+            )}
             {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_bcg" title={`${t("filesTitle")} – ${t("saBcg")}`} compact />}
           </CardContent>
         </Card>
@@ -161,6 +179,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.mckinsey.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.mckinsey.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && !readonly && (
+              <IdaFrameworkButton
+                opportunityId={opportunityId}
+                framework="mckinsey"
+                context={opportunityContext}
+                onResult={(r) => update({ ...data, ideaScoring: { ...is, mckinsey: { position: r.position || is.mckinsey.position, description: r.description, rationale: r.rationale } } })}
+              />
+            )}
             {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_mckinsey" title={`${t("filesTitle")} – ${t("saMckinsey")}`} compact />}
           </CardContent>
         </Card>
@@ -197,6 +223,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 </>
               );
             })()}
+            {opportunityId && !readonly && (
+              <IdaFrameworkButton
+                opportunityId={opportunityId}
+                framework="three_horizons"
+                context={opportunityContext}
+                onResult={(r) => update({ ...data, ideaScoring: { ...is, threeHorizons: { horizon: r.horizon || is.threeHorizons.horizon, description: r.description, rationale: r.rationale } } })}
+              />
+            )}
             {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_three_horizons" title={`${t("filesTitle")} – ${t("saThreeHorizons" as any)}`} compact />}
           </CardContent>
         </Card>
