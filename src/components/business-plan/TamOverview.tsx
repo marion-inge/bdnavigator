@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
+import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses, TamModels } from "@/lib/types";
 import { TamOverviewData, createDefaultTamOverview } from "@/lib/businessPlanTypes";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
+import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 
 interface TamScenario {
   projections: MarketYearValue[];
