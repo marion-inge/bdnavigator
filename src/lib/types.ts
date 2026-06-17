@@ -536,6 +536,31 @@ export interface IdeaScoringModels {
   threeHorizons: { horizon: string; description: string; rationale: string };
 }
 
+export interface CustomerFoundEntry {
+  id: string;
+  company: string;
+  country: string;
+  geography: string;
+  tier: "A" | "B" | "C" | "D" | "E" | "";
+  customerType: string; // OEM / Tier-1 / Integrator etc.
+  segment: string;
+  parentGroup: string;
+  variantCount: string; // e.g. "60-80" or "25"
+  estimatedValue: number; // for bottom-up TAM (in M€ or unit per project)
+  status: string; // active / prospect / on hold / disqualified
+  rationale: string;
+  sources: string;
+  notes: string;
+}
+
+export interface CustomersFoundData {
+  entries: CustomerFoundEntry[];
+  researchScope: string;
+  bottomUpAssumptions: string;
+  averageValuePerCustomer: number; // M€ — used when entries lack estimatedValue
+  description: string;
+}
+
 export interface TamModels {
   marketResearch?: MarketResearchData;
   pestel: {
@@ -549,7 +574,9 @@ export interface TamModels {
     description: string; rationale: string;
   };
   valueChain?: IndustryValueChain;
+  customersFound?: CustomersFoundData;
 }
+
 
 export interface SamModels {
   customerSegmentation?: { entries: CustomerSegmentEntry[]; description: string; rationale: string };
