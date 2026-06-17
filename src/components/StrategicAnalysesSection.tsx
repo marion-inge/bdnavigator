@@ -6,15 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
+import { FileAttachments } from "@/components/FileAttachments";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
   onSave: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
   defaultTab?: string;
+  opportunityId?: string;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
   const [editing, setEditing] = useState(false);
