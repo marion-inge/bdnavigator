@@ -130,8 +130,36 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
           )}
           <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
             <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {t("createdAt")}: {new Date(opp.createdAt).toLocaleDateString()}</span>
-          </div>
         </div>
+      </div>
+
+      {/* Idea attachments + IDA extract */}
+      {onUpdate && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-end">
+            <IdaIdeaExtractButton
+              opportunityId={opp.id}
+              category="idea"
+              onResult={(r) => {
+                const updates: any = {};
+                if (r.description) updates.description = r.description;
+                if (r.solutionDescription) updates.solutionDescription = r.solutionDescription;
+                if (r.industry) updates.industry = r.industry;
+                if (r.geography) updates.geography = r.geography;
+                if (r.technology) updates.technology = r.technology;
+                if (Object.keys(updates).length) onUpdate(updates);
+              }}
+            />
+          </div>
+          <FileAttachments
+            opportunityId={opp.id}
+            category="idea"
+            title={language === "de" ? "Ideen-Anhänge" : "Idea attachments"}
+            compact
+          />
+        </div>
+      )}
+
       </div>
 
       {/* Stage Progress Timeline */}
