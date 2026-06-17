@@ -106,6 +106,7 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="tam-overview">
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
               strategicAnalyses={saData}
+              onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
               opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
               solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
@@ -123,9 +124,6 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           </TabsContent>
           <TabsContent value="tam-swot">
             <EmbeddedSwot {...tamProps} />
-          </TabsContent>
-          <TabsContent value="tam-customers">
-            <CustomersFoundTab {...tamProps} />
           </TabsContent>
         </Tabs>
 
