@@ -124,7 +124,11 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
           <TabsContent value="tam-swot">
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
+          <TabsContent value="tam-customers">
+            <CustomersFoundTab {...tamProps} />
+          </TabsContent>
         </Tabs>
+
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
