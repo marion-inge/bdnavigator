@@ -131,11 +131,11 @@ export function FileAttachments({ opportunityId, category, title, compact }: Pro
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className={`rounded-xl border border-border bg-card ${compact ? "p-3" : "p-5"} space-y-4`}>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-card-foreground flex items-center gap-2">
           <FileText className="h-4 w-4" />
-          {t("filesTitle")}
+          {title ?? t("filesTitle")}
         </h3>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-muted-foreground">{t("filesMaxSize")}</span>
