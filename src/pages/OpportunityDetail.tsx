@@ -607,6 +607,7 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
                 defaultTab={saDefaultTab}
                 opportunityId={opp.id}
+                opportunityContext={{ title: opp.title, description: opp.description, solutionDescription: opp.solutionDescription, industry: opp.industry, geography: opp.geography, technology: opp.technology }}
               />
             )}
             {activeTab === "files" && (
