@@ -76,6 +76,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 <div><Label>{t("saDescription")}</Label><Textarea value={is.ansoff.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                 <div><Label>{t("saRationale")}</Label><Textarea value={is.ansoff.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
               </div>
+              {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_ansoff" title={`${t("filesTitle")} – ${t("saAnsoff")}`} compact />}
             </CardContent>
           </Card>
         </div>
