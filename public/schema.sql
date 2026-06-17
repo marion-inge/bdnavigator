@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
   file_size        BIGINT NOT NULL DEFAULT 0,
   mime_type        TEXT NOT NULL DEFAULT '',
   comment          TEXT NOT NULL DEFAULT '',
+  category         TEXT NOT NULL DEFAULT '',
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

@@ -46,9 +46,15 @@ function isPreviewable(mimeType: string): boolean {
 
 interface Props {
   opportunityId: string;
+  /** Optional category tag to scope this file list (e.g. "sa_ansoff", "sa_bcg"). When provided, only files in this category are listed and uploads are tagged with it. */
+  category?: string;
+  /** Optional custom heading. Defaults to translated "Files" title. */
+  title?: string;
+  /** Compact variant – smaller paddings, suitable for embedding inside framework cards. */
+  compact?: boolean;
 }
 
-export function FileAttachments({ opportunityId }: Props) {
+export function FileAttachments({ opportunityId, category, title, compact }: Props) {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileRecord[]>([]);
@@ -59,13 +65,13 @@ export function FileAttachments({ opportunityId }: Props) {
   const [previewType, setPreviewType] = useState<string>("");
 
   const loadFiles = useCallback(async () => {
-    const { data, error } = await fetchOpportunityFiles(opportunityId);
+    const { data, error } = await fetchOpportunityFiles(opportunityId, category);
     if (error) {
       console.error("Failed to fetch files:", error);
       return;
     }
     setFiles((data as FileRecord[]) ?? []);
-  }, [opportunityId]);
+  }, [opportunityId, category]);
 
   useEffect(() => {
     loadFiles();
@@ -83,7 +89,7 @@ export function FileAttachments({ opportunityId }: Props) {
           continue;
         }
 
-        const { error } = await uploadOpportunityFile(opportunityId, file);
+        const { error } = await uploadOpportunityFile(opportunityId, file, "", category ?? "");
         if (error) {
           toast.error(`Upload failed: ${file.name}`);
           console.error(error);
@@ -125,11 +131,11 @@ export function FileAttachments({ opportunityId }: Props) {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className={`rounded-xl border border-border bg-card ${compact ? "p-3" : "p-5"} space-y-4`}>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-card-foreground flex items-center gap-2">
           <FileText className="h-4 w-4" />
-          {t("filesTitle")}
+          {title ?? t("filesTitle")}
         </h3>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-muted-foreground">{t("filesMaxSize")}</span>

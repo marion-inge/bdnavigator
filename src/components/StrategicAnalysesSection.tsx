@@ -6,15 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { EditableSection } from "@/components/EditableSection";
+import { FileAttachments } from "@/components/FileAttachments";
 
 interface Props {
   strategicAnalyses?: StrategicAnalyses;
   onSave: (sa: StrategicAnalyses) => void;
   readonly?: boolean;
   defaultTab?: string;
+  opportunityId?: string;
 }
 
-export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab }: Props) {
+export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: propReadonly, defaultTab, opportunityId }: Props) {
   const { t } = useI18n();
   const [data, setData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
   const [editing, setEditing] = useState(false);
@@ -74,6 +76,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 <div><Label>{t("saDescription")}</Label><Textarea value={is.ansoff.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
                 <div><Label>{t("saRationale")}</Label><Textarea value={is.ansoff.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
               </div>
+              {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_ansoff" title={`${t("filesTitle")} – ${t("saAnsoff")}`} compact />}
             </CardContent>
           </Card>
         </div>
@@ -111,6 +114,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.bcg.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.bcg.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_bcg" title={`${t("filesTitle")} – ${t("saBcg")}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
@@ -157,6 +161,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.mckinsey.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.mckinsey.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_mckinsey" title={`${t("filesTitle")} – ${t("saMckinsey")}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
@@ -192,6 +197,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 </>
               );
             })()}
+            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_three_horizons" title={`${t("filesTitle")} – ${t("saThreeHorizons" as any)}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>

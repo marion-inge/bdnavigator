@@ -527,6 +527,7 @@ export default function OpportunityDetail() {
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 defaultTab={activeTab === "sa_ansoff" ? "ansoff" : activeTab === "sa_bcg" ? "bcg" : activeTab === "sa_mckinsey" ? "mckinsey" : "threeHorizons"}
+                opportunityId={opp.id}
               />
             )}
             {activeTab === "business_plan" && (
@@ -604,6 +605,7 @@ export default function OpportunityDetail() {
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
                 readonly={opp.stage === "closed"}
                 defaultTab={saDefaultTab}
+                opportunityId={opp.id}
               />
             )}
             {activeTab === "files" && (

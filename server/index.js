@@ -71,9 +71,20 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
   file_size        INTEGER NOT NULL DEFAULT 0,
   mime_type        TEXT NOT NULL DEFAULT '',
   comment          TEXT NOT NULL DEFAULT '',
+  category         TEXT NOT NULL DEFAULT '',
   created_at       TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 `);
+
+// Lightweight migration: add category column if missing on pre-existing DBs
+try {
+  const cols = db.prepare("PRAGMA table_info(opportunity_files)").all();
+  if (!cols.some((c) => c.name === "category")) {
+    db.exec("ALTER TABLE opportunity_files ADD COLUMN category TEXT NOT NULL DEFAULT ''");
+  }
+} catch (e) {
+  console.warn("opportunity_files migration check failed", e);
+}
 
 // --- Helpers ---
 const JSONB_COLS = [
@@ -229,10 +240,13 @@ const upload = multer({
 });
 
 app.get("/api/opportunity-files", (req, res) => {
-  const { opportunity_id } = req.query;
+  const { opportunity_id, category } = req.query;
   let sql = "SELECT * FROM opportunity_files";
   const params = [];
-  if (opportunity_id) { sql += " WHERE opportunity_id = ?"; params.push(opportunity_id); }
+  const where = [];
+  if (opportunity_id) { where.push("opportunity_id = ?"); params.push(opportunity_id); }
+  if (category !== undefined) { where.push("category = ?"); params.push(category); }
+  if (where.length) sql += " WHERE " + where.join(" AND ");
   sql += " ORDER BY created_at DESC";
   res.json(db.prepare(sql).all(...params).map(parseRow));
 });
@@ -249,6 +263,7 @@ app.post("/api/opportunity-files", upload.single("file"), (req, res) => {
     file_size: file.size,
     mime_type: file.mimetype,
     comment: req.body.comment || "",
+    category: req.body.category || "",
     created_at: new Date().toISOString(),
   };
 
@@ -259,6 +274,7 @@ app.post("/api/opportunity-files", upload.single("file"), (req, res) => {
   const row = db.prepare("SELECT * FROM opportunity_files WHERE id = ?").get(data.id);
   res.status(201).json(parseRow(row));
 });
+
 
 // PATCH update comment
 app.patch("/api/opportunity-files/:id", (req, res) => {
