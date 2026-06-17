@@ -130,6 +130,7 @@ export type Database = {
       }
       opportunity_files: {
         Row: {
+          category: string
           comment: string
           created_at: string
           file_name: string
@@ -140,6 +141,7 @@ export type Database = {
           opportunity_id: string
         }
         Insert: {
+          category?: string
           comment?: string
           created_at?: string
           file_name: string
@@ -150,6 +152,7 @@ export type Database = {
           opportunity_id: string
         }
         Update: {
+          category?: string
           comment?: string
           created_at?: string
           file_name?: string

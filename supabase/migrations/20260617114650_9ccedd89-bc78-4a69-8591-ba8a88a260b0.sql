@@ -1,0 +1,2 @@
+ALTER TABLE public.opportunity_files ADD COLUMN IF NOT EXISTS category text NOT NULL DEFAULT '';
+CREATE INDEX IF NOT EXISTS opportunity_files_opp_cat_idx ON public.opportunity_files (opportunity_id, category);
