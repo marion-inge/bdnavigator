@@ -39,6 +39,7 @@ interface Props {
   onUpdate: (scoring: DetailedScoring) => void;
   readonly?: boolean;
   strategicAnalyses?: StrategicAnalyses;
+  onSaveTam?: (tam: TamModels) => void;
   opportunityTitle?: string;
   opportunityDescription?: string;
   solutionDescription?: string;
