@@ -86,7 +86,6 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                   onResult={(r) => update({ ...data, ideaScoring: { ...is, ansoff: { position: r.position || is.ansoff.position, description: r.description, rationale: r.rationale } } })}
                 />
               )}
-              {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_ansoff" title={`${t("filesTitle")} – ${t("saAnsoff")}`} compact />}
             </CardContent>
           </Card>
         </div>
@@ -132,7 +131,6 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 onResult={(r) => update({ ...data, ideaScoring: { ...is, bcg: { position: r.position || is.bcg.position, description: r.description, rationale: r.rationale } } })}
               />
             )}
-            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_bcg" title={`${t("filesTitle")} – ${t("saBcg")}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
@@ -187,7 +185,6 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 onResult={(r) => update({ ...data, ideaScoring: { ...is, mckinsey: { position: r.position || is.mckinsey.position, description: r.description, rationale: r.rationale } } })}
               />
             )}
-            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_mckinsey" title={`${t("filesTitle")} – ${t("saMckinsey")}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
@@ -231,7 +228,6 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 onResult={(r) => update({ ...data, ideaScoring: { ...is, threeHorizons: { horizon: r.horizon || is.threeHorizons.horizon, description: r.description, rationale: r.rationale } } })}
               />
             )}
-            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_three_horizons" title={`${t("filesTitle")} – ${t("saThreeHorizons" as any)}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
