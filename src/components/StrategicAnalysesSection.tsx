@@ -124,6 +124,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.bcg.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.bcg.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && !readonly && (
+              <IdaFrameworkButton
+                opportunityId={opportunityId}
+                framework="bcg"
+                context={opportunityContext}
+                onResult={(r) => update({ ...data, ideaScoring: { ...is, bcg: { position: r.position || is.bcg.position, description: r.description, rationale: r.rationale } } })}
+              />
+            )}
             {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_bcg" title={`${t("filesTitle")} – ${t("saBcg")}`} compact />}
           </CardContent>
         </Card>
