@@ -197,6 +197,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 </>
               );
             })()}
+            {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_three_horizons" title={`${t("filesTitle")} – ${t("saThreeHorizons" as any)}`} compact />}
           </CardContent>
         </Card>
       </TabsContent>
