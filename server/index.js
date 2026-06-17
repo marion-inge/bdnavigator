@@ -71,9 +71,20 @@ CREATE TABLE IF NOT EXISTS opportunity_files (
   file_size        INTEGER NOT NULL DEFAULT 0,
   mime_type        TEXT NOT NULL DEFAULT '',
   comment          TEXT NOT NULL DEFAULT '',
+  category         TEXT NOT NULL DEFAULT '',
   created_at       TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 `);
+
+// Lightweight migration: add category column if missing on pre-existing DBs
+try {
+  const cols = db.prepare("PRAGMA table_info(opportunity_files)").all();
+  if (!cols.some((c) => c.name === "category")) {
+    db.exec("ALTER TABLE opportunity_files ADD COLUMN category TEXT NOT NULL DEFAULT ''");
+  }
+} catch (e) {
+  console.warn("opportunity_files migration check failed", e);
+}
 
 // --- Helpers ---
 const JSONB_COLS = [
