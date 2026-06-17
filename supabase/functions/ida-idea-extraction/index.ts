@@ -64,7 +64,7 @@ serve(async (req) => {
     const body = await req.json() as {
       language?: "en" | "de";
       opportunityId?: string;
-      category?: string;
+      fileIds?: string[];
       // inline files for pre-creation extraction
       files?: Array<{ name: string; mime: string; dataBase64: string }>;
     };
@@ -87,14 +87,13 @@ serve(async (req) => {
           console.error("inline file error", f.name, e);
         }
       }
-    } else if (body.opportunityId) {
+    } else if (body.opportunityId && body.fileIds && body.fileIds.length > 0) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-      const cat = body.category || "idea";
       const { data: files, error } = await supabase
         .from("opportunity_files")
         .select("file_name, file_path, mime_type, file_size, comment")
         .eq("opportunity_id", body.opportunityId)
-        .eq("category", cat);
+        .in("id", body.fileIds);
       if (error) console.error(error);
       for (const f of files ?? []) {
         if ((f.file_size || 0) > MAX_BYTES) {
