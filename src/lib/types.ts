@@ -710,7 +710,9 @@ export function migrateStrategicAnalyses(raw: any): StrategicAnalyses {
       porter: raw.porter || defaults.tam.porter,
       swot: raw.swot || defaults.tam.swot,
       valueChain: raw.valueChain || defaults.tam.valueChain,
+      customersFound: raw.customersFound,
     },
+
     sam: {
       customerSegmentation: raw.customerSegmentation || defaults.sam.customerSegmentation,
       customerInterviewing: raw.customerInterviewing || defaults.sam.customerInterviewing,
