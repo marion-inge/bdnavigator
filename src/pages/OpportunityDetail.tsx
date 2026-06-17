@@ -136,8 +136,6 @@ export default function OpportunityDetail() {
         { key: "tam-valuechain", label: bp("Value Chain", "Wertschöpfungskette") },
         { key: "tam-porter", label: "Porter's" },
         { key: "tam-swot", label: "SWOT" },
-        { key: "tam-customers", label: bp("Customers Found", "Gefundene Kunden") },
-
       ],
     },
     {
