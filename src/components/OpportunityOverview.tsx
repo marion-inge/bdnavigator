@@ -13,6 +13,8 @@ import {
   XCircle, PauseCircle, ArrowRight, TrendingUp, AlertTriangle,
   DollarSign, Target, ChevronRight, ChevronLeft, Pencil, Check, X, BarChart2,
 } from "lucide-react";
+import { FileAttachments } from "@/components/FileAttachments";
+import { IdaIdeaExtractButton } from "@/components/IdaIdeaExtractButton";
 
 interface OpportunityOverviewProps {
   opportunity: Opportunity;
