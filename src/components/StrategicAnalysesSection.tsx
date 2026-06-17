@@ -179,6 +179,14 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               <div><Label>{t("saDescription")}</Label><Textarea value={is.mckinsey.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
               <div><Label>{t("saRationale")}</Label><Textarea value={is.mckinsey.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
+            {opportunityId && !readonly && (
+              <IdaFrameworkButton
+                opportunityId={opportunityId}
+                framework="mckinsey"
+                context={opportunityContext}
+                onResult={(r) => update({ ...data, ideaScoring: { ...is, mckinsey: { position: r.position || is.mckinsey.position, description: r.description, rationale: r.rationale } } })}
+              />
+            )}
             {opportunityId && <FileAttachments opportunityId={opportunityId} category="sa_mckinsey" title={`${t("filesTitle")} – ${t("saMckinsey")}`} compact />}
           </CardContent>
         </Card>
