@@ -58,7 +58,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / n) - 1) * 100).toFixed(1)}%`;
 }
 
-export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, onSaveTam, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
