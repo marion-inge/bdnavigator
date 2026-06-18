@@ -137,7 +137,9 @@ export function OpportunityOverview({ opportunity: opp, onAdvanceStage, onUpdate
         <div className="flex items-center justify-end">
           <IdaIdeaExtractButton
             opportunityId={opp.id}
+            contextTitle={opp.title}
             onResult={(r) => {
+
               const updates: any = {};
               if (r.description) updates.description = r.description;
               if (r.solutionDescription) updates.solutionDescription = r.solutionDescription;

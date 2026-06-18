@@ -118,7 +118,9 @@ export function NewOpportunityDialog() {
                 />
                 <IdaIdeaExtractButton
                   files={files}
+                  contextTitle={title}
                   onResult={(r) => {
+
                     if (r.title && !title) setTitle(r.title);
                     if (r.description) setDescription(r.description);
                     if (r.solutionDescription) setSolutionDescription(r.solutionDescription);

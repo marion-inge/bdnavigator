@@ -65,11 +65,13 @@ serve(async (req) => {
       language?: "en" | "de";
       opportunityId?: string;
       fileIds?: string[];
+      contextTitle?: string;
       // inline files for pre-creation extraction
       files?: Array<{ name: string; mime: string; dataBase64: string }>;
     };
 
     const lang = body.language === "de" ? "German" : "English";
+    const manualTitle = (body.contextTitle || "").trim();
 
     const blocks: any[] = [];
     const usedFiles: string[] = [];
@@ -118,18 +120,27 @@ serve(async (req) => {
       });
     }
 
-    const systemPrompt = `You are IDA (Internal Document Analyst), a senior innovation analyst. Read the attached documents carefully and extract a concise structured summary for a new innovation opportunity. Use ONLY information grounded in the documents. If a field cannot be inferred, leave it as an empty string. Answer all fields in ${lang}.`;
+    const titleClause = manualTitle
+      ? ` The user has already given this opportunity the title "${manualTitle}". Treat this title as the anchor of the analysis: the PROBLEM description and the SOLUTION idea & differentiator MUST be framed around and directly relate to this title. If the documents cover multiple themes, focus on the parts that relate to "${manualTitle}".`
+      : "";
 
-    const userIntro = `Extract the following fields about the innovation idea from the attached documents:
+    const systemPrompt = `You are IDA (Internal Document Analyst), a senior innovation analyst. Read the attached documents carefully and extract a concise structured summary for a new innovation opportunity. Use ONLY information grounded in the documents. If a field cannot be inferred, leave it as an empty string. Answer all fields in ${lang}.${titleClause}`;
 
-- title: short title (max ~80 chars), in ${lang}.
-- description: the PROBLEM description — what customer/market pain is being addressed (2-5 sentences).
-- solutionDescription: the SOLUTION idea AND key differentiator — what is proposed and why it is unique (2-5 sentences).
+    const titleFieldInstruction = manualTitle
+      ? `- title: keep "${manualTitle}" exactly as given (do not rewrite it).`
+      : `- title: short title (max ~80 chars), in ${lang}.`;
+
+    const userIntro = `Extract the following fields about the innovation idea from the attached documents${manualTitle ? `, all centered on the given title "${manualTitle}"` : ""}:
+
+${titleFieldInstruction}
+- description: the PROBLEM description${manualTitle ? ` that "${manualTitle}" addresses` : ""} — what customer/market pain is being addressed (2-5 sentences).
+- solutionDescription: the SOLUTION idea AND key differentiator${manualTitle ? ` of "${manualTitle}"` : ""} — what is proposed and why it is unique (2-5 sentences).
 - industry: target industry / sector (e.g. "Marine", "Aviation", "Healthcare"). Single short value.
 - geography: target geography (e.g. "Europe", "Global", "APAC"). Single short value.
 - technology: business field / technology domain (e.g. "Automotive", "Energy", "Digital"). Single short value.
 
 Return the result via the extract_idea tool.`;
+
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

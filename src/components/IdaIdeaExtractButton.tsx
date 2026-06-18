@@ -22,10 +22,13 @@ interface Props {
   files?: File[];
   /** Saved opportunity – will open a picker over its existing attachments. */
   opportunityId?: string;
+  /** Manual title to anchor problem description and solution idea around. */
+  contextTitle?: string;
   onResult: (r: ExtractedIdea) => void;
   size?: "sm" | "default";
   className?: string;
 }
+
 
 async function fileToBase64(file: File): Promise<string> {
   const buf = new Uint8Array(await file.arrayBuffer());
@@ -37,7 +40,7 @@ async function fileToBase64(file: File): Promise<string> {
   return btoa(bin);
 }
 
-export function IdaIdeaExtractButton({ files, opportunityId, onResult, size = "sm", className }: Props) {
+export function IdaIdeaExtractButton({ files, opportunityId, contextTitle, onResult, size = "sm", className }: Props) {
   const { language } = useI18n();
   const [loading, setLoading] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -88,15 +91,16 @@ export function IdaIdeaExtractButton({ files, opportunityId, onResult, size = "s
       const encoded = await Promise.all(
         files.map(async (f) => ({ name: f.name, mime: f.type, dataBase64: await fileToBase64(f) }))
       );
-      await invoke({ language, files: encoded });
+      await invoke({ language, files: encoded, contextTitle });
     } else {
       setPickerOpen(true);
     }
   };
 
   const handlePickerConfirm = async (fileIds: string[]) => {
-    await invoke({ language, opportunityId, fileIds });
+    await invoke({ language, opportunityId, fileIds, contextTitle });
   };
+
 
   const askLabel = language === "de" ? "IDA ausfüllen lassen" : "Fill with IDA";
   const loadingLabel = language === "de" ? "IDA analysiert..." : "IDA is analyzing...";
