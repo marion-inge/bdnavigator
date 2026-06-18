@@ -443,26 +443,44 @@ export async function exportOpportunityPdf(opp: Opportunity) {
       doc.text(questionLines, 16, y);
       y += questionLines.length * 4.5 + 3;
 
-      // Answer
-      if (answer > 0) {
-        const desc = decodeHtmlEntities(q.descriptions[answer as 1 | 2 | 3 | 4 | 5].en);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        const ansColor = getScoreColorRgb(answer);
-        doc.setFillColor(ansColor[0], ansColor[1], ansColor[2]);
-        doc.roundedRect(18, y - 3.5, 10, 5, 1, 1, "F");
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.text(String(answer), 23, y, { align: "center" });
-        doc.setTextColor(0, 0, 0);
-        doc.setFont("helvetica", "normal");
-        const descLines = doc.splitTextToSize(desc, pw - 60);
-        doc.text(descLines, 32, y);
-        y += Math.max(descLines.length * 4.5, 6) + 3;
-      } else {
-        doc.setFontSize(9);
+      // All answer options (chosen one highlighted)
+      const optionRows = [1, 2, 3, 4, 5].map((score) => {
+        const desc = decodeHtmlEntities(q.descriptions[score as 1 | 2 | 3 | 4 | 5].en);
+        const isChosen = score === answer;
+        return [isChosen ? `> ${score}` : String(score), desc, isChosen ? "X" : ""];
+      });
+
+      autoTable(doc, {
+        startY: y,
+        head: [["Score", "Description", "Chosen"]],
+        body: optionRows,
+        headStyles: { fillColor: PRIMARY_COLOR, fontSize: 8, cellPadding: 1.5 },
+        styles: { fontSize: 8, cellPadding: { top: 1.2, bottom: 1.2, left: 2.5, right: 2.5 }, minCellHeight: 5 },
+        columnStyles: {
+          0: { cellWidth: 14, halign: "center", fontStyle: "bold" },
+          1: { cellWidth: pw - 50 },
+          2: { cellWidth: 14, halign: "center", fontStyle: "bold" },
+        },
+        margin: { left: 16, right: 14 },
+        theme: "grid",
+        didParseCell: (data) => {
+          if (data.section === "body" && answer > 0) {
+            const rowScore = data.row.index + 1;
+            if (rowScore === answer) {
+              const c = getScoreColorRgb(answer);
+              data.cell.styles.fillColor = [c[0], c[1], c[2]];
+              data.cell.styles.textColor = [255, 255, 255];
+              data.cell.styles.fontStyle = "bold";
+            }
+          }
+        },
+      });
+      y = (doc as any).lastAutoTable.finalY + 2;
+
+      if (answer === 0) {
+        doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text("Not answered", 18, y);
+        doc.text("Not answered", 18, y + 2);
         doc.setTextColor(0, 0, 0);
         y += 6;
       }
