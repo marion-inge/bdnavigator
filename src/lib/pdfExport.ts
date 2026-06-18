@@ -408,7 +408,49 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     }
   }
 
-  // ─── BUSINESS PLAN (existing) ───────────────────────────────────────
+  // ─── STRATEGIC FRAMEWORKS (Idea Scoring) ────────────────────────────
+  const ideaModels = opp.strategicAnalyses?.ideaScoring;
+  if (ideaModels) {
+    const frameworks: Array<{ name: string; label: string; data: { position?: string; horizon?: string; description: string; rationale: string } }> = [
+      { name: "ansoff", label: "Ansoff Matrix", data: ideaModels.ansoff },
+      { name: "bcg", label: "BCG Matrix", data: ideaModels.bcg },
+      { name: "mckinsey", label: "McKinsey Matrix", data: ideaModels.mckinsey },
+      { name: "threeHorizons", label: "3 Horizons", data: ideaModels.threeHorizons },
+    ];
+    const hasAny = frameworks.some(f => (f.data.position || (f.data as any).horizon || f.data.description || f.data.rationale));
+    if (hasAny) {
+      y += 4;
+      y = addSectionTitle(doc, y, "Strategic Frameworks");
+      for (const f of frameworks) {
+        const pos = (f.data as any).position || (f.data as any).horizon || "";
+        if (!pos && !f.data.description && !f.data.rationale) continue;
+        y = ensureSpace(doc, y, 18);
+        y = addSubSectionTitle(doc, y, f.label + (pos ? ` – ${pos}` : ""));
+        if (f.data.description) {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.text("Description:", 14, y);
+          y += 5;
+          doc.setFont("helvetica", "normal");
+          const r = addWrappedText(doc, f.data.description, 14, y, pw - 28, 4.5);
+          y = r.y + 3;
+        }
+        if (f.data.rationale) {
+          y = ensureSpace(doc, y, 10);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.text("Rationale:", 14, y);
+          y += 5;
+          doc.setFont("helvetica", "normal");
+          const r = addWrappedText(doc, f.data.rationale, 14, y, pw - 28, 4.5);
+          y = r.y + 4;
+        }
+        doc.setFontSize(10);
+      }
+    }
+  }
+
+
   const ds = opp.businessPlan;
   if (ds) {
     y += 4;
