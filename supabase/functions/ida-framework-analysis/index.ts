@@ -163,26 +163,34 @@ serve(async (req) => {
 
 
     const ctx = context || {};
-    const contextSummary = [
-      ctx.title ? `Title: ${ctx.title}` : "",
-      ctx.description ? `Problem: ${ctx.description}` : "",
-      ctx.solutionDescription ? `Solution: ${ctx.solutionDescription}` : "",
+    const anchorParts = [
+      ctx.title ? `Title (manual): ${ctx.title}` : "",
+      ctx.description ? `Problem description: ${ctx.description}` : "",
+      ctx.solutionDescription ? `Solution idea & differentiator: ${ctx.solutionDescription}` : "",
+    ].filter(Boolean).join("\n");
+    const extraParts = [
       ctx.industry ? `Industry: ${ctx.industry}` : "",
       ctx.geography ? `Geography: ${ctx.geography}` : "",
       ctx.technology ? `Technology: ${ctx.technology}` : "",
     ].filter(Boolean).join("\n");
 
-    const systemPrompt = `You are IDA (Internal Document Analyst), a senior strategy analyst. Read the attached documents carefully and use ONLY information grounded in those documents (plus the opportunity context). If something is not in the documents, mark it as an assumption in the rationale. Never hallucinate. Answer in ${lang}.`;
+    const systemPrompt = `You are IDA (Internal Document Analyst), a senior strategy analyst. Read the attached documents carefully and combine their content with the user-provided opportunity context (title, problem description, solution idea & differentiator). The title, problem, and solution are the ANCHOR of the analysis — every conclusion must be consistent with them. Use ONLY information grounded in the documents and the provided context; if something is not covered, mark it as an assumption in the rationale. Never hallucinate. Answer in ${lang}.`;
 
-    const userIntro = `Analyze this innovation opportunity for the ${fw.name} framework based on the attached documents.
+    const userIntro = `Analyze this innovation opportunity for the ${fw.name} framework.
 
-Opportunity context:
-${contextSummary || "(no extra context provided)"}
+== Opportunity anchor (manually entered by the user — treat as primary truth) ==
+${anchorParts || "(no anchor provided)"}
 
-Task: Select the best ${fw.positionDesc} value from this exact list: [${fw.positions.join(", ")}].
-Then provide:
-- description: a concise (2-4 sentences) description of the opportunity in the context of the ${fw.name}, grounded in the attached documents.
-- rationale: a 3-6 sentence explanation of WHY this position fits, citing concrete facts/data from the attachments (mention the source document name when relevant).
+== Additional context ==
+${extraParts || "(none)"}
+
+== Source documents ==
+The attached file(s) below contain supporting evidence. Read them and ground your reasoning in them.
+
+Task:
+1. Select the best ${fw.positionDesc} value from this exact list: [${fw.positions.join(", ")}]. The choice must fit the anchor (title + problem + solution) interpreted in light of the attached documents.
+2. description: 2-4 sentences describing the opportunity in the context of the ${fw.name}, explicitly relating to the title and the solution idea.
+3. rationale: 3-6 sentences explaining WHY this position fits, citing concrete facts/data from the attachments (mention the source document name when relevant) and tying back to the problem & solution.
 
 Use the fill_framework tool to return the result.`;
 
