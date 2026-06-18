@@ -129,7 +129,179 @@ function addWrappedText(doc: jsPDF, text: string, x: number, y: number, maxWidth
   return { y };
 }
 
-// ── Single Opportunity PDF ──
+// ── Strategic Framework chart helpers ──
+
+const POS_LABELS: Record<string, string> = {
+  market_penetration: "Market Penetration",
+  market_development: "Market Development",
+  product_development: "Product Development",
+  diversification: "Diversification",
+  star: "Star",
+  question_mark: "Question Mark",
+  cash_cow: "Cash Cow",
+  dog: "Dog",
+  high_high: "Invest/Grow",
+  high_medium: "Invest/Grow",
+  medium_high: "Invest/Grow",
+  high_low: "Selectivity",
+  medium_medium: "Selectivity",
+  low_high: "Selectivity",
+  medium_low: "Harvest/Divest",
+  low_medium: "Harvest/Divest",
+  low_low: "Harvest/Divest",
+  horizon1: "Horizon 1 – Core",
+  horizon2: "Horizon 2 – Emerging",
+  horizon3: "Horizon 3 – New",
+};
+
+function formatPosLabel(pos: string): string {
+  return POS_LABELS[pos] || pos;
+}
+
+function drawCell(
+  doc: jsPDF, x: number, y: number, w: number, h: number,
+  label: string, active: boolean, bg: [number, number, number]
+) {
+  if (active) {
+    doc.setFillColor(...PRIMARY_COLOR);
+    doc.setDrawColor(...PRIMARY_COLOR);
+    doc.setLineWidth(0.8);
+  } else {
+    doc.setFillColor(bg[0], bg[1], bg[2]);
+    doc.setDrawColor(180, 180, 180);
+    doc.setLineWidth(0.2);
+  }
+  doc.rect(x, y, w, h, "FD");
+  doc.setTextColor(active ? 255 : 60, active ? 255 : 60, active ? 255 : 60);
+  doc.setFont("helvetica", active ? "bold" : "normal");
+  doc.setFontSize(8);
+  const lines = doc.splitTextToSize(label, w - 2);
+  const total = lines.length * 3.5;
+  let ty = y + h / 2 - total / 2 + 3;
+  for (const ln of lines) {
+    doc.text(ln, x + w / 2, ty, { align: "center" });
+    ty += 3.5;
+  }
+  doc.setTextColor(0, 0, 0);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(0, 0, 0);
+}
+
+function drawAxisLabel(doc: jsPDF, text: string, x: number, y: number, rotate = 0) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7);
+  doc.setTextColor(90, 90, 90);
+  doc.text(text, x, y, rotate ? { angle: rotate, align: "center" } as any : { align: "center" });
+  doc.setTextColor(0, 0, 0);
+}
+
+function drawFrameworkChart(
+  doc: jsPDF, name: "ansoff" | "bcg" | "mckinsey" | "threeHorizons",
+  pos: string, x: number, y: number
+): number {
+  const chartLeft = x + 24; // leave room for y-axis label
+  const chartTop = y + 2;
+  const size = 70; // total matrix size
+  const cellLight: [number, number, number] = [248, 250, 252];
+  const cellGreen: [number, number, number] = [220, 252, 231];
+  const cellYellow: [number, number, number] = [254, 249, 195];
+  const cellRed: [number, number, number] = [254, 226, 226];
+
+  if (name === "ansoff") {
+    const cw = size / 2;
+    // Rows: existing products (top), new products (bottom)
+    // Cols: existing markets (left), new markets (right)
+    const cells: Array<{ key: string; label: string; col: number; row: number }> = [
+      { key: "market_penetration", label: "Market Penetration", col: 0, row: 0 },
+      { key: "market_development", label: "Market Development", col: 1, row: 0 },
+      { key: "product_development", label: "Product Development", col: 0, row: 1 },
+      { key: "diversification", label: "Diversification", col: 1, row: 1 },
+    ];
+    for (const c of cells) {
+      drawCell(doc, chartLeft + c.col * cw, chartTop + c.row * cw, cw, cw, c.label, c.key === pos, cellLight);
+    }
+    // axis labels
+    drawAxisLabel(doc, "Existing Markets", chartLeft + cw / 2, chartTop - 1);
+    drawAxisLabel(doc, "New Markets", chartLeft + cw + cw / 2, chartTop - 1);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(7); doc.setTextColor(90, 90, 90);
+    (doc as any).text("Existing Products", chartLeft - 2, chartTop + cw / 2, { angle: 90, align: "center" });
+    (doc as any).text("New Products", chartLeft - 2, chartTop + cw + cw / 2, { angle: 90, align: "center" });
+    doc.setTextColor(0, 0, 0);
+    return chartTop + size + 2;
+  }
+
+  if (name === "bcg") {
+    const cw = size / 2;
+    const cells: Array<{ key: string; label: string; col: number; row: number }> = [
+      { key: "star", label: "Star", col: 0, row: 0 },
+      { key: "question_mark", label: "Question Mark", col: 1, row: 0 },
+      { key: "cash_cow", label: "Cash Cow", col: 0, row: 1 },
+      { key: "dog", label: "Dog", col: 1, row: 1 },
+    ];
+    for (const c of cells) {
+      drawCell(doc, chartLeft + c.col * cw, chartTop + c.row * cw, cw, cw, c.label, c.key === pos, cellLight);
+    }
+    drawAxisLabel(doc, "High Market Share", chartLeft + cw / 2, chartTop - 1);
+    drawAxisLabel(doc, "Low Market Share", chartLeft + cw + cw / 2, chartTop - 1);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(7); doc.setTextColor(90, 90, 90);
+    (doc as any).text("High Growth", chartLeft - 2, chartTop + cw / 2, { angle: 90, align: "center" });
+    (doc as any).text("Low Growth", chartLeft - 2, chartTop + cw + cw / 2, { angle: 90, align: "center" });
+    doc.setTextColor(0, 0, 0);
+    return chartTop + size + 2;
+  }
+
+  if (name === "mckinsey") {
+    const cw = size / 3;
+    const colorMap: Record<string, [number, number, number]> = {
+      high_high: cellGreen, high_medium: cellGreen, medium_high: cellGreen,
+      high_low: cellYellow, medium_medium: cellYellow, low_high: cellYellow,
+      medium_low: cellRed, low_medium: cellRed, low_low: cellRed,
+    };
+    const labels: Record<string, string> = {
+      high_high: "Invest/Grow", high_medium: "Invest/Grow", medium_high: "Invest/Grow",
+      high_low: "Selectivity", medium_medium: "Selectivity", low_high: "Selectivity",
+      medium_low: "Harvest", low_medium: "Harvest", low_low: "Harvest",
+    };
+    const rows = ["high", "medium", "low"] as const;
+    const cols = ["low", "medium", "high"] as const;
+    rows.forEach((ia, ri) => {
+      cols.forEach((cs, ci) => {
+        const key = `${ia}_${cs}`;
+        drawCell(doc, chartLeft + ci * cw, chartTop + ri * cw, cw, cw, labels[key], key === pos, colorMap[key]);
+      });
+    });
+    drawAxisLabel(doc, "Low CS", chartLeft + cw * 0.5, chartTop - 1);
+    drawAxisLabel(doc, "Medium CS", chartLeft + cw * 1.5, chartTop - 1);
+    drawAxisLabel(doc, "High CS", chartLeft + cw * 2.5, chartTop - 1);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(7); doc.setTextColor(90, 90, 90);
+    (doc as any).text("High IA", chartLeft - 2, chartTop + cw * 0.5, { angle: 90, align: "center" });
+    (doc as any).text("Medium IA", chartLeft - 2, chartTop + cw * 1.5, { angle: 90, align: "center" });
+    (doc as any).text("Low IA", chartLeft - 2, chartTop + cw * 2.5, { angle: 90, align: "center" });
+    doc.setTextColor(0, 0, 0);
+    return chartTop + size + 2;
+  }
+
+  if (name === "threeHorizons") {
+    const pw = doc.internal.pageSize.getWidth();
+    const totalW = pw - 28;
+    const cw = (totalW - 6) / 3;
+    const ch = 30;
+    const items = [
+      { key: "horizon1", title: "Horizon 1", sub: "Core Business", bg: [219, 234, 254] as [number, number, number] },
+      { key: "horizon2", title: "Horizon 2", sub: "Emerging Opportunities", bg: [254, 243, 199] as [number, number, number] },
+      { key: "horizon3", title: "Horizon 3", sub: "New Ventures", bg: [209, 250, 229] as [number, number, number] },
+    ];
+    items.forEach((h, i) => {
+      const cx = x + i * (cw + 3);
+      drawCell(doc, cx, y + 2, cw, ch, `${h.title}\n${h.sub}`, h.key === pos, h.bg);
+    });
+    return y + ch + 4;
+  }
+
+  return y;
+}
+
+
 
 export async function exportOpportunityPdf(opp: Opportunity) {
   const doc = new jsPDF();
