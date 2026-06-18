@@ -411,7 +411,7 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   // ─── STRATEGIC FRAMEWORKS (Idea Scoring) ────────────────────────────
   const ideaModels = opp.strategicAnalyses?.ideaScoring;
   if (ideaModels) {
-    const frameworks: Array<{ name: string; label: string; data: { position?: string; horizon?: string; description: string; rationale: string } }> = [
+    const frameworks: Array<{ name: "ansoff" | "bcg" | "mckinsey" | "threeHorizons"; label: string; data: { position?: string; horizon?: string; description: string; rationale: string } }> = [
       { name: "ansoff", label: "Ansoff Matrix", data: ideaModels.ansoff },
       { name: "bcg", label: "BCG Matrix", data: ideaModels.bcg },
       { name: "mckinsey", label: "McKinsey Matrix", data: ideaModels.mckinsey },
@@ -424,9 +424,12 @@ export async function exportOpportunityPdf(opp: Opportunity) {
       for (const f of frameworks) {
         const pos = (f.data as any).position || (f.data as any).horizon || "";
         if (!pos && !f.data.description && !f.data.rationale) continue;
-        y = ensureSpace(doc, y, 18);
-        y = addSubSectionTitle(doc, y, f.label + (pos ? ` – ${pos}` : ""));
+        y = ensureSpace(doc, y, 95);
+        y = addSubSectionTitle(doc, y, f.label + (pos ? ` – ${formatPosLabel(pos)}` : ""));
+        y = drawFrameworkChart(doc, f.name, pos, 14, y);
+        y += 4;
         if (f.data.description) {
+          y = ensureSpace(doc, y, 10);
           doc.setFont("helvetica", "bold");
           doc.setFontSize(9);
           doc.text("Description:", 14, y);
