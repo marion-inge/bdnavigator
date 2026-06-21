@@ -69,6 +69,16 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
+  // Re-sync local state from props when not actively editing (e.g. after IDA fills fields)
+  useEffect(() => {
+    if (editing || dirty) return;
+    setLocalProj(samProj.length ? samProj : [1,2,3,4,5].map(y => ({ year: y, value: 0 })));
+    setLocalOv(samOverview);
+    setLocalSamDesc(analysis.samDescription || "");
+    setLocalRegions(samOverview.geographicalRegions || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scoring]);
+
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<SamOverviewData>) => { setLocalOv(prev => ({ ...prev, ...patch })); markDirty(); };
 
