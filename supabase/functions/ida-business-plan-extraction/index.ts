@@ -91,6 +91,7 @@ function buildSchema(scope: SectionScope) {
             projections: projectionsSchema,
             marketGrowthRate: { type: "string", description: "Narrative growth-rate statement, e.g. '15% CAGR through 2030'." },
           },
+          required: ["projections", "marketGrowthRate"],
           additionalProperties: false,
         },
         sam: {
@@ -99,6 +100,7 @@ function buildSchema(scope: SectionScope) {
             ...strProps(SAM_OVERVIEW_KEYS),
             projections: projectionsSchema,
           },
+          required: ["projections"],
           additionalProperties: false,
         },
         som: {
@@ -107,9 +109,11 @@ function buildSchema(scope: SectionScope) {
             ...strProps(SOM_OVERVIEW_KEYS),
             projections: projectionsSchema,
           },
+          required: ["projections"],
           additionalProperties: false,
         },
       },
+      required: ["tam", "sam", "som"],
       additionalProperties: false,
     };
   }
