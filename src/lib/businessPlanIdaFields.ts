@@ -97,7 +97,7 @@ const modelField = (
 const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFieldDef => ({
   path: `tam.porter.${forceKey}`,
   labelEn, labelDe, multiline: true, section: "Porter's Five Forces",
-  get: (_s, sa) => sa.tam.porter?.[forceKey as keyof typeof sa.tam.porter]?.description ?? "",
+  get: (_s, sa) => ((sa.tam.porter as any)?.[forceKey]?.description as string) ?? "",
   apply: (s, sa, v) => ({
     scoring: s,
     sa: {
