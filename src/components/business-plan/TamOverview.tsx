@@ -77,6 +77,17 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
+  // Re-sync local state from props when not actively editing (e.g. after IDA fills fields)
+  useEffect(() => {
+    if (editing || dirty) return;
+    setLocalProj(tamProj.length ? tamProj : [1,2,3,4,5].map(y => ({ year: y, value: 0 })));
+    setLocalOverview(tamOverview);
+    setLocalGrowthRate(analysis.marketGrowthRate || "");
+    setLocalTamDesc(analysis.tamDescription || "");
+    setLocalRegions(tamOverview.geographicalRegions || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scoring]);
+
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<TamOverviewData>) => { setLocalOverview(prev => ({ ...prev, ...patch })); markDirty(); };
 
