@@ -161,6 +161,9 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
+        {canRunIda && (
+          <div className="flex justify-end mb-2"><IdaButton scope="sam" label={bp("Fill SAM with IDA", "SAM mit IDA ausfüllen")} /></div>
+        )}
         <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
