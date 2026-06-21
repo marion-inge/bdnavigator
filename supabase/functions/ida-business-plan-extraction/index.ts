@@ -44,6 +44,23 @@ const TAM_OVERVIEW_KEYS = ["scopeDefinition","geographicCoverage","assumptions",
 const SAM_OVERVIEW_KEYS = ["samVsTamExplanation","includedIndustries","excludedIndustries","geographicFocus","geographicExclusions","targetGroups","unreachableGroups","relevanceOutlook","featureAdaptations","priceEvolution","resourceScenarios","requiredInvestments"];
 const SOM_OVERVIEW_KEYS = ["marketShareVsSam","growthRate","visibilityRate","salesCapacity","pipeline","licenseToOperate","salesCapacityScenario","marketingBudgetScenario","positioningScenario"];
 
+// 5-year projection array schema {year:1..5, value:number in M€}
+const projectionsSchema = {
+  type: "array",
+  description: "Five-year market-size projection. Year is 1..5 (year 1 = current year). Value is in millions of EUR (M€). Provide your best estimate based on the documents; CAGR is auto-calculated from these.",
+  items: {
+    type: "object",
+    properties: {
+      year: { type: "integer", minimum: 1, maximum: 5 },
+      value: { type: "number" },
+    },
+    required: ["year", "value"],
+    additionalProperties: false,
+  },
+  minItems: 5,
+  maxItems: 5,
+};
+
 const MARKET_RESEARCH_KEYS = ["secondaryResearch","primaryResearch","keyFigures","methodology","centralInsights","description","rationale"];
 const PESTEL_KEYS = ["political","economic","social","technological","environmental","legal","description","rationale"];
 const SWOT_KEYS = ["strengths","weaknesses","opportunities","threats","description","rationale"];
@@ -67,9 +84,31 @@ function buildSchema(scope: SectionScope) {
     props.overview = {
       type: "object",
       properties: {
-        tam: { type: "object", properties: strProps(TAM_OVERVIEW_KEYS), additionalProperties: false },
-        sam: { type: "object", properties: strProps(SAM_OVERVIEW_KEYS), additionalProperties: false },
-        som: { type: "object", properties: strProps(SOM_OVERVIEW_KEYS), additionalProperties: false },
+        tam: {
+          type: "object",
+          properties: {
+            ...strProps(TAM_OVERVIEW_KEYS),
+            projections: projectionsSchema,
+            marketGrowthRate: { type: "string", description: "Narrative growth-rate statement, e.g. '15% CAGR through 2030'." },
+          },
+          additionalProperties: false,
+        },
+        sam: {
+          type: "object",
+          properties: {
+            ...strProps(SAM_OVERVIEW_KEYS),
+            projections: projectionsSchema,
+          },
+          additionalProperties: false,
+        },
+        som: {
+          type: "object",
+          properties: {
+            ...strProps(SOM_OVERVIEW_KEYS),
+            projections: projectionsSchema,
+          },
+          additionalProperties: false,
+        },
       },
       additionalProperties: false,
     };
@@ -134,8 +173,11 @@ const SECTION_DESCRIPTIONS: Record<SectionScope, string> = {
 const FIELD_GUIDE: Record<SectionScope, string> = {
   overview: `Fill every field you can support. Examples:
 - tam.scopeDefinition, tam.geographicCoverage, tam.assumptions, tam.scopeExclusions, tam.fullGlobalPotential, tam.marketDevelopment, tam.drivers, tam.sources, tam.sourceAssessment, tam.derivationMethod, tam.supportingModelNotes
+- tam.projections (5 years, M€) and tam.marketGrowthRate (narrative CAGR statement) — derive from market-size figures, growth rates, segment sizings, customer counts × price, or any other quantitative anchors present in the documents. ALWAYS attempt projections; clearly state assumptions in tam.assumptions / tam.derivationMethod.
 - sam.samVsTamExplanation, sam.includedIndustries, sam.excludedIndustries, sam.geographicFocus, sam.geographicExclusions, sam.targetGroups, sam.unreachableGroups, sam.relevanceOutlook, sam.featureAdaptations, sam.priceEvolution, sam.resourceScenarios, sam.requiredInvestments
-- som.marketShareVsSam, som.growthRate, som.visibilityRate, som.salesCapacity, som.pipeline, som.licenseToOperate, som.salesCapacityScenario, som.marketingBudgetScenario, som.positioningScenario`,
+- sam.projections (5 years, M€) — derived as the addressable share of TAM based on industries, geography and target-group filters in the documents.
+- som.marketShareVsSam, som.growthRate, som.visibilityRate, som.salesCapacity, som.pipeline, som.licenseToOperate, som.salesCapacityScenario, som.marketingBudgetScenario, som.positioningScenario
+- som.projections (5 years, M€) — the realistically obtainable share given sales capacity, pipeline coverage and competitive position.`,
   tam: `Fill every field you can support across these models:
 - marketResearch: secondaryResearch, primaryResearch, keyFigures, methodology, centralInsights, description, rationale
 - pestel: political, economic, social, technological, environmental, legal, description, rationale
@@ -186,7 +228,9 @@ ${FIELD_GUIDE[scope]}`;
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-pro",
+      // Flash is dramatically faster than Pro on multi-document calls
+      // and avoids the upstream idle timeouts we were seeing with Pro.
+      model: "google/gemini-2.5-flash",
       max_tokens: 16000,
       messages: [
         { role: "system", content: systemPrompt },
