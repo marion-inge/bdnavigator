@@ -1,7 +1,7 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { SomOverviewData, createDefaultSomOverview } from "@/lib/businessPlanTypes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
