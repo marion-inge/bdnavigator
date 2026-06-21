@@ -395,5 +395,14 @@ export function readProposal(proposal: any, path: string): string {
     cur = cur[p];
   }
   if (cur == null) return "";
-  return typeof cur === "string" ? cur : String(cur);
+  if (typeof cur === "string") return cur;
+  // Pretty-print 5-year projection arrays as "Year N: V M€"
+  if (Array.isArray(cur) && cur.every((p) => p && typeof p === "object" && "year" in p && "value" in p)) {
+    return cur
+      .slice()
+      .sort((a: any, b: any) => a.year - b.year)
+      .map((p: any) => `Year ${p.year}: ${p.value} M€`)
+      .join("\n");
+  }
+  return String(cur);
 }
