@@ -264,6 +264,7 @@ export const TAM_FIELDS: IdaFieldDef[] = [
 
 export const SAM_FIELDS: IdaFieldDef[] = [
   // SAM Overview
+  samProjectionsField,
   ovField("sam", "samVsTamExplanation", "SAM vs TAM explanation", "SAM vs TAM Erläuterung"),
   ovField("sam", "includedIndustries", "Included industries", "Eingeschlossene Branchen"),
   ovField("sam", "excludedIndustries", "Excluded industries", "Ausgeschlossene Branchen"),
@@ -314,6 +315,7 @@ export const SAM_FIELDS: IdaFieldDef[] = [
 
 export const SOM_FIELDS: IdaFieldDef[] = [
   // SOM Overview
+  somProjectionsField,
   ovField("som", "marketShareVsSam", "Market share vs SAM", "Marktanteil vs SAM"),
   ovField("som", "growthRate", "Growth rate", "Wachstumsrate"),
   ovField("som", "visibilityRate", "Visibility rate", "Sichtbarkeitsquote"),
