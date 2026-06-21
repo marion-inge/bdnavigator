@@ -113,6 +113,102 @@ const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFie
   }),
 });
 
+// ─── projection helpers (numeric 5-year arrays) ───────────────────────────
+import type { MarketYearValue } from "./types";
+
+const fmtProj = (proj: MarketYearValue[] | undefined): string => {
+  if (!proj?.length) return "";
+  return proj
+    .slice()
+    .sort((a, b) => a.year - b.year)
+    .map((p) => `Year ${p.year}: ${p.value} M€`)
+    .join("\n");
+};
+
+const parseProj = (text: string): MarketYearValue[] => {
+  const out: MarketYearValue[] = [];
+  const re = /year\s*(\d+)\s*[:\-]\s*([\d.,]+)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const year = parseInt(m[1], 10);
+    const value = parseFloat(m[2].replace(/,/g, ""));
+    if (!Number.isNaN(year) && !Number.isNaN(value)) out.push({ year, value });
+  }
+  // Ensure 5 years 1..5
+  const map = new Map(out.map((p) => [p.year, p.value]));
+  return [1, 2, 3, 4, 5].map((y) => ({ year: y, value: map.get(y) ?? 0 }));
+};
+
+const tamProjectionsField: IdaFieldDef = {
+  path: "overview.tam.projections",
+  labelEn: "TAM 5-year projections (M€)",
+  labelDe: "TAM 5-Jahres-Projektionen (M€)",
+  multiline: true,
+  section: "TAM Overview",
+  get: (s) => fmtProj(s.marketAttractiveness?.analysis?.tamProjections),
+  apply: (s, sa, v) => ({
+    sa,
+    scoring: {
+      ...s,
+      marketAttractiveness: {
+        ...s.marketAttractiveness,
+        analysis: { ...s.marketAttractiveness.analysis, tamProjections: parseProj(v) },
+      },
+    } as DetailedScoring,
+  }),
+};
+
+const tamGrowthRateField: IdaFieldDef = {
+  path: "overview.tam.marketGrowthRate",
+  labelEn: "Market growth rate (CAGR statement)",
+  labelDe: "Marktwachstumsrate (CAGR-Aussage)",
+  multiline: false,
+  section: "TAM Overview",
+  get: (s) => s.marketAttractiveness?.analysis?.marketGrowthRate || "",
+  apply: (s, sa, v) => ({
+    sa,
+    scoring: {
+      ...s,
+      marketAttractiveness: {
+        ...s.marketAttractiveness,
+        analysis: { ...s.marketAttractiveness.analysis, marketGrowthRate: v },
+      },
+    } as DetailedScoring,
+  }),
+};
+
+const samProjectionsField: IdaFieldDef = {
+  path: "overview.sam.projections",
+  labelEn: "SAM 5-year projections (M€)",
+  labelDe: "SAM 5-Jahres-Projektionen (M€)",
+  multiline: true,
+  section: "SAM Overview",
+  get: (s) => fmtProj(s.marketAttractiveness?.analysis?.samProjections),
+  apply: (s, sa, v) => ({
+    sa,
+    scoring: {
+      ...s,
+      marketAttractiveness: {
+        ...s.marketAttractiveness,
+        analysis: { ...s.marketAttractiveness.analysis, samProjections: parseProj(v) },
+      },
+    } as DetailedScoring,
+  }),
+};
+
+const somProjectionsField: IdaFieldDef = {
+  path: "overview.som.projections",
+  labelEn: "SOM 5-year projections (M€)",
+  labelDe: "SOM 5-Jahres-Projektionen (M€)",
+  multiline: true,
+  section: "SOM Overview",
+  get: (s) => fmtProj((s as any).somOverview?.projections),
+  apply: (s, sa, v) => ({
+    sa,
+    scoring: setSomOv(s, { projections: parseProj(v) }),
+  }),
+};
+
 // ─── full field list ──────────────────────────────────────────────────────
 export const TAM_FIELDS: IdaFieldDef[] = [
   // TAM Overview
