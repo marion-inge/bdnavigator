@@ -69,6 +69,15 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
+  // Re-sync local state from props when not actively editing (e.g. after IDA fills fields)
+  useEffect(() => {
+    if (editing || dirty) return;
+    setLocalOv(somOverview);
+    setLocalProj(somOverview.projections?.length ? somOverview.projections : [1,2,3,4,5].map(y => ({ year: y, value: 0 })));
+    setLocalRegions(somOverview.geographicalRegions || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scoring]);
+
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<SomOverviewData>) => { setLocalOv(prev => ({ ...prev, ...patch })); markDirty(); };
 
