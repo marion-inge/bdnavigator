@@ -22,11 +22,16 @@ import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, Embedd
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import idaRobot from "@/assets/ida-robot.png";
+import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
+import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
 
 
 export type StrategicAnalysisTab = string;
 
 interface Props {
+  opportunityId?: string;
   detailedScoring?: DetailedScoring;
   strategicAnalyses?: StrategicAnalyses;
   onSaveDetailed: (ds: DetailedScoring) => void;
@@ -42,7 +47,7 @@ interface Props {
   geography?: string;
   technology?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function BusinessPlanSection({ opportunityId, detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -87,8 +92,31 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
     strategicAnalyses: saData,
   };
 
+  const [idaScope, setIdaScope] = useState<ProposalGroup | "all" | null>(null);
+  const canRunIda = !!opportunityId && !readonly;
+
+  const IdaButton = ({ scope, label }: { scope: ProposalGroup | "all"; label: string }) => (
+    <Button
+      type="button"
+      size="sm"
+      variant={scope === "all" ? "default" : "outline"}
+      onClick={() => setIdaScope(scope)}
+      disabled={!canRunIda}
+      className="gap-2"
+      title={!opportunityId ? "Save the opportunity first" : ""}
+    >
+      <img src={idaRobot} alt="" className="h-4 w-4" />
+      {label}
+    </Button>
+  );
+
   return (
     <div className="space-y-4">
+      {canRunIda && (
+        <div className="flex items-center justify-end">
+          <IdaButton scope="all" label={bp("Fill Business Plan with IDA", "Businessplan mit IDA ausfüllen")} />
+        </div>
+      )}
 
 
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
@@ -101,6 +129,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
+        {canRunIda && (
+          <div className="flex justify-end mb-2"><IdaButton scope="tam" label={bp("Fill TAM with IDA", "TAM mit IDA ausfüllen")} /></div>
+        )}
         <Tabs value={getSubTab("tam", "tam-overview")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-overview">
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
@@ -130,6 +161,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
+        {canRunIda && (
+          <div className="flex justify-end mb-2"><IdaButton scope="sam" label={bp("Fill SAM with IDA", "SAM mit IDA ausfüllen")} /></div>
+        )}
         <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-overview">
             <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
@@ -178,6 +212,9 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
+        {canRunIda && (
+          <div className="flex justify-end mb-2"><IdaButton scope="som" label={bp("Fill SOM with IDA", "SOM mit IDA ausfüllen")} /></div>
+        )}
         <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-overview">
             <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
@@ -211,6 +248,21 @@ export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSave
 
       {/* ═══ Others ═══ */}
     </Tabs>
+    {opportunityId && idaScope && (
+      <IdaBusinessPlanFillDialog
+        open={!!idaScope}
+        onOpenChange={(v) => { if (!v) setIdaScope(null); }}
+        opportunityId={opportunityId}
+        scope={idaScope}
+        scoring={scoring}
+        strategicAnalyses={saData}
+        context={{ title: opportunityTitle, description: opportunityDescription, solutionDescription, industry, geography, technology }}
+        onApply={({ scoring: s, sa }) => {
+          handleUpdateScoring(s);
+          handleUpdateSa(sa);
+        }}
+      />
+    )}
     </div>
   );
 }

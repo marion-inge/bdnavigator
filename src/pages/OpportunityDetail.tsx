@@ -533,6 +533,7 @@ export default function OpportunityDetail() {
             )}
             {activeTab === "business_plan" && (
               <BusinessPlanSection
+                opportunityId={opp.id}
                 detailedScoring={opp.businessPlan}
                 strategicAnalyses={opp.strategicAnalyses}
                 onSaveDetailed={(ds) => updateBusinessPlan(opp.id, ds)}
