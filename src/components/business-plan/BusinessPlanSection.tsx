@@ -22,11 +22,16 @@ import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, Embedd
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
 import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import idaRobot from "@/assets/ida-robot.png";
+import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
+import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
 
 
 export type StrategicAnalysisTab = string;
 
 interface Props {
+  opportunityId?: string;
   detailedScoring?: DetailedScoring;
   strategicAnalyses?: StrategicAnalyses;
   onSaveDetailed: (ds: DetailedScoring) => void;
@@ -42,7 +47,7 @@ interface Props {
   geography?: string;
   technology?: string;
 }
-export function BusinessPlanSection({ detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function BusinessPlanSection({ opportunityId, detailedScoring, strategicAnalyses, onSaveDetailed, onSaveStrategic, readonly, activeMainTab, activeSubTab, onTabChange, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
