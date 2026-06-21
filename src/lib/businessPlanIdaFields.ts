@@ -212,6 +212,8 @@ const somProjectionsField: IdaFieldDef = {
 // ─── full field list ──────────────────────────────────────────────────────
 export const TAM_FIELDS: IdaFieldDef[] = [
   // TAM Overview
+  tamProjectionsField,
+  tamGrowthRateField,
   ovField("tam", "scopeDefinition", "Scope definition", "Umfangsdefinition"),
   ovField("tam", "geographicCoverage", "Geographic coverage", "Geografische Abdeckung"),
   ovField("tam", "assumptions", "Assumptions", "Annahmen"),
