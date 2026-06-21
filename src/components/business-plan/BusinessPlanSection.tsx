@@ -92,8 +92,31 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
     strategicAnalyses: saData,
   };
 
+  const [idaScope, setIdaScope] = useState<ProposalGroup | "all" | null>(null);
+  const canRunIda = !!opportunityId && !readonly;
+
+  const IdaButton = ({ scope, label }: { scope: ProposalGroup | "all"; label: string }) => (
+    <Button
+      type="button"
+      size="sm"
+      variant={scope === "all" ? "default" : "outline"}
+      onClick={() => setIdaScope(scope)}
+      disabled={!canRunIda}
+      className="gap-2"
+      title={!opportunityId ? "Save the opportunity first" : ""}
+    >
+      <img src={idaRobot} alt="" className="h-4 w-4" />
+      {label}
+    </Button>
+  );
+
   return (
     <div className="space-y-4">
+      {canRunIda && (
+        <div className="flex items-center justify-end">
+          <IdaButton scope="all" label={bp("Fill Business Plan with IDA", "Businessplan mit IDA ausfüllen")} />
+        </div>
+      )}
 
 
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
