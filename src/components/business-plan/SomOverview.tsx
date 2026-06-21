@@ -1,7 +1,7 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses } from "@/lib/types";
 import { SomOverviewData, createDefaultSomOverview } from "@/lib/businessPlanTypes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,6 +68,15 @@ export function SomOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [somEstimation, setSomEstimation] = useState<SomEstimation | null>((scoring as any).somEstimation || null);
   const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
+
+  // Re-sync local state from props when not actively editing (e.g. after IDA fills fields)
+  useEffect(() => {
+    if (editing || dirty) return;
+    setLocalOv(somOverview);
+    setLocalProj(somOverview.projections?.length ? somOverview.projections : [1,2,3,4,5].map(y => ({ year: y, value: 0 })));
+    setLocalRegions(somOverview.geographicalRegions || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scoring]);
 
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<SomOverviewData>) => { setLocalOv(prev => ({ ...prev, ...patch })); markDirty(); };
