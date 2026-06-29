@@ -1,5 +1,5 @@
 import { useI18n } from "@/lib/i18n";
-import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
+import { Scoring, SCORING_WEIGHTS, calculateTotalScore, Opportunity } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,15 +23,7 @@ interface ScoringProps {
   initialComments?: Record<string, string>;
   initialSources?: Record<string, string[]>;
   showResults?: boolean;
-  opportunityId?: string;
-  opportunityTitle?: string;
-  opportunityDescription?: string;
-  opportunitySolutionDescription?: string;
-  opportunityIndustry?: string;
-  opportunityGeography?: string;
-  opportunityTechnology?: string;
-  opportunityIdeaBringer?: string;
-  opportunityOwner?: string;
+  opportunity?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
 }
 
 const criteriaKeys: (keyof Scoring)[] = [
@@ -42,7 +34,7 @@ const criteriaKeys: (keyof Scoring)[] = [
   "risk",
 ];
 
-export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initialAnswers, initialComments, initialSources, showResults, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: ScoringProps) {
+export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initialAnswers, initialComments, initialSources, showResults, opportunity }: ScoringProps) {
   const { language } = useI18n();
   const [local, setLocal] = useState<Scoring>(scoring);
 
@@ -66,15 +58,7 @@ export function ScoringSection({ scoring, onSaveAll, onAutoSave, readonly, initi
         initialComments={initialComments}
         initialSources={initialSources}
         startWithSummary={showResults}
-        opportunityId={opportunityId}
-        opportunityTitle={opportunityTitle}
-        opportunityDescription={opportunityDescription}
-        opportunitySolutionDescription={opportunitySolutionDescription}
-        opportunityIndustry={opportunityIndustry}
-        opportunityGeography={opportunityGeography}
-        opportunityTechnology={opportunityTechnology}
-        opportunityIdeaBringer={opportunityIdeaBringer}
-        opportunityOwner={opportunityOwner}
+        opportunity={opportunity}
       />
     </div>
   );

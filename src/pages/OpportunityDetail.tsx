@@ -510,15 +510,7 @@ export default function OpportunityDetail() {
                 initialComments={opp.roughScoringComments}
                 initialSources={opp.roughScoringSources}
                 showResults={!forceWizardMode && !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0}
-                opportunityId={opp.id}
-                opportunityTitle={opp.title}
-                opportunityDescription={opp.description}
-                opportunitySolutionDescription={opp.solutionDescription}
-                opportunityIndustry={opp.industry}
-                opportunityGeography={opp.geography}
-                opportunityTechnology={opp.technology}
-                opportunityIdeaBringer={opp.ideaBringer}
-                opportunityOwner={opp.owner}
+                opportunity={opp}
               />
             )}
             {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (

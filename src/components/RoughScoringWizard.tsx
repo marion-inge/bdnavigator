@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
-import { Scoring, SCORING_WEIGHTS, calculateTotalScore } from "@/lib/types";
+import { Scoring, SCORING_WEIGHTS, calculateTotalScore, Opportunity } from "@/lib/types";
 import { getQuestionsByCategory, ScoringQuestion } from "@/lib/roughScoringQuestions";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -19,15 +19,7 @@ interface RoughScoringWizardProps {
   initialComments?: Record<string, string>;
   initialSources?: Record<string, string[]>;
   startWithSummary?: boolean;
-  opportunityId?: string;
-  opportunityTitle?: string;
-  opportunityDescription?: string;
-  opportunitySolutionDescription?: string;
-  opportunityIndustry?: string;
-  opportunityGeography?: string;
-  opportunityTechnology?: string;
-  opportunityIdeaBringer?: string;
-  opportunityOwner?: string;
+  opportunity?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
 }
 
 type Answers = Record<string, number>;
@@ -53,7 +45,7 @@ function answersToScoring(answers: Answers, questions: ScoringQuestion[], baseSc
   return newScoring;
 }
 
-export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunityId, opportunityTitle, opportunityDescription, opportunitySolutionDescription, opportunityIndustry, opportunityGeography, opportunityTechnology, opportunityIdeaBringer, opportunityOwner }: RoughScoringWizardProps) {
+export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, initialAnswers, initialComments, initialSources, startWithSummary, opportunity }: RoughScoringWizardProps) {
   const { t, language } = useI18n();
   const categorizedQuestions = useMemo(() => getQuestionsByCategory(), []);
   const allQuestions = useMemo(() => categorizedQuestions.flatMap((c) => c.questions), [categorizedQuestions]);
@@ -334,15 +326,15 @@ export function RoughScoringWizard({ scoring, onSave, onAutoSave, readonly, init
           scoring={resultScoring}
           answers={answers}
           comments={comments}
-          title={opportunityTitle}
-          description={opportunityDescription}
-          solutionDescription={opportunitySolutionDescription}
-          industry={opportunityIndustry}
-          geography={opportunityGeography}
-          technology={opportunityTechnology}
-          ideaBringer={opportunityIdeaBringer}
-          owner={opportunityOwner}
-          opportunityId={opportunityId || "draft"}
+          title={opportunity?.title}
+          description={opportunity?.description}
+          solutionDescription={opportunity?.solutionDescription}
+          industry={opportunity?.industry}
+          geography={opportunity?.geography}
+          technology={opportunity?.technology}
+          ideaBringer={opportunity?.ideaBringer}
+          owner={opportunity?.owner}
+          opportunityId={opportunity?.id || "draft"}
         />
       </div>
     );

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
 import { InvestmentCaseData, InvestmentCaseYearData, InvestmentCaseParameters, createDefaultInvestmentCase, BusinessPlanData } from "@/lib/types";
+import { calculateYearData, calculateAccumulatedCashFlow, calculatePaybackPeriod, calculateNPV, calculateAverageROCE } from "@/lib/investmentCalculations";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -156,146 +157,11 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
   };
 
   // ═══ Computed Values ═══
-  const calculations = useMemo(() => {
-    const p = data.parameters;
-    const years = data.yearData;
-    const investDeprYears = Math.max(p.investDepreciationYears, 1);
-    const rdDeprYears = Math.max(p.rdDepreciationYears, 1);
-    const invDays = p.inventoryDays ?? 30;
-    const recDays = p.receivableDays ?? 45;
-    const payDays = p.payableDays ?? 30;
-
-    // First pass: collect all investments/R&D for cumulative depreciation
-    const results: any[] = [];
-    
-    for (let idx = 0; idx < years.length; idx++) {
-      const y = years[idx];
-      const totalInvestment = y.investmentExternal + y.investmentInternal;
-      const totalRD = y.rdExternal + y.rdInternal;
-      const grossMarginAbs = y.sales * (y.grossMarginPct / 100);
-      const sellingExp = y.sales * (p.sellingExpensesPct / 100);
-      const gaExp = y.sales * (p.gaExpensesPct / 100);
-      const costsAfterGM = sellingExp + gaExp + y.otherExpenses;
-
-      // Cumulative depreciation: each past year's investment depreciates over its lifetime
-      let investDepr = 0;
-      let rdDepr = 0;
-      let cumInvest = 0;
-      let cumInvestDepr = 0;
-      let cumRD = 0;
-      let cumRDDepr = 0;
-
-      for (let j = 0; j <= idx; j++) {
-        const pastInv = years[j].investmentExternal + years[j].investmentInternal;
-        const pastRD = years[j].rdExternal + years[j].rdInternal;
-        const yearsElapsed = idx - j;
-        
-        cumInvest += pastInv;
-        cumRD += pastRD;
-
-        // Annual depreciation for this vintage
-        const invAnnualDepr = pastInv / investDeprYears;
-        const rdAnnualDepr = pastRD / rdDeprYears;
-
-        // Add to this year's total depreciation (only if still within depreciation period)
-        if (yearsElapsed < investDeprYears) {
-          investDepr += invAnnualDepr;
-        }
-        if (yearsElapsed < rdDeprYears) {
-          rdDepr += rdAnnualDepr;
-        }
-
-        // Cumulative depreciation (total depreciated so far for this vintage)
-        cumInvestDepr += Math.min(yearsElapsed + 1, investDeprYears) * invAnnualDepr;
-        cumRDDepr += Math.min(yearsElapsed + 1, rdDeprYears) * rdAnnualDepr;
-      }
-
-      const grossMarginInclDepreciation = grossMarginAbs - investDepr - rdDepr;
-      const ebit = grossMarginInclDepreciation - costsAfterGM;
-      const ebitPct = y.sales > 0 ? ebit / y.sales : 0;
-
-      // Non-current assets = cumulative investments - cumulative depreciation
-      const nonCurrentAssets = Math.max((cumInvest - cumInvestDepr) + (cumRD - cumRDDepr), 0);
-
-      // Working Capital
-      const inventories = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (invDays / 365) : 0;
-      const receivables = y.sales > 0 ? y.sales * (recDays / 365) : 0;
-      const payables = y.sales > 0 ? (y.sales * (1 - y.grossMarginPct / 100)) * (payDays / 365) : 0;
-      const workingCapital = inventories + receivables - payables;
-
-      // Capital employed
-      const capitalEmployed = Math.max(nonCurrentAssets + workingCapital, 1);
-      const roce = ebit / capitalEmployed;
-
-      // Delta Working Capital (increase in WC consumes cash)
-      const prevWorkingCapital = idx > 0 ? results[idx - 1].workingCapital : 0;
-      const deltaWorkingCapital = workingCapital - prevWorkingCapital;
-
-      // Cash Flow = EBIT + Depreciation (non-cash) - Investments - Delta WC
-      const annualCashFlow = ebit - totalInvestment - totalRD + investDepr + rdDepr - deltaWorkingCapital;
-
-      results.push({
-        year: y.year,
-        totalInvestment,
-        totalRD,
-        sales: y.sales,
-        cogs: y.sales * (1 - y.grossMarginPct / 100),
-        grossMarginAbs,
-        grossMarginPct: y.grossMarginPct,
-        grossMarginInclDepreciation,
-        sellingExp,
-        gaExp,
-        costsAfterGM,
-        ebit,
-        ebitPct,
-        capitalEmployed,
-        roce,
-        annualCashFlow,
-        investDepr,
-        rdDepr,
-        workingCapital,
-        inventories,
-        receivables,
-        payables,
-        nonCurrentAssets,
-        deltaWorkingCapital,
-      });
-    }
-    return results;
-  }, [data]);
-
-  const accumulatedCashFlow = useMemo(() => {
-    let acc = 0;
-    return calculations.map(c => {
-      acc += c.annualCashFlow;
-      return { year: c.year, accumulated: acc, annual: c.annualCashFlow };
-    });
-  }, [calculations]);
-
-  const totalROCE = useMemo(() => {
-    const roces = calculations.map(c => c.roce);
-    return roces.reduce((s, r) => s + r, 0) / Math.max(roces.length, 1);
-  }, [calculations]);
-
-  const paybackPeriod = useMemo(() => {
-    let acc = 0;
-    for (let i = 0; i < calculations.length; i++) {
-      const prev = acc;
-      acc += calculations[i].annualCashFlow;
-      if (acc >= 0 && prev < 0) {
-        const fraction = Math.abs(prev) / (Math.abs(prev) + acc);
-        return i + fraction;
-      }
-    }
-    return null;
-  }, [calculations]);
-
-  const npv = useMemo(() => {
-    const wacc = data.parameters.wacc / 100;
-    return calculations.reduce((sum, c, i) => {
-      return sum + c.annualCashFlow / Math.pow(1 + wacc, i + 1);
-    }, 0);
-  }, [calculations, data.parameters.wacc]);
+  const calculations = useMemo(() => calculateYearData(data.parameters, data.yearData), [data]);
+  const accumulatedCashFlow = useMemo(() => calculateAccumulatedCashFlow(calculations), [calculations]);
+  const totalROCE = useMemo(() => calculateAverageROCE(calculations), [calculations]);
+  const paybackPeriod = useMemo(() => calculatePaybackPeriod(calculations), [calculations]);
+  const npv = useMemo(() => calculateNPV(calculations, data.parameters.wacc), [calculations, data.parameters.wacc]);
 
   const totalSales = calculations.reduce((s, c) => s + c.sales, 0);
   const totalEbit = calculations.reduce((s, c) => s + c.ebit, 0);

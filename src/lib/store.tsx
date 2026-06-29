@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect, Rea
 import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, InvestmentCaseData, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 import { fetchAllOpportunities, upsertOpportunityRow, deleteOpportunityRow } from "./backendAdapter";
+import { toast } from "sonner";
 
 interface StoreContextType {
   opportunities: Opportunity[];
@@ -122,6 +123,7 @@ async function fetchOpportunities(): Promise<Opportunity[]> {
   const { data, error } = await fetchAllOpportunities();
   if (error) {
     console.error("Failed to fetch opportunities:", error);
+    toast.error("Could not load opportunities from the database. Showing cached data.");
     return [];
   }
   return (data ?? []).map(rowToOpp);
@@ -129,12 +131,18 @@ async function fetchOpportunities(): Promise<Opportunity[]> {
 
 async function upsertOpportunity(opp: Opportunity) {
   const { error } = await upsertOpportunityRow(oppToRow(opp));
-  if (error) console.error("Failed to upsert opportunity:", error);
+  if (error) {
+    console.error("Failed to upsert opportunity:", error);
+    toast.error("Failed to save changes. Please try again.", { id: `save-error-${opp.id}` });
+  }
 }
 
 async function deleteOpportunityFromDb(id: string) {
   const { error } = await deleteOpportunityRow(id);
-  if (error) console.error("Failed to delete opportunity:", error);
+  if (error) {
+    console.error("Failed to delete opportunity:", error);
+    toast.error("Failed to delete opportunity. Please try again.");
+  }
 }
 
 /** Check if an investment case has real data (non-zero investment/R&D) vs just defaults */
