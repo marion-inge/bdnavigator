@@ -10,7 +10,7 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
