@@ -1,13 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import JSZip from "npm:jszip@3.10.1";
 import * as XLSX from "npm:xlsx@0.18.5";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
 
 const MAX_BYTES = 18 * 1024 * 1024;
 const MAX_EXTRACTED_CHARS_PER_FILE = 220_000;
@@ -149,6 +144,22 @@ const projectionsSchema = {
   maxItems: 5,
 };
 
+const geographicalRegionsSchema = {
+  type: "array",
+  description: "Geographic breakdown table. Extract every visible region/country/cluster and its TAM/SAM/SOM value from the documents. Market size must preserve units exactly as supported by the source, preferably in M€ where available. Potential is a 1-5 rating based on the document evidence. Notes must include source context, assumptions and what the value represents.",
+  items: {
+    type: "object",
+    properties: {
+      region: { type: "string", description: "Region, country or market cluster name exactly as shown or clearly implied in the source." },
+      marketSize: { type: "string", description: "Regional market size / potential with unit and year, e.g. '120 M€ in 2027' or 'approx. 35 customers × 0.8 M€/year'." },
+      potential: { type: "integer", minimum: 1, maximum: 5, description: "Regional attractiveness / potential rating: 1 = very low, 5 = very high." },
+      notes: { type: "string", description: "Short factual explanation and source reference/context from the document." },
+    },
+    required: ["region", "marketSize", "potential", "notes"],
+    additionalProperties: false,
+  },
+};
+
 const MARKET_RESEARCH_KEYS = ["secondaryResearch","primaryResearch","keyFigures","methodology","centralInsights","description","rationale"];
 const PESTEL_KEYS = ["political","economic","social","technological","environmental","legal","description","rationale"];
 const SWOT_KEYS = ["strengths","weaknesses","opportunities","threats","description","rationale"];
@@ -177,6 +188,7 @@ function buildSchema(scope: SectionScope) {
           properties: {
             ...strProps(TAM_OVERVIEW_KEYS),
             projections: projectionsSchema,
+            geographicalRegions: geographicalRegionsSchema,
             marketGrowthRate: { type: "string", description: "Narrative growth-rate statement, e.g. '15% CAGR through 2030'." },
           },
           required: ["projections", "marketGrowthRate"],
@@ -187,6 +199,7 @@ function buildSchema(scope: SectionScope) {
           properties: {
             ...strProps(SAM_OVERVIEW_KEYS),
             projections: projectionsSchema,
+            geographicalRegions: geographicalRegionsSchema,
           },
           required: ["projections"],
           additionalProperties: false,
@@ -196,6 +209,7 @@ function buildSchema(scope: SectionScope) {
           properties: {
             ...strProps(SOM_OVERVIEW_KEYS),
             projections: projectionsSchema,
+            geographicalRegions: geographicalRegionsSchema,
           },
           required: ["projections"],
           additionalProperties: false,
@@ -266,10 +280,13 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
   overview: `Fill every field you can support. Examples:
 - tam.scopeDefinition, tam.geographicCoverage, tam.assumptions, tam.scopeExclusions, tam.fullGlobalPotential, tam.marketDevelopment, tam.drivers, tam.sources, tam.sourceAssessment, tam.derivationMethod, tam.supportingModelNotes
 - tam.projections (5 years, M€) and tam.marketGrowthRate (narrative CAGR statement) — derive from market-size figures, growth rates, segment sizings, customer counts × price, or any other quantitative anchors present in the documents. ALWAYS attempt projections; clearly state assumptions in tam.assumptions / tam.derivationMethod.
+- tam.geographicalRegions — IMPORTANT: extract the geographic breakdown table/chart for TAM. Include every visible region/country/cluster, the exact regional market size/potential with units/year, a 1-5 potential rating, and factual notes/source context. Do not collapse regional rows into one text paragraph.
 - sam.samVsTamExplanation, sam.includedIndustries, sam.excludedIndustries, sam.geographicFocus, sam.geographicExclusions, sam.targetGroups, sam.unreachableGroups, sam.relevanceOutlook, sam.featureAdaptations, sam.priceEvolution, sam.resourceScenarios, sam.requiredInvestments
 - sam.projections (5 years, M€) — derived as the addressable share of TAM based on industries, geography and target-group filters in the documents.
+- sam.geographicalRegions — IMPORTANT: extract the regional SAM breakdown, reflecting only serviceable/accessibly addressable regions. Use source values directly where shown; otherwise derive only when the document provides enough regional TAM/filter evidence.
 - som.marketShareVsSam, som.growthRate, som.visibilityRate, som.salesCapacity, som.pipeline, som.licenseToOperate, som.salesCapacityScenario, som.marketingBudgetScenario, som.positioningScenario
-- som.projections (5 years, M€) — the realistically obtainable share given sales capacity, pipeline coverage and competitive position.`,
+- som.projections (5 years, M€) — the realistically obtainable share given sales capacity, pipeline coverage and competitive position.
+- som.geographicalRegions — IMPORTANT: extract the regional SOM breakdown, reflecting obtainable market by region based on pipeline, sales reach, visibility, market share or document-supported regional prioritization.`,
   tam: `Fill every field you can support across these models:
 - marketResearch: secondaryResearch, primaryResearch, keyFigures, methodology, centralInsights, description, rationale
 - pestel: political, economic, social, technological, environmental, legal, description, rationale

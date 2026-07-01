@@ -7,10 +7,10 @@
  *  - get(scoring, sa): read the CURRENT value from app state
  *  - apply(scoring, sa, value): return a NEW {scoring, sa} with the accepted value written in
  *
- * Only string fields are filled — tabular data (entries, riskItems, components,
- * competitor entries) is intentionally out of scope and remains user-owned.
+ * Most fields are strings; geographic breakdown tables are handled as structured
+ * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, StrategicAnalyses } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
@@ -139,6 +139,53 @@ const parseProj = (text: string): MarketYearValue[] => {
   return [1, 2, 3, 4, 5].map((y) => ({ year: y, value: map.get(y) ?? 0 }));
 };
 
+const fmtRegions = (regions: GeographicalRegion[] | undefined): string => {
+  if (!regions?.length) return "";
+  return regions
+    .map((r) => `Region: ${r.region}\nMarket size: ${r.marketSize}\nPotential: ${r.potential}/5\nNotes: ${r.notes}`)
+    .join("\n\n");
+};
+
+const normalizePotential = (value: unknown): number => {
+  const n = typeof value === "number" ? value : parseInt(String(value || "").match(/\d+/)?.[0] || "3", 10);
+  return Math.max(1, Math.min(5, Number.isFinite(n) ? n : 3));
+};
+
+const parseRegions = (text: string): GeographicalRegion[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: GeographicalRegion[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) => lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const region = get("region") || lines[0]?.replace(/^[-•]\s*/, "").trim();
+    const marketSize = get("market size") || get("market") || "";
+    const potential = normalizePotential(get("potential"));
+    const notes = get("notes") || lines.slice(1).join("; ");
+    if (region) out.push({ region, marketSize, potential, notes });
+  }
+  return out;
+};
+
+const regionField = (area: "tam" | "sam" | "som"): IdaFieldDef => ({
+  path: `${area === "tam" ? "overview.tam" : area === "sam" ? "overview.sam" : "overview.som"}.geographicalRegions`,
+  labelEn: `${area.toUpperCase()} geographic breakdown`,
+  labelDe: `${area.toUpperCase()} geografische Aufschlüsselung`,
+  multiline: true,
+  section: area === "tam" ? "TAM Overview" : area === "sam" ? "SAM Overview" : "SOM Overview",
+  get: (s) => fmtRegions((area === "tam" ? ovTam(s) : area === "sam" ? ovSam(s) : ovSom(s)).geographicalRegions),
+  apply: (s, sa, v) => {
+    const regions = parseRegions(v);
+    return {
+      sa,
+      scoring: area === "tam"
+        ? setTamOv(s, { geographicalRegions: regions })
+        : area === "sam"
+        ? setSamOv(s, { geographicalRegions: regions })
+        : setSomOv(s, { geographicalRegions: regions }),
+    };
+  },
+});
+
 const tamProjectionsField: IdaFieldDef = {
   path: "overview.tam.projections",
   labelEn: "TAM 5-year projections (M€)",
@@ -214,6 +261,7 @@ export const TAM_FIELDS: IdaFieldDef[] = [
   // TAM Overview
   tamProjectionsField,
   tamGrowthRateField,
+  regionField("tam"),
   ovField("tam", "scopeDefinition", "Scope definition", "Umfangsdefinition"),
   ovField("tam", "geographicCoverage", "Geographic coverage", "Geografische Abdeckung"),
   ovField("tam", "assumptions", "Assumptions", "Annahmen"),
@@ -265,6 +313,7 @@ export const TAM_FIELDS: IdaFieldDef[] = [
 export const SAM_FIELDS: IdaFieldDef[] = [
   // SAM Overview
   samProjectionsField,
+  regionField("sam"),
   ovField("sam", "samVsTamExplanation", "SAM vs TAM explanation", "SAM vs TAM Erläuterung"),
   ovField("sam", "includedIndustries", "Included industries", "Eingeschlossene Branchen"),
   ovField("sam", "excludedIndustries", "Excluded industries", "Ausgeschlossene Branchen"),
@@ -316,6 +365,7 @@ export const SAM_FIELDS: IdaFieldDef[] = [
 export const SOM_FIELDS: IdaFieldDef[] = [
   // SOM Overview
   somProjectionsField,
+  regionField("som"),
   ovField("som", "marketShareVsSam", "Market share vs SAM", "Marktanteil vs SAM"),
   ovField("som", "growthRate", "Growth rate", "Wachstumsrate"),
   ovField("som", "visibilityRate", "Visibility rate", "Sichtbarkeitsquote"),
@@ -403,6 +453,9 @@ export function readProposal(proposal: any, path: string): string {
       .sort((a: any, b: any) => a.year - b.year)
       .map((p: any) => `Year ${p.year}: ${p.value} M€`)
       .join("\n");
+  }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "region" in r)) {
+    return fmtRegions(cur as GeographicalRegion[]);
   }
   return String(cur);
 }
