@@ -198,8 +198,7 @@ const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
   }
   return out;
 };
-  return out;
-};
+
 
 const regionField = (area: "tam" | "sam" | "som"): IdaFieldDef => ({
   path: `${area === "tam" ? "overview.tam" : area === "sam" ? "overview.sam" : "overview.som"}.geographicalRegions`,
