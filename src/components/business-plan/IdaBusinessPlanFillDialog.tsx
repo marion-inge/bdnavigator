@@ -57,7 +57,21 @@ export function IdaBusinessPlanFillDialog({
   /** per-field accept toggle */
   const [accept, setAccept] = useState<Record<string, boolean>>({});
 
-  const allFields = useMemo(() => fieldsForGroup(scope), [scope]);
+  const scopeFields = useMemo(() => fieldsForGroup(scope), [scope]);
+  const availableSections = useMemo(() => {
+    const seen: string[] = [];
+    for (const f of scopeFields) if (!seen.includes(f.section)) seen.push(f.section);
+    return seen;
+  }, [scopeFields]);
+  const [selectedSections, setSelectedSections] = useState<Set<string>>(new Set());
+  const activeSections = useMemo(
+    () => (selectedSections.size === 0 ? new Set(availableSections) : selectedSections),
+    [selectedSections, availableSections],
+  );
+  const allFields = useMemo(
+    () => scopeFields.filter((f) => activeSections.has(f.section)),
+    [scopeFields, activeSections],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -66,6 +80,7 @@ export function IdaBusinessPlanFillDialog({
     setEdits({});
     setAccept({});
     setSelectedFiles(new Set());
+    setSelectedSections(new Set());
     setLoadingFiles(true);
     fetchOpportunityFiles(opportunityId).then((res: any) => {
       setFiles((res?.data as FileRecord[]) ?? []);
