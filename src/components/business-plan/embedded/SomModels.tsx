@@ -232,7 +232,8 @@ export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: 
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
-  const tc: TargetCostingData = data.targetCosting || defaultTargetCosting;
+  const rawTc = data.targetCosting || defaultTargetCosting;
+  const tc: TargetCostingData = { ...defaultTargetCosting, ...rawTc, components: Array.isArray(rawTc.components) ? rawTc.components : [] };
   const updateTc = (patch: Partial<TargetCostingData>) => {
     const updated = { ...tc, ...patch };
     updated.allowableCost = updated.marketPrice * (1 - updated.targetMarginPct / 100);
