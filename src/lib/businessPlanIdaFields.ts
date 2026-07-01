@@ -164,7 +164,7 @@ const parseRegions = (text: string): GeographicalRegion[] => {
     if (region) out.push({ region, marketSize, potential, notes });
 }
 
-import type { CompetitorAnalysisEntry } from "./types";
+
 
 const fmtCompetitors = (entries: CompetitorAnalysisEntry[] | undefined): string => {
   if (!entries?.length) return "";
