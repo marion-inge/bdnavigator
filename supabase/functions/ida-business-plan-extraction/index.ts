@@ -323,7 +323,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - leanCanvas: problem, solution, uniqueValueProposition, unfairAdvantage, customerSegments, keyMetrics, channels, costStructure, revenueStreams, description, rationale
 - risk: details`,
   som: `Fill every field you can support across these models:
-- competitorAnalysis: description, rationale
+- competitorAnalysis: description, rationale, entries[] — IMPORTANT: extract every competitor mentioned in the documents as a separate row with name, strengths, weaknesses, marketShare, strategy and threatLevel (1-5). Do not merge competitors into a single paragraph.
 - valuePropositionCanvas (VPC): customerJobs, customerPains, customerGains, productsServices, painRelievers, gainCreators, description, rationale
 - customerBenefitAnalysis (CBA): functionalBenefits, emotionalBenefits, socialBenefits, selfExpressiveBenefits, description, rationale
 - threeCircleModel: ourValue, competitorValue, customerNeeds, ourUnique, theirUnique, commonValue, unmetNeeds, description, rationale
