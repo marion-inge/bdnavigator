@@ -21,11 +21,13 @@ import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, E
 import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
-import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { Globe, Target, TrendingUp, BarChart3, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import idaRobot from "@/assets/ida-robot.png";
 import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
 import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
+import { exportBusinessPlanPdf } from "@/lib/pdfExport";
+import { useStore } from "@/lib/store";
 
 
 export type StrategicAnalysisTab = string;
@@ -110,13 +112,29 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
     </Button>
   );
 
+  const { getOpportunity } = useStore();
+
+  const handleDownloadPdf = async () => {
+    if (!opportunityId) return;
+    const opp = getOpportunity(opportunityId);
+    if (!opp) return;
+    await exportBusinessPlanPdf(opp);
+  };
+
   return (
     <div className="space-y-4">
-      {canRunIda && (
-        <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        {opportunityId && (
+          <Button type="button" size="sm" variant="outline" onClick={handleDownloadPdf} className="gap-2">
+            <FileDown className="h-4 w-4" />
+            {bp("Download Business Plan (PDF)", "Businessplan herunterladen (PDF)")}
+          </Button>
+        )}
+        {canRunIda && (
           <IdaButton scope="all" label={bp("Fill Business Plan with IDA", "Businessplan mit IDA ausfüllen")} />
-        </div>
-      )}
+        )}
+      </div>
+
 
 
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">

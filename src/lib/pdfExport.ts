@@ -885,3 +885,497 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
 
   doc.save(`NOVI_Pipeline_${new Date().toISOString().slice(0, 10)}.pdf`);
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// Business Plan – full export
+// ═══════════════════════════════════════════════════════════════════════
+
+type Field = { label: string; value: any };
+
+const INTENSITY_LABEL: Record<number, string> = { 1: "Very Low", 2: "Low", 3: "Medium", 4: "High", 5: "Very High" };
+
+function hasText(v: any): boolean {
+  return v !== undefined && v !== null && String(v).trim() !== "" && String(v).trim() !== "0";
+}
+
+function addLongText(doc: jsPDF, y: number, label: string, text: string, pw: number): number {
+  if (!hasText(text)) return y;
+  y = ensureSpace(doc, y, 10);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.text(label + ":", 14, y);
+  y += 4.5;
+  doc.setFont("helvetica", "normal");
+  const r = addWrappedText(doc, String(text), 14, y, pw - 28, 4.5);
+  return r.y + 3;
+}
+
+function addFieldGroup(doc: jsPDF, y: number, title: string, fields: Field[], pw: number): number {
+  const shown = fields.filter(f => hasText(f.value));
+  if (shown.length === 0) return y;
+  y = ensureSpace(doc, y, 14);
+  y = addSubSectionTitle(doc, y, title);
+  autoTable(doc, {
+    startY: y,
+    body: shown.map(f => [f.label, decodeHtmlEntities(String(f.value))]),
+    styles: { fontSize: 8.5, cellPadding: 2.5, valign: "top" },
+    columnStyles: { 0: { cellWidth: 55, fontStyle: "bold", fillColor: HEADER_BG }, 1: { cellWidth: pw - 28 - 55 } },
+    margin: { left: 14, right: 14 },
+    theme: "grid",
+  });
+  return (doc as any).lastAutoTable.finalY + 4;
+}
+
+function addTable(doc: jsPDF, y: number, title: string, head: string[], body: any[][], pw: number, colStyles?: any): number {
+  if (body.length === 0) return y;
+  y = ensureSpace(doc, y, 20);
+  if (title) y = addSubSectionTitle(doc, y, title);
+  autoTable(doc, {
+    startY: y,
+    head: [head],
+    body: body.map(r => r.map(c => decodeHtmlEntities(String(c ?? "")))),
+    headStyles: { fillColor: PRIMARY_COLOR, fontSize: 8.5 },
+    styles: { fontSize: 8, cellPadding: 2, valign: "top" },
+    margin: { left: 14, right: 14 },
+    columnStyles: colStyles,
+    theme: "grid",
+  });
+  return (doc as any).lastAutoTable.finalY + 4;
+}
+
+function addRegions(doc: jsPDF, y: number, title: string, regions: any[], pw: number): number {
+  if (!regions || regions.length === 0) return y;
+  return addTable(doc, y, title, ["Region", "Market Size", "Potential (1-5)", "Notes"],
+    regions.map((r: any) => [r.region || "—", r.marketSize || "—", String(r.potential ?? "—"), r.notes || ""]),
+    pw, { 3: { cellWidth: 70 } });
+}
+
+function addYearValues(doc: jsPDF, y: number, title: string, values: any[], unit: string, pw: number): number {
+  if (!values || values.length === 0 || !values.some((v: any) => v.value > 0)) return y;
+  return addTable(doc, y, title, ["Year", `Value (${unit})`],
+    values.map((v: any) => [String(v.year), fmt(v.value)]), pw);
+}
+
+export async function exportBusinessPlanPdf(opp: Opportunity) {
+  const doc = new jsPDF();
+  const pw = doc.internal.pageSize.getWidth();
+
+  addHeader(doc, "NOVI – Business Plan");
+  let y = 38;
+
+  // ─── OVERVIEW ─────────────────────────────────────────────────
+  y = addSectionTitle(doc, y, "Opportunity");
+  y = addKeyValue(doc, y, "Title", opp.title);
+  y = addKeyValue(doc, y, "Stage", STAGE_LABELS_EN[opp.stage] || opp.stage);
+  y = addKeyValue(doc, y, "Industry", opp.industry);
+  y = addKeyValue(doc, y, "Geography", opp.geography);
+  y = addKeyValue(doc, y, "Business Field", opp.technology);
+  y = addKeyValue(doc, y, "Owner", opp.owner);
+  y = addLongText(doc, y + 2, "Problem Description", opp.description || "", pw);
+  y = addLongText(doc, y, "Solution Idea & Differentiator", opp.solutionDescription || "", pw);
+
+  const bp = opp.businessPlan;
+  const sa = opp.strategicAnalyses;
+
+  // ─── COMBINED INTERPRETATION ────────────────────────────────
+  const ci = bp?.combinedInterpretation;
+  if (ci && (ci.overallPotential || ci.samDevelopment || ci.somDevelopment || ci.gapsAndLevers)) {
+    y += 2;
+    y = addSectionTitle(doc, y, "Combined Interpretation (TAM / SAM / SOM)");
+    y = addFieldGroup(doc, y, "Interpretation", [
+      { label: "Overall Potential", value: ci.overallPotential },
+      { label: "SAM Development", value: ci.samDevelopment },
+      { label: "SOM Development", value: ci.somDevelopment },
+      { label: "Gaps & Levers", value: ci.gapsAndLevers },
+    ], pw);
+  }
+
+  // ═══ TAM ═══
+  y += 4;
+  y = addSectionTitle(doc, y, "TAM – Total Addressable Market");
+
+  const tamO = bp?.tamOverview;
+  if (tamO) {
+    y = addFieldGroup(doc, y, "TAM Overview", [
+      { label: "Scope Definition", value: tamO.scopeDefinition },
+      { label: "Geographic Coverage", value: tamO.geographicCoverage },
+      { label: "Assumptions", value: tamO.assumptions },
+      { label: "Scope Exclusions", value: tamO.scopeExclusions },
+      { label: "Full Global Potential", value: tamO.fullGlobalPotential },
+      { label: "Market Development", value: tamO.marketDevelopment },
+      { label: "Drivers", value: tamO.drivers },
+      { label: "Sources", value: tamO.sources },
+      { label: "Source Assessment", value: tamO.sourceAssessment },
+      { label: "Derivation Method", value: tamO.derivationMethod },
+      { label: "Supporting Model Notes", value: tamO.supportingModelNotes },
+    ], pw);
+    y = addRegions(doc, y, "TAM – Geographic Breakdown", tamO.geographicalRegions || [], pw);
+  }
+
+  // TAM projections from marketAttractiveness
+  const ma = bp?.marketAttractiveness?.analysis;
+  if (ma) {
+    y = addYearValues(doc, y, "TAM Projections", ma.tamProjections || [], "M EUR", pw);
+    y = addLongText(doc, y, "TAM Description", ma.tamDescription || "", pw);
+  }
+
+  // TAM Models
+  const tam = sa?.tam;
+  if (tam?.marketResearch) {
+    const mr = tam.marketResearch;
+    y = addFieldGroup(doc, y, "Market Research", [
+      { label: "Secondary Research", value: mr.secondaryResearch },
+      { label: "Primary Research", value: mr.primaryResearch },
+      { label: "Key Figures", value: mr.keyFigures },
+      { label: "Methodology", value: mr.methodology },
+      { label: "Central Insights", value: mr.centralInsights },
+      { label: "Description", value: mr.description },
+      { label: "Rationale", value: mr.rationale },
+    ], pw);
+  }
+  if (tam?.pestel) {
+    const p = tam.pestel;
+    y = addFieldGroup(doc, y, "PESTEL Analysis", [
+      { label: "Political", value: p.political },
+      { label: "Economic", value: p.economic },
+      { label: "Social", value: p.social },
+      { label: "Technological", value: p.technological },
+      { label: "Environmental", value: p.environmental },
+      { label: "Legal", value: p.legal },
+      { label: "Description", value: p.description },
+      { label: "Rationale", value: p.rationale },
+    ], pw);
+  }
+  if (tam?.valueChain?.stages?.length) {
+    y = addTable(doc, y, "Industry Value Chain",
+      ["Stage", "Our Position", "Margin (1-5)", "Differentiators", "Dynamics"],
+      tam.valueChain.stages.map(s => [s.name, s.isOurPosition ? "Yes" : "—", String(s.marginAttractiveness), s.differentiators, s.dynamics]),
+      pw, { 3: { cellWidth: 50 }, 4: { cellWidth: 50 } });
+    y = addLongText(doc, y, "Value Chain – Description", tam.valueChain.description, pw);
+    y = addLongText(doc, y, "Value Chain – Rationale", tam.valueChain.rationale, pw);
+  }
+  if (tam?.porter) {
+    const pf = tam.porter;
+    const fRow = (name: string, f: any) => [name, INTENSITY_LABEL[f.intensity] || String(f.intensity), f.description || ""];
+    y = addTable(doc, y, "Porter's Five Forces",
+      ["Force", "Intensity", "Description"],
+      [
+        fRow("Competitive Rivalry", pf.competitiveRivalry),
+        fRow("Threat of New Entrants", pf.threatOfNewEntrants),
+        fRow("Threat of Substitutes", pf.threatOfSubstitutes),
+        fRow("Bargaining Power – Buyers", pf.bargainingPowerBuyers),
+        fRow("Bargaining Power – Suppliers", pf.bargainingPowerSuppliers),
+      ], pw, { 2: { cellWidth: 90 } });
+    y = addLongText(doc, y, "Porter – Description", pf.description, pw);
+    y = addLongText(doc, y, "Porter – Rationale", pf.rationale, pw);
+  }
+  if (tam?.swot) {
+    const s = tam.swot;
+    y = addFieldGroup(doc, y, "SWOT Analysis", [
+      { label: "Strengths", value: s.strengths },
+      { label: "Weaknesses", value: s.weaknesses },
+      { label: "Opportunities", value: s.opportunities },
+      { label: "Threats", value: s.threats },
+      { label: "Description", value: s.description },
+      { label: "Rationale", value: s.rationale },
+    ], pw);
+  }
+  if (tam?.customersFound?.entries?.length) {
+    const cf = tam.customersFound;
+    y = addLongText(doc, y, "Customers Found – Research Scope", cf.researchScope, pw);
+    y = addLongText(doc, y, "Bottom-up Assumptions", cf.bottomUpAssumptions, pw);
+    if (cf.averageValuePerCustomer) y = addKeyValue(doc, y, "Avg Value per Customer (M EUR)", String(cf.averageValuePerCustomer));
+    y = addTable(doc, y, "Customers Found",
+      ["Company", "Country", "Tier", "Type", "Segment", "Variants", "Value (M EUR)", "Status"],
+      cf.entries.map(e => [e.company, e.country || e.geography, e.tier, e.customerType, e.segment, e.variantCount, fmt(e.estimatedValue), e.status]),
+      pw);
+  }
+
+  // ═══ SAM ═══
+  y += 4;
+  y = addSectionTitle(doc, y, "SAM – Serviceable Addressable Market");
+  const samO = bp?.samOverview;
+  if (samO) {
+    y = addFieldGroup(doc, y, "SAM Overview", [
+      { label: "SAM vs TAM", value: samO.samVsTamExplanation },
+      { label: "Included Industries", value: samO.includedIndustries },
+      { label: "Excluded Industries", value: samO.excludedIndustries },
+      { label: "Geographic Focus", value: samO.geographicFocus },
+      { label: "Geographic Exclusions", value: samO.geographicExclusions },
+      { label: "Target Groups", value: samO.targetGroups },
+      { label: "Unreachable Groups", value: samO.unreachableGroups },
+      { label: "Relevance Outlook", value: samO.relevanceOutlook },
+      { label: "Feature Adaptations", value: samO.featureAdaptations },
+      { label: "Price Evolution", value: samO.priceEvolution },
+      { label: "Resource Scenarios", value: samO.resourceScenarios },
+      { label: "Required Investments", value: samO.requiredInvestments },
+    ], pw);
+    y = addRegions(doc, y, "SAM – Geographic Breakdown", samO.geographicalRegions || [], pw);
+    const sca = samO.salesChannelAnalysis;
+    if (sca?.entries?.length) {
+      y = addTable(doc, y, "Sales Channel Analysis",
+        ["Channel", "Type", "Reach", "Cost", "Segments", "Rating"],
+        sca.entries.map(c => [c.channelName, c.channelType, c.reach, c.costLevel, c.targetSegments, String(c.rating)]),
+        pw);
+      y = addLongText(doc, y, "Channel Strategy", sca.channelStrategy, pw);
+      y = addLongText(doc, y, "Channel Mix", sca.channelMix, pw);
+    }
+  }
+  if (ma) {
+    y = addYearValues(doc, y, "SAM Projections", ma.samProjections || [], "M EUR", pw);
+    y = addLongText(doc, y, "SAM Description", ma.samDescription || "", pw);
+  }
+
+  // SAM detailed scoring subcategories
+  if (bp?.strategicFit) {
+    y = addKeyValue(doc, y, "Strategic Fit Score", `${bp.strategicFit.score} / 5`);
+    y = addLongText(doc, y, "Strategic Fit – Details", bp.strategicFit.details, pw);
+    if (bp.strategicFit.alignmentDimensions?.length) {
+      y = addTable(doc, y, "Alignment Dimensions", ["Dimension", "Current", "Required"],
+        bp.strategicFit.alignmentDimensions.map(d => [d.label, String(d.current), String(d.required)]), pw);
+    }
+    if (bp.strategicFit.capabilityGaps?.length) {
+      y = addTable(doc, y, "Capability Gaps", ["Capability", "Current", "Required", "Priority", "Action"],
+        bp.strategicFit.capabilityGaps.map(g => [g.capability, String(g.currentLevel), String(g.requiredLevel), g.priority, g.action]), pw);
+    }
+  }
+  if (bp?.portfolioFit) {
+    y = addKeyValue(doc, y, "Portfolio Fit Score", `${bp.portfolioFit.score} / 5`);
+    if (bp.portfolioFit.dimensions?.length) {
+      y = addTable(doc, y, "Portfolio Fit Dimensions", ["Dimension", "Score", "Notes"],
+        bp.portfolioFit.dimensions.map(d => [d.label, String(d.score), d.notes]), pw);
+    }
+    y = addFieldGroup(doc, y, "Portfolio Fit – Details", [
+      { label: "Cannibalization Risk", value: bp.portfolioFit.cannibalizationRisk },
+      { label: "Cross-Selling Potential", value: bp.portfolioFit.crossSellingPotential },
+      { label: "Shared Resources", value: bp.portfolioFit.sharedResources },
+      { label: "Notes", value: bp.portfolioFit.notes },
+    ], pw);
+  }
+  if (bp?.feasibility) {
+    y = addKeyValue(doc, y, "Feasibility Score", `${bp.feasibility.score} / 5`);
+    if (bp.feasibility.trl) y = addKeyValue(doc, y, "TRL", String(bp.feasibility.trl));
+    y = addLongText(doc, y, "Feasibility – Details", bp.feasibility.details, pw);
+    if (bp.feasibility.milestones?.length) {
+      y = addTable(doc, y, "Feasibility Milestones", ["Milestone", "Target Date", "Status"],
+        bp.feasibility.milestones.map((m: any) => [m.name || m.milestone, m.targetDate || m.date, m.status]), pw);
+    }
+  }
+  if (bp?.organisationalReadiness) {
+    const o = bp.organisationalReadiness;
+    y = addKeyValue(doc, y, "Organisational Readiness Score", `${o.score} / 5`);
+    y = addFieldGroup(doc, y, "Organisational Readiness", [
+      { label: "Culture", value: o.culture },
+      { label: "Processes", value: o.processes },
+      { label: "Skills", value: o.skills },
+      { label: "Leadership", value: o.leadership },
+      { label: "Resources", value: o.resources },
+      { label: "Stakeholders", value: o.stakeholders },
+      { label: "Details", value: o.details },
+    ], pw);
+  }
+  if (bp?.risk) {
+    y = addKeyValue(doc, y, "Risk Score", `${bp.risk.score} / 5`);
+    y = addLongText(doc, y, "Risk – Details", bp.risk.details, pw);
+    if (bp.risk.riskItems?.length) {
+      y = addTable(doc, y, "Risk Register", ["Risk", "Category", "Probability", "Impact", "Mitigation"],
+        bp.risk.riskItems.map(r => [r.name, r.category, String(r.probability), String(r.impact), r.mitigation]), pw);
+    }
+  }
+
+  const sam = sa?.sam;
+  if (sam?.customerSegmentation?.entries?.length) {
+    const cs = sam.customerSegmentation;
+    y = addTable(doc, y, "Customer Segmentation", ["Segment", "Size", "Needs", "WTP", "Priority"],
+      cs.entries.map(e => [e.name, e.size, e.needs, e.willingnessToPay, e.priority]), pw);
+    y = addLongText(doc, y, "Segmentation – Description", cs.description, pw);
+    y = addLongText(doc, y, "Segmentation – Rationale", cs.rationale, pw);
+  }
+  const renderInterviews = (title: string, group: any) => {
+    if (!group?.entries?.length) return;
+    y = addTable(doc, y, title, ["Date", "Name", "Role", "Insights", "Rec/Pain", "Quotes"],
+      group.entries.map((e: any) => [e.date, e.customerName || e.intervieweeName, e.role + (e.department ? ` / ${e.department}` : ""), e.keyInsights, e.painPoints || e.recommendations, e.quotes]),
+      pw);
+    y = addLongText(doc, y, `${title} – Description`, group.description, pw);
+    y = addLongText(doc, y, `${title} – Rationale`, group.rationale, pw);
+  };
+  renderInterviews("Customer Interviews", sam?.customerInterviewing);
+  renderInterviews("Internal Affiliate Interviews", sam?.internalAffiliateInterviews);
+  renderInterviews("Internal BU Interviews", sam?.internalBUInterviews);
+
+  if (sam?.businessModelling) {
+    const b = sam.businessModelling;
+    y = addFieldGroup(doc, y, "Business Model Canvas", [
+      { label: "Value Proposition", value: b.valueProposition },
+      { label: "Customer Segments", value: b.customerSegments },
+      { label: "Channels", value: b.channels },
+      { label: "Customer Relationships", value: b.customerRelationships },
+      { label: "Revenue Streams", value: b.revenueStreams },
+      { label: "Key Resources", value: b.keyResources },
+      { label: "Key Activities", value: b.keyActivities },
+      { label: "Key Partners", value: b.keyPartners },
+      { label: "Cost Structure", value: b.costStructure },
+      { label: "Description", value: b.description },
+      { label: "Rationale", value: b.rationale },
+    ], pw);
+  }
+  if (sam?.leanCanvas) {
+    const l = sam.leanCanvas;
+    y = addFieldGroup(doc, y, "Lean Canvas", [
+      { label: "Problem", value: l.problem },
+      { label: "Solution", value: l.solution },
+      { label: "Unique Value Proposition", value: l.uniqueValueProposition },
+      { label: "Unfair Advantage", value: l.unfairAdvantage },
+      { label: "Customer Segments", value: l.customerSegments },
+      { label: "Key Metrics", value: l.keyMetrics },
+      { label: "Channels", value: l.channels },
+      { label: "Cost Structure", value: l.costStructure },
+      { label: "Revenue Streams", value: l.revenueStreams },
+      { label: "Description", value: l.description },
+      { label: "Rationale", value: l.rationale },
+    ], pw);
+  }
+
+  // ═══ SOM ═══
+  y += 4;
+  y = addSectionTitle(doc, y, "SOM – Serviceable Obtainable Market");
+  const somO = bp?.somOverview;
+  if (somO) {
+    y = addYearValues(doc, y, "SOM Projections", somO.projections || [], "M EUR", pw);
+    y = addFieldGroup(doc, y, "SOM Overview", [
+      { label: "Market Share vs SAM", value: somO.marketShareVsSam },
+      { label: "Growth Rate", value: somO.growthRate },
+      { label: "Visibility Rate", value: somO.visibilityRate },
+      { label: "Sales Capacity", value: somO.salesCapacity },
+      { label: "Pipeline", value: somO.pipeline },
+      { label: "License to Operate", value: somO.licenseToOperate },
+      { label: "Sales Capacity Scenario", value: somO.salesCapacityScenario },
+      { label: "Marketing Budget Scenario", value: somO.marketingBudgetScenario },
+      { label: "Positioning Scenario", value: somO.positioningScenario },
+      { label: "Portfolio Coverage %", value: somO.portfolioCoveragePct },
+      { label: "Visibility %", value: somO.visibilityPct },
+      { label: "Visibility Growth %", value: somO.visibilityGrowthPct },
+      { label: "Hitrate %", value: somO.hitratePct },
+    ], pw);
+    y = addRegions(doc, y, "SOM – Geographic Breakdown", somO.geographicalRegions || [], pw);
+  }
+
+  // Competitor Landscape
+  if (bp?.competitorLandscape) {
+    y = addKeyValue(doc, y, "Competitor Landscape Score", `${bp.competitorLandscape.score} / 5`);
+    const cla: any = bp.competitorLandscape.analysis || {};
+    y = addLongText(doc, y, "Competitor Landscape Notes", cla.notes || cla.description || "", pw);
+  }
+  if (bp?.pilotCustomer) {
+    y = addKeyValue(doc, y, "Pilot Customer Score", `${bp.pilotCustomer.score} / 5`);
+    y = addLongText(doc, y, "Pilot Notes", bp.pilotCustomer.notes, pw);
+    if (bp.pilotCustomer.entries?.length) {
+      y = addTable(doc, y, "Pilot Customer Candidates",
+        ["Name", "Industry", "Status", "Validation", "Feedback"],
+        bp.pilotCustomer.entries.map(e => [e.name, e.industry, e.contactStatus, e.validationResults, e.feedback]), pw);
+    }
+  }
+
+  const som = sa?.som;
+  if (som?.competitorAnalysis?.entries?.length) {
+    const c = som.competitorAnalysis;
+    y = addTable(doc, y, "Competitor Analysis",
+      ["Competitor", "Market Share", "Threat", "Strengths", "Weaknesses", "Strategy"],
+      c.entries.map(e => [e.name, e.marketShare, String(e.threatLevel), e.strengths, e.weaknesses, e.strategy]), pw);
+    y = addLongText(doc, y, "Competitor Analysis – Description", c.description, pw);
+    y = addLongText(doc, y, "Competitor Analysis – Rationale", c.rationale, pw);
+  }
+  if (som?.valuePropositionCanvas) {
+    const v = som.valuePropositionCanvas;
+    y = addFieldGroup(doc, y, "Value Proposition Canvas", [
+      { label: "Customer Jobs", value: v.customerJobs },
+      { label: "Customer Pains", value: v.customerPains },
+      { label: "Customer Gains", value: v.customerGains },
+      { label: "Products & Services", value: v.productsServices },
+      { label: "Pain Relievers", value: v.painRelievers },
+      { label: "Gain Creators", value: v.gainCreators },
+      { label: "Description", value: v.description },
+      { label: "Rationale", value: v.rationale },
+    ], pw);
+  }
+  if (som?.customerBenefitAnalysis) {
+    const c = som.customerBenefitAnalysis;
+    y = addFieldGroup(doc, y, "Customer Benefit Analysis", [
+      { label: "Functional Benefits", value: c.functionalBenefits },
+      { label: "Emotional Benefits", value: c.emotionalBenefits },
+      { label: "Social Benefits", value: c.socialBenefits },
+      { label: "Self-Expressive Benefits", value: c.selfExpressiveBenefits },
+      { label: "Description", value: c.description },
+      { label: "Rationale", value: c.rationale },
+    ], pw);
+  }
+  if (som?.threeCircleModel) {
+    const t = som.threeCircleModel;
+    y = addFieldGroup(doc, y, "Three Circle Model", [
+      { label: "Our Value", value: t.ourValue },
+      { label: "Competitor Value", value: t.competitorValue },
+      { label: "Customer Needs", value: t.customerNeeds },
+      { label: "Our Unique", value: t.ourUnique },
+      { label: "Their Unique", value: t.theirUnique },
+      { label: "Common Value", value: t.commonValue },
+      { label: "Unmet Needs", value: t.unmetNeeds },
+      { label: "Description", value: t.description },
+      { label: "Rationale", value: t.rationale },
+    ], pw);
+  }
+  if (som?.positioningStatement) {
+    const p = som.positioningStatement;
+    y = addFieldGroup(doc, y, "Positioning Statement", [
+      { label: "Target Audience", value: p.targetAudience },
+      { label: "Category", value: p.category },
+      { label: "Key Benefit", value: p.keyBenefit },
+      { label: "Reason to Believe", value: p.reasonToBelieve },
+      { label: "Competitive Alternative", value: p.competitiveAlternative },
+      { label: "Differentiator", value: p.differentiator },
+      { label: "Statement", value: p.statement },
+      { label: "Description", value: p.description },
+      { label: "Rationale", value: p.rationale },
+    ], pw);
+  }
+  if (som?.positioningLandscape?.entries?.length) {
+    const pl = som.positioningLandscape;
+    y = addTable(doc, y, `Positioning Landscape (X: ${pl.xAxisLabel || "—"}, Y: ${pl.yAxisLabel || "—"})`,
+      ["Name", "Ours", "X", "Y"],
+      pl.entries.map(e => [e.name, e.isOurs ? "Yes" : "—", String(e.xValue), String(e.yValue)]), pw);
+    y = addLongText(doc, y, "Positioning Landscape – Description", pl.description, pw);
+    y = addLongText(doc, y, "Positioning Landscape – Rationale", pl.rationale, pw);
+  }
+  if (som?.targetCosting) {
+    const tc = som.targetCosting;
+    y = addFieldGroup(doc, y, "Target Costing", [
+      { label: "Market Price", value: tc.marketPrice },
+      { label: "Target Margin %", value: tc.targetMarginPct },
+      { label: "Allowable Cost", value: tc.allowableCost },
+      { label: "Market Price Rationale", value: tc.marketPriceRationale },
+      { label: "Margin Rationale", value: tc.marginRationale },
+      { label: "Gap Analysis", value: tc.gapAnalysis },
+      { label: "Action Plan", value: tc.actionPlan },
+      { label: "Overall Assessment", value: tc.overallAssessment },
+    ], pw);
+    if (tc.components?.length) {
+      y = addTable(doc, y, "Target Costing – Components",
+        ["Component", "Current Cost", "Allowable Cost", "Gap", "Actions"],
+        tc.components.map(c => [c.name, fmt(c.currentCost), fmt(c.allowableCost), fmt((c.currentCost || 0) - (c.allowableCost || 0)), c.actions]), pw);
+    }
+  }
+
+  // Footer
+  const pageCount = doc.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(
+      `NOVI – Business Plan – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
+      pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
+    );
+  }
+
+  doc.save(`${opp.title.replace(/[^a-zA-Z0-9 ]/g, "_")}_BusinessPlan.pdf`);
+}
+
