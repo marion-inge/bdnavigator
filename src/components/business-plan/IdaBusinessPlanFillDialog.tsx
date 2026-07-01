@@ -57,7 +57,21 @@ export function IdaBusinessPlanFillDialog({
   /** per-field accept toggle */
   const [accept, setAccept] = useState<Record<string, boolean>>({});
 
-  const allFields = useMemo(() => fieldsForGroup(scope), [scope]);
+  const scopeFields = useMemo(() => fieldsForGroup(scope), [scope]);
+  const availableSections = useMemo(() => {
+    const seen: string[] = [];
+    for (const f of scopeFields) if (!seen.includes(f.section)) seen.push(f.section);
+    return seen;
+  }, [scopeFields]);
+  const [selectedSections, setSelectedSections] = useState<Set<string>>(new Set());
+  const activeSections = useMemo(
+    () => (selectedSections.size === 0 ? new Set(availableSections) : selectedSections),
+    [selectedSections, availableSections],
+  );
+  const allFields = useMemo(
+    () => scopeFields.filter((f) => activeSections.has(f.section)),
+    [scopeFields, activeSections],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -66,6 +80,7 @@ export function IdaBusinessPlanFillDialog({
     setEdits({});
     setAccept({});
     setSelectedFiles(new Set());
+    setSelectedSections(new Set());
     setLoadingFiles(true);
     fetchOpportunityFiles(opportunityId).then((res: any) => {
       setFiles((res?.data as FileRecord[]) ?? []);
@@ -183,7 +198,54 @@ export function IdaBusinessPlanFillDialog({
 
         <div className="flex-1 overflow-y-auto pr-1">
           {step === "pick" && (
-            <div className="space-y-3 pt-2">
+            <div className="space-y-4 pt-2">
+              {availableSections.length > 1 && (
+                <div className="space-y-1.5 pb-3 border-b">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">
+                      {bp("Sections to fill", "Zu befüllende Bereiche")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSections(new Set())}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      {bp("All sections", "Alle Bereiche")}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {availableSections.map((s) => {
+                      const active = selectedSections.has(s);
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setSelectedSections((prev) => {
+                            const next = new Set(prev);
+                            next.has(s) ? next.delete(s) : next.add(s);
+                            return next;
+                          })}
+                          className={`text-xs px-2 py-1 rounded-full border transition ${
+                            active
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-background hover:bg-muted/50 border-border"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    {selectedSections.size === 0
+                      ? bp("No filter — IDA will propose values for every section in this scope.", "Kein Filter – IDA schlägt Werte für alle Bereiche in diesem Scope vor.")
+                      : bp(
+                          `IDA will only propose values for the ${selectedSections.size} selected section${selectedSections.size === 1 ? "" : "s"}.`,
+                          `IDA schlägt nur Werte für die ${selectedSections.size} ausgewählten Bereiche vor.`,
+                        )}
+                  </p>
+                </div>
+              )}
               {loadingFiles ? (
                 <div className="flex items-center justify-center py-10 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
