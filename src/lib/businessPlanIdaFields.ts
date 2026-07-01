@@ -162,7 +162,42 @@ const parseRegions = (text: string): GeographicalRegion[] => {
     const potential = normalizePotential(get("potential"));
     const notes = get("notes") || lines.slice(1).join("; ");
     if (region) out.push({ region, marketSize, potential, notes });
+}
+
+import type { CompetitorAnalysisEntry } from "./types";
+
+const fmtCompetitors = (entries: CompetitorAnalysisEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries
+    .map((e) =>
+      `Name: ${e.name}\nMarket share: ${e.marketShare}\nThreat level: ${e.threatLevel}/5\nStrengths: ${e.strengths}\nWeaknesses: ${e.weaknesses}\nStrategy: ${e.strategy}`,
+    )
+    .join("\n\n");
+};
+
+const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CompetitorAnalysisEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) =>
+      lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const name = get("name") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!name) continue;
+    const threatRaw = get("threat level") || get("threat");
+    const threat = Math.max(1, Math.min(5, parseInt(threatRaw.match(/\d+/)?.[0] || "3", 10)));
+    out.push({
+      id: crypto.randomUUID(),
+      name,
+      marketShare: get("market share"),
+      threatLevel: threat,
+      strengths: get("strengths"),
+      weaknesses: get("weaknesses"),
+      strategy: get("strategy"),
+    });
   }
+  return out;
+};
   return out;
 };
 
