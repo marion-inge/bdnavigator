@@ -256,7 +256,31 @@ function buildSchema(scope: SectionScope) {
     props.som = {
       type: "object",
       properties: {
-        competitorAnalysis: { type: "object", properties: { description: { type: "string" }, rationale: { type: "string" } }, additionalProperties: false },
+        competitorAnalysis: {
+          type: "object",
+          properties: {
+            description: { type: "string" },
+            rationale: { type: "string" },
+            entries: {
+              type: "array",
+              description: "Every competitor mentioned in the documents. Extract each as a separate row.",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Competitor company / product name exactly as shown." },
+                  strengths: { type: "string", description: "Key strengths / advantages (2-4 concrete points)." },
+                  weaknesses: { type: "string", description: "Key weaknesses / gaps (2-4 concrete points)." },
+                  marketShare: { type: "string", description: "Market share with unit if available, e.g. '18%' or 'n/a'." },
+                  strategy: { type: "string", description: "Strategic positioning / go-to-market approach in 1-2 sentences." },
+                  threatLevel: { type: "integer", minimum: 1, maximum: 5, description: "Threat level 1 (low) to 5 (high)." },
+                },
+                required: ["name", "strengths", "weaknesses", "marketShare", "strategy", "threatLevel"],
+                additionalProperties: false,
+              },
+            },
+          },
+          additionalProperties: false,
+        },
         valuePropositionCanvas: { type: "object", properties: strProps(VPC_KEYS), additionalProperties: false },
         customerBenefitAnalysis: { type: "object", properties: strProps(CBA_KEYS), additionalProperties: false },
         threeCircleModel: { type: "object", properties: strProps(THREE_KEYS), additionalProperties: false },
