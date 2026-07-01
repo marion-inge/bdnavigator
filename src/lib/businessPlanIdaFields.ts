@@ -162,7 +162,11 @@ const parseRegions = (text: string): GeographicalRegion[] => {
     const potential = normalizePotential(get("potential"));
     const notes = get("notes") || lines.slice(1).join("; ");
     if (region) out.push({ region, marketSize, potential, notes });
-}
+  }
+  return out;
+};
+
+
 
 
 
