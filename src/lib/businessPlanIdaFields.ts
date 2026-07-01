@@ -10,7 +10,7 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
@@ -165,6 +165,44 @@ const parseRegions = (text: string): GeographicalRegion[] => {
   }
   return out;
 };
+
+
+
+
+
+const fmtCompetitors = (entries: CompetitorAnalysisEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries
+    .map((e) =>
+      `Name: ${e.name}\nMarket share: ${e.marketShare}\nThreat level: ${e.threatLevel}/5\nStrengths: ${e.strengths}\nWeaknesses: ${e.weaknesses}\nStrategy: ${e.strategy}`,
+    )
+    .join("\n\n");
+};
+
+const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CompetitorAnalysisEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) =>
+      lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const name = get("name") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!name) continue;
+    const threatRaw = get("threat level") || get("threat");
+    const threat = Math.max(1, Math.min(5, parseInt(threatRaw.match(/\d+/)?.[0] || "3", 10)));
+    out.push({
+      id: crypto.randomUUID(),
+      name,
+      marketShare: get("market share"),
+      threatLevel: threat,
+      strengths: get("strengths"),
+      weaknesses: get("weaknesses"),
+      strategy: get("strategy"),
+    });
+  }
+  return out;
+};
+
 
 const regionField = (area: "tam" | "sam" | "som"): IdaFieldDef => ({
   path: `${area === "tam" ? "overview.tam" : area === "sam" ? "overview.sam" : "overview.som"}.geographicalRegions`,
@@ -375,9 +413,18 @@ export const SOM_FIELDS: IdaFieldDef[] = [
   ovField("som", "salesCapacityScenario", "Sales capacity scenario", "Vertriebskapazität-Szenario"),
   ovField("som", "marketingBudgetScenario", "Marketing budget scenario", "Marketingbudget-Szenario"),
   ovField("som", "positioningScenario", "Positioning scenario", "Positionierungs-Szenario"),
-  // Competitors narrative
+  // Competitors narrative + entries table
   modelField("som", "competitorAnalysis", "description", "Competitors", "Description", "Beschreibung"),
   modelField("som", "competitorAnalysis", "rationale", "Competitors", "Rationale", "Begründung"),
+  {
+    path: "som.competitorAnalysis.entries",
+    labelEn: "Competitor entries", labelDe: "Wettbewerber-Einträge", multiline: true, section: "Competitors",
+    get: (_s, sa) => fmtCompetitors((sa.som as any)?.competitorAnalysis?.entries),
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSomModel(sa, "competitorAnalysis" as any, { entries: parseCompetitors(v) }),
+    }),
+  },
   // VPC
   modelField("som", "valuePropositionCanvas", "customerJobs", "Value Proposition Canvas", "Customer jobs", "Kundenaufgaben"),
   modelField("som", "valuePropositionCanvas", "customerPains", "Value Proposition Canvas", "Customer pains", "Kundenprobleme"),
