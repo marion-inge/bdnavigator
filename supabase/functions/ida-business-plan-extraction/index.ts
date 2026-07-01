@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import JSZip from "npm:jszip@3.10.1";
+import * as XLSX from "npm:xlsx@0.18.5";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,12 +10,16 @@ const corsHeaders = {
 };
 
 const MAX_BYTES = 18 * 1024 * 1024;
+const MAX_EXTRACTED_CHARS_PER_FILE = 220_000;
 
-function classify(mime: string, name: string): "text" | "image" | "pdf" | "unsupported" {
+function classify(mime: string, name: string): "text" | "image" | "pdf" | "docx" | "xlsx" | "pptx" | "unsupported" {
   const lower = (name || "").toLowerCase();
   if ((mime || "").startsWith("text/") || mime === "application/json" || /\.(txt|md|csv|json|log|html|xml)$/i.test(lower)) return "text";
   if ((mime || "").startsWith("image/") || /\.(png|jpe?g|gif|webp)$/i.test(lower)) return "image";
   if (mime === "application/pdf" || lower.endsWith(".pdf")) return "pdf";
+  if (/\.(docx)$/i.test(lower) || mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") return "docx";
+  if (/\.(xlsx|xls)$/i.test(lower) || mime === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || mime === "application/vnd.ms-excel") return "xlsx";
+  if (/\.(pptx)$/i.test(lower) || mime === "application/vnd.openxmlformats-officedocument.presentationml.presentation") return "pptx";
   return "unsupported";
 }
 
@@ -24,13 +30,95 @@ function bufToBase64(buf: Uint8Array): string {
   return btoa(bin);
 }
 
+function stripXml(xml: string): string {
+  return xml
+    .replace(/<w:tab\s*\/?>/g, "\t")
+    .replace(/<w:br\s*\/?>/g, "\n")
+    .replace(/<w:p[^>]*>/g, "\n")
+    .replace(/<a:p[^>]*>/g, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/\s+\n/g, "\n")
+    .replace(/\n\s+/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+}
+
+async function extractDocxText(buf: Uint8Array): Promise<string> {
+  const zip = await JSZip.loadAsync(buf);
+  const parts = Object.keys(zip.files)
+    .filter((name) => /^word\/(document|footnotes|endnotes|comments|header\d+|footer\d+)\.xml$/i.test(name))
+    .sort((a, b) => (a.includes("document.xml") ? -1 : b.includes("document.xml") ? 1 : a.localeCompare(b)));
+
+  const chunks: string[] = [];
+  for (const part of parts) {
+    const xml = await zip.files[part].async("text");
+    const text = stripXml(xml);
+    if (text) chunks.push(`--- ${part} ---\n${text}`);
+  }
+  return chunks.join("\n\n");
+}
+
+function extractWorkbookText(buf: Uint8Array): string {
+  const workbook = XLSX.read(buf, { type: "array", cellDates: true });
+  const chunks: string[] = [];
+  for (const sheetName of workbook.SheetNames) {
+    const sheet = workbook.Sheets[sheetName];
+    const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false }).trim();
+    if (csv) chunks.push(`--- Sheet: ${sheetName} ---\n${csv}`);
+  }
+  return chunks.join("\n\n");
+}
+
+async function extractPptxText(buf: Uint8Array): Promise<string> {
+  const zip = await JSZip.loadAsync(buf);
+  const slideParts = Object.keys(zip.files)
+    .filter((name) => /^ppt\/slides\/slide\d+\.xml$/i.test(name))
+    .sort((a, b) => {
+      const an = Number(a.match(/slide(\d+)\.xml/i)?.[1] || 0);
+      const bn = Number(b.match(/slide(\d+)\.xml/i)?.[1] || 0);
+      return an - bn;
+    });
+
+  const chunks: string[] = [];
+  for (const part of slideParts) {
+    const xml = await zip.files[part].async("text");
+    const text = stripXml(xml);
+    if (text) chunks.push(`--- ${part} ---\n${text}`);
+  }
+  return chunks.join("\n\n");
+}
+
 async function toContentBlock(name: string, mime: string, buf: Uint8Array): Promise<any> {
   const kind = classify(mime, name);
   if (kind === "unsupported") return { type: "text", text: `[Attachment "${name}" cannot be read.]` };
   if (buf.byteLength > MAX_BYTES) return { type: "text", text: `[Attachment "${name}" exceeded size cap and was skipped.]` };
   if (kind === "text") {
-    const text = new TextDecoder().decode(buf).slice(0, 200_000);
+    const text = new TextDecoder().decode(buf).slice(0, MAX_EXTRACTED_CHARS_PER_FILE);
     return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End of ${name} ---` };
+  }
+  if (kind === "docx" || kind === "xlsx" || kind === "pptx") {
+    try {
+      const text = kind === "docx"
+        ? await extractDocxText(buf)
+        : kind === "xlsx"
+        ? extractWorkbookText(buf)
+        : await extractPptxText(buf);
+      const trimmed = text.slice(0, MAX_EXTRACTED_CHARS_PER_FILE).trim();
+      return {
+        type: "text",
+        text: trimmed
+          ? `--- File: ${name} (extracted ${kind.toUpperCase()} content) ---\n${trimmed}\n--- End of ${name} ---`
+          : `[Attachment "${name}" was opened as ${kind.toUpperCase()}, but no readable text or table content was found.]`,
+      };
+    } catch (e) {
+      console.error(`Office extraction failed for ${name}`, e);
+      return { type: "text", text: `[Attachment "${name}" could not be extracted. Please convert it to PDF, TXT, CSV or XLSX and try again.]` };
+    }
   }
   const b64 = bufToBase64(buf);
   if (kind === "image") return { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${b64}` } };
