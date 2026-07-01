@@ -375,9 +375,18 @@ export const SOM_FIELDS: IdaFieldDef[] = [
   ovField("som", "salesCapacityScenario", "Sales capacity scenario", "Vertriebskapazität-Szenario"),
   ovField("som", "marketingBudgetScenario", "Marketing budget scenario", "Marketingbudget-Szenario"),
   ovField("som", "positioningScenario", "Positioning scenario", "Positionierungs-Szenario"),
-  // Competitors narrative
+  // Competitors narrative + entries table
   modelField("som", "competitorAnalysis", "description", "Competitors", "Description", "Beschreibung"),
   modelField("som", "competitorAnalysis", "rationale", "Competitors", "Rationale", "Begründung"),
+  {
+    path: "som.competitorAnalysis.entries",
+    labelEn: "Competitor entries", labelDe: "Wettbewerber-Einträge", multiline: true, section: "Competitors",
+    get: (_s, sa) => fmtCompetitors((sa.som as any)?.competitorAnalysis?.entries),
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSomModel(sa, "competitorAnalysis" as any, { entries: parseCompetitors(v) }),
+    }),
+  },
   // VPC
   modelField("som", "valuePropositionCanvas", "customerJobs", "Value Proposition Canvas", "Customer jobs", "Kundenaufgaben"),
   modelField("som", "valuePropositionCanvas", "customerPains", "Value Proposition Canvas", "Customer pains", "Kundenprobleme"),
