@@ -297,8 +297,8 @@ export default function Index() {
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
                   </div>
                   <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                    {tamVal && <span>TAM: <span className="font-semibold text-card-foreground">{tamVal}{typeof tamVal === "number" ? " M€" : ""}</span></span>}
-                    {samVal && <span>SAM: <span className="font-semibold text-card-foreground">{samVal}{typeof samVal === "number" ? " M€" : ""}</span></span>}
+                    {tamVal !== "" && tamVal != null && <span>TAM: <span className="font-semibold text-card-foreground">{typeof tamVal === "number" ? `${tamVal} M€` : tamVal}</span></span>}
+                    {samVal !== "" && samVal != null && <span>SAM: <span className="font-semibold text-card-foreground">{typeof samVal === "number" ? `${samVal} M€` : samVal}</span></span>}
                     {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
