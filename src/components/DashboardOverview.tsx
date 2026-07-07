@@ -41,23 +41,38 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     return { total, active, topScorer };
   }, [opportunities]);
 
-  const industryData = useMemo(() => {
-    const counts: Record<string, number> = {};
-    opportunities.forEach((o) => { const k = o.industry || "Other"; counts[k] = (counts[k] || 0) + 1; });
-    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
-  }, [opportunities]);
+  const splitTags = (raw: string | undefined | null): string[] => {
+    if (!raw) return ["Other"];
+    // strip parenthetical qualifiers like "Global (DACH first)" → "Global"
+    const cleaned = raw.replace(/\([^)]*\)/g, " ");
+    const parts = cleaned
+      .split(/[,/&;]|\bund\b|\band\b/gi)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    return parts.length > 0 ? parts : ["Other"];
+  };
 
-  const geoData = useMemo(() => {
+  const countTags = (getter: (o: Opportunity) => string | undefined) => {
     const counts: Record<string, number> = {};
-    opportunities.forEach((o) => { const k = o.geography || "Other"; counts[k] = (counts[k] || 0) + 1; });
-    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
-  }, [opportunities]);
+    opportunities.forEach((o) => {
+      const seen = new Set<string>();
+      splitTags(getter(o)).forEach((tag) => {
+        // normalize casing for grouping
+        const key = tag.replace(/\s+/g, " ").trim();
+        const norm = key.charAt(0).toUpperCase() + key.slice(1);
+        if (seen.has(norm.toLowerCase())) return;
+        seen.add(norm.toLowerCase());
+        counts[norm] = (counts[norm] || 0) + 1;
+      });
+    });
+    return Object.entries(counts)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+  };
 
-  const techData = useMemo(() => {
-    const counts: Record<string, number> = {};
-    opportunities.forEach((o) => { const k = o.technology || "Other"; counts[k] = (counts[k] || 0) + 1; });
-    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
-  }, [opportunities]);
+  const industryData = useMemo(() => countTags((o) => o.industry), [opportunities]);
+  const geoData = useMemo(() => countTags((o) => o.geography), [opportunities]);
+  const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
 
   if (opportunities.length === 0) return null;
 
