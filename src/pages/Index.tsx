@@ -253,10 +253,18 @@ export default function Index() {
           <div className="space-y-3 sm:hidden">
             {filtered.map((opp) => {
               const roughScore = calculateTotalScore(opp.scoring);
-              const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
-              const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
-              const somProj = opp.businessPlan?.somOverview?.projections;
-              const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+              const lastVal = (arr?: { year: number; value: number }[]) => {
+                if (!arr || arr.length === 0) return null;
+                const sorted = [...arr].sort((a, b) => a.year - b.year);
+                const last = sorted[sorted.length - 1]?.value;
+                return typeof last === "number" && last > 0 ? last : null;
+              };
+              const tamNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.tamProjections);
+              const samNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.samProjections);
+              const somNum = lastVal(opp.businessPlan?.somOverview?.projections);
+              const tamVal = tamNum != null ? tamNum : (opp.businessPlan?.marketAttractiveness?.analysis?.tam || "");
+              const samVal = samNum != null ? samNum : (opp.businessPlan?.marketAttractiveness?.analysis?.sam || "");
+              const somVal = somNum;
               const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || opp.investmentCase?.parameters?.marketGrowthRate;
               const payback = opp.investmentCase ? (() => {
                 const yd = opp.investmentCase.yearData;
