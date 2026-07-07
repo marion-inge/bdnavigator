@@ -253,10 +253,18 @@ export default function Index() {
           <div className="space-y-3 sm:hidden">
             {filtered.map((opp) => {
               const roughScore = calculateTotalScore(opp.scoring);
-              const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
-              const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
-              const somProj = opp.businessPlan?.somOverview?.projections;
-              const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+              const lastVal = (arr?: { year: number; value: number }[]) => {
+                if (!arr || arr.length === 0) return null;
+                const sorted = [...arr].sort((a, b) => a.year - b.year);
+                const last = sorted[sorted.length - 1]?.value;
+                return typeof last === "number" && last > 0 ? last : null;
+              };
+              const tamNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.tamProjections);
+              const samNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.samProjections);
+              const somNum = lastVal(opp.businessPlan?.somOverview?.projections);
+              const tamVal = tamNum != null ? tamNum : (opp.businessPlan?.marketAttractiveness?.analysis?.tam || "");
+              const samVal = samNum != null ? samNum : (opp.businessPlan?.marketAttractiveness?.analysis?.sam || "");
+              const somVal = somNum;
               const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || opp.investmentCase?.parameters?.marketGrowthRate;
               const payback = opp.investmentCase ? (() => {
                 const yd = opp.investmentCase.yearData;
@@ -289,8 +297,8 @@ export default function Index() {
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
                   </div>
                   <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                    {tamVal && <span>TAM: <span className="font-semibold text-card-foreground">{tamVal}{typeof tamVal === "number" ? " M€" : ""}</span></span>}
-                    {samVal && <span>SAM: <span className="font-semibold text-card-foreground">{samVal}{typeof samVal === "number" ? " M€" : ""}</span></span>}
+                    {tamVal !== "" && tamVal != null && <span>TAM: <span className="font-semibold text-card-foreground">{typeof tamVal === "number" ? `${tamVal} M€` : tamVal}</span></span>}
+                    {samVal !== "" && samVal != null && <span>SAM: <span className="font-semibold text-card-foreground">{typeof samVal === "number" ? `${samVal} M€` : samVal}</span></span>}
                     {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
@@ -319,10 +327,18 @@ export default function Index() {
               <tbody>
                 {filtered.map((opp) => {
                   const roughScore = calculateTotalScore(opp.scoring);
-                  const tamVal = opp.businessPlan?.tamOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.tam || "";
-                  const samVal = opp.businessPlan?.samOverview?.geographicalRegions?.[0]?.marketSize || opp.businessPlan?.marketAttractiveness?.analysis?.sam || "";
-                  const somProj = opp.businessPlan?.somOverview?.projections;
-                  const somVal = somProj && somProj.length > 0 ? somProj[somProj.length - 1].value : null;
+                  const lastVal = (arr?: { year: number; value: number }[]) => {
+                    if (!arr || arr.length === 0) return null;
+                    const sorted = [...arr].sort((a, b) => a.year - b.year);
+                    const last = sorted[sorted.length - 1]?.value;
+                    return typeof last === "number" && last > 0 ? last : null;
+                  };
+                  const tamNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.tamProjections);
+                  const samNum = lastVal(opp.businessPlan?.marketAttractiveness?.analysis?.samProjections);
+                  const somNum = lastVal(opp.businessPlan?.somOverview?.projections);
+                  const tamVal: string | number = tamNum != null ? tamNum : (opp.businessPlan?.marketAttractiveness?.analysis?.tam || "");
+                  const samVal: string | number = samNum != null ? samNum : (opp.businessPlan?.marketAttractiveness?.analysis?.sam || "");
+                  const somVal = somNum;
                   const growthRate = opp.businessPlan?.marketAttractiveness?.analysis?.marketGrowthRate || (opp.investmentCase?.parameters?.marketGrowthRate ? `${opp.investmentCase.parameters.marketGrowthRate}%` : "");
                   const payback = opp.investmentCase ? (() => {
                     const yd = opp.investmentCase!.yearData;
@@ -354,8 +370,8 @@ export default function Index() {
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal || "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{growthRate || "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
