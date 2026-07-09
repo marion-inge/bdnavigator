@@ -19,7 +19,7 @@ interface RoughScoringWizardProps {
   initialComments?: Record<string, string>;
   initialSources?: Record<string, string[]>;
   startWithSummary?: boolean;
-  idea?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
+  opportunity?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
 }
 
 type Answers = Record<string, number>;

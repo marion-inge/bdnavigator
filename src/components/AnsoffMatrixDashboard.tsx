@@ -46,7 +46,7 @@ const IDX_TO_POSITION = [
 
 function DraggableItem({ opportunity, onClick }: { opportunity: Opportunity; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `ansoff-${idea.id}`,
+    id: `ansoff-${opportunity.id}`,
     data: { oppId: opportunity.id },
   });
 
