@@ -162,7 +162,7 @@ export function ThreeHorizonsDashboard({ opportunities }: Props) {
               label={labels[idx]}
               items={items}
               colorClass={HORIZON_COLORS[idx]}
-              onItemClick={(id) => navigate(`/idea/${id}`)}
+              onItemClick={(id) => navigate(`/opportunity/${id}`)}
             />
           ))}
         </div>

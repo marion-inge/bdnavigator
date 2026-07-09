@@ -196,7 +196,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
               label={labels[idx]}
               items={quadrants[idx]}
               colorClass={QUADRANT_COLORS[idx]}
-              onItemClick={(id) => navigate(`/idea/${id}`)}
+              onItemClick={(id) => navigate(`/opportunity/${id}`)}
             />
           ))}
 
@@ -211,7 +211,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
               label={labels[idx]}
               items={quadrants[idx]}
               colorClass={QUADRANT_COLORS[idx]}
-              onItemClick={(id) => navigate(`/idea/${id}`)}
+              onItemClick={(id) => navigate(`/opportunity/${id}`)}
             />
           ))}
         </div>
