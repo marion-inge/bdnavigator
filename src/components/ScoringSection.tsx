@@ -23,7 +23,7 @@ interface ScoringProps {
   initialComments?: Record<string, string>;
   initialSources?: Record<string, string[]>;
   showResults?: boolean;
-  idea?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
+  opportunity?: Pick<Opportunity, "id" | "title" | "description" | "solutionDescription" | "industry" | "geography" | "technology" | "ideaBringer" | "owner">;
 }
 
 const criteriaKeys: (keyof Scoring)[] = [
