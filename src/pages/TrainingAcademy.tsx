@@ -177,7 +177,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "Im Dashboard",
-            body: "Das Ansoff-Dashboard auf der Startseite zeigt alle Ihre Ideas in der Matrix und hilft, die Portfolio-Balance zu bewerten.",
+            body: "Das Ansoff-Dashboard auf der Startseite zeigt alle Ihre Ideen in der Matrix und hilft, die Portfolio-Balance zu bewerten.",
           },
         ],
       },
@@ -188,7 +188,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "SWOT-Analyse",
-            body: "Stärken, Schwächen, Chancen und Risiken einer Idea. Intern (S/W) vs. Extern (O/T). Verknüpft mit der TAM-Phase im Tool.",
+            body: "Stärken, Schwächen, Chancen und Risiken einer Idee. Intern (S/W) vs. Extern (O/T). Verknüpft mit der TAM-Phase im Tool.",
           },
           {
             heading: "Business Model Canvas (BMC)",
@@ -264,7 +264,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Das Dashboard",
-            body: "Das Dashboard zeigt alle Ideas mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
+            body: "Das Dashboard zeigt alle Ideen mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
           },
           {
             heading: "Idea erstellen",
@@ -274,12 +274,12 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
       },
       {
         title: "Sidebar-Navigation in Ideas",
-        description: "Alle Bereiche einer Idea",
+        description: "Alle Bereiche einer Idee",
         icon: BookOpen,
         content: [
           {
             heading: "Hierarchische Navigation",
-            body: "In einer Idea navigieren Sie über die linke Sidebar:\n• Overview: Stammdaten und Zusammenfassung\n• Idea Scoring: 22-Fragen-Wizard und strategische Modelle\n• Business Plan: TAM/SAM/SOM mit Overview und Modellen\n• Stage Gates: G1, G2, G3 Meeting-Protokolle\n• Business Case: Investment Case und Implementation Plan",
+            body: "In einer Idee navigieren Sie über die linke Sidebar:\n• Overview: Stammdaten und Zusammenfassung\n• Idea Scoring: 22-Fragen-Wizard und strategische Modelle\n• Business Plan: TAM/SAM/SOM mit Overview und Modellen\n• Stage Gates: G1, G2, G3 Meeting-Protokolle\n• Business Case: Investment Case und Implementation Plan",
           },
           {
             heading: "KI-Agenten nutzen",
@@ -298,7 +298,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "Dateien anhängen",
-            body: "Im Overview-Tab können Sie Dateien an Ideas anhängen – z.B. Marktforschungsberichte, Kundenpräsentationen oder technische Dokumente.",
+            body: "Im Overview-Tab können Sie Dateien an Ideen anhängen – z.B. Marktforschungsberichte, Kundenpräsentationen oder technische Dokumente.",
           },
           {
             heading: "Sprache umschalten",
@@ -393,7 +393,7 @@ const modulesEN: typeof modulesDE = [
       {
         title: "SWOT, BMC & More", description: "Overview of strategic tools", icon: Lightbulb,
         content: [
-          { heading: "SWOT Analysis", body: "Strengths, Weaknesses, Ideas and Threats. Internal (S/W) vs External (O/T). Linked to the TAM phase." },
+          { heading: "SWOT Analysis", body: "Strengths, Weaknesses, Chances and Threats. Internal (S/W) vs External (O/T). Linked to the TAM phase." },
           { heading: "Business Model Canvas", body: "9 building blocks: Customer Segments, Value Proposition, Channels, Customer Relationships, Revenue Streams, Key Resources, Activities, Partners and Cost Structure." },
           { heading: "Lean Canvas", body: "Adapted BMC for startups/innovations focusing on Problem, Solution, Metrics and Unfair Advantage." },
           { heading: "Value Proposition Canvas", body: "Detailed value analysis: Customer Jobs, Pains, Gains vs Products, Pain Relievers, Gain Creators." },

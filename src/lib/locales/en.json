@@ -1,7 +1,7 @@
 {
   "appTitle": "NOVI",
   "appSlogan": "Where Ideas Become Business",
-  "opportunities": "Ideas",
+  "opportunities": "Ideen",
   "newOpportunity": "New Idea",
   "title": "Title",
   "description": "Problem Description",
@@ -611,7 +611,7 @@
   "guideAnsoffDesc": "Maps growth strategies by combining existing/new products with existing/new markets. Helps classify the idea's growth approach (Market Penetration, Product Development, Market Development, or Diversification).",
   "guideBcgDesc": "Portfolio analysis tool that classifies ideas by relative market share and market growth rate into Stars, Cash Cows, Question Marks, or Dogs.",
   "guideMckinseyDesc": "9-cell matrix evaluating ideas along industry attractiveness and competitive strength. Guides invest/selectivity/harvest decisions.",
-  "guideSwotDesc": "Systematic analysis of internal Strengths and Weaknesses alongside external Ideas and Threats.",
+  "guideSwotDesc": "Systematic analysis of internal Strengths and Weaknesses alongside external Chances and Threats.",
   "guidePestelDesc": "Macro-environmental analysis covering Political, Economic, Social, Technological, Environmental, and Legal factors.",
   "guidePorterDesc": "Analyzes five competitive forces: rivalry, new entrants, substitutes, buyer power, and supplier power to assess industry profitability.",
   "guideValueChainDesc": "Maps the industry value chain from raw materials to end customer. Evaluates each stage for margin attractiveness, differentiation factors, and industry dynamics.",

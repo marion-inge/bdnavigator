@@ -58,7 +58,7 @@ export default function FAQ() {
                   <p className="text-sm text-muted-foreground">
                     {bp(
                       "No, stages must be completed in order. Each gate decision (G1, G2, G3) is only available when the idea is at the corresponding gate stage. However, you can fill in data for later sections at any time — the stage only controls which gate decisions are available.",
-                      "Nein, die Phasen müssen in der Reihenfolge durchlaufen werden. Jede Gate-Entscheidung (G1, G2, G3) ist nur verfügbar, wenn sich die Idea in der entsprechenden Gate-Phase befindet. Sie können jedoch jederzeit Daten für spätere Bereiche eintragen — die Phase steuert nur, welche Gate-Entscheidungen verfügbar sind."
+                      "Nein, die Phasen müssen in der Reihenfolge durchlaufen werden. Jede Gate-Entscheidung (G1, G2, G3) ist nur verfügbar, wenn sich die Idee in der entsprechenden Gate-Phase befindet. Sie können jedoch jederzeit Daten für spätere Bereiche eintragen — die Phase steuert nur, welche Gate-Entscheidungen verfügbar sind."
                     )}
                   </p>
                 </AccordionContent>
@@ -142,7 +142,7 @@ export default function FAQ() {
                   <p className="text-sm text-muted-foreground">
                     {bp(
                       "A No-Go decision is recorded but does not automatically archive or delete the idea. The idea remains accessible and can be revisited. The decision serves as documentation that the idea was evaluated and rejected at that gate, with the rationale preserved for future reference.",
-                      "Eine No-Go-Entscheidung wird dokumentiert, archiviert oder löscht die Idea aber nicht automatisch. Die Idee bleibt zugänglich und kann erneut besucht werden. Die Entscheidung dient als Dokumentation, dass die Idee an diesem Gate bewertet und abgelehnt wurde, wobei die Begründung für zukünftige Referenz erhalten bleibt."
+                      "Eine No-Go-Entscheidung wird dokumentiert, archiviert oder löscht die Idee aber nicht automatisch. Die Idee bleibt zugänglich und kann erneut besucht werden. Die Entscheidung dient als Dokumentation, dass die Idee an diesem Gate bewertet und abgelehnt wurde, wobei die Begründung für zukünftige Referenz erhalten bleibt."
                     )}
                   </p>
                 </AccordionContent>

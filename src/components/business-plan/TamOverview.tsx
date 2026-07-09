@@ -436,7 +436,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
                 <p className="text-sm text-muted-foreground mt-1 max-w-md">
                   {bp(
                     "IDA analyzes your idea context and supporting models (Market Research, PESTEL, Porter's, SWOT, Value Chain) to estimate the TAM in 3 scenarios.",
-                    "IDA analysiert deinen Idea-Kontext und die unterstützenden Modelle (Market Research, PESTEL, Porter's, SWOT, Value Chain), um den TAM in 3 Szenarien zu schätzen."
+                    "IDA analysiert deinen Ideenkontext und die unterstützenden Modelle (Market Research, PESTEL, Porter's, SWOT, Value Chain), um den TAM in 3 Szenarien zu schätzen."
                   )}
                 </p>
               </div>

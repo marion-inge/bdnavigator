@@ -347,7 +347,7 @@ export default function ProcessGuide() {
             />
             <FeatureCard
               icon={<span className="text-lg">📋</span>}
-              title={bp("Idea Table", "Idea-Tabelle")}
+              title={bp("Idea Table", "Ideen-Tabelle")}
               description={bp(
                 "Central table with key columns: Stage, Industry, Owner, Rough Scoring, TAM, SAM, SOM, Growth Rate, Payback Period, and IDA AI Assessment summary.",
                 "Zentrale Tabelle mit wichtigen Spalten: Phase, Branche, Owner, Rough Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit und IDA-KI-Assessment-Zusammenfassung."
