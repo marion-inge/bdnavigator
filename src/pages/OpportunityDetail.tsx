@@ -175,8 +175,19 @@ export default function OpportunityDetail() {
 
 
 
-  const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
+  const deriveBpMain = (subTab?: string): string => {
+    if (!subTab) return "combined";
+    if (subTab.startsWith("tam-")) return "tam";
+    if (subTab.startsWith("sam-")) return "sam";
+    if (subTab.startsWith("som-")) return "som";
+    return "combined";
+  };
+
+  const handleBpSubNavClick = (sectionKey: string, subTab?: string) => {
     setActiveTab("business_plan");
+    // Sidebar section keys (market_intel/verify_market) group tabs visually,
+    // but BusinessPlanSection routes on the underlying tam/sam/som/combined tab.
+    const mainTab = sectionKey === "combined" ? "combined" : deriveBpMain(subTab);
     setBpMainTab(mainTab);
     setBpSubTab(subTab);
     setSidebarOpen(false);
