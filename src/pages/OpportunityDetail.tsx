@@ -118,7 +118,7 @@ export default function OpportunityDetail() {
   const hasCompletedScoring = !!opp.roughScoringAnswers && Object.keys(opp.roughScoringAnswers).length > 0;
   const totalScore = hasCompletedScoring ? calculateTotalScore(opp.scoring) : null;
 
-  // Business Plan sub-navigation structure
+  // Business Plan sub-navigation structure — grouped by new process phases
   const bpSubNav = [
     {
       key: "combined",
@@ -126,24 +126,18 @@ export default function OpportunityDetail() {
       icon: <BarChart2 className="h-3 w-3" />,
     },
     {
-      key: "tam",
-      label: "TAM",
+      key: "market_intel",
+      label: bp("Market Intelligence", "Marktintelligenz"),
       icon: <Globe className="h-3 w-3" />,
       children: [
-        { key: "tam-overview", label: bp("Overview", "Übersicht") },
+        // TAM (full)
+        { key: "tam-overview", label: bp("TAM Overview", "TAM Übersicht") },
         { key: "tam-research", label: bp("Market Research", "Marktforschung") },
         { key: "tam-pestel", label: "PESTEL" },
         { key: "tam-valuechain", label: bp("Value Chain", "Wertschöpfungskette") },
         { key: "tam-porter", label: "Porter's" },
         { key: "tam-swot", label: "SWOT" },
-      ],
-    },
-    {
-      key: "sam",
-      label: "SAM",
-      icon: <Target className="h-3 w-3" />,
-      children: [
-        { key: "sam-overview", label: bp("Overview", "Übersicht") },
+        // From SAM
         { key: "sam-channels", label: bp("Sales Channels", "Vertriebskanäle") },
         { key: "sam-customers", label: bp("Customer Landscape", "Kundenlandschaft") },
         { key: "sam-strategic", label: bp("Strategic Fit", "Strateg. Fit") },
@@ -151,29 +145,30 @@ export default function OpportunityDetail() {
         { key: "sam-feasibility", label: bp("Feasibility", "Machbarkeit") },
         { key: "sam-org", label: bp("Org Readiness", "Org. Readiness") },
         { key: "sam-risk", label: bp("Risk", "Risiko") },
-        
-        { key: "sam-interviews", label: bp("Customer Interviews", "Kundeninterviews") },
-        { key: "sam-affiliate", label: bp("Affiliate Interviews", "Affiliate-Interviews") },
-        { key: "sam-bu", label: bp("BU Interviews", "BU-Interviews") },
         { key: "sam-bmc", label: "BMC" },
         { key: "sam-lean", label: "Lean Canvas" },
-      ],
-    },
-    {
-      key: "som",
-      label: "SOM",
-      icon: <TrendingUp className="h-3 w-3" />,
-      children: [
-        { key: "som-overview", label: bp("Overview", "Übersicht") },
+        // From SOM
         { key: "som-competitor", label: bp("Competitors", "Wettbewerb") },
-        
-        { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
         { key: "som-vpc", label: "VPC" },
         { key: "som-cba", label: bp("Customer Benefit", "Kundennutzen") },
         { key: "som-threecircles", label: bp("Three Circles", "Drei Kreise") },
         { key: "som-positioning", label: bp("Positioning", "Positionierung") },
-        
         { key: "som-targetcosting", label: "Target Costing" },
+      ],
+    },
+    {
+      key: "verify_market",
+      label: bp("Verification Market Potential", "Verifikation Marktpotenzial"),
+      icon: <Target className="h-3 w-3" />,
+      children: [
+        // SAM sizing + interviews
+        { key: "sam-overview", label: bp("SAM Overview", "SAM Übersicht") },
+        { key: "sam-interviews", label: bp("Customer Interviews", "Kundeninterviews") },
+        { key: "sam-affiliate", label: bp("Affiliate Interviews", "Affiliate-Interviews") },
+        { key: "sam-bu", label: bp("BU Interviews", "BU-Interviews") },
+        // SOM sizing + pilots
+        { key: "som-overview", label: bp("SOM Overview", "SOM Übersicht") },
+        { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
       ],
     },
   ];
