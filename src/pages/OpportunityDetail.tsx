@@ -384,10 +384,11 @@ export default function OpportunityDetail() {
                 {isBpItem && bpExpanded && isActive && (
                   <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
                     {bpSubNav.map((section) => {
-                      const isSectionActive = bpMainTab === section.key && !section.children;
+                      const isSectionActive = section.key === "combined" && bpMainTab === "combined";
                       const hasChildren = !!section.children;
                       const isSectionExpanded = expandedBpSection === section.key;
-                      const isChildActive = hasChildren && section.children!.some(c => bpMainTab === section.key && bpSubTab === c.key);
+                      const childKeys = hasChildren ? section.children!.map(c => c.key) : [];
+                      const isChildActive = hasChildren && !!bpSubTab && childKeys.includes(bpSubTab);
 
                       return (
                         <div key={section.key}>
