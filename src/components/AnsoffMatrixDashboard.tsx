@@ -46,7 +46,7 @@ const IDX_TO_POSITION = [
 
 function DraggableItem({ opportunity, onClick }: { opportunity: Opportunity; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `ansoff-${opportunity.id}`,
+    id: `ansoff-${idea.id}`,
     data: { oppId: opportunity.id },
   });
 
@@ -196,7 +196,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
               label={labels[idx]}
               items={quadrants[idx]}
               colorClass={QUADRANT_COLORS[idx]}
-              onItemClick={(id) => navigate(`/opportunity/${id}`)}
+              onItemClick={(id) => navigate(`/idea/${id}`)}
             />
           ))}
 
@@ -211,7 +211,7 @@ export function AnsoffMatrixDashboard({ opportunities }: Props) {
               label={labels[idx]}
               items={quadrants[idx]}
               colorClass={QUADRANT_COLORS[idx]}
-              onItemClick={(id) => navigate(`/opportunity/${id}`)}
+              onItemClick={(id) => navigate(`/idea/${id}`)}
             />
           ))}
         </div>

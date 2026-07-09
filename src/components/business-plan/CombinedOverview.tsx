@@ -218,7 +218,7 @@ export function CombinedOverview({ scoring, strategicAnalyses, onSaveStrategic, 
             </div>
             <div>
               <Label>{bp("How does the addressable portion (SAM) develop?", "Wie entwickelt sich der adressierbare Teil (SAM)?")}</Label>
-              <Textarea value={interp.samDevelopment} onChange={e => setInterp(prev => ({ ...prev, samDevelopment: e.target.value }))} placeholder={bp("SAM trajectory, expansion opportunities, limitations...", "SAM-Entwicklung, Expansionsmöglichkeiten, Limitierungen...")} disabled={readonly} rows={3} />
+              <Textarea value={interp.samDevelopment} onChange={e => setInterp(prev => ({ ...prev, samDevelopment: e.target.value }))} placeholder={bp("SAM trajectory, expansion ideas, limitations...", "SAM-Entwicklung, Expansionsmöglichkeiten, Limitierungen...")} disabled={readonly} rows={3} />
             </div>
             <div>
               <Label>{bp("How does the obtainable portion (SOM) develop?", "Wie entwickelt sich der gewinnbare Teil (SOM)?")}</Label>

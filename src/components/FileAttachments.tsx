@@ -17,7 +17,7 @@ interface FileRecord {
   created_at: string;
 }
 
-const BUCKET = "opportunity-files";
+const BUCKET = "idea-files";
 const MAX_SIZE = 20 * 1024 * 1024; // 20 MB
 
 function getFileIcon(mimeType: string) {

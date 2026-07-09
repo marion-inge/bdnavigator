@@ -177,7 +177,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "Im Dashboard",
-            body: "Das Ansoff-Dashboard auf der Startseite zeigt alle Ihre Opportunities in der Matrix und hilft, die Portfolio-Balance zu bewerten.",
+            body: "Das Ansoff-Dashboard auf der Startseite zeigt alle Ihre Ideas in der Matrix und hilft, die Portfolio-Balance zu bewerten.",
           },
         ],
       },
@@ -188,7 +188,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "SWOT-Analyse",
-            body: "Stärken, Schwächen, Chancen und Risiken einer Opportunity. Intern (S/W) vs. Extern (O/T). Verknüpft mit der TAM-Phase im Tool.",
+            body: "Stärken, Schwächen, Chancen und Risiken einer Idea. Intern (S/W) vs. Extern (O/T). Verknüpft mit der TAM-Phase im Tool.",
           },
           {
             heading: "Business Model Canvas (BMC)",
@@ -236,7 +236,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Investment Case",
-            body: "Der Investment Case fasst zusammen, warum in diese Opportunity investiert werden soll: erwarteter ROI, benötigte Investitionen, Zeitplan und Risikobewertung. Er wird vor Gate 2 erstellt.",
+            body: "Der Investment Case fasst zusammen, warum in diese Idea investiert werden soll: erwarteter ROI, benötigte Investitionen, Zeitplan und Risikobewertung. Er wird vor Gate 2 erstellt.",
           },
           {
             heading: "Business Case (Implementation & GTM Plan)",
@@ -264,22 +264,22 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Das Dashboard",
-            body: "Das Dashboard zeigt alle Opportunities mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
+            body: "Das Dashboard zeigt alle Ideas mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
           },
           {
-            heading: "Opportunity erstellen",
+            heading: "Idea erstellen",
             body: "Klicken Sie auf '+ Neue Idee' im Header. Füllen Sie Titel, Problembeschreibung, Lösungsidee, Branche, Geographie, Technologie und Owner aus. Nach dem Erstellen starten Sie im Status 'Idea'.",
           },
         ],
       },
       {
-        title: "Sidebar-Navigation in Opportunities",
-        description: "Alle Bereiche einer Opportunity",
+        title: "Sidebar-Navigation in Ideas",
+        description: "Alle Bereiche einer Idea",
         icon: BookOpen,
         content: [
           {
             heading: "Hierarchische Navigation",
-            body: "In einer Opportunity navigieren Sie über die linke Sidebar:\n• Overview: Stammdaten und Zusammenfassung\n• Idea Scoring: 22-Fragen-Wizard und strategische Modelle\n• Business Plan: TAM/SAM/SOM mit Overview und Modellen\n• Stage Gates: G1, G2, G3 Meeting-Protokolle\n• Business Case: Investment Case und Implementation Plan",
+            body: "In einer Idea navigieren Sie über die linke Sidebar:\n• Overview: Stammdaten und Zusammenfassung\n• Idea Scoring: 22-Fragen-Wizard und strategische Modelle\n• Business Plan: TAM/SAM/SOM mit Overview und Modellen\n• Stage Gates: G1, G2, G3 Meeting-Protokolle\n• Business Case: Investment Case und Implementation Plan",
           },
           {
             heading: "KI-Agenten nutzen",
@@ -294,11 +294,11 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "PDF-Export",
-            body: "Auf dem Overview-Tab jeder Opportunity finden Sie den PDF-Export-Button. Dieser erstellt ein umfassendes Dokument mit allen Scoring-Ergebnissen, Marktanalysen und Gate-Entscheidungen.",
+            body: "Auf dem Overview-Tab jeder Idea finden Sie den PDF-Export-Button. Dieser erstellt ein umfassendes Dokument mit allen Scoring-Ergebnissen, Marktanalysen und Gate-Entscheidungen.",
           },
           {
             heading: "Dateien anhängen",
-            body: "Im Overview-Tab können Sie Dateien an Opportunities anhängen – z.B. Marktforschungsberichte, Kundenpräsentationen oder technische Dokumente.",
+            body: "Im Overview-Tab können Sie Dateien an Ideas anhängen – z.B. Marktforschungsberichte, Kundenpräsentationen oder technische Dokumente.",
           },
           {
             heading: "Sprache umschalten",
@@ -387,13 +387,13 @@ const modulesEN: typeof modulesDE = [
         title: "Ansoff Matrix", description: "Classifying growth strategies", icon: Layers,
         content: [
           { heading: "4 Strategy Fields", body: "• Market Penetration: Existing product, existing market (lowest risk)\n• Market Development: Existing product, new market\n• Product Development: New product, existing market\n• Diversification: New product, new market (highest risk)" },
-          { heading: "In the Dashboard", body: "The Ansoff Dashboard on the home page shows all opportunities in the matrix and helps assess portfolio balance." },
+          { heading: "In the Dashboard", body: "The Ansoff Dashboard on the home page shows all ideas in the matrix and helps assess portfolio balance." },
         ],
       },
       {
         title: "SWOT, BMC & More", description: "Overview of strategic tools", icon: Lightbulb,
         content: [
-          { heading: "SWOT Analysis", body: "Strengths, Weaknesses, Opportunities and Threats. Internal (S/W) vs External (O/T). Linked to the TAM phase." },
+          { heading: "SWOT Analysis", body: "Strengths, Weaknesses, Ideas and Threats. Internal (S/W) vs External (O/T). Linked to the TAM phase." },
           { heading: "Business Model Canvas", body: "9 building blocks: Customer Segments, Value Proposition, Channels, Customer Relationships, Revenue Streams, Key Resources, Activities, Partners and Cost Structure." },
           { heading: "Lean Canvas", body: "Adapted BMC for startups/innovations focusing on Problem, Solution, Metrics and Unfair Advantage." },
           { heading: "Value Proposition Canvas", body: "Detailed value analysis: Customer Jobs, Pains, Gains vs Products, Pain Relievers, Gain Creators." },
@@ -435,12 +435,12 @@ const modulesEN: typeof modulesDE = [
       {
         title: "Dashboard & Navigation", description: "Overview and getting started", icon: Compass,
         content: [
-          { heading: "The Dashboard", body: "Shows all opportunities with filters. The pipeline funnel visualizes distribution across stages. Ansoff and Three Horizons charts provide strategic insights." },
-          { heading: "Creating an Opportunity", body: "Click '+ New Idea' in the header. Fill in title, problem, solution, industry, geography, technology and owner." },
+          { heading: "The Dashboard", body: "Shows all ideas with filters. The pipeline funnel visualizes distribution across stages. Ansoff and Three Horizons charts provide strategic insights." },
+          { heading: "Creating an Idea", body: "Click '+ New Idea' in the header. Fill in title, problem, solution, industry, geography, technology and owner." },
         ],
       },
       {
-        title: "Sidebar Navigation", description: "All areas of an opportunity", icon: BookOpen,
+        title: "Sidebar Navigation", description: "All areas of an idea", icon: BookOpen,
         content: [
           { heading: "Hierarchical Navigation", body: "Navigate via the left sidebar:\n• Overview: Master data & summary\n• Idea Scoring: 22-question wizard & strategic models\n• Business Plan: TAM/SAM/SOM with overviews & models\n• Stage Gates: G1, G2, G3 meeting notes\n• Business Case: Investment Case & Implementation Plan" },
           { heading: "Using AI Agents", body: "IDA (pink robot): Evaluates your inputs and creates assessments\nMark (blue robot): Will perform web research for market data in the future\n\nAI estimations are under the 'IDA Estimation' buttons in TAM, SAM and SOM." },
@@ -449,7 +449,7 @@ const modulesEN: typeof modulesDE = [
       {
         title: "Export & Sharing", description: "PDF export and collaboration", icon: Rocket,
         content: [
-          { heading: "PDF Export", body: "Find the PDF export button on the Overview tab of each opportunity." },
+          { heading: "PDF Export", body: "Find the PDF export button on the Overview tab of each idea." },
           { heading: "File Attachments", body: "Attach files (market reports, presentations, technical documents) on the Overview tab." },
           { heading: "Language Switching", body: "The tool supports German and English. Use the language toggle in the header." },
         ],
