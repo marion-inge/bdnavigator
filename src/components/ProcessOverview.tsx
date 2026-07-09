@@ -1,12 +1,13 @@
 import { useI18n } from "@/lib/i18n";
 
 const STAGES = [
-  { key: "idea", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
-  { key: "rough_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
-  { key: "detailed_scoring", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
-  { key: "business_case_calc", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
-  { key: "business_case", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
-  { key: "implement_review", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
+  { key: "idea", labelKey: "proc_idea", subKey: "proc_idea_sub", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
+  { key: "idea_scoring", labelKey: "proc_ideaScoring", subKey: "proc_ideaScoring_sub", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
+  { key: "market_intel", labelKey: "proc_marketIntel", subKey: "proc_marketIntel_sub", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
+  { key: "verify_market", labelKey: "proc_verifyMarket", subKey: "proc_verifyMarket_sub", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
+  { key: "business_case", labelKey: "proc_businessCase", subKey: "proc_businessCase_sub", gateAfter: true, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "impl_gtm", labelKey: "proc_implGtm", subKey: "proc_implGtm_sub", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "impl_review", labelKey: "proc_implReview", subKey: "proc_implReview_sub", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
 
 export function ProcessOverview() {
@@ -48,10 +49,10 @@ export function ProcessOverview() {
                 <div className={`h-1 w-full ${stage.color} opacity-70`} />
                 <div className="flex flex-col items-center text-center px-2 py-3 flex-1 gap-1.5">
                   <span className="text-sm font-bold text-card-foreground leading-tight">
-                    {t(`stage_${stage.key}` as any)}
+                    {t(stage.labelKey as any)}
                   </span>
                   <span className="text-[10px] text-muted-foreground leading-tight hidden sm:block">
-                    {t(`homeStep_${stage.key}` as any)}
+                    {t(stage.subKey as any)}
                   </span>
                 </div>
               </div>
