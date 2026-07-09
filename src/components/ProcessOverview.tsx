@@ -49,10 +49,10 @@ export function ProcessOverview() {
                 <div className={`h-1 w-full ${stage.color} opacity-70`} />
                 <div className="flex flex-col items-center text-center px-2 py-3 flex-1 gap-1.5">
                   <span className="text-sm font-bold text-card-foreground leading-tight">
-                    {t(`stage_${stage.key}` as any)}
+                    {t(stage.labelKey as any)}
                   </span>
                   <span className="text-[10px] text-muted-foreground leading-tight hidden sm:block">
-                    {t(`homeStep_${stage.key}` as any)}
+                    {t(stage.subKey as any)}
                   </span>
                 </div>
               </div>
