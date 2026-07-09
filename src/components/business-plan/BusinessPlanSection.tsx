@@ -105,7 +105,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
       onClick={() => setIdaScope(scope)}
       disabled={!canRunIda}
       className="gap-2"
-      title={!opportunityId ? "Save the opportunity first" : ""}
+      title={!opportunityId ? "Save the idea first" : ""}
     >
       <img src={idaRobot} alt="" className="h-4 w-4" />
       {label}

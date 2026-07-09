@@ -281,7 +281,7 @@ export default function Index() {
               return (
                 <div
                   key={opp.id}
-                  onClick={() => navigate(`/opportunity/${opp.id}`)}
+                  onClick={() => navigate(`/idea/${opp.id}`)}
                   className="rounded-lg border border-border bg-card p-4 cursor-pointer hover:bg-muted/30 transition-colors space-y-2"
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -356,7 +356,7 @@ export default function Index() {
                   return (
                     <tr
                       key={opp.id}
-                      onClick={() => navigate(`/opportunity/${opp.id}`)}
+                      onClick={() => navigate(`/idea/${opp.id}`)}
                       className="border-b border-border last:border-0 hover:bg-muted/30 cursor-pointer transition-colors"
                     >
                       <td className="px-4 py-3">

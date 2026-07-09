@@ -49,7 +49,7 @@ export default function OpportunityDetail() {
   if (!opp) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Opportunity not found.</p>
+        <p className="text-muted-foreground">Idea not found.</p>
       </div>
     );
   }
