@@ -18,7 +18,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     icon: <LayoutDashboard className="h-5 w-5" />,
     features: [
       { en: "Pipeline Funnel Visualization", de: "Pipeline-Trichter-Visualisierung", detail: "Interactive funnel chart showing idea distribution across stages", detailDe: "Interaktives Trichterdiagramm zur Verteilung der Ideen über Phasen" },
-      { en: "KPI Dashboard Cards", de: "KPI-Dashboard-Karten", detail: "Total ideas, top scorer at a glance", detailDe: "Gesamtzahl Ideas, Top-Scorer auf einen Blick" },
+      { en: "KPI Dashboard Cards", de: "KPI-Dashboard-Karten", detail: "Total ideas, top scorer at a glance", detailDe: "Gesamtzahl Ideen, Top-Scorer auf einen Blick" },
       { en: "Market Potential Chart (TAM/SAM/SOM)", de: "Marktpotenzial-Diagramm (TAM/SAM/SOM)", detail: "Aggregated 5-year TAM, SAM, SOM bar chart across the entire portfolio", detailDe: "Aggregiertes 5-Jahres-TAM/SAM/SOM-Balkendiagramm über das gesamte Portfolio" },
       { en: "Distribution Charts (Industry, Geography, Technology)", de: "Verteilungsdiagramme (Branche, Geografie, Technologie)", detail: "Pie and bar charts showing portfolio composition", detailDe: "Kreis- und Balkendiagramme zur Portfolio-Zusammensetzung" },
       { en: "Ansoff Matrix Dashboard", de: "Ansoff-Matrix-Dashboard", detail: "Strategic categorization of ideas by market/product newness", detailDe: "Strategische Einordnung nach Markt-/Produktneuheit" },
@@ -113,7 +113,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Full-Text Search", de: "Volltextsuche" },
       { en: "Multi-Filter (Stage, Industry, Geography, Technology, Owner)", de: "Multi-Filter (Phase, Branche, Geografie, Technologie, Owner)" },
       { en: "PDF Export", de: "PDF-Export", detail: "Questionnaire and idea data export", detailDe: "Fragebogen- und Ideen-Datenexport" },
-      { en: "File Attachments", de: "Dateianhänge", detail: "Upload, download, comment on files per idea", detailDe: "Dateien pro Idea hochladen, herunterladen, kommentieren" },
+      { en: "File Attachments", de: "Dateianhänge", detail: "Upload, download, comment on files per idea", detailDe: "Dateien pro Idee hochladen, herunterladen, kommentieren" },
     ],
   },
   {

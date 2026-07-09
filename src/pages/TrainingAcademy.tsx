@@ -236,7 +236,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Investment Case",
-            body: "Der Investment Case fasst zusammen, warum in diese Idea investiert werden soll: erwarteter ROI, benötigte Investitionen, Zeitplan und Risikobewertung. Er wird vor Gate 2 erstellt.",
+            body: "Der Investment Case fasst zusammen, warum in diese Idee investiert werden soll: erwarteter ROI, benötigte Investitionen, Zeitplan und Risikobewertung. Er wird vor Gate 2 erstellt.",
           },
           {
             heading: "Business Case (Implementation & GTM Plan)",
@@ -294,7 +294,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "PDF-Export",
-            body: "Auf dem Overview-Tab jeder Idea finden Sie den PDF-Export-Button. Dieser erstellt ein umfassendes Dokument mit allen Scoring-Ergebnissen, Marktanalysen und Gate-Entscheidungen.",
+            body: "Auf dem Overview-Tab jeder Idee finden Sie den PDF-Export-Button. Dieser erstellt ein umfassendes Dokument mit allen Scoring-Ergebnissen, Marktanalysen und Gate-Entscheidungen.",
           },
           {
             heading: "Dateien anhängen",
