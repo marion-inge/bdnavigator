@@ -267,13 +267,13 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
             body: "Das Dashboard zeigt alle Ideen mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
           },
           {
-            heading: "Idea erstellen",
+            heading: "Idee erstellen",
             body: "Klicken Sie auf '+ Neue Idee' im Header. Füllen Sie Titel, Problembeschreibung, Lösungsidee, Branche, Geographie, Technologie und Owner aus. Nach dem Erstellen starten Sie im Status 'Idea'.",
           },
         ],
       },
       {
-        title: "Sidebar-Navigation in Ideas",
+        title: "Sidebar-Navigation in Ideen",
         description: "Alle Bereiche einer Idee",
         icon: BookOpen,
         content: [
