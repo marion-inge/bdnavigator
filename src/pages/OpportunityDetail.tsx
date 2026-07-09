@@ -426,7 +426,7 @@ export default function OpportunityDetail() {
                           {hasChildren && isSectionExpanded && (
                             <div className="ml-4 pl-2 border-l border-border/50 space-y-0.5 mt-0.5">
                               {section.children!.map((child) => {
-                                const isSubActive = bpMainTab === section.key && bpSubTab === child.key;
+                                const isSubActive = bpSubTab === child.key;
                                 return (
                                   <button
                                     key={child.key}
