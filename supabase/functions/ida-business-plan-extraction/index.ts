@@ -497,9 +497,13 @@ serve(async (req) => {
       ctx.technology ? `Technology: ${ctx.technology}` : "",
     ].filter(Boolean).join("\n");
 
+    // For a single-area scope (tam/sam/som), also run the "overview" section so
+    // the TAM/SAM/SOM Overview text fields get proposed alongside the models.
     const sections: SectionScope[] = scope === "all"
       ? ["overview", "tam", "sam", "som"]
-      : [scope];
+      : scope === "overview"
+      ? ["overview"]
+      : [scope, "overview"];
 
     // Run sections in parallel — each call has a small schema and a generous
     // output budget, so the model has room to be thorough per section.
@@ -512,7 +516,16 @@ serve(async (req) => {
     results.forEach((r, i) => {
       const s = sections[i];
       if (r.status === "fulfilled") {
-        Object.assign(proposal, r.value || {});
+        let value: any = r.value || {};
+        // When "overview" is run as a companion to a single-area scope,
+        // keep only that area's overview.* to avoid proposing unrelated fields.
+        if (s === "overview" && scope !== "all" && scope !== "overview" && value?.overview) {
+          value = { overview: { [scope]: value.overview[scope] } };
+        }
+        // Deep-merge one level so overview.* and tam.*/sam.*/som.* coexist.
+        for (const k of Object.keys(value)) {
+          proposal[k] = { ...(proposal[k] || {}), ...(value[k] || {}) };
+        }
       } else {
         const err: any = r.reason;
         console.error(`Section ${s} failed`, err);
