@@ -341,7 +341,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - porter: competitiveRivalry, threatOfNewEntrants, threatOfSubstitutes, bargainingPowerBuyers, bargainingPowerSuppliers, description, rationale
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
-- customerSegmentation: description, rationale
+- customerSegmentation: description, rationale, entries[] — IMPORTANT: extract every customer segment mentioned as a separate row with name, size, needs, willingnessToPay and priority (high/medium/low). Do not merge segments into one paragraph.
 - businessModelling (BMC): valueProposition, customerSegments, channels, customerRelationships, revenueStreams, keyResources, keyActivities, keyPartners, costStructure, description, rationale
 - leanCanvas: problem, solution, uniqueValueProposition, unfairAdvantage, customerSegments, keyMetrics, channels, costStructure, revenueStreams, description, rationale
 - risk: details`,
