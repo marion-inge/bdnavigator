@@ -289,29 +289,31 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
           {/* Radar Chart */}
           {hasRadarData ? (
             <div className="rounded-lg border border-border bg-background/50 p-4">
-              <ResponsiveContainer width="100%" height={380}>
-                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
-                  <PolarGrid stroke="hsl(var(--border))" />
-                  <PolarAngleAxis dataKey="dimension" tick={{ fontSize: 12, fill: "hsl(var(--foreground))" }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 5]} tickCount={6} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                  {selectedCompetitors.map((comp, i) => {
-                    const originalIdx = compEntries.findIndex((c) => c === comp);
-                    return (
-                      <Radar
-                        key={comp.name}
-                        name={comp.name}
-                        dataKey={comp.name}
-                        stroke={RADAR_COLORS[originalIdx % RADAR_COLORS.length]}
-                        fill={RADAR_COLORS[originalIdx % RADAR_COLORS.length]}
-                        fillOpacity={0.15}
-                        strokeWidth={2}
-                      />
-                    );
-                  })}
-                  <Legend />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-                </RadarChart>
-              </ResponsiveContainer>
+              <div className="mx-auto" style={{ maxWidth: 720 }}>
+                <ResponsiveContainer width="100%" height={640}>
+                  <RadarChart data={radarData} cx="50%" cy="48%" outerRadius="72%" margin={{ top: 20, right: 60, bottom: 40, left: 60 }}>
+                    <PolarGrid stroke="hsl(var(--border))" />
+                    <PolarAngleAxis dataKey="dimension" tick={{ fontSize: 13, fill: "hsl(var(--foreground))" }} />
+                    <PolarRadiusAxis angle={90} domain={[0, 5]} tickCount={6} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    {selectedCompetitors.map((comp, i) => {
+                      const originalIdx = compEntries.findIndex((c) => c === comp);
+                      return (
+                        <Radar
+                          key={comp.name}
+                          name={comp.name}
+                          dataKey={comp.name}
+                          stroke={RADAR_COLORS[originalIdx % RADAR_COLORS.length]}
+                          fill={RADAR_COLORS[originalIdx % RADAR_COLORS.length]}
+                          fillOpacity={0.15}
+                          strokeWidth={2}
+                        />
+                      );
+                    })}
+                    <Legend wrapperStyle={{ paddingTop: 12 }} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground italic py-3">{t("clNoRatings")}</p>
