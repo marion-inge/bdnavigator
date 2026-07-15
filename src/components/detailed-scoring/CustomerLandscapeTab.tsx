@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, CustomerSegment } from "@/lib/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +30,11 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
+
+  useEffect(() => {
+    if (dirty) return;
+    setLocal(scoring.marketAttractiveness);
+  }, [dirty, scoring.marketAttractiveness]);
 
   const update = (field: keyof typeof local.analysis, value: string) => {
     setLocal((prev) => ({ ...prev, analysis: { ...prev.analysis, [field]: value } }));
