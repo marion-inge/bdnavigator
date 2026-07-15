@@ -10,7 +10,7 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegmentEntry } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegment, CustomerSegmentEntry } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
@@ -208,6 +208,11 @@ const parseMarketShareNumber = (value: string): number => {
   return Number.isFinite(n) ? n : 0;
 };
 
+const parseSegmentSizeNumber = (value: string): number => {
+  const n = parseFloat(String(value || "").replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+  return Number.isFinite(n) ? n : 0;
+};
+
 const toVisibleCompetitorEntries = (entries: CompetitorAnalysisEntry[]): CompetitorEntry[] =>
   entries.map((entry) => ({
     name: entry.name,
@@ -246,6 +251,53 @@ const parseCustomerSegments = (text: string): CustomerSegmentEntry[] => {
     });
   }
   return out;
+};
+
+const toVisibleCustomerSegments = (entries: CustomerSegmentEntry[]): CustomerSegment[] =>
+  entries.map((entry) => ({
+    name: entry.name,
+    size: parseSegmentSizeNumber(entry.size),
+    description: [entry.needs, entry.willingnessToPay ? `Willingness to pay: ${entry.willingnessToPay}` : "", `Priority: ${entry.priority}`]
+      .filter(Boolean)
+      .join("\n"),
+  }));
+
+const customerSegmentationDescriptionField: IdaFieldDef = {
+  path: "sam.customerSegmentation.description",
+  labelEn: "Description",
+  labelDe: "Beschreibung",
+  multiline: true,
+  section: "Customer Landscape",
+  get: (s, sa) => s.marketAttractiveness?.analysis?.targetCustomers || (sa.sam as any)?.customerSegmentation?.description || "",
+  apply: (s, sa, v) => ({
+    scoring: {
+      ...s,
+      marketAttractiveness: {
+        ...s.marketAttractiveness,
+        analysis: { ...s.marketAttractiveness.analysis, targetCustomers: v },
+      },
+    } as DetailedScoring,
+    sa: setSamModel(sa, "customerSegmentation" as any, { description: v }),
+  }),
+};
+
+const customerSegmentationRationaleField: IdaFieldDef = {
+  path: "sam.customerSegmentation.rationale",
+  labelEn: "Rationale",
+  labelDe: "Begründung",
+  multiline: true,
+  section: "Customer Landscape",
+  get: (s, sa) => s.marketAttractiveness?.analysis?.customerRelationship || (sa.sam as any)?.customerSegmentation?.rationale || "",
+  apply: (s, sa, v) => ({
+    scoring: {
+      ...s,
+      marketAttractiveness: {
+        ...s.marketAttractiveness,
+        analysis: { ...s.marketAttractiveness.analysis, customerRelationship: v },
+      },
+    } as DetailedScoring,
+    sa: setSamModel(sa, "customerSegmentation" as any, { rationale: v }),
+  }),
 };
 
 
@@ -411,16 +463,41 @@ export const SAM_FIELDS: IdaFieldDef[] = [
   ovField("sam", "resourceScenarios", "Resource scenarios", "Ressourcenszenarien"),
   ovField("sam", "requiredInvestments", "Required investments", "Erforderliche Investitionen"),
   // Customer Landscape (customerSegmentation narrative + entries table)
-  modelField("sam", "customerSegmentation", "description", "Customer Landscape", "Description", "Beschreibung"),
-  modelField("sam", "customerSegmentation", "rationale", "Customer Landscape", "Rationale", "Begründung"),
+  customerSegmentationDescriptionField,
+  customerSegmentationRationaleField,
   {
     path: "sam.customerSegmentation.entries",
     labelEn: "Customer segment entries", labelDe: "Kundensegment-Einträge", multiline: true, section: "Customer Landscape",
-    get: (_s, sa) => fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries),
-    apply: (s, sa, v) => ({
-      scoring: s,
-      sa: setSamModel(sa, "customerSegmentation" as any, { entries: parseCustomerSegments(v) }),
-    }),
+    get: (s, sa) => fmtCustomerSegments((s.marketAttractiveness?.analysis?.customerSegments || []).map((segment) => ({
+      id: crypto.randomUUID(),
+      name: segment.name,
+      size: String(segment.size ?? ""),
+      needs: segment.description || "",
+      willingnessToPay: "",
+      priority: "medium" as const,
+    }))) || fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries),
+    apply: (s, sa, v) => {
+      const entries = parseCustomerSegments(v);
+      const visibleSegments = toVisibleCustomerSegments(entries);
+      const targetCustomers = s.marketAttractiveness.analysis.targetCustomers?.trim()
+        ? s.marketAttractiveness.analysis.targetCustomers
+        : entries.map((entry) => entry.name).filter(Boolean).join("; ");
+
+      return {
+        scoring: {
+          ...s,
+          marketAttractiveness: {
+            ...s.marketAttractiveness,
+            analysis: {
+              ...s.marketAttractiveness.analysis,
+              targetCustomers,
+              customerSegments: visibleSegments,
+            },
+          },
+        } as DetailedScoring,
+        sa: setSamModel(sa, "customerSegmentation" as any, { entries }),
+      };
+    },
   },
   // BMC
   modelField("sam", "businessModelling", "valueProposition", "Business Model Canvas", "Value proposition", "Wertangebot"),
