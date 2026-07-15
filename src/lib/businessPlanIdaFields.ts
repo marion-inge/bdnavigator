@@ -550,5 +550,8 @@ export function readProposal(proposal: any, path: string): string {
   if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("strengths" in r || "weaknesses" in r || "threatLevel" in r))) {
     return fmtCompetitors(cur as CompetitorAnalysisEntry[]);
   }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("willingnessToPay" in r || "priority" in r || "needs" in r))) {
+    return fmtCustomerSegments(cur as CustomerSegmentEntry[]);
+  }
   return String(cur);
 }
