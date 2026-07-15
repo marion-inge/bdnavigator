@@ -244,7 +244,30 @@ function buildSchema(scope: SectionScope) {
     props.sam = {
       type: "object",
       properties: {
-        customerSegmentation: { type: "object", properties: { description: { type: "string" }, rationale: { type: "string" } }, additionalProperties: false },
+        customerSegmentation: {
+          type: "object",
+          properties: {
+            description: { type: "string" },
+            rationale: { type: "string" },
+            entries: {
+              type: "array",
+              description: "Every customer segment mentioned in the documents. Extract each as a separate row.",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Segment name exactly as shown." },
+                  size: { type: "string", description: "Segment size with unit if available (e.g. '12k accounts', '€45M') or 'n/a'." },
+                  needs: { type: "string", description: "Key needs / pain points of this segment (2-4 concrete points)." },
+                  willingnessToPay: { type: "string", description: "Willingness / ability to pay (price range, budget signals) or 'n/a'." },
+                  priority: { type: "string", enum: ["high", "medium", "low"], description: "Strategic priority for this segment." },
+                },
+                required: ["name", "size", "needs", "willingnessToPay", "priority"],
+                additionalProperties: false,
+              },
+            },
+          },
+          additionalProperties: false,
+        },
         businessModelling: { type: "object", properties: strProps(BMC_KEYS), additionalProperties: false },
         leanCanvas: { type: "object", properties: strProps(LEAN_KEYS), additionalProperties: false },
         risk: { type: "object", properties: { details: { type: "string" } }, additionalProperties: false },
@@ -318,7 +341,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - porter: competitiveRivalry, threatOfNewEntrants, threatOfSubstitutes, bargainingPowerBuyers, bargainingPowerSuppliers, description, rationale
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
-- customerSegmentation: description, rationale
+- customerSegmentation: description, rationale, entries[] — IMPORTANT: extract every customer segment mentioned as a separate row with name, size, needs, willingnessToPay and priority (high/medium/low). Do not merge segments into one paragraph.
 - businessModelling (BMC): valueProposition, customerSegments, channels, customerRelationships, revenueStreams, keyResources, keyActivities, keyPartners, costStructure, description, rationale
 - leanCanvas: problem, solution, uniqueValueProposition, unfairAdvantage, customerSegments, keyMetrics, channels, costStructure, revenueStreams, description, rationale
 - risk: details`,

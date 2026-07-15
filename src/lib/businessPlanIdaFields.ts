@@ -10,7 +10,7 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CustomerSegmentEntry } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
@@ -203,6 +203,40 @@ const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
   return out;
 };
 
+const fmtCustomerSegments = (entries: CustomerSegmentEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries
+    .map((e) =>
+      `Name: ${e.name}\nSize: ${e.size}\nNeeds: ${e.needs}\nWillingness to pay: ${e.willingnessToPay}\nPriority: ${e.priority}`,
+    )
+    .join("\n\n");
+};
+
+const parseCustomerSegments = (text: string): CustomerSegmentEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CustomerSegmentEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) =>
+      lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const name = get("name") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!name) continue;
+    const rawPri = (get("priority") || "medium").toLowerCase();
+    const priority: CustomerSegmentEntry["priority"] =
+      rawPri.startsWith("h") ? "high" : rawPri.startsWith("l") ? "low" : "medium";
+    out.push({
+      id: crypto.randomUUID(),
+      name,
+      size: get("size"),
+      needs: get("needs"),
+      willingnessToPay: get("willingness to pay") || get("willingness") || get("wtp"),
+      priority,
+    });
+  }
+  return out;
+};
+
+
 
 const regionField = (area: "tam" | "sam" | "som"): IdaFieldDef => ({
   path: `${area === "tam" ? "overview.tam" : area === "sam" ? "overview.sam" : "overview.som"}.geographicalRegions`,
@@ -364,9 +398,18 @@ export const SAM_FIELDS: IdaFieldDef[] = [
   ovField("sam", "priceEvolution", "Price evolution", "Preisentwicklung"),
   ovField("sam", "resourceScenarios", "Resource scenarios", "Ressourcenszenarien"),
   ovField("sam", "requiredInvestments", "Required investments", "Erforderliche Investitionen"),
-  // Customer Landscape (customerSegmentation narrative)
+  // Customer Landscape (customerSegmentation narrative + entries table)
   modelField("sam", "customerSegmentation", "description", "Customer Landscape", "Description", "Beschreibung"),
   modelField("sam", "customerSegmentation", "rationale", "Customer Landscape", "Rationale", "Begründung"),
+  {
+    path: "sam.customerSegmentation.entries",
+    labelEn: "Customer segment entries", labelDe: "Kundensegment-Einträge", multiline: true, section: "Customer Landscape",
+    get: (_s, sa) => fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries),
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customerSegmentation" as any, { entries: parseCustomerSegments(v) }),
+    }),
+  },
   // BMC
   modelField("sam", "businessModelling", "valueProposition", "Business Model Canvas", "Value proposition", "Wertangebot"),
   modelField("sam", "businessModelling", "customerSegments", "Business Model Canvas", "Customer segments", "Kundensegmente"),
@@ -506,6 +549,9 @@ export function readProposal(proposal: any, path: string): string {
   }
   if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("strengths" in r || "weaknesses" in r || "threatLevel" in r))) {
     return fmtCompetitors(cur as CompetitorAnalysisEntry[]);
+  }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("willingnessToPay" in r || "priority" in r || "needs" in r))) {
+    return fmtCustomerSegments(cur as CustomerSegmentEntry[]);
   }
   return String(cur);
 }
