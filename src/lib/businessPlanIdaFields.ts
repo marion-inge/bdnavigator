@@ -203,6 +203,40 @@ const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
   return out;
 };
 
+const fmtCustomerSegments = (entries: CustomerSegmentEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries
+    .map((e) =>
+      `Name: ${e.name}\nSize: ${e.size}\nNeeds: ${e.needs}\nWillingness to pay: ${e.willingnessToPay}\nPriority: ${e.priority}`,
+    )
+    .join("\n\n");
+};
+
+const parseCustomerSegments = (text: string): CustomerSegmentEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CustomerSegmentEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) =>
+      lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const name = get("name") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!name) continue;
+    const rawPri = (get("priority") || "medium").toLowerCase();
+    const priority: CustomerSegmentEntry["priority"] =
+      rawPri.startsWith("h") ? "high" : rawPri.startsWith("l") ? "low" : "medium";
+    out.push({
+      id: crypto.randomUUID(),
+      name,
+      size: get("size"),
+      needs: get("needs"),
+      willingnessToPay: get("willingness to pay") || get("willingness") || get("wtp"),
+      priority,
+    });
+  }
+  return out;
+};
+
+
 
 const regionField = (area: "tam" | "sam" | "som"): IdaFieldDef => ({
   path: `${area === "tam" ? "overview.tam" : area === "sam" ? "overview.sam" : "overview.som"}.geographicalRegions`,
