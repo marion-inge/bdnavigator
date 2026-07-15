@@ -268,7 +268,7 @@ const customerSegmentationDescriptionField: IdaFieldDef = {
   labelDe: "Beschreibung",
   multiline: true,
   section: "Customer Landscape",
-  get: (s, sa) => (sa.sam as any)?.customerSegmentation?.description || s.marketAttractiveness?.analysis?.targetCustomers || "",
+  get: (s, sa) => s.marketAttractiveness?.analysis?.targetCustomers || (sa.sam as any)?.customerSegmentation?.description || "",
   apply: (s, sa, v) => ({
     scoring: {
       ...s,
@@ -287,7 +287,7 @@ const customerSegmentationRationaleField: IdaFieldDef = {
   labelDe: "Begründung",
   multiline: true,
   section: "Customer Landscape",
-  get: (s, sa) => (sa.sam as any)?.customerSegmentation?.rationale || s.marketAttractiveness?.analysis?.customerRelationship || "",
+  get: (s, sa) => s.marketAttractiveness?.analysis?.customerRelationship || (sa.sam as any)?.customerSegmentation?.rationale || "",
   apply: (s, sa, v) => ({
     scoring: {
       ...s,
@@ -468,14 +468,14 @@ export const SAM_FIELDS: IdaFieldDef[] = [
   {
     path: "sam.customerSegmentation.entries",
     labelEn: "Customer segment entries", labelDe: "Kundensegment-Einträge", multiline: true, section: "Customer Landscape",
-    get: (s, sa) => fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries) || fmtCustomerSegments((s.marketAttractiveness?.analysis?.customerSegments || []).map((segment) => ({
+    get: (s, sa) => fmtCustomerSegments((s.marketAttractiveness?.analysis?.customerSegments || []).map((segment) => ({
       id: crypto.randomUUID(),
       name: segment.name,
       size: String(segment.size ?? ""),
       needs: segment.description || "",
       willingnessToPay: "",
       priority: "medium" as const,
-    }))),
+    }))) || fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries),
     apply: (s, sa, v) => {
       const entries = parseCustomerSegments(v);
       const visibleSegments = toVisibleCustomerSegments(entries);
