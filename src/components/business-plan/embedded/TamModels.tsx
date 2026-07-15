@@ -230,7 +230,7 @@ export function EmbeddedSwot({ data, onSave, readonly: propReadonly }: EmbeddedM
   const quadrants = [
     { key: "strengths" as const, label: bp("Strengths", "Stärken"), color: "bg-green-500/10 border-green-500/30" },
     { key: "weaknesses" as const, label: bp("Weaknesses", "Schwächen"), color: "bg-red-500/10 border-red-500/30" },
-    { key: "ideas" as const, label: bp("Ideas", "Chancen"), color: "bg-blue-500/10 border-blue-500/30" },
+    { key: "opportunities" as const, label: bp("Ideas", "Chancen"), color: "bg-blue-500/10 border-blue-500/30" },
     { key: "threats" as const, label: bp("Threats", "Risiken"), color: "bg-yellow-500/10 border-yellow-500/30" },
   ];
 
