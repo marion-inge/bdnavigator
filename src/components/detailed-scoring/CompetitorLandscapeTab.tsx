@@ -1,7 +1,7 @@
 import { useI18n } from "@/lib/i18n";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { DetailedScoring, CompetitorEntry, CompetitorDimensionRating } from "@/lib/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -51,6 +51,15 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
     return indices;
   });
   const readonly = propReadonly || !editing;
+
+  useEffect(() => {
+    if (dirty) return;
+    setLocal(scoring.marketAttractiveness);
+    const entries = scoring.marketAttractiveness?.analysis?.competitorEntries || [];
+    const indices = new Set<number>();
+    entries.forEach((c, i) => { if (c.name) indices.add(i); });
+    setSelectedForRadar(indices);
+  }, [dirty, scoring.marketAttractiveness]);
 
   const dimLabels: Record<DimensionKey, string> = {
     price: t("clDimPrice"),

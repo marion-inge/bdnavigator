@@ -10,7 +10,7 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CustomerSegmentEntry } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegmentEntry } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
@@ -202,6 +202,18 @@ const parseCompetitors = (text: string): CompetitorAnalysisEntry[] => {
   }
   return out;
 };
+
+const parseMarketShareNumber = (value: string): number => {
+  const n = parseFloat(String(value || "").replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+  return Number.isFinite(n) ? n : 0;
+};
+
+const toVisibleCompetitorEntries = (entries: CompetitorAnalysisEntry[]): CompetitorEntry[] =>
+  entries.map((entry) => ({
+    name: entry.name,
+    marketShare: parseMarketShareNumber(entry.marketShare),
+    threatLevel: entry.threatLevel,
+  }));
 
 const fmtCustomerSegments = (entries: CustomerSegmentEntry[] | undefined): string => {
   if (!entries?.length) return "";
@@ -462,11 +474,31 @@ export const SOM_FIELDS: IdaFieldDef[] = [
   {
     path: "som.competitorAnalysis.entries",
     labelEn: "Competitor entries", labelDe: "Wettbewerber-Einträge", multiline: true, section: "Competitors",
-    get: (_s, sa) => fmtCompetitors((sa.som as any)?.competitorAnalysis?.entries),
-    apply: (s, sa, v) => ({
-      scoring: s,
-      sa: setSomModel(sa, "competitorAnalysis" as any, { entries: parseCompetitors(v) }),
-    }),
+    get: (s, sa) => fmtCompetitors((sa.som as any)?.competitorAnalysis?.entries) || fmtCompetitors((s.marketAttractiveness?.analysis?.competitorEntries || []).map((entry) => ({
+      id: crypto.randomUUID(),
+      name: entry.name,
+      marketShare: String(entry.marketShare ?? ""),
+      threatLevel: entry.threatLevel || 3,
+      strengths: "",
+      weaknesses: "",
+      strategy: "",
+    }))),
+    apply: (s, sa, v) => {
+      const entries = parseCompetitors(v);
+      return {
+        scoring: {
+          ...s,
+          marketAttractiveness: {
+            ...s.marketAttractiveness,
+            analysis: {
+              ...s.marketAttractiveness.analysis,
+              competitorEntries: toVisibleCompetitorEntries(entries),
+            },
+          },
+        } as DetailedScoring,
+        sa: setSomModel(sa, "competitorAnalysis" as any, { entries }),
+      };
+    },
   },
   // VPC
   modelField("som", "valuePropositionCanvas", "customerJobs", "Value Proposition Canvas", "Customer jobs", "Kundenaufgaben"),
