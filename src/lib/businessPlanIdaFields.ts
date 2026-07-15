@@ -398,9 +398,18 @@ export const SAM_FIELDS: IdaFieldDef[] = [
   ovField("sam", "priceEvolution", "Price evolution", "Preisentwicklung"),
   ovField("sam", "resourceScenarios", "Resource scenarios", "Ressourcenszenarien"),
   ovField("sam", "requiredInvestments", "Required investments", "Erforderliche Investitionen"),
-  // Customer Landscape (customerSegmentation narrative)
+  // Customer Landscape (customerSegmentation narrative + entries table)
   modelField("sam", "customerSegmentation", "description", "Customer Landscape", "Description", "Beschreibung"),
   modelField("sam", "customerSegmentation", "rationale", "Customer Landscape", "Rationale", "Begründung"),
+  {
+    path: "sam.customerSegmentation.entries",
+    labelEn: "Customer segment entries", labelDe: "Kundensegment-Einträge", multiline: true, section: "Customer Landscape",
+    get: (_s, sa) => fmtCustomerSegments((sa.sam as any)?.customerSegmentation?.entries),
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customerSegmentation" as any, { entries: parseCustomerSegments(v) }),
+    }),
+  },
   // BMC
   modelField("sam", "businessModelling", "valueProposition", "Business Model Canvas", "Value proposition", "Wertangebot"),
   modelField("sam", "businessModelling", "customerSegments", "Business Model Canvas", "Customer segments", "Kundensegmente"),
