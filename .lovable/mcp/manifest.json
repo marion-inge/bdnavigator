@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "novi-mcp",
+      "version": "0.1.0",
+      "title": "NOVI Innovation Pipeline"
+    },
+    "tools": [
+      {
+        "name": "list_opportunities",
+        "title": "List opportunities",
+        "description": "List innovation opportunities in the NOVI pipeline. Returns id, title, stage, industry, geography, owner, and creation date. Use `stage` to filter by pipeline stage and `limit` to cap results (default 25, max 200).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "string",
+              "description": "Optional pipeline stage filter, e.g. 'idea', 'assess', 'business_plan'."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Maximum number of rows to return (default 25, max 200)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_opportunity",
+        "title": "Get opportunity",
+        "description": "Fetch the full record for a single innovation opportunity by id, including scoring, business plan, business case, strategic analyses, go-to-market plan, and gates.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The opportunity's UUID."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_opportunities",
+        "title": "Search opportunities",
+        "description": "Full-text search opportunities by title, description, industry, technology, or solution. Returns id, title, stage, industry, and a short description snippet.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search text to match across title, description, industry, technology, and solution."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Maximum number of rows to return (default 25, max 100)."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
