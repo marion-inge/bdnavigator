@@ -79,6 +79,7 @@ export default function OpportunityDetail() {
     overview:            "rough_scoring",
     scoring:             "gate1",
     hypothesis:          "rough_scoring",
+    scan_pack:           "rough_scoring",
     sa_ansoff:           "gate1",
     sa_bcg:              "gate1",
     sa_mckinsey:         "gate1",
