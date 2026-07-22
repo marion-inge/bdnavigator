@@ -76,6 +76,7 @@ function oppToRow(o: Opportunity) {
     rough_scoring_comments: o.roughScoringComments ?? null,
     rough_scoring_sources: o.roughScoringSources ?? null,
     hypothesis: (o as any).hypothesis ?? null,
+    scan_pack: (o as any).scanPack ?? null,
     gates: o.gates as any,
     created_at: o.createdAt,
   };
