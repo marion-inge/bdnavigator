@@ -117,6 +117,7 @@ function rowToOpp(r: any): Opportunity {
     roughScoringComments: r.rough_scoring_comments ?? undefined,
     roughScoringSources: r.rough_scoring_sources ?? undefined,
     hypothesis: r.hypothesis ?? undefined,
+    scanPack: r.scan_pack ?? undefined,
     gates: (r.gates as GateRecord[]) ?? [],
     createdAt: r.created_at,
   } as Opportunity;
