@@ -72,6 +72,7 @@ export type Database = {
           rough_scoring_answers: Json | null
           rough_scoring_comments: Json | null
           rough_scoring_sources: Json | null
+          scan_pack: Json | null
           scoring: Json
           solution_description: string
           stage: string
@@ -97,6 +98,7 @@ export type Database = {
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
           rough_scoring_sources?: Json | null
+          scan_pack?: Json | null
           scoring?: Json
           solution_description?: string
           stage?: string
@@ -122,6 +124,7 @@ export type Database = {
           rough_scoring_answers?: Json | null
           rough_scoring_comments?: Json | null
           rough_scoring_sources?: Json | null
+          scan_pack?: Json | null
           scoring?: Json
           solution_description?: string
           stage?: string
