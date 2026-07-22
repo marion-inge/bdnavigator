@@ -62,6 +62,7 @@ export type Database = {
           gates: Json
           geography: string
           go_to_market_plan: Json | null
+          hypothesis: Json | null
           id: string
           idea_bringer: string
           implement_review: Json | null
@@ -86,6 +87,7 @@ export type Database = {
           gates?: Json
           geography?: string
           go_to_market_plan?: Json | null
+          hypothesis?: Json | null
           id?: string
           idea_bringer?: string
           implement_review?: Json | null
@@ -110,6 +112,7 @@ export type Database = {
           gates?: Json
           geography?: string
           go_to_market_plan?: Json | null
+          hypothesis?: Json | null
           id?: string
           idea_bringer?: string
           implement_review?: Json | null
