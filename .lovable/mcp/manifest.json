@@ -8,7 +8,7 @@
   "mcp": {
     "server": {
       "name": "novi-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "NOVI Innovation Pipeline"
     },
     "tools": [
@@ -92,6 +92,131 @@
           },
           "required": [
             "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_scan_input",
+        "title": "Get scan input",
+        "description": "Return the saved hypothesis intake for an opportunity: the core hypothesis plus one scan's section (or all sections if `scan` is omitted). Errors if no hypothesis exists.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "opportunity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Opportunity UUID."
+            },
+            "scan": {
+              "type": "string",
+              "enum": [
+                "industry",
+                "customer",
+                "competitor",
+                "market_potential",
+                "buying_center"
+              ],
+              "description": "Optional scan key: industry, customer, competitor, market_potential, buying_center. Omit to return all sections."
+            }
+          },
+          "required": [
+            "opportunity_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_scan_pack_status",
+        "title": "Get scan pack status",
+        "description": "Return the current Scan Pack execution status for an opportunity: per-scan status, started/completed dates, result summaries, key findings, and uploaded file names.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "opportunity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Opportunity UUID."
+            }
+          },
+          "required": [
+            "opportunity_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "submit_scan_result",
+        "title": "Submit scan result",
+        "description": "Update one scan card on an opportunity's Scan Pack. Sets status, result summary, and structured key findings; auto-fills completion date when status becomes 'done'. Files themselves must be uploaded via the UI.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "opportunity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Opportunity UUID."
+            },
+            "scan": {
+              "type": "string",
+              "enum": [
+                "industry",
+                "customer",
+                "competitor",
+                "market_potential",
+                "buying_center",
+                "assembler"
+              ],
+              "description": "Scan key: industry, customer, competitor, market_potential, buying_center, or assembler."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "not_started",
+                "intake_ready",
+                "running",
+                "done"
+              ],
+              "description": "New status: not_started, intake_ready, running, or done."
+            },
+            "summary": {
+              "type": "string",
+              "description": "Result summary text (may be empty when just flipping status)."
+            },
+            "key_findings": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of structured key findings."
+            }
+          },
+          "required": [
+            "opportunity_id",
+            "scan",
+            "status",
+            "summary"
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
