@@ -99,6 +99,7 @@ export default function OpportunityDetail() {
     overview:           "idea",
     scoring:            "rough_scoring",
     hypothesis:         "",
+    scan_pack:          "",
     sa_ansoff:          "",
     sa_bcg:             "",
     sa_mckinsey:        "",
