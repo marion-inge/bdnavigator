@@ -75,6 +75,7 @@ function oppToRow(o: Opportunity) {
     rough_scoring_answers: o.roughScoringAnswers ?? null,
     rough_scoring_comments: o.roughScoringComments ?? null,
     rough_scoring_sources: o.roughScoringSources ?? null,
+    hypothesis: (o as any).hypothesis ?? null,
     gates: o.gates as any,
     created_at: o.createdAt,
   };
@@ -114,9 +115,10 @@ function rowToOpp(r: any): Opportunity {
     roughScoringAnswers: r.rough_scoring_answers ?? undefined,
     roughScoringComments: r.rough_scoring_comments ?? undefined,
     roughScoringSources: r.rough_scoring_sources ?? undefined,
+    hypothesis: r.hypothesis ?? undefined,
     gates: (r.gates as GateRecord[]) ?? [],
     createdAt: r.created_at,
-  };
+  } as Opportunity;
 }
 
 async function fetchOpportunities(): Promise<Opportunity[]> {
