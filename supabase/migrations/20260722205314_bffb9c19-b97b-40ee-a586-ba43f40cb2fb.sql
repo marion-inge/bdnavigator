@@ -1,0 +1,1 @@
+CREATE POLICY "scan_deliverables_all" ON storage.objects FOR ALL USING (bucket_id = 'scan-deliverables') WITH CHECK (bucket_id = 'scan-deliverables');

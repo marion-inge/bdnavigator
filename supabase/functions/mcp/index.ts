@@ -120,13 +120,180 @@ var search_opportunities_default = defineTool3({
   }
 });
 
+// src/lib/mcp/tools/get-scan-input.ts
+import { createClient as createClient4 } from "npm:@supabase/supabase-js@^2.97.0";
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { z as z4 } from "npm:zod@^3.25.76";
+function anonClient4() {
+  return createClient4(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_PUBLISHABLE_KEY,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+}
+var SCAN_KEYS = ["industry", "customer", "competitor", "market_potential", "buying_center"];
+function sectionFor(h, scan) {
+  switch (scan) {
+    case "industry":
+      return h?.industry ?? null;
+    case "customer":
+      return h?.customer ?? null;
+    case "competitor":
+      return h?.competitor ?? null;
+    case "market_potential":
+      return h?.marketPotential ?? null;
+    case "buying_center":
+      return h?.buyingCenter ?? null;
+  }
+}
+var get_scan_input_default = defineTool4({
+  name: "get_scan_input",
+  title: "Get scan input",
+  description: "Return the saved hypothesis intake for an opportunity: the core hypothesis plus one scan's section (or all sections if `scan` is omitted). Errors if no hypothesis exists.",
+  inputSchema: {
+    opportunity_id: z4.string().uuid().describe("Opportunity UUID."),
+    scan: z4.enum(SCAN_KEYS).optional().describe("Optional scan key: industry, customer, competitor, market_potential, buying_center. Omit to return all sections.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ opportunity_id, scan }) => {
+    const supabase = anonClient4();
+    const { data, error } = await supabase.from("opportunities").select("id, title, hypothesis").eq("id", opportunity_id).maybeSingle();
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (!data) return { content: [{ type: "text", text: `No opportunity found with id ${opportunity_id}` }], isError: true };
+    const h = data.hypothesis;
+    if (!h) {
+      return {
+        content: [{ type: "text", text: `No hypothesis has been drafted for opportunity "${data.title}". Draft one first in the Hypothesis tab.` }],
+        isError: true
+      };
+    }
+    const sections = scan ? { [scan]: sectionFor(h, scan) } : Object.fromEntries(SCAN_KEYS.map((k) => [k, sectionFor(h, k)]));
+    const payload = {
+      opportunity: { id: data.id, title: data.title },
+      hypothesis_status: h.status ?? "draft",
+      core: h.core ?? null,
+      sections
+    };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload
+    };
+  }
+});
+
+// src/lib/mcp/tools/get-scan-pack-status.ts
+import { createClient as createClient5 } from "npm:@supabase/supabase-js@^2.97.0";
+import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { z as z5 } from "npm:zod@^3.25.76";
+function anonClient5() {
+  return createClient5(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_PUBLISHABLE_KEY,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+}
+var ALL_KEYS = ["industry", "customer", "competitor", "market_potential", "buying_center", "assembler"];
+var get_scan_pack_status_default = defineTool5({
+  name: "get_scan_pack_status",
+  title: "Get scan pack status",
+  description: "Return the current Scan Pack execution status for an opportunity: per-scan status, started/completed dates, result summaries, key findings, and uploaded file names.",
+  inputSchema: {
+    opportunity_id: z5.string().uuid().describe("Opportunity UUID.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ opportunity_id }) => {
+    const supabase = anonClient5();
+    const { data, error } = await supabase.from("opportunities").select("id, title, scan_pack").eq("id", opportunity_id).maybeSingle();
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (!data) return { content: [{ type: "text", text: `No opportunity found with id ${opportunity_id}` }], isError: true };
+    const pack = data.scan_pack ?? {};
+    const scans = ALL_KEYS.map((k) => {
+      const s = pack[k] ?? {};
+      return {
+        scan: k,
+        status: s.status ?? "not_started",
+        started_at: s.startedAt ?? null,
+        completed_at: s.completedAt ?? null,
+        summary: s.summary ?? "",
+        key_findings: s.keyFindings ?? [],
+        files: (s.files ?? []).map((f) => ({ name: f.name, size: f.size, uploaded_at: f.uploadedAt }))
+      };
+    });
+    const done_count = scans.filter((s) => s.status === "done").length;
+    const payload = { opportunity: { id: data.id, title: data.title }, done_count, total: ALL_KEYS.length, scans };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload
+    };
+  }
+});
+
+// src/lib/mcp/tools/submit-scan-result.ts
+import { createClient as createClient6 } from "npm:@supabase/supabase-js@^2.97.0";
+import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { z as z6 } from "npm:zod@^3.25.76";
+function anonClient6() {
+  return createClient6(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_PUBLISHABLE_KEY,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+}
+var SCAN_KEYS2 = ["industry", "customer", "competitor", "market_potential", "buying_center", "assembler"];
+var STATUSES = ["not_started", "intake_ready", "running", "done"];
+var submit_scan_result_default = defineTool6({
+  name: "submit_scan_result",
+  title: "Submit scan result",
+  description: "Update one scan card on an opportunity's Scan Pack. Sets status, result summary, and structured key findings; auto-fills completion date when status becomes 'done'. Files themselves must be uploaded via the UI.",
+  inputSchema: {
+    opportunity_id: z6.string().uuid().describe("Opportunity UUID."),
+    scan: z6.enum(SCAN_KEYS2).describe("Scan key: industry, customer, competitor, market_potential, buying_center, or assembler."),
+    status: z6.enum(STATUSES).describe("New status: not_started, intake_ready, running, or done."),
+    summary: z6.string().describe("Result summary text (may be empty when just flipping status)."),
+    key_findings: z6.array(z6.string()).optional().describe("Optional list of structured key findings.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: false },
+  handler: async ({ opportunity_id, scan, status, summary, key_findings }) => {
+    const supabase = anonClient6();
+    const { data, error } = await supabase.from("opportunities").select("id, title, scan_pack").eq("id", opportunity_id).maybeSingle();
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (!data) return { content: [{ type: "text", text: `No opportunity found with id ${opportunity_id}` }], isError: true };
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    const pack = { ...data.scan_pack ?? {} };
+    const existing = pack[scan] ?? { status: "not_started", summary: "", keyFindings: [], files: [] };
+    const next = {
+      status,
+      summary,
+      keyFindings: key_findings ?? existing.keyFindings ?? [],
+      files: existing.files ?? [],
+      startedAt: existing.startedAt ?? (status === "running" || status === "done" ? now : void 0),
+      completedAt: status === "done" ? existing.completedAt ?? now : void 0,
+      updatedAt: now
+    };
+    pack[scan] = next;
+    const { error: upErr } = await supabase.from("opportunities").update({ scan_pack: pack }).eq("id", opportunity_id);
+    if (upErr) return { content: [{ type: "text", text: upErr.message }], isError: true };
+    return {
+      content: [{ type: "text", text: `Updated ${scan} on "${data.title}" \u2192 ${status}.` }],
+      structuredContent: { scan, state: next }
+    };
+  }
+});
+
 // src/lib/mcp/index.ts
 var mcp_default = defineMcp({
   name: "novi-mcp",
   title: "NOVI Innovation Pipeline",
-  version: "0.1.0",
-  instructions: "Tools for exploring the NOVI innovation opportunity pipeline. Use `list_opportunities` to browse (optionally by stage), `search_opportunities` for keyword search across title/description/industry/technology, and `get_opportunity` to fetch the full record (scoring, business plan, business case, strategic analyses) by id.",
-  tools: [list_opportunities_default, get_opportunity_default, search_opportunities_default]
+  version: "0.2.0",
+  instructions: "Tools for exploring and executing the NOVI innovation opportunity pipeline. Browse with `list_opportunities` / `search_opportunities`, fetch a full record with `get_opportunity`. To run a Scan Pack: read the intake with `get_scan_input`, check current progress with `get_scan_pack_status`, and post results back with `submit_scan_result` (status + summary + key findings). Deliverable files themselves are uploaded through the app UI.",
+  tools: [
+    list_opportunities_default,
+    get_opportunity_default,
+    search_opportunities_default,
+    get_scan_input_default,
+    get_scan_pack_status_default,
+    submit_scan_result_default
+  ]
 });
 
 // lovable-mcp-supabase-entry.ts

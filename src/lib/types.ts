@@ -800,6 +800,7 @@ export interface Opportunity {
   roughScoringComments?: Record<string, string>;
   roughScoringSources?: Record<string, string[]>;
   hypothesis?: import("./hypothesisTypes").HypothesisData;
+  scanPack?: import("./scanPackTypes").ScanPackData;
   gates: GateRecord[];
   createdAt: string;
 }
