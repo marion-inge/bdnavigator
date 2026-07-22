@@ -524,6 +524,7 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
               />
             )}
+            {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
               <StrategicAnalysesSection
                 strategicAnalyses={opp.strategicAnalyses}
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
