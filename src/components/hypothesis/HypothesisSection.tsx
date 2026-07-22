@@ -23,11 +23,25 @@ export function HypothesisSection({ opportunity, onSave, readonly }: Props) {
   const hasCompletedScoring = !!opportunity.roughScoringAnswers && Object.keys(opportunity.roughScoringAnswers).length > 0;
 
   const toggleStatus = () => {
+    const nextConfirmed = hypothesis.status !== "confirmed";
     onSave({
       ...hypothesis,
-      status: hypothesis.status === "confirmed" ? "draft" : "confirmed",
+      status: nextConfirmed ? "confirmed" : "draft",
+      confirmedAt: nextConfirmed ? new Date().toISOString() : undefined,
       updatedAt: new Date().toISOString(),
     });
+  };
+
+  const formatTs = (iso?: string) => {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleString(language === "de" ? "de-DE" : "en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+    } catch {
+      return "";
+    }
   };
 
   return (
@@ -42,10 +56,14 @@ export function HypothesisSection({ opportunity, onSave, readonly }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={hypothesis.status === "confirmed" ? "default" : "secondary"}>
+          <Badge variant={hypothesis.status === "confirmed" ? "default" : "secondary"} className="gap-1">
+            {hypothesis.status === "confirmed" ? <CheckCircle2 className="h-3 w-3" /> : null}
             {hypothesis.status === "confirmed"
               ? (language === "de" ? "Bestätigt" : "Confirmed")
               : (language === "de" ? "Entwurf" : "Draft")}
+            {hypothesis.status === "confirmed" && hypothesis.confirmedAt && (
+              <span className="ml-1 text-[10px] font-normal opacity-80">· {formatTs(hypothesis.confirmedAt)}</span>
+            )}
           </Badge>
           <Button variant="outline" size="sm" onClick={() => setDialogOpen(true)} disabled={readonly || !hasCompletedScoring} className="gap-1.5">
             <img src={idaRobot} alt="" className="h-4 w-4" />
@@ -63,6 +81,7 @@ export function HypothesisSection({ opportunity, onSave, readonly }: Props) {
           </Button>
         </div>
       </div>
+
 
       {!hasCompletedScoring && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm">

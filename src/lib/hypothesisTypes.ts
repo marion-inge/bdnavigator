@@ -96,6 +96,7 @@ export interface HypothesisData {
   selectedScans: ScanKey[];
   updatedAt: string;
   aiDraftedAt?: string;
+  confirmedAt?: string;
   core: HypothesisCore;
   industry?: HypothesisIndustry;
   customer?: HypothesisCustomer;
