@@ -517,7 +517,13 @@ export default function OpportunityDetail() {
                 opportunity={opp}
               />
             )}
-            {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
+            {activeTab === "hypothesis" && (
+              <HypothesisSection
+                opportunity={opp}
+                onSave={(h) => updateOpportunity(opp.id, { hypothesis: h })}
+                readonly={opp.stage === "closed"}
+              />
+            )}
               <StrategicAnalysesSection
                 strategicAnalyses={opp.strategicAnalyses}
                 onSave={(sa) => updateOpportunity(opp.id, { strategicAnalyses: sa })}
