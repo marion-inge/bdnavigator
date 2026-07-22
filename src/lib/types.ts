@@ -799,6 +799,7 @@ export interface Opportunity {
   roughScoringAnswers?: Record<string, number>;
   roughScoringComments?: Record<string, string>;
   roughScoringSources?: Record<string, string[]>;
+  hypothesis?: import("./hypothesisTypes").HypothesisData;
   gates: GateRecord[];
   createdAt: string;
 }
