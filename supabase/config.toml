@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.ida-business-plan-extraction]
 verify_jwt = false
+
+[functions.hypothesis-draft]
+verify_jwt = false
