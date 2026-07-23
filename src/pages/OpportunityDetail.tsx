@@ -201,6 +201,7 @@ export default function OpportunityDetail() {
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
     { key: "hypothesis",          label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
     { key: "scan_pack",           label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${Object.values(opp.scanPack).filter((s: any) => s.status === "done").length}/6` : undefined },
+    { key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
     { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "investment_case",     label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
