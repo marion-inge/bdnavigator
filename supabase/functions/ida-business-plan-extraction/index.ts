@@ -356,7 +356,7 @@ function buildSchema(scope: SectionScope) {
 const SECTION_DESCRIPTIONS: Record<SectionScope, string> = {
   overview: "the TAM / SAM / SOM Overview text fields (scope, geography, assumptions, drivers, sources, methodology, market-share, growth-rate, sales capacity, etc.)",
   tam: "the TAM strategic models: Market Research, PESTEL (Political/Economic/Social/Technological/Environmental/Legal), Value Chain, Porter's Five Forces (all 5 forces), and SWOT (Strengths/Weaknesses/Opportunities/Threats)",
-  sam: "the SAM section: Customer Landscape narrative, Business Model Canvas (all 9 blocks), Lean Canvas (all 9 blocks), and the Risk narrative",
+  sam: "the SAM section: Customer Landscape narrative, Customers Found (detailed account database mirroring the Customer Scan), Business Model Canvas (all 9 blocks), Lean Canvas (all 9 blocks), and the Risk narrative",
   som: "the SOM section: Competitor narrative, Value Proposition Canvas (jobs/pains/gains, products, pain relievers, gain creators), Customer Benefit Analysis (functional/emotional/social/self-expressive), Three Circles, Positioning statement, and Target Costing narrative",
 };
 
