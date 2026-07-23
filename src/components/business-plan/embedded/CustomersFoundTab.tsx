@@ -133,12 +133,12 @@ export function CustomersFoundTab({ data, onSave, readonly: propReadonly, title,
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-blue-500" />
-              {bp("Customers Found – Bottom-Up TAM", "Gefundene Kunden – Bottom-Up TAM")}
+              {title || bp("Customers Found – Bottom-Up TAM", "Gefundene Kunden – Bottom-Up TAM")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              {bp(
+              {description || bp(
                 "Catalogue every potential customer identified in the target region and industry. The sum of their value builds a bottom-up TAM and substantiates the top-down estimate.",
                 "Erfassen Sie jeden potenziellen Kunden in Zielregion und Industrie. Die Summe ergibt einen Bottom-Up-TAM und untermauert die Top-Down-Schätzung.",
               )}
