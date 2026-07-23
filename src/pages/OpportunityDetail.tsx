@@ -22,7 +22,7 @@ import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 import { HypothesisSection } from "@/components/hypothesis/HypothesisSection";
 import { ScanPackSection } from "@/components/scan-pack/ScanPackSection";
 
-type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "customer_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
