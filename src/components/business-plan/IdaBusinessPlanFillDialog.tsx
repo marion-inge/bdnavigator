@@ -58,7 +58,18 @@ export function IdaBusinessPlanFillDialog({
   const [step, setStep] = useState<Step>("pick");
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [selectedScans, setSelectedScans] = useState<Set<ScanPackKey>>(new Set());
   const [loadingFiles, setLoadingFiles] = useState(false);
+
+  const { getOpportunity } = useStore();
+  const scanPack = getOpportunity(opportunityId)?.scanPack;
+  const availableScans = useMemo<ScanPackKey[]>(() => {
+    if (!scanPack) return [];
+    return (Object.keys(scanPack) as ScanPackKey[]).filter((k) => {
+      const c: any = (scanPack as any)[k];
+      return c && (c.summary?.trim() || (Array.isArray(c.keyFindings) && c.keyFindings.length) || (Array.isArray(c.files) && c.files.length));
+    });
+  }, [scanPack]);
 
   const [proposal, setProposal] = useState<any>(null);
   const [filesUsed, setFilesUsed] = useState<string[]>([]);
