@@ -3,13 +3,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Loader2, ChevronRight } from "lucide-react";
+import { FileText, Loader2, ChevronRight, FolderOpen } from "lucide-react";
 import { fetchOpportunityFiles, invokeFunction } from "@/lib/backendAdapter";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import type { DetailedScoring, StrategicAnalyses } from "@/lib/types";
 import { fieldsForGroup, readProposal, type IdaFieldDef, type ProposalGroup } from "@/lib/businessPlanIdaFields";
+import { useStore } from "@/lib/store";
+import type { ScanPackKey } from "@/lib/scanPackTypes";
+
+const SCAN_LABELS: Record<ScanPackKey, { en: string; de: string }> = {
+  industry: { en: "Industry Study", de: "Industriestudie" },
+  customer: { en: "Customer Scan", de: "Customer Scan" },
+  competitor: { en: "Competitor Scan", de: "Competitor Scan" },
+  market_potential: { en: "Market Potential Scan", de: "Marktpotenzial-Scan" },
+  buying_center: { en: "Buying Center Scan", de: "Buying-Center-Scan" },
+  assembler: { en: "Scan Pack Assembler", de: "Scan-Pack-Assembler" },
+};
 
 interface FileRecord {
   id: string;
@@ -47,7 +58,18 @@ export function IdaBusinessPlanFillDialog({
   const [step, setStep] = useState<Step>("pick");
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [selectedScans, setSelectedScans] = useState<Set<ScanPackKey>>(new Set());
   const [loadingFiles, setLoadingFiles] = useState(false);
+
+  const { getOpportunity } = useStore();
+  const scanPack = getOpportunity(opportunityId)?.scanPack;
+  const availableScans = useMemo<ScanPackKey[]>(() => {
+    if (!scanPack) return [];
+    return (Object.keys(scanPack) as ScanPackKey[]).filter((k) => {
+      const c: any = (scanPack as any)[k];
+      return c && (c.summary?.trim() || (Array.isArray(c.keyFindings) && c.keyFindings.length) || (Array.isArray(c.files) && c.files.length));
+    });
+  }, [scanPack]);
 
   const [proposal, setProposal] = useState<any>(null);
   const [filesUsed, setFilesUsed] = useState<string[]>([]);
@@ -80,6 +102,7 @@ export function IdaBusinessPlanFillDialog({
     setEdits({});
     setAccept({});
     setSelectedFiles(new Set());
+    setSelectedScans(new Set(availableScans));
     setSelectedSections(new Set());
     setLoadingFiles(true);
     fetchOpportunityFiles(opportunityId).then((res: any) => {
@@ -99,12 +122,21 @@ export function IdaBusinessPlanFillDialog({
     setSelectedFiles((prev) => (prev.size === files.length ? new Set() : new Set(files.map((f) => f.id))));
   };
 
+  const toggleScan = (k: ScanPackKey) => {
+    setSelectedScans((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+  };
+
   const runExtraction = async () => {
     setStep("running");
     try {
       const { data, error } = await invokeFunction("ida-business-plan-extraction", {
         opportunityId,
         fileIds: Array.from(selectedFiles),
+        scanKeys: Array.from(selectedScans),
         scope,
         language,
         context,
@@ -281,6 +313,52 @@ export function IdaBusinessPlanFillDialog({
                   </ul>
                 </>
               )}
+
+              {availableScans.length > 0 && (
+                <div className="pt-4 mt-2 border-t space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-medium">
+                      <FolderOpen className="h-3.5 w-3.5 text-muted-foreground" />
+                      {bp("Scan Pack outputs", "Scan-Pack-Ergebnisse")}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedScans.size} / {availableScans.length} {bp("selected", "ausgewählt")}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    {bp(
+                      "IDA will also read the selected scans' summaries, key findings and uploaded deliverables.",
+                      "IDA liest zusätzlich die Zusammenfassungen, Key Findings und hochgeladenen Deliverables der gewählten Scans.",
+                    )}
+                  </p>
+                  <ul className="space-y-1">
+                    {availableScans.map((k) => {
+                      const card: any = (scanPack as any)?.[k];
+                      const fileCount = Array.isArray(card?.files) ? card.files.length : 0;
+                      const hasSummary = !!card?.summary?.trim();
+                      const findings = Array.isArray(card?.keyFindings) ? card.keyFindings.length : 0;
+                      const parts: string[] = [];
+                      if (hasSummary) parts.push(bp("summary", "Zusammenfassung"));
+                      if (findings) parts.push(`${findings} ${bp("findings", "Findings")}`);
+                      if (fileCount) parts.push(`${fileCount} ${bp("files", "Dateien")}`);
+                      return (
+                        <li key={k}>
+                          <label className="flex items-center gap-2 p-2 rounded border hover:bg-muted/40 cursor-pointer">
+                            <Checkbox checked={selectedScans.has(k)} onCheckedChange={() => toggleScan(k)} />
+                            <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <span className="text-sm truncate flex-1">
+                              {language === "de" ? SCAN_LABELS[k].de : SCAN_LABELS[k].en}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground shrink-0">
+                              {parts.join(" · ")}
+                            </span>
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 
@@ -364,7 +442,7 @@ export function IdaBusinessPlanFillDialog({
           {step === "pick" && (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>{bp("Cancel", "Abbrechen")}</Button>
-              <Button onClick={runExtraction} disabled={selectedFiles.size === 0} className="gap-2">
+              <Button onClick={runExtraction} disabled={selectedFiles.size === 0 && selectedScans.size === 0} className="gap-2">
                 <img src={idaRobot} alt="" className="h-4 w-4" />
                 {bp("Run IDA", "IDA ausführen")}
               </Button>
