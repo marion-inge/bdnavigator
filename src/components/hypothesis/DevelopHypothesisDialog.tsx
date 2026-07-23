@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import { FileText, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { invokeFunction } from "@/lib/backendAdapter";
+import { invokeFunction, fetchOpportunityFiles } from "@/lib/backendAdapter";
 import { ALL_SCAN_KEYS, ScanKey, HypothesisData, mergeHypothesisDraft, createDefaultHypothesis } from "@/lib/hypothesisTypes";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
@@ -15,6 +15,13 @@ interface Props {
   opportunityId: string;
   existing?: HypothesisData;
   onDrafted: (h: HypothesisData) => void;
+}
+
+interface FileRecord {
+  id: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string;
 }
 
 const SCAN_LABELS: Record<ScanKey, { en: string; de: string; desc: { en: string; de: string } }> = {
@@ -32,6 +39,18 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
   );
   const [overwrite, setOverwrite] = useState(false);
   const [running, setRunning] = useState(false);
+  const [files, setFiles] = useState<FileRecord[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [filesLoading, setFilesLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setFilesLoading(true);
+    fetchOpportunityFiles(opportunityId).then((res: any) => {
+      setFiles((res?.data as FileRecord[]) ?? []);
+      setFilesLoading(false);
+    });
+  }, [open, opportunityId]);
 
   const toggle = (k: ScanKey) => {
     setSelected((prev) => {
@@ -39,6 +58,19 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
       n.has(k) ? n.delete(k) : n.add(k);
       return n;
     });
+  };
+
+  const toggleFile = (id: string) => {
+    setSelectedFiles((prev) => {
+      const n = new Set(prev);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+  };
+
+  const toggleAllFiles = () => {
+    if (selectedFiles.size === files.length) setSelectedFiles(new Set());
+    else setSelectedFiles(new Set(files.map((f) => f.id)));
   };
 
   const run = async () => {
@@ -50,6 +82,7 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
         opportunityId,
         selectedScans: scans,
         language,
+        fileIds: Array.from(selectedFiles),
       });
       if (error || !data || (data as any).error) {
         const msg = (error as any)?.message || (data as any)?.error || "Unknown error";
@@ -63,7 +96,12 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
         overwrite,
       );
       onDrafted(merged);
-      toast.success(language === "de" ? "Hypothese entworfen" : "Hypothesis drafted");
+      const n = (data as any)?.filesUsed?.length || 0;
+      toast.success(
+        language === "de"
+          ? `Hypothese entworfen${n ? ` (aus ${n} Datei${n === 1 ? "" : "en"})` : ""}`
+          : `Hypothesis drafted${n ? ` (from ${n} file${n === 1 ? "" : "s"})` : ""}`,
+      );
       onOpenChange(false);
     } catch (e: any) {
       toast.error(e?.message || "Failed");
@@ -74,7 +112,7 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <img src={idaRobot} alt="" className="h-5 w-5" />
@@ -82,12 +120,15 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
           </DialogTitle>
           <DialogDescription>
             {language === "de"
-              ? "IDA nutzt die Idee und die Fragebogen-Antworten, um die Input-Sheets für die ausgewählten Scans vorzubefüllen. Fehlende Fakten bleiben leer und müssen manuell ergänzt werden."
-              : "IDA uses the idea and questionnaire answers to pre-fill the input sheets for the selected scans. Missing facts stay empty for you to fill in."}
+              ? "IDA nutzt die Idee, die Fragebogen-Antworten und ausgewählte angehängte Dateien, um die Input-Sheets für die ausgewählten Scans vorzubefüllen. Fehlende Fakten bleiben leer und müssen manuell ergänzt werden."
+              : "IDA uses the idea, questionnaire answers and selected attached files to pre-fill the input sheets for the selected scans. Missing facts stay empty for you to fill in."}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2 pt-1">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            {language === "de" ? "Scans" : "Scans"}
+          </div>
           {ALL_SCAN_KEYS.map((k) => {
             const info = SCAN_LABELS[k];
             const label = language === "de" ? info.de : info.en;
@@ -102,6 +143,49 @@ export function DevelopHypothesisDialog({ open, onOpenChange, opportunityId, exi
               </label>
             );
           })}
+        </div>
+
+        <div className="space-y-2 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {language === "de" ? "Angehängte Dateien (optional)" : "Attached files (optional)"}
+            </div>
+            {files.length > 0 && (
+              <button type="button" onClick={toggleAllFiles} className="text-xs text-primary hover:underline">
+                {selectedFiles.size === files.length
+                  ? (language === "de" ? "Alle abwählen" : "Deselect all")
+                  : (language === "de" ? "Alle auswählen" : "Select all")}
+              </button>
+            )}
+          </div>
+          {filesLoading ? (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              {language === "de" ? "Lade Dateien..." : "Loading files..."}
+            </div>
+          ) : files.length === 0 ? (
+            <p className="text-xs text-muted-foreground py-2">
+              {language === "de"
+                ? "Keine Anhänge vorhanden. Laden Sie Dateien im Tab \"Dateien & Anhänge\" hoch, um sie einzubinden."
+                : "No attachments yet. Upload files in the \"Files & Attachments\" tab to include them."}
+            </p>
+          ) : (
+            <ul className="space-y-1 max-h-40 overflow-y-auto">
+              {files.map((f) => (
+                <li key={f.id}>
+                  <label className="flex items-center gap-2 p-1.5 rounded border border-border hover:bg-muted/40 cursor-pointer">
+                    <Checkbox checked={selectedFiles.has(f.id)} onCheckedChange={() => toggleFile(f.id)} />
+                    <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <span className="text-xs truncate flex-1">{f.file_name}</span>
+                    <span className="text-[10px] text-muted-foreground shrink-0">
+                      {Math.round((f.file_size || 0) / 1024)} KB
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <label className="flex items-center gap-2 pt-2 text-xs text-muted-foreground cursor-pointer">
             <Checkbox checked={overwrite} onCheckedChange={(v) => setOverwrite(!!v)} />
             {language === "de"
