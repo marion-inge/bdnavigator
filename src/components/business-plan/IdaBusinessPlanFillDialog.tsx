@@ -313,6 +313,52 @@ export function IdaBusinessPlanFillDialog({
                   </ul>
                 </>
               )}
+
+              {availableScans.length > 0 && (
+                <div className="pt-4 mt-2 border-t space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-medium">
+                      <FolderOpen className="h-3.5 w-3.5 text-muted-foreground" />
+                      {bp("Scan Pack outputs", "Scan-Pack-Ergebnisse")}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedScans.size} / {availableScans.length} {bp("selected", "ausgewählt")}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    {bp(
+                      "IDA will also read the selected scans' summaries, key findings and uploaded deliverables.",
+                      "IDA liest zusätzlich die Zusammenfassungen, Key Findings und hochgeladenen Deliverables der gewählten Scans.",
+                    )}
+                  </p>
+                  <ul className="space-y-1">
+                    {availableScans.map((k) => {
+                      const card: any = (scanPack as any)?.[k];
+                      const fileCount = Array.isArray(card?.files) ? card.files.length : 0;
+                      const hasSummary = !!card?.summary?.trim();
+                      const findings = Array.isArray(card?.keyFindings) ? card.keyFindings.length : 0;
+                      const parts: string[] = [];
+                      if (hasSummary) parts.push(bp("summary", "Zusammenfassung"));
+                      if (findings) parts.push(`${findings} ${bp("findings", "Findings")}`);
+                      if (fileCount) parts.push(`${fileCount} ${bp("files", "Dateien")}`);
+                      return (
+                        <li key={k}>
+                          <label className="flex items-center gap-2 p-2 rounded border hover:bg-muted/40 cursor-pointer">
+                            <Checkbox checked={selectedScans.has(k)} onCheckedChange={() => toggleScan(k)} />
+                            <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <span className="text-sm truncate flex-1">
+                              {language === "de" ? SCAN_LABELS[k].de : SCAN_LABELS[k].en}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground shrink-0">
+                              {parts.join(" · ")}
+                            </span>
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 
