@@ -268,8 +268,6 @@ function buildSchema(scope: SectionScope) {
           },
           additionalProperties: false,
         },
-          additionalProperties: false,
-        },
         customersFound: {
           type: "object",
           description: "Detailed database of concrete customer accounts discovered/verified in the documents (mirrors the Customer Scan output).",
