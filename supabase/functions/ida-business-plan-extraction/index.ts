@@ -379,6 +379,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
 - customerSegmentation: description, rationale, entries[] — IMPORTANT: extract every customer segment mentioned as a separate row with name, size, needs, willingnessToPay and priority (high/medium/low). Do not merge segments into one paragraph.
+- customersFound: description, researchScope, bottomUpAssumptions, averageValuePerCustomer (M€), entries[] — IMPORTANT: extract every concrete company/account mentioned as a separate row (company, country, geography, tier A-E, customerType, segment, parentGroup, variantCount, estimatedValue in M€, status, rationale, sources, notes). This mirrors the Customer Scan database — leave a field empty ("" or 0) if the documents do not support it, but never invent accounts.
 - businessModelling (BMC): valueProposition, customerSegments, channels, customerRelationships, revenueStreams, keyResources, keyActivities, keyPartners, costStructure, description, rationale
 - leanCanvas: problem, solution, uniqueValueProposition, unfairAdvantage, customerSegments, keyMetrics, channels, costStructure, revenueStreams, description, rationale
 - risk: details`,
