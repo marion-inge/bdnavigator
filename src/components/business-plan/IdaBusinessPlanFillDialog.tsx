@@ -442,7 +442,7 @@ export function IdaBusinessPlanFillDialog({
           {step === "pick" && (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>{bp("Cancel", "Abbrechen")}</Button>
-              <Button onClick={runExtraction} disabled={selectedFiles.size === 0} className="gap-2">
+              <Button onClick={runExtraction} disabled={selectedFiles.size === 0 && selectedScans.size === 0} className="gap-2">
                 <img src={idaRobot} alt="" className="h-4 w-4" />
                 {bp("Run IDA", "IDA ausführen")}
               </Button>
