@@ -420,10 +420,6 @@ function ScanCard({ meta, state, pack, opportunity, update, readonly, allScansDo
           </ul>
         )}
       </div>
-
-      {meta.key === "customer" && state.files.length > 0 && (
-        <CustomerScanOutcome files={state.files} />
-      )}
     </Card>
   );
 }
