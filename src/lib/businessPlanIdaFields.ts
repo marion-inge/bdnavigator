@@ -10,8 +10,50 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegment, CustomerSegmentEntry } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegment, CustomerSegmentEntry, CustomerFoundEntry, CustomersFoundData } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
+
+const defaultCustomersFound = (): CustomersFoundData => ({
+  entries: [], researchScope: "", bottomUpAssumptions: "", averageValuePerCustomer: 0, description: "",
+});
+
+const fmtCustomersFound = (entries: CustomerFoundEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries.map((e) =>
+    `Company: ${e.company}\nCountry: ${e.country}\nGeography: ${e.geography}\nTier: ${e.tier}\nCustomer type: ${e.customerType}\nSegment: ${e.segment}\nParent group: ${e.parentGroup}\nVariant count: ${e.variantCount}\nEstimated value (M€): ${e.estimatedValue}\nStatus: ${e.status}\nRationale: ${e.rationale}\nSources: ${e.sources}\nNotes: ${e.notes}`,
+  ).join("\n\n");
+};
+
+const parseCustomersFound = (text: string): CustomerFoundEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CustomerFoundEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) => lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const company = get("company") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!company) continue;
+    const tierRaw = (get("tier") || "").toUpperCase().match(/[A-E]/)?.[0] || "";
+    const estRaw = get("estimated value") || get("estimated");
+    const est = parseFloat(String(estRaw).replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+    out.push({
+      id: crypto.randomUUID(),
+      company,
+      country: get("country"),
+      geography: get("geography"),
+      tier: (tierRaw as CustomerFoundEntry["tier"]) || "",
+      customerType: get("customer type") || get("type"),
+      segment: get("segment"),
+      parentGroup: get("parent group") || get("parent"),
+      variantCount: get("variant count") || get("variants"),
+      estimatedValue: Number.isFinite(est) ? est : 0,
+      status: get("status") || "active",
+      rationale: get("rationale"),
+      sources: get("sources") || get("source"),
+      notes: get("notes"),
+    });
+  }
+  return out;
+};
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
 
@@ -499,6 +541,72 @@ export const SAM_FIELDS: IdaFieldDef[] = [
       };
     },
   },
+  // Customers Found (detailed customer database — mirrors Customer Scan output)
+  {
+    path: "sam.customersFound.description",
+    labelEn: "Customers Found — description", labelDe: "Gefundene Kunden — Beschreibung",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).description || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), description: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.researchScope",
+    labelEn: "Customers Found — research scope", labelDe: "Gefundene Kunden — Recherche-Umfang",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).researchScope || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), researchScope: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.bottomUpAssumptions",
+    labelEn: "Customers Found — bottom-up assumptions", labelDe: "Gefundene Kunden — Bottom-up-Annahmen",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).bottomUpAssumptions || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), bottomUpAssumptions: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.averageValuePerCustomer",
+    labelEn: "Customers Found — average value per customer (M€)", labelDe: "Gefundene Kunden — Ø Wert je Kunde (M€)",
+    multiline: false, section: "Customers Found",
+    get: (_s, sa) => {
+      const v = ((sa.sam as any)?.customersFound || defaultCustomersFound()).averageValuePerCustomer;
+      return v ? String(v) : "";
+    },
+    apply: (s, sa, v) => {
+      const n = parseFloat(String(v).replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+      return {
+        scoring: s,
+        sa: setSamModel(sa, "customersFound" as any, {
+          ...((sa.sam as any)?.customersFound || defaultCustomersFound()),
+          averageValuePerCustomer: Number.isFinite(n) ? n : 0,
+        }),
+      };
+    },
+  },
+  {
+    path: "sam.customersFound.entries",
+    labelEn: "Customers Found — entries", labelDe: "Gefundene Kunden — Einträge",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => fmtCustomersFound(((sa.sam as any)?.customersFound || defaultCustomersFound()).entries),
+    apply: (s, sa, v) => {
+      const entries = parseCustomersFound(v);
+      return {
+        scoring: s,
+        sa: setSamModel(sa, "customersFound" as any, {
+          ...((sa.sam as any)?.customersFound || defaultCustomersFound()),
+          entries,
+        }),
+      };
+    },
+  },
   // BMC
   modelField("sam", "businessModelling", "valueProposition", "Business Model Canvas", "Value proposition", "Wertangebot"),
   modelField("sam", "businessModelling", "customerSegments", "Business Model Canvas", "Customer segments", "Kundensegmente"),
@@ -661,6 +769,9 @@ export function readProposal(proposal: any, path: string): string {
   }
   if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("willingnessToPay" in r || "priority" in r || "needs" in r))) {
     return fmtCustomerSegments(cur as CustomerSegmentEntry[]);
+  }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "company" in r && ("tier" in r || "customerType" in r))) {
+    return fmtCustomersFound(cur as CustomerFoundEntry[]);
   }
   return String(cur);
 }

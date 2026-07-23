@@ -268,6 +268,41 @@ function buildSchema(scope: SectionScope) {
           },
           additionalProperties: false,
         },
+        customersFound: {
+          type: "object",
+          description: "Detailed database of concrete customer accounts discovered/verified in the documents (mirrors the Customer Scan output).",
+          properties: {
+            description: { type: "string" },
+            researchScope: { type: "string", description: "What was searched (geographies, segments, sources) to build this customer list." },
+            bottomUpAssumptions: { type: "string", description: "Assumptions used to translate the list into a bottom-up market size (e.g. price × variant × repeat rate)." },
+            averageValuePerCustomer: { type: "number", description: "Average annual value per customer in M€, used when individual entries lack a value." },
+            entries: {
+              type: "array",
+              description: "Every concrete company/account mentioned. Extract each as a separate row — do not summarize into a paragraph.",
+              items: {
+                type: "object",
+                properties: {
+                  company: { type: "string", description: "Company / account name exactly as shown." },
+                  country: { type: "string", description: "ISO country name or code (e.g. 'Germany', 'US')." },
+                  geography: { type: "string", description: "Broader region cluster (e.g. 'EU', 'North America', 'APAC')." },
+                  tier: { type: "string", enum: ["A", "B", "C", "D", "E", ""], description: "Priority tier: A = top target, E = de-prioritized." },
+                  customerType: { type: "string", description: "OEM / Tier-1 / Integrator / Distributor / End user, etc." },
+                  segment: { type: "string", description: "Industry / product segment this account belongs to." },
+                  parentGroup: { type: "string", description: "Parent group or holding company, if the account is a subsidiary." },
+                  variantCount: { type: "string", description: "Number of variants / projects / units per year (e.g. '25' or '60-80')." },
+                  estimatedValue: { type: "number", description: "Estimated annual value of this account in M€." },
+                  status: { type: "string", description: "active / prospect / on hold / disqualified." },
+                  rationale: { type: "string", description: "Why this account is a fit (needs, decision drivers, timing)." },
+                  sources: { type: "string", description: "Sources / documents / URLs that support this entry." },
+                  notes: { type: "string", description: "Any additional relevant notes." },
+                },
+                required: ["company", "country", "geography", "tier", "customerType", "segment", "parentGroup", "variantCount", "estimatedValue", "status", "rationale", "sources", "notes"],
+                additionalProperties: false,
+              },
+            },
+          },
+          additionalProperties: false,
+        },
         businessModelling: { type: "object", properties: strProps(BMC_KEYS), additionalProperties: false },
         leanCanvas: { type: "object", properties: strProps(LEAN_KEYS), additionalProperties: false },
         risk: { type: "object", properties: { details: { type: "string" } }, additionalProperties: false },
@@ -319,7 +354,7 @@ function buildSchema(scope: SectionScope) {
 const SECTION_DESCRIPTIONS: Record<SectionScope, string> = {
   overview: "the TAM / SAM / SOM Overview text fields (scope, geography, assumptions, drivers, sources, methodology, market-share, growth-rate, sales capacity, etc.)",
   tam: "the TAM strategic models: Market Research, PESTEL (Political/Economic/Social/Technological/Environmental/Legal), Value Chain, Porter's Five Forces (all 5 forces), and SWOT (Strengths/Weaknesses/Opportunities/Threats)",
-  sam: "the SAM section: Customer Landscape narrative, Business Model Canvas (all 9 blocks), Lean Canvas (all 9 blocks), and the Risk narrative",
+  sam: "the SAM section: Customer Landscape narrative, Customers Found (detailed account database mirroring the Customer Scan), Business Model Canvas (all 9 blocks), Lean Canvas (all 9 blocks), and the Risk narrative",
   som: "the SOM section: Competitor narrative, Value Proposition Canvas (jobs/pains/gains, products, pain relievers, gain creators), Customer Benefit Analysis (functional/emotional/social/self-expressive), Three Circles, Positioning statement, and Target Costing narrative",
 };
 
@@ -342,6 +377,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
 - customerSegmentation: description, rationale, entries[] — IMPORTANT: extract every customer segment mentioned as a separate row with name, size, needs, willingnessToPay and priority (high/medium/low). Do not merge segments into one paragraph.
+- customersFound: description, researchScope, bottomUpAssumptions, averageValuePerCustomer (M€), entries[] — IMPORTANT: extract every concrete company/account mentioned as a separate row (company, country, geography, tier A-E, customerType, segment, parentGroup, variantCount, estimatedValue in M€, status, rationale, sources, notes). This mirrors the Customer Scan database — leave a field empty ("" or 0) if the documents do not support it, but never invent accounts.
 - businessModelling (BMC): valueProposition, customerSegments, channels, customerRelationships, revenueStreams, keyResources, keyActivities, keyPartners, costStructure, description, rationale
 - leanCanvas: problem, solution, uniqueValueProposition, unfairAdvantage, customerSegments, keyMetrics, channels, costStructure, revenueStreams, description, rationale
 - risk: details`,
