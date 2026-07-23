@@ -10,8 +10,50 @@
  * Most fields are strings; geographic breakdown tables are handled as structured
  * region rows because they are a core TAM/SAM/SOM input.
  */
-import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegment, CustomerSegmentEntry } from "./types";
+import type { DetailedScoring, GeographicalRegion, StrategicAnalyses, CompetitorAnalysisEntry, CompetitorEntry, CustomerSegment, CustomerSegmentEntry, CustomerFoundEntry, CustomersFoundData } from "./types";
 import { createDefaultTamOverview, createDefaultSamOverview, createDefaultSomOverview } from "./businessPlanTypes";
+
+const defaultCustomersFound = (): CustomersFoundData => ({
+  entries: [], researchScope: "", bottomUpAssumptions: "", averageValuePerCustomer: 0, description: "",
+});
+
+const fmtCustomersFound = (entries: CustomerFoundEntry[] | undefined): string => {
+  if (!entries?.length) return "";
+  return entries.map((e) =>
+    `Company: ${e.company}\nCountry: ${e.country}\nGeography: ${e.geography}\nTier: ${e.tier}\nCustomer type: ${e.customerType}\nSegment: ${e.segment}\nParent group: ${e.parentGroup}\nVariant count: ${e.variantCount}\nEstimated value (M€): ${e.estimatedValue}\nStatus: ${e.status}\nRationale: ${e.rationale}\nSources: ${e.sources}\nNotes: ${e.notes}`,
+  ).join("\n\n");
+};
+
+const parseCustomersFound = (text: string): CustomerFoundEntry[] => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: CustomerFoundEntry[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) => lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const company = get("company") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!company) continue;
+    const tierRaw = (get("tier") || "").toUpperCase().match(/[A-E]/)?.[0] || "";
+    const estRaw = get("estimated value") || get("estimated");
+    const est = parseFloat(String(estRaw).replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+    out.push({
+      id: crypto.randomUUID(),
+      company,
+      country: get("country"),
+      geography: get("geography"),
+      tier: (tierRaw as CustomerFoundEntry["tier"]) || "",
+      customerType: get("customer type") || get("type"),
+      segment: get("segment"),
+      parentGroup: get("parent group") || get("parent"),
+      variantCount: get("variant count") || get("variants"),
+      estimatedValue: Number.isFinite(est) ? est : 0,
+      status: get("status") || "active",
+      rationale: get("rationale"),
+      sources: get("sources") || get("source"),
+      notes: get("notes"),
+    });
+  }
+  return out;
+};
 
 export type ProposalGroup = "overview" | "tam" | "sam" | "som";
 
