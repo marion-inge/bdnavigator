@@ -539,6 +539,9 @@ export default function OpportunityDetail() {
                 readonly={opp.stage === "closed"}
               />
             )}
+            {activeTab === "customer_scan_outcome" && (
+              <CustomerScanOutcome files={opp.scanPack?.customer?.files ?? []} />
+            )}
             {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
               <StrategicAnalysesSection
                 strategicAnalyses={opp.strategicAnalyses}
