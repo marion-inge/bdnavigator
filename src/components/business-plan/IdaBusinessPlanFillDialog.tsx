@@ -3,13 +3,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Loader2, ChevronRight } from "lucide-react";
+import { FileText, Loader2, ChevronRight, FolderOpen } from "lucide-react";
 import { fetchOpportunityFiles, invokeFunction } from "@/lib/backendAdapter";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import type { DetailedScoring, StrategicAnalyses } from "@/lib/types";
 import { fieldsForGroup, readProposal, type IdaFieldDef, type ProposalGroup } from "@/lib/businessPlanIdaFields";
+import { useStore } from "@/lib/store";
+import type { ScanPackKey } from "@/lib/scanPackTypes";
+
+const SCAN_LABELS: Record<ScanPackKey, { en: string; de: string }> = {
+  industry: { en: "Industry Study", de: "Industriestudie" },
+  customer: { en: "Customer Scan", de: "Customer Scan" },
+  competitor: { en: "Competitor Scan", de: "Competitor Scan" },
+  market_potential: { en: "Market Potential Scan", de: "Marktpotenzial-Scan" },
+  buying_center: { en: "Buying Center Scan", de: "Buying-Center-Scan" },
+  assembler: { en: "Scan Pack Assembler", de: "Scan-Pack-Assembler" },
+};
 
 interface FileRecord {
   id: string;
