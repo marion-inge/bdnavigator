@@ -14,6 +14,44 @@ type ScanKey =
   | "market_potential"
   | "buying_center";
 
+const MAX_BYTES = 8 * 1024 * 1024;
+
+function classify(mime: string, name: string): "text" | "image" | "pdf" | "unsupported" {
+  const lower = (name || "").toLowerCase();
+  if ((mime || "").startsWith("text/") || mime === "application/json" || /\.(txt|md|csv|json|log|html|xml)$/i.test(lower)) return "text";
+  if ((mime || "").startsWith("image/") || /\.(png|jpe?g|gif|webp)$/i.test(lower)) return "image";
+  if (mime === "application/pdf" || lower.endsWith(".pdf")) return "pdf";
+  return "unsupported";
+}
+
+function bufToBase64(buf: Uint8Array): string {
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < buf.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, buf.subarray(i, i + CHUNK) as any);
+  }
+  return btoa(bin);
+}
+
+async function toContentBlock(name: string, mime: string, buf: Uint8Array): Promise<any> {
+  const kind = classify(mime, name);
+  if (kind === "unsupported") {
+    return { type: "text", text: `[Attachment "${name}" (${mime || "binary"}) cannot be read.]` };
+  }
+  if (buf.byteLength > MAX_BYTES) {
+    return { type: "text", text: `[Attachment "${name}" exceeded 8 MB and was skipped.]` };
+  }
+  if (kind === "text") {
+    const text = new TextDecoder().decode(buf).slice(0, 80_000);
+    return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End ---` };
+  }
+  const b64 = bufToBase64(buf);
+  if (kind === "image") {
+    return { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${b64}` } };
+  }
+  return { type: "file", file: { filename: name, file_data: `data:application/pdf;base64,${b64}` } };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -27,6 +65,7 @@ serve(async (req) => {
       opportunityId: string;
       selectedScans: ScanKey[];
       language?: "en" | "de";
+      fileIds?: string[];
     };
 
     const lang = body.language === "de" ? "German" : "English";
@@ -66,6 +105,33 @@ serve(async (req) => {
     }
     const brief = briefLines.join("\n");
 
+    // Load selected attached files (if any) as multimodal content blocks
+    const fileBlocks: any[] = [];
+    const usedFiles: string[] = [];
+    if (body.fileIds && body.fileIds.length > 0) {
+      const { data: files, error: fErr } = await supabase
+        .from("opportunity_files")
+        .select("file_name, file_path, mime_type, file_size, comment")
+        .eq("opportunity_id", body.opportunityId)
+        .in("id", body.fileIds);
+      if (fErr) console.error(fErr);
+      for (const f of files ?? []) {
+        if ((f.file_size || 0) > MAX_BYTES) {
+          fileBlocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
+          continue;
+        }
+        const { data, error: dErr } = await supabase.storage.from("opportunity-files").download(f.file_path);
+        if (dErr || !data) continue;
+        const buf = new Uint8Array(await data.arrayBuffer());
+        if (f.comment) fileBlocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
+        const block = await toContentBlock(f.file_name, f.mime_type || "", buf);
+        if (block) {
+          fileBlocks.push(block);
+          if (classify(f.mime_type || "", f.file_name) !== "unsupported") usedFiles.push(f.file_name);
+        }
+      }
+    }
+
     const scanGuide: Record<ScanKey, string> = {
       industry:
         "Industry Scan: infer studyPurpose, segmentsInDepth (array of short industry segment names), depth, geography (primary/baseline/light arrays of country/region names), outputs (four booleans).",
@@ -79,10 +145,14 @@ serve(async (req) => {
         "Buying Center Scan: fill offeringDescription (3–5 sentences), seedInputType ('customer_scan_db'|'crm_export'|'lead_list'|'manual_account_list'|''), shortlistRule, depth ('full_mapping_50'|'contact_coverage_400'|''), deliveryNotes.",
     };
 
-    const systemPrompt =
-      `You are IDA, a senior innovation analyst. Draft a "Hypothesis Builder" input sheet for a research team. Use ONLY the idea brief provided. If a specific field cannot be reasonably inferred from the brief, return an empty string / empty array / null — DO NOT invent facts, numbers, company names or specifications. Prefer leaving fields empty over hallucinating. Respond in ${lang}.`;
+    const attachmentClause = fileBlocks.length > 0
+      ? " In addition to the idea brief, the user has attached supporting documents — read them carefully and use any concrete facts, figures, customers, competitors, specs or geographies grounded in those documents."
+      : "";
 
-    const userPrompt =
+    const systemPrompt =
+      `You are IDA, a senior innovation analyst. Draft a "Hypothesis Builder" input sheet for a research team. Use ONLY the idea brief${fileBlocks.length > 0 ? " and the attached documents" : ""} provided. If a specific field cannot be reasonably inferred, return an empty string / empty array / null — DO NOT invent facts, numbers, company names or specifications. Prefer leaving fields empty over hallucinating. Respond in ${lang}.${attachmentClause}`;
+
+    const userIntro =
       `Draft the CORE hypothesis section and ONLY the following scan sections: ${scans.join(", ")}.
 
 Core section: hypothesisStatement (1–2 sentence testable statement anchored on the title), client.company (from Owner if it clearly names a company), client.businessUnit (leave empty unless obvious), offering.name (from title), offering.description (3–5 sentences from problem + solution), offering.specAnchors (5–10 short bullets — leave empty array if not clearly present in brief), offering.businessModel ('one-time'|'recurring'|'service'|''), targetMarkets (array of {segment, region} derived from industry + geography).
@@ -311,6 +381,8 @@ ${brief}
 
     const required = ["core", ...Object.keys(properties).filter((k) => k !== "core")];
 
+    const userContent: any[] = [{ type: "text", text: userIntro }, ...fileBlocks];
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -321,7 +393,7 @@ ${brief}
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+          { role: "user", content: userContent },
         ],
         tools: [
           {
@@ -367,6 +439,7 @@ ${brief}
       });
 
     const result = JSON.parse(args);
+    result.filesUsed = usedFiles;
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
