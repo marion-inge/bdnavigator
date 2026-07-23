@@ -16,14 +16,15 @@ import { FileAttachments } from "@/components/FileAttachments";
 import { GateMeetingNotesEditor } from "@/components/GateMeetingNotesEditor";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb, Building2 } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 import { HypothesisSection } from "@/components/hypothesis/HypothesisSection";
 import { ScanPackSection } from "@/components/scan-pack/ScanPackSection";
 import { CustomerScanOutcome } from "@/components/scan-pack/CustomerScanOutcome";
+import { IndustryScanOutcome } from "@/components/scan-pack/IndustryScanOutcome";
 
-type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "customer_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -81,6 +82,7 @@ export default function OpportunityDetail() {
     scoring:             "gate1",
     hypothesis:          "rough_scoring",
     scan_pack:           "rough_scoring",
+    industry_scan_outcome: "rough_scoring",
     customer_scan_outcome: "rough_scoring",
     sa_ansoff:           "gate1",
     sa_bcg:              "gate1",
@@ -102,6 +104,7 @@ export default function OpportunityDetail() {
     scoring:            "rough_scoring",
     hypothesis:         "",
     scan_pack:          "",
+    industry_scan_outcome: "",
     customer_scan_outcome: "",
     sa_ansoff:          "",
     sa_bcg:             "",
@@ -202,6 +205,7 @@ export default function OpportunityDetail() {
     { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
     { key: "hypothesis",          label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
     { key: "scan_pack",           label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${Object.values(opp.scanPack).filter((s: any) => s.status === "done").length}/6` : undefined },
+    { key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
     { key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
     { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "investment_case",     label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
@@ -539,6 +543,9 @@ export default function OpportunityDetail() {
                 onSave={(sp) => updateOpportunity(opp.id, { scanPack: sp })}
                 readonly={opp.stage === "closed"}
               />
+            )}
+            {activeTab === "industry_scan_outcome" && (
+              <IndustryScanOutcome files={opp.scanPack?.industry?.files ?? []} />
             )}
             {activeTab === "customer_scan_outcome" && (
               <CustomerScanOutcome files={opp.scanPack?.customer?.files ?? []} />
