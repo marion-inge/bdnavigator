@@ -102,6 +102,7 @@ export function IdaBusinessPlanFillDialog({
     setEdits({});
     setAccept({});
     setSelectedFiles(new Set());
+    setSelectedScans(new Set(availableScans));
     setSelectedSections(new Set());
     setLoadingFiles(true);
     fetchOpportunityFiles(opportunityId).then((res: any) => {
