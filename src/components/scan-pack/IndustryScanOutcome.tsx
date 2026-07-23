@@ -212,10 +212,10 @@ function PlayersView({ data, L }: { data: IndustryScanXlsxData; L: <T,>(en: T, d
     return Object.entries(m).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [players]);
 
-  const byRegion = useMemo(() => {
+  const byCountry = useMemo(() => {
     const m: Record<string, number> = {};
-    players.forEach((p) => { const k = p.region || p.country || "—"; m[k] = (m[k] || 0) + 1; });
-    return Object.entries(m).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 8);
+    players.forEach((p) => { const k = p.country || "—"; if (k === "—") return; m[k] = (m[k] || 0) + 1; });
+    return Object.entries(m).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
   }, [players]);
 
   const byKind = useMemo(() => {
@@ -224,8 +224,29 @@ function PlayersView({ data, L }: { data: IndustryScanXlsxData; L: <T,>(en: T, d
     return Object.entries(m).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [players]);
 
+  // Segment × Tier density matrix
+  const TIERS = ["A", "B", "C", "D", "E"] as const;
+  const segTierMatrix = useMemo(() => {
+    const rows = segments.map((seg) => {
+      const cells = TIERS.map((t) => players.filter((p) => p.segment === seg && p.tier === t).length);
+      return { segment: seg, cells, total: cells.reduce((a, b) => a + b, 0) };
+    });
+    const maxCell = Math.max(1, ...rows.flatMap((r) => r.cells));
+    return { rows: rows.sort((a, b) => b.total - a.total), maxCell };
+  }, [players, segments]);
+
+  const heatBg = (v: number, max: number) => {
+    if (v === 0) return "hsl(var(--muted))";
+    const t = Math.max(0.15, v / max);
+    // emerald ramp with alpha
+    return `hsl(160, 65%, ${Math.round(65 - 30 * t)}%)`;
+  };
+
   const tierAB = players.filter((p) => p.tier === "A" || p.tier === "B").length;
   const countries = new Set(players.map((p) => p.country).filter(Boolean)).size;
+  const maxLayer = Math.max(1, ...byLayer.map((l) => l.count));
+  const topCountries = byCountry.slice(0, 5);
+  const otherCountryCount = Math.max(0, countries - topCountries.length);
 
   return (
     <div className="space-y-3">
@@ -252,57 +273,141 @@ function PlayersView({ data, L }: { data: IndustryScanXlsxData; L: <T,>(en: T, d
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-        <Card className="p-2 md:col-span-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("By value-chain layer", "Nach Value-Chain-Ebene")}</div>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={byLayer} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tick={{ fontSize: 10 }} allowDecimals={false} />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={140} />
-              <Tooltip />
-              <Bar dataKey="count" fill="hsl(210, 80%, 55%)" radius={[0, 3, 3, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("By segment", "Nach Segment")}</div>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie data={bySegment} dataKey="value" nameKey="name" innerRadius={30} outerRadius={60}>
-                {bySegment.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 9 }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("Top regions", "Top-Regionen")}</div>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={byRegion} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tick={{ fontSize: 10 }} allowDecimals={false} />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={90} />
-              <Tooltip />
-              <Bar dataKey="count" fill="hsl(160, 65%, 45%)" radius={[0, 3, 3, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
+      {/* Executive intelligence matrix: value-chain distribution | segment × tier heat | global footprint */}
+      <Card className="p-0 overflow-hidden">
+        <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border">
+          {/* Value chain distribution */}
+          <div className="flex-1 p-4 min-w-0">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {L("Value chain distribution", "Value-Chain-Verteilung")}
+              </h3>
+              <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full">
+                {layers.length} {L("LAYERS", "EBENEN")}
+              </span>
+            </div>
+            <div className="space-y-2.5">
+              {byLayer.map((l) => {
+                const pct = (l.count / maxLayer) * 100;
+                return (
+                  <div key={l.name}>
+                    <div className="flex justify-between items-end mb-1 gap-2">
+                      <span className="text-xs font-semibold text-foreground truncate" title={l.name}>{l.name}</span>
+                      <span className="text-[10px] font-mono text-muted-foreground shrink-0">
+                        {l.count} {L("players", "Player")}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Segment × Tier density */}
+          <div className="flex-[1.4] p-4 bg-muted/30 min-w-0">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {L("Segment density by tier", "Segmentdichte nach Tier")}
+              </h3>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-muted border border-border" />
+                  <span className="text-[10px] text-muted-foreground">{L("Low", "Niedrig")}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "hsl(160, 65%, 35%)" }} />
+                  <span className="text-[10px] text-muted-foreground">{L("High", "Hoch")}</span>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="grid gap-1 items-center" style={{ gridTemplateColumns: "minmax(80px, 1fr) repeat(5, minmax(0, 1fr)) 40px" }}>
+                <span />
+                {TIERS.map((t) => (
+                  <span key={t} className="text-[10px] font-bold text-muted-foreground text-center">{t}</span>
+                ))}
+                <span className="text-[10px] font-bold text-muted-foreground text-center">Σ</span>
+              </div>
+              {segTierMatrix.rows.map((r) => (
+                <div key={r.segment} className="grid gap-1 items-center" style={{ gridTemplateColumns: "minmax(80px, 1fr) repeat(5, minmax(0, 1fr)) 40px" }}>
+                  <span className="text-[10px] font-medium text-foreground truncate pr-1" title={r.segment}>{r.segment}</span>
+                  {r.cells.map((v, i) => (
+                    <div
+                      key={i}
+                      className="aspect-square rounded flex items-center justify-center text-[10px] font-bold text-white"
+                      style={{ backgroundColor: heatBg(v, segTierMatrix.maxCell) }}
+                      title={`${r.segment} · Tier ${TIERS[i]} · ${v}`}
+                    >
+                      {v > 0 ? v : ""}
+                    </div>
+                  ))}
+                  <span className="text-[10px] font-mono text-muted-foreground text-center">{r.total}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Global footprint */}
+          <div className="flex-1 p-4 min-w-0">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {L("Global footprint", "Globale Präsenz")}
+              </h3>
+              <span className="text-[10px] font-semibold text-primary">
+                {countries} {L("COUNTRIES", "LÄNDER")}
+              </span>
+            </div>
+            <div className="space-y-3">
+              {topCountries.map((c) => {
+                const pct = players.length ? (c.count / players.length) * 100 : 0;
+                const code = c.name.slice(0, 2).toUpperCase();
+                return (
+                  <div key={c.name} className="flex items-center justify-between group gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground shrink-0">
+                        {code}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-foreground truncate" title={c.name}>{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {c.count} {L("players", "Player")} ({pct.toFixed(1)}%)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="h-1.5 w-14 bg-muted rounded-full shrink-0">
+                      <div className="h-full bg-primary/70 rounded-full" style={{ width: `${Math.max(4, pct * 2.5)}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+              {otherCountryCount > 0 && (
+                <div className="pt-3 mt-3 border-t border-border">
+                  <p className="text-[10px] text-muted-foreground italic">
+                    +{otherCountryCount} {L("other countries", "weitere Länder")}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
 
       {byKind.length > 1 && (
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("By player kind", "Nach Player-Typ")}</div>
-          <div className="flex flex-wrap gap-2 px-1 pb-1">
-            {byKind.map((k) => (
-              <Badge key={k.name} variant="outline" className="text-[11px]">
-                {k.name} · {k.value}
-              </Badge>
-            ))}
-          </div>
-        </Card>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            {L("By player kind", "Nach Player-Typ")}:
+          </span>
+          {byKind.map((k) => (
+            <Badge key={k.name} variant="outline" className="text-[11px]">
+              {k.name} · {k.value}
+            </Badge>
+          ))}
+        </div>
       )}
+
 
       <div className="flex flex-wrap items-center gap-2">
         <Input
