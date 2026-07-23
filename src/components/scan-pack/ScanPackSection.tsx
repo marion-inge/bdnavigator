@@ -18,6 +18,7 @@ import {
   ScanCardState, ScanFileMeta, NON_ASSEMBLER_KEYS,
 } from "@/lib/scanPackTypes";
 import { formatIntake } from "@/lib/scanPackIntake";
+import { CustomerScanOutcome } from "./CustomerScanOutcome";
 
 interface Props {
   opportunity: Opportunity;
