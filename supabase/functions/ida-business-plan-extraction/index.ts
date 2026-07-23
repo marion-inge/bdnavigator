@@ -443,14 +443,17 @@ serve(async (req) => {
 
     const body = await req.json() as {
       opportunityId: string;
-      fileIds: string[];
+      fileIds?: string[];
+      scanKeys?: string[];
       scope?: "all" | "overview" | "tam" | "sam" | "som";
       language?: "en" | "de";
       context?: Record<string, any>;
     };
 
-    if (!body.opportunityId || !body.fileIds?.length) {
-      return new Response(JSON.stringify({ error: "no_files", message: "Please select at least one attachment." }), {
+    const fileIds = body.fileIds ?? [];
+    const scanKeys = body.scanKeys ?? [];
+    if (!body.opportunityId || (fileIds.length === 0 && scanKeys.length === 0)) {
+      return new Response(JSON.stringify({ error: "no_files", message: "Please select at least one attachment or scan pack output." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -459,30 +462,76 @@ serve(async (req) => {
     const lang = body.language === "de" ? "German" : "English";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { data: files } = await supabase
-      .from("opportunity_files")
-      .select("file_name, file_path, mime_type, file_size, comment")
-      .eq("opportunity_id", body.opportunityId)
-      .in("id", body.fileIds);
-
     const blocks: any[] = [];
     const usedFiles: string[] = [];
-    for (const f of files ?? []) {
-      if ((f.file_size || 0) > MAX_BYTES) {
-        blocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
-        continue;
+
+    if (fileIds.length > 0) {
+      const { data: files } = await supabase
+        .from("opportunity_files")
+        .select("file_name, file_path, mime_type, file_size, comment")
+        .eq("opportunity_id", body.opportunityId)
+        .in("id", fileIds);
+
+      for (const f of files ?? []) {
+        if ((f.file_size || 0) > MAX_BYTES) {
+          blocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
+          continue;
+        }
+        const { data, error } = await supabase.storage.from("opportunity-files").download(f.file_path);
+        if (error || !data) continue;
+        const buf = new Uint8Array(await data.arrayBuffer());
+        if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
+        const block = await toContentBlock(f.file_name, f.mime_type || "", buf);
+        blocks.push(block);
+        if (classify(f.mime_type || "", f.file_name) !== "unsupported") usedFiles.push(f.file_name);
       }
-      const { data, error } = await supabase.storage.from("opportunity-files").download(f.file_path);
-      if (error || !data) continue;
-      const buf = new Uint8Array(await data.arrayBuffer());
-      if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
-      const block = await toContentBlock(f.file_name, f.mime_type || "", buf);
-      blocks.push(block);
-      if (classify(f.mime_type || "", f.file_name) !== "unsupported") usedFiles.push(f.file_name);
+    }
+
+    // Scan Pack outputs (summaries, key findings, uploaded deliverables)
+    if (scanKeys.length > 0) {
+      const { data: oppRow } = await supabase
+        .from("opportunities")
+        .select("scan_pack")
+        .eq("id", body.opportunityId)
+        .maybeSingle();
+      const pack: any = (oppRow as any)?.scan_pack ?? {};
+      const SCAN_LABELS: Record<string, string> = {
+        industry: "Industry Study",
+        customer: "Customer Scan",
+        competitor: "Competitor Scan",
+        market_potential: "Market Potential Scan",
+        buying_center: "Buying Center Scan",
+        assembler: "Scan Pack Assembler",
+      };
+      for (const k of scanKeys) {
+        const card = pack?.[k];
+        if (!card) continue;
+        const label = SCAN_LABELS[k] || k;
+        const parts: string[] = [`=== Scan Pack — ${label} ===`, `Status: ${card.status || "unknown"}`];
+        if (card.summary) parts.push(`Summary:\n${card.summary}`);
+        if (Array.isArray(card.keyFindings) && card.keyFindings.length) {
+          parts.push(`Key findings:\n- ${card.keyFindings.join("\n- ")}`);
+        }
+        blocks.push({ type: "text", text: parts.join("\n\n") });
+
+        for (const meta of (card.files ?? []) as any[]) {
+          if ((meta.size || 0) > MAX_BYTES) {
+            blocks.push({ type: "text", text: `[Scan deliverable "${meta.name}" too large, skipped.]` });
+            continue;
+          }
+          const { data, error } = await supabase.storage.from("scan-deliverables").download(meta.path);
+          if (error || !data) continue;
+          const buf = new Uint8Array(await data.arrayBuffer());
+          const displayName = `[${label}] ${meta.name}`;
+          const block = await toContentBlock(displayName, meta.mime || "", buf);
+          blocks.push(block);
+          if (classify(meta.mime || "", meta.name) !== "unsupported") usedFiles.push(displayName);
+        }
+      }
     }
 
     if (blocks.length === 0) {
-      return new Response(JSON.stringify({ error: "no_files", message: "Selected files could not be loaded." }), {
+      return new Response(JSON.stringify({ error: "no_files", message: "Selected sources could not be loaded." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
