@@ -770,5 +770,8 @@ export function readProposal(proposal: any, path: string): string {
   if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("willingnessToPay" in r || "priority" in r || "needs" in r))) {
     return fmtCustomerSegments(cur as CustomerSegmentEntry[]);
   }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "company" in r && ("tier" in r || "customerType" in r))) {
+    return fmtCustomersFound(cur as CustomerFoundEntry[]);
+  }
   return String(cur);
 }
