@@ -11,14 +11,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { EditableSection } from "@/components/EditableSection";
 import { Plus, Trash2, Upload, Users, TrendingUp } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { TamModels, CustomerFoundEntry, CustomersFoundData } from "@/lib/types";
+import { TamModels, SamModels, CustomerFoundEntry, CustomersFoundData } from "@/lib/types";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
 interface Props {
-  data: TamModels;
-  onSave: (data: TamModels) => void;
+  data: TamModels | SamModels;
+  onSave: (data: any) => void;
   readonly?: boolean;
+  title?: string;
+  description?: string;
 }
 
 const defaultCustomers = (): CustomersFoundData => ({
@@ -37,14 +39,14 @@ const TIER_COLORS: Record<string, string> = {
   E: "hsl(0, 84%, 60%)",
 };
 
-export function CustomersFoundTab({ data, onSave, readonly: propReadonly }: Props) {
+export function CustomersFoundTab({ data, onSave, readonly: propReadonly, title, description }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const cf = data.customersFound || defaultCustomers();
+  const cf = (data as any).customersFound || defaultCustomers();
   const update = (patch: Partial<CustomersFoundData>) =>
     onSave({ ...data, customersFound: { ...cf, ...patch } });
 
@@ -131,12 +133,12 @@ export function CustomersFoundTab({ data, onSave, readonly: propReadonly }: Prop
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-blue-500" />
-              {bp("Customers Found – Bottom-Up TAM", "Gefundene Kunden – Bottom-Up TAM")}
+              {title || bp("Customers Found – Bottom-Up TAM", "Gefundene Kunden – Bottom-Up TAM")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              {bp(
+              {description || bp(
                 "Catalogue every potential customer identified in the target region and industry. The sum of their value builds a bottom-up TAM and substantiates the top-down estimate.",
                 "Erfassen Sie jeden potenziellen Kunden in Zielregion und Industrie. Die Summe ergibt einen Bottom-Up-TAM und untermauert die Top-Down-Schätzung.",
               )}

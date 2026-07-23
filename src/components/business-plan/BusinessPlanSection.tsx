@@ -19,6 +19,7 @@ import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 
 import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
+import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
 import { Globe, Target, TrendingUp, BarChart3, FileDown } from "lucide-react";
@@ -194,6 +195,16 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           </TabsContent>
           <TabsContent value="sam-customers">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
+          </TabsContent>
+          <TabsContent value="sam-customers-found">
+            <CustomersFoundTab
+              {...samProps}
+              title={bp("Customers Found – Customer Scan", "Gefundene Kunden – Customer Scan")}
+              description={bp(
+                "Detailed overview of customers identified through the Customer Scan (tier-ranked A–E). Import the Customer Scan Excel database, or add accounts manually. Feeds bottom-up SAM sizing and Buying Center Scan seeding.",
+                "Detailübersicht der über den Customer Scan identifizierten Kunden (Tier A–E). Excel-Datenbank des Customer Scan importieren oder Accounts manuell hinzufügen. Speist die Bottom-Up-SAM-Berechnung und den Buying Center Scan.",
+              )}
+            />
           </TabsContent>
           <TabsContent value="sam-strategic">
             <StrategicFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
