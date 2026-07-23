@@ -585,6 +585,7 @@ export interface SamModels {
   internalBUInterviews?: { entries: InternalInterviewEntry[]; description: string; rationale: string };
   businessModelling?: BusinessModelCanvas;
   leanCanvas?: LeanCanvas;
+  customersFound?: CustomersFoundData;
 }
 
 export interface TargetCostingComponent {
