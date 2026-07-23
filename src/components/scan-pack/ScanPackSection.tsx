@@ -18,6 +18,7 @@ import {
   ScanCardState, ScanFileMeta, NON_ASSEMBLER_KEYS,
 } from "@/lib/scanPackTypes";
 import { formatIntake } from "@/lib/scanPackIntake";
+import { CustomerScanOutcome } from "./CustomerScanOutcome";
 
 interface Props {
   opportunity: Opportunity;
@@ -419,6 +420,10 @@ function ScanCard({ meta, state, pack, opportunity, update, readonly, allScansDo
           </ul>
         )}
       </div>
+
+      {meta.key === "customer" && state.files.length > 0 && (
+        <CustomerScanOutcome files={state.files} />
+      )}
     </Card>
   );
 }
