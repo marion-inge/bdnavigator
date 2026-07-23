@@ -101,6 +101,7 @@ export default function OpportunityDetail() {
     scoring:            "rough_scoring",
     hypothesis:         "",
     scan_pack:          "",
+    customer_scan_outcome: "",
     sa_ansoff:          "",
     sa_bcg:             "",
     sa_mckinsey:        "",
