@@ -122,12 +122,21 @@ export function IdaBusinessPlanFillDialog({
     setSelectedFiles((prev) => (prev.size === files.length ? new Set() : new Set(files.map((f) => f.id))));
   };
 
+  const toggleScan = (k: ScanPackKey) => {
+    setSelectedScans((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+  };
+
   const runExtraction = async () => {
     setStep("running");
     try {
       const { data, error } = await invokeFunction("ida-business-plan-extraction", {
         opportunityId,
         fileIds: Array.from(selectedFiles),
+        scanKeys: Array.from(selectedScans),
         scope,
         language,
         context,
