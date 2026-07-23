@@ -541,6 +541,72 @@ export const SAM_FIELDS: IdaFieldDef[] = [
       };
     },
   },
+  // Customers Found (detailed customer database — mirrors Customer Scan output)
+  {
+    path: "sam.customersFound.description",
+    labelEn: "Customers Found — description", labelDe: "Gefundene Kunden — Beschreibung",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).description || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), description: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.researchScope",
+    labelEn: "Customers Found — research scope", labelDe: "Gefundene Kunden — Recherche-Umfang",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).researchScope || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), researchScope: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.bottomUpAssumptions",
+    labelEn: "Customers Found — bottom-up assumptions", labelDe: "Gefundene Kunden — Bottom-up-Annahmen",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => ((sa.sam as any)?.customersFound || defaultCustomersFound()).bottomUpAssumptions || "",
+    apply: (s, sa, v) => ({
+      scoring: s,
+      sa: setSamModel(sa, "customersFound" as any, { ...((sa.sam as any)?.customersFound || defaultCustomersFound()), bottomUpAssumptions: v }),
+    }),
+  },
+  {
+    path: "sam.customersFound.averageValuePerCustomer",
+    labelEn: "Customers Found — average value per customer (M€)", labelDe: "Gefundene Kunden — Ø Wert je Kunde (M€)",
+    multiline: false, section: "Customers Found",
+    get: (_s, sa) => {
+      const v = ((sa.sam as any)?.customersFound || defaultCustomersFound()).averageValuePerCustomer;
+      return v ? String(v) : "";
+    },
+    apply: (s, sa, v) => {
+      const n = parseFloat(String(v).replace(/,/g, ".").match(/-?\d+(?:\.\d+)?/)?.[0] || "0");
+      return {
+        scoring: s,
+        sa: setSamModel(sa, "customersFound" as any, {
+          ...((sa.sam as any)?.customersFound || defaultCustomersFound()),
+          averageValuePerCustomer: Number.isFinite(n) ? n : 0,
+        }),
+      };
+    },
+  },
+  {
+    path: "sam.customersFound.entries",
+    labelEn: "Customers Found — entries", labelDe: "Gefundene Kunden — Einträge",
+    multiline: true, section: "Customers Found",
+    get: (_s, sa) => fmtCustomersFound(((sa.sam as any)?.customersFound || defaultCustomersFound()).entries),
+    apply: (s, sa, v) => {
+      const entries = parseCustomersFound(v);
+      return {
+        scoring: s,
+        sa: setSamModel(sa, "customersFound" as any, {
+          ...((sa.sam as any)?.customersFound || defaultCustomersFound()),
+          entries,
+        }),
+      };
+    },
+  },
   // BMC
   modelField("sam", "businessModelling", "valueProposition", "Business Model Canvas", "Value proposition", "Wertangebot"),
   modelField("sam", "businessModelling", "customerSegments", "Business Model Canvas", "Customer segments", "Kundensegmente"),
