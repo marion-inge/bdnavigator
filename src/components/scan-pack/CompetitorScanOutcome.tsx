@@ -473,17 +473,23 @@ function MarketShareView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
     .filter((r) => r.mid !== null && !/^avl/i.test(r.competitor))
     .sort((a, b) => (b.mid! - a.mid!))
     .slice(0, 12)
-    .map((r) => ({ name: r.competitor.length > 32 ? r.competitor.slice(0, 30) + "…" : r.competitor, mid: r.mid, share: r.share }));
+    .map((r) => ({ name: r.competitor, mid: r.mid, share: r.share }));
 
   return (
     <div className="space-y-3">
       <Card className="p-3">
         <div className="text-xs font-semibold mb-2">{L("Share midpoint (% of niche denominator)", "Anteil-Mittelwert (% des Nischen-Nenners)")}</div>
-        <ResponsiveContainer width="100%" height={Math.max(240, chartData.length * 26)}>
-          <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 40 }}>
+        <ResponsiveContainer width="100%" height={Math.max(280, chartData.length * 34)}>
+          <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 48, top: 4, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis type="number" tick={{ fontSize: 10 }} />
-            <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={220} />
+            <XAxis type="number" tick={{ fontSize: 10 }} unit="%" />
+            <YAxis
+              dataKey="name"
+              type="category"
+              tick={{ fontSize: 10 }}
+              width={340}
+              interval={0}
+            />
             <Tooltip formatter={(_v: any, _n, p: any) => [p.payload.share, L("Share range", "Anteil")]} />
             <Bar dataKey="mid" fill="hsl(210, 80%, 55%)" radius={[0, 3, 3, 0]} />
           </BarChart>
