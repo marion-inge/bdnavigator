@@ -196,43 +196,26 @@ function OverviewView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, de
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("Tier distribution", "Tier-Verteilung")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={tierData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="tier" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="count" radius={[3, 3, 0, 0]}>
-                {tierData.map((d) => <Cell key={d.tier} fill={TIER_COLORS[d.tier] || "hsl(var(--primary))"} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("Tier distribution", "Tier-Verteilung")}</div>
+          <DistList
+            rows={tierData.map((d) => ({ label: `Tier ${d.tier}`, value: d.count, color: TIER_COLORS[d.tier] }))}
+            total={shortlist.length}
+          />
         </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("By strategic camp", "Nach strateg. Camp")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie data={campData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={55}>
-                {campData.map((_, i) => <Cell key={i} fill={PIE[i % PIE.length]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 9 }} />
-            </PieChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("By strategic camp", "Nach strateg. Camp")}</div>
+          <DistList
+            rows={campData.map((d, i) => ({ label: d.name, value: d.value, color: PIE[i % PIE.length] }))}
+            total={shortlist.length}
+          />
         </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("Momentum mix", "Momentum-Mix")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie data={momData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={55}>
-                {momData.map((d, i) => <Cell key={i} fill={MOMENTUM_COLORS[d.name] || PIE[i % PIE.length]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 9 }} />
-            </PieChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("Momentum mix", "Momentum-Mix")}</div>
+          <DistList
+            rows={momData.map((d, i) => ({ label: d.name, value: d.value, color: MOMENTUM_COLORS[d.name] || PIE[i % PIE.length] }))}
+            total={shortlist.length}
+          />
         </Card>
       </div>
 
@@ -258,6 +241,31 @@ function Kpi({ label, value, tone }: { label: string; value: number | string; to
       <div className="text-[10px] text-muted-foreground">{label}</div>
       <div className={`text-xl font-bold ${cls}`}>{value}</div>
     </Card>
+  );
+}
+
+function DistList({ rows, total }: { rows: { label: string; value: number; color?: string }[]; total: number }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="space-y-1.5">
+      {rows.length === 0 && <div className="text-[11px] text-muted-foreground italic">—</div>}
+      {rows.map((r, i) => {
+        const pct = total > 0 ? Math.round((r.value / total) * 100) : 0;
+        return (
+          <div key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-0.5">
+                <span className="text-[11px] truncate" title={r.label}>{r.label}</span>
+                <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">{r.value} · {pct}%</span>
+              </div>
+              <div className="h-1.5 rounded bg-muted overflow-hidden">
+                <div className="h-full rounded" style={{ width: `${(r.value / max) * 100}%`, background: r.color || "hsl(var(--primary))" }} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -389,15 +397,31 @@ function BenchmarkView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, d
           </span>
         ))}
       </div>
-      <div className="max-h-[600px] overflow-auto border border-border rounded">
-        <table className="w-full text-[10px]">
+      <div className="max-h-[640px] overflow-auto border border-border rounded">
+        <table className="text-[10px] border-collapse">
           <thead className="sticky top-0 bg-background z-10">
             <tr>
-              <th className="text-left p-1.5 border-b border-border sticky left-0 bg-background min-w-[260px]">{L("Criterion", "Kriterium")}</th>
-              <th className="text-left p-1.5 border-b border-border sticky left-[260px] bg-background w-[80px]">{L("Cat.", "Kat.")}</th>
+              <th className="text-left p-1.5 border-b border-border sticky left-0 bg-background min-w-[260px] align-bottom h-[150px]">
+                {L("Criterion", "Kriterium")}
+              </th>
+              <th className="text-left p-1.5 border-b border-border sticky left-[260px] bg-background w-[90px] align-bottom h-[150px]">
+                {L("Category", "Kategorie")}
+              </th>
               {competitors.map((c) => (
-                <th key={c} className="p-1 border-b border-border text-[9px] font-medium align-bottom" style={{ minWidth: 60 }}>
-                  <div className="rotate-[-45deg] origin-bottom-left whitespace-nowrap translate-y-[-4px] w-4 h-24">{c}</div>
+                <th
+                  key={c}
+                  className="border-b border-border font-medium align-bottom p-0"
+                  style={{ width: 34, minWidth: 34, height: 150 }}
+                  title={c}
+                >
+                  <div className="h-[140px] flex items-end justify-center pb-1">
+                    <span
+                      className="text-[10px] whitespace-nowrap text-foreground/80"
+                      style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                    >
+                      {c}
+                    </span>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -411,10 +435,12 @@ function BenchmarkView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, d
                   const s = row.scores[c] || "";
                   const meta = SCORE_META[s];
                   return (
-                    <td key={c} className="p-0 text-center align-middle">
-                      <div title={`${c}: ${s}${meta ? " (" + meta.label + ")" : ""}`}
-                           className="w-full h-6 flex items-center justify-center font-mono font-bold text-white text-[10px]"
-                           style={{ background: meta?.color || "transparent", color: s === "=" ? "hsl(var(--foreground))" : "white" }}>
+                    <td key={c} className="p-0.5 text-center align-middle" style={{ width: 34, minWidth: 34 }}>
+                      <div
+                        title={`${c}: ${s}${meta ? " (" + meta.label + ")" : ""}`}
+                        className="w-full h-6 flex items-center justify-center font-mono font-bold text-[10px] rounded-sm"
+                        style={{ background: meta?.color || "transparent", color: s === "=" || s === "?" ? "hsl(var(--foreground))" : "white" }}
+                      >
                         {s}
                       </div>
                     </td>
@@ -447,17 +473,23 @@ function MarketShareView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
     .filter((r) => r.mid !== null && !/^avl/i.test(r.competitor))
     .sort((a, b) => (b.mid! - a.mid!))
     .slice(0, 12)
-    .map((r) => ({ name: r.competitor.length > 32 ? r.competitor.slice(0, 30) + "…" : r.competitor, mid: r.mid, share: r.share }));
+    .map((r) => ({ name: r.competitor, mid: r.mid, share: r.share }));
 
   return (
     <div className="space-y-3">
       <Card className="p-3">
         <div className="text-xs font-semibold mb-2">{L("Share midpoint (% of niche denominator)", "Anteil-Mittelwert (% des Nischen-Nenners)")}</div>
-        <ResponsiveContainer width="100%" height={Math.max(240, chartData.length * 26)}>
-          <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 40 }}>
+        <ResponsiveContainer width="100%" height={Math.max(280, chartData.length * 34)}>
+          <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 48, top: 4, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis type="number" tick={{ fontSize: 10 }} />
-            <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={220} />
+            <XAxis type="number" tick={{ fontSize: 10 }} unit="%" />
+            <YAxis
+              dataKey="name"
+              type="category"
+              tick={{ fontSize: 10 }}
+              width={340}
+              interval={0}
+            />
             <Tooltip formatter={(_v: any, _n, p: any) => [p.payload.share, L("Share range", "Anteil")]} />
             <Bar dataKey="mid" fill="hsl(210, 80%, 55%)" radius={[0, 3, 3, 0]} />
           </BarChart>
