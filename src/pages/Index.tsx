@@ -295,14 +295,13 @@ export default function Index() {
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
-                    {opp.scanPack && (
-                      <span className="text-muted-foreground">
-                        {language === "de" ? "Scans" : "Scans"}: <span className="font-semibold text-card-foreground">
-                          {Object.values(opp.scanPack).filter((s: any) => s.status === "done").length}/6
-                        </span>
+                    <span className="text-muted-foreground">
+                      {language === "de" ? "Scan Pack" : "Scan Pack"}: <span className="font-semibold text-card-foreground">
+                        {opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0}/6
                       </span>
-                    )}
+                    </span>
                   </div>
+
                   <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                     {tamVal !== "" && tamVal != null && <span>TAM: <span className="font-semibold text-card-foreground">{typeof tamVal === "number" ? `${tamVal} M€` : tamVal}</span></span>}
                     {samVal !== "" && samVal != null && <span>SAM: <span className="font-semibold text-card-foreground">{typeof samVal === "number" ? `${samVal} M€` : samVal}</span></span>}
@@ -324,6 +323,8 @@ export default function Index() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan Pack</th>
+
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
@@ -377,6 +378,10 @@ export default function Index() {
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
+                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium">
+                        {opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0}/6
+                      </td>
+
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
