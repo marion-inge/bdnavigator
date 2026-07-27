@@ -196,43 +196,26 @@ function OverviewView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, de
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("Tier distribution", "Tier-Verteilung")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={tierData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="tier" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="count" radius={[3, 3, 0, 0]}>
-                {tierData.map((d) => <Cell key={d.tier} fill={TIER_COLORS[d.tier] || "hsl(var(--primary))"} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("Tier distribution", "Tier-Verteilung")}</div>
+          <DistList
+            rows={tierData.map((d) => ({ label: `Tier ${d.tier}`, value: d.count, color: TIER_COLORS[d.tier] }))}
+            total={shortlist.length}
+          />
         </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("By strategic camp", "Nach strateg. Camp")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie data={campData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={55}>
-                {campData.map((_, i) => <Cell key={i} fill={PIE[i % PIE.length]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 9 }} />
-            </PieChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("By strategic camp", "Nach strateg. Camp")}</div>
+          <DistList
+            rows={campData.map((d, i) => ({ label: d.name, value: d.value, color: PIE[i % PIE.length] }))}
+            total={shortlist.length}
+          />
         </Card>
-        <Card className="p-2">
-          <div className="text-[11px] font-medium mb-1 px-1">{L("Momentum mix", "Momentum-Mix")}</div>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie data={momData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={55}>
-                {momData.map((d, i) => <Cell key={i} fill={MOMENTUM_COLORS[d.name] || PIE[i % PIE.length]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 9 }} />
-            </PieChart>
-          </ResponsiveContainer>
+        <Card className="p-3">
+          <div className="text-xs font-medium mb-2">{L("Momentum mix", "Momentum-Mix")}</div>
+          <DistList
+            rows={momData.map((d, i) => ({ label: d.name, value: d.value, color: MOMENTUM_COLORS[d.name] || PIE[i % PIE.length] }))}
+            total={shortlist.length}
+          />
         </Card>
       </div>
 
