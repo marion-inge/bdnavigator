@@ -244,6 +244,31 @@ function Kpi({ label, value, tone }: { label: string; value: number | string; to
   );
 }
 
+function DistList({ rows, total }: { rows: { label: string; value: number; color?: string }[]; total: number }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="space-y-1.5">
+      {rows.length === 0 && <div className="text-[11px] text-muted-foreground italic">—</div>}
+      {rows.map((r, i) => {
+        const pct = total > 0 ? Math.round((r.value / total) * 100) : 0;
+        return (
+          <div key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-0.5">
+                <span className="text-[11px] truncate" title={r.label}>{r.label}</span>
+                <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">{r.value} · {pct}%</span>
+              </div>
+              <div className="h-1.5 rounded bg-muted overflow-hidden">
+                <div className="h-full rounded" style={{ width: `${(r.value / max) * 100}%`, background: r.color || "hsl(var(--primary))" }} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ============================================================================
 
 function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, de: T) => T }) {
