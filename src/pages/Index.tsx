@@ -378,6 +378,10 @@ export default function Index() {
                       <td className="px-4 py-3 text-right">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
+                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium">
+                        {opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0}/6
+                      </td>
+
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
                       <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
