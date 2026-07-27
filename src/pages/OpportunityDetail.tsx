@@ -561,6 +561,9 @@ export default function OpportunityDetail() {
             {activeTab === "competitor_scan_outcome" && (
               <CompetitorScanOutcome files={opp.scanPack?.competitor?.files ?? []} />
             )}
+            {activeTab === "market_potential_scan_outcome" && (
+              <MarketPotentialScanOutcome files={opp.scanPack?.market_potential?.files ?? []} />
+            )}
             {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
               <StrategicAnalysesSection
                 strategicAnalyses={opp.strategicAnalyses}
