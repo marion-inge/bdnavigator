@@ -323,6 +323,8 @@ export default function Index() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan Pack</th>
+
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
