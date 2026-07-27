@@ -23,8 +23,9 @@ import { HypothesisSection } from "@/components/hypothesis/HypothesisSection";
 import { ScanPackSection } from "@/components/scan-pack/ScanPackSection";
 import { CustomerScanOutcome } from "@/components/scan-pack/CustomerScanOutcome";
 import { IndustryScanOutcome } from "@/components/scan-pack/IndustryScanOutcome";
+import { CompetitorScanOutcome } from "@/components/scan-pack/CompetitorScanOutcome";
 
-type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "competitor_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -84,6 +85,7 @@ export default function OpportunityDetail() {
     scan_pack:           "rough_scoring",
     industry_scan_outcome: "rough_scoring",
     customer_scan_outcome: "rough_scoring",
+    competitor_scan_outcome: "rough_scoring",
     sa_ansoff:           "gate1",
     sa_bcg:              "gate1",
     sa_mckinsey:         "gate1",
@@ -106,6 +108,7 @@ export default function OpportunityDetail() {
     scan_pack:          "",
     industry_scan_outcome: "",
     customer_scan_outcome: "",
+    competitor_scan_outcome: "",
     sa_ansoff:          "",
     sa_bcg:             "",
     sa_mckinsey:        "",
@@ -207,6 +210,7 @@ export default function OpportunityDetail() {
     { key: "scan_pack",           label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${Object.values(opp.scanPack).filter((s: any) => s.status === "done").length}/6` : undefined },
     { key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
     { key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
+    { key: "competitor_scan_outcome", label: bp("Competitor Scan Outcome", "Competitor-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
     { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
     { key: "investment_case",     label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
     { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
@@ -549,6 +553,9 @@ export default function OpportunityDetail() {
             )}
             {activeTab === "customer_scan_outcome" && (
               <CustomerScanOutcome files={opp.scanPack?.customer?.files ?? []} />
+            )}
+            {activeTab === "competitor_scan_outcome" && (
+              <CompetitorScanOutcome files={opp.scanPack?.competitor?.files ?? []} />
             )}
             {(activeTab === "sa_ansoff" || activeTab === "sa_bcg" || activeTab === "sa_mckinsey" || activeTab === "sa_three_horizons") && (
               <StrategicAnalysesSection
