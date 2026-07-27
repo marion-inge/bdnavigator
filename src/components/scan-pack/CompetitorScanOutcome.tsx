@@ -397,15 +397,31 @@ function BenchmarkView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, d
           </span>
         ))}
       </div>
-      <div className="max-h-[600px] overflow-auto border border-border rounded">
-        <table className="w-full text-[10px]">
+      <div className="max-h-[640px] overflow-auto border border-border rounded">
+        <table className="text-[10px] border-collapse">
           <thead className="sticky top-0 bg-background z-10">
             <tr>
-              <th className="text-left p-1.5 border-b border-border sticky left-0 bg-background min-w-[260px]">{L("Criterion", "Kriterium")}</th>
-              <th className="text-left p-1.5 border-b border-border sticky left-[260px] bg-background w-[80px]">{L("Cat.", "Kat.")}</th>
+              <th className="text-left p-1.5 border-b border-border sticky left-0 bg-background min-w-[260px] align-bottom h-[150px]">
+                {L("Criterion", "Kriterium")}
+              </th>
+              <th className="text-left p-1.5 border-b border-border sticky left-[260px] bg-background w-[90px] align-bottom h-[150px]">
+                {L("Category", "Kategorie")}
+              </th>
               {competitors.map((c) => (
-                <th key={c} className="p-1 border-b border-border text-[9px] font-medium align-bottom" style={{ minWidth: 60 }}>
-                  <div className="rotate-[-45deg] origin-bottom-left whitespace-nowrap translate-y-[-4px] w-4 h-24">{c}</div>
+                <th
+                  key={c}
+                  className="border-b border-border font-medium align-bottom p-0"
+                  style={{ width: 34, minWidth: 34, height: 150 }}
+                  title={c}
+                >
+                  <div className="h-[140px] flex items-end justify-center pb-1">
+                    <span
+                      className="text-[10px] whitespace-nowrap text-foreground/80"
+                      style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                    >
+                      {c}
+                    </span>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -419,10 +435,12 @@ function BenchmarkView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T, d
                   const s = row.scores[c] || "";
                   const meta = SCORE_META[s];
                   return (
-                    <td key={c} className="p-0 text-center align-middle">
-                      <div title={`${c}: ${s}${meta ? " (" + meta.label + ")" : ""}`}
-                           className="w-full h-6 flex items-center justify-center font-mono font-bold text-white text-[10px]"
-                           style={{ background: meta?.color || "transparent", color: s === "=" ? "hsl(var(--foreground))" : "white" }}>
+                    <td key={c} className="p-0.5 text-center align-middle" style={{ width: 34, minWidth: 34 }}>
+                      <div
+                        title={`${c}: ${s}${meta ? " (" + meta.label + ")" : ""}`}
+                        className="w-full h-6 flex items-center justify-center font-mono font-bold text-[10px] rounded-sm"
+                        style={{ background: meta?.color || "transparent", color: s === "=" || s === "?" ? "hsl(var(--foreground))" : "white" }}
+                      >
                         {s}
                       </div>
                     </td>
