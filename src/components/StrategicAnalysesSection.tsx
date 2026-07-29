@@ -32,9 +32,9 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
   const is = data.ideaScoring;
 
   return (
-    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
-    <Tabs defaultValue={defaultTab || "ansoff"} key={defaultTab} className="space-y-6">
-      <TabsList className="flex-wrap h-auto gap-1 p-1">
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly} className="flex-1 flex flex-col min-h-0">
+    <Tabs defaultValue={defaultTab || "ansoff"} key={defaultTab} className="space-y-6 flex-1 flex flex-col">
+      <TabsList className="flex-wrap h-auto gap-1 p-1 shrink-0">
         <TabsTrigger value="ansoff" className="text-xs sm:text-sm">{t("saAnsoff")}</TabsTrigger>
         <TabsTrigger value="bcg" className="text-xs sm:text-sm">{t("saBcg")}</TabsTrigger>
         <TabsTrigger value="mckinsey" className="text-xs sm:text-sm">{t("saMckinsey")}</TabsTrigger>
@@ -42,12 +42,12 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsList>
 
       {/* Ansoff Matrix */}
-      <TabsContent value="ansoff">
-        <div className="space-y-6">
-          <Card>
+      <TabsContent value="ansoff" className="flex-1 flex flex-col">
+        <div className="space-y-6 flex-1 flex flex-col">
+          <Card className="flex-1 flex flex-col">
             <CardHeader><CardTitle>{t("saAnsoff")}</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
+              <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full flex-1 min-h-0">
                 <div />
                 <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saExistingProduct")}</div>
                 <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saNewProduct")}</div>
@@ -92,11 +92,11 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
 
       {/* BCG Matrix */}
-      <TabsContent value="bcg">
-        <Card>
+      <TabsContent value="bcg" className="flex-1 flex flex-col">
+        <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saBcg")}</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full">
+          <CardContent className="space-y-6 flex-1 flex flex-col">
+            <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full flex-1 min-h-0">
               <div />
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saRelativeMarketShare")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saRelativeMarketShare")}</div>
@@ -136,11 +136,11 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
 
       {/* McKinsey Matrix */}
-      <TabsContent value="mckinsey">
-        <Card>
+      <TabsContent value="mckinsey" className="flex-1 flex flex-col">
+        <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saMckinsey")}</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full">
+          <CardContent className="space-y-6 flex-1 flex flex-col">
+            <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full flex-1 min-h-0">
               <div />
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
@@ -190,10 +190,10 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
 
       {/* Three Horizons of Growth */}
-      <TabsContent value="threeHorizons">
-        <Card>
+      <TabsContent value="threeHorizons" className="flex-1 flex flex-col">
+        <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saThreeHorizons" as any)}</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 flex-1 flex flex-col">
             {(() => {
               const th = is.threeHorizons;
               const horizons = [
@@ -203,7 +203,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               ];
               return (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full flex-1 min-h-0">
                     {horizons.map((h) => (
                       <button key={h.value} type="button" disabled={readonly}
                         onClick={() => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, horizon: h.value } } })}

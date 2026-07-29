@@ -9,17 +9,18 @@ interface EditableSectionProps {
   readonly?: boolean;
   children: React.ReactNode;
   dirty?: boolean;
+  className?: string;
 }
 
-export function EditableSection({ editing, onEdit, onSave, readonly, children, dirty }: EditableSectionProps) {
+export function EditableSection({ editing, onEdit, onSave, readonly, children, dirty, className }: EditableSectionProps) {
   const { language } = useI18n();
 
   if (readonly) {
-    return <div className="display-mode">{children}</div>;
+    return <div className={className}>{children}</div>;
   }
 
   return (
-    <div className={editing ? "" : "display-mode"}>
+    <div className={className}>
       <div className="flex justify-end mb-4 sticky top-2 z-10">
         {editing ? (
           <div className="flex gap-2 bg-card/95 backdrop-blur-sm rounded-lg border border-border px-3 py-2 shadow-sm">
