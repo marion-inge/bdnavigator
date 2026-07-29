@@ -272,43 +272,55 @@ function CompetitorFields({ h, onChange, readonly, lang }: { h: HypothesisData; 
   return (
     <>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={L(lang, "Client", "Kunde")} empty={!c.client}>
-          <Input disabled={readonly} value={c.client} onChange={(e) => set({ client: e.target.value })} />
+        <Field label={L(lang, "Client", "Kunde")} empty={!c.client}
+          help={L(lang, "Who is the client or company running this competitor benchmark?", "Wer ist der Kunde oder das Unternehmen, das diesen Wettbewerbsbenchmark durchführt?")}>
+          <Input disabled={readonly} value={c.client} placeholder={L(lang, "Company name", "Unternehmensname")} onChange={(e) => set({ client: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Offering name", "Angebotsname")} empty={!c.offering.name}>
-          <Input disabled={readonly} value={c.offering.name} onChange={(e) => set({ offering: { ...c.offering, name: e.target.value } })} />
+        <Field label={L(lang, "Offering name", "Angebotsname")} empty={!c.offering.name}
+          help={L(lang, "Name of the offering we want to compare against competitors.", "Name des Angebots, das wir mit Wettbewerbern vergleichen wollen.")}>
+          <Input disabled={readonly} value={c.offering.name} placeholder={L(lang, "e.g. NOVI Mobile", "z. B. NOVI Mobile")} onChange={(e) => set({ offering: { ...c.offering, name: e.target.value } })} />
         </Field>
       </div>
-      <Field label={L(lang, "Offering description", "Angebotsbeschreibung")} empty={!c.offering.description}>
+      <Field label={L(lang, "Offering description", "Angebotsbeschreibung")} empty={!c.offering.description}
+        help={L(lang, "What the offering does in plain language, so benchmarks can be compared fairly.", "Was das Angebot in einfachen Worten leistet, damit Benchmarks fair verglichen werden können.")}>
         <Textarea disabled={readonly} rows={2} value={c.offering.description}
+          placeholder={L(lang, "Describe the offering for the benchmark...", "Beschreiben Sie das Angebot für den Benchmark...")}
           onChange={(e) => set({ offering: { ...c.offering, description: e.target.value } })} />
       </Field>
       <StringList label={L(lang, "Spec anchors", "Spec-Anker")} values={c.offering.specAnchors} readonly={readonly}
-        onChange={(v) => set({ offering: { ...c.offering, specAnchors: v } })} />
+        onChange={(v) => set({ offering: { ...c.offering, specAnchors: v } })}
+        help={L(lang, "Capabilities we want to compare side-by-side, e.g. AI features, integrations, speed.", "Fähigkeiten, die wir direkt vergleichen wollen, z. B. KI-Features, Integrationen, Geschwindigkeit.")} />
       <PairList label={L(lang, "Target markets", "Zielmärkte")} items={c.targetMarkets}
         keys={{ a: "segment", b: "region" }} labels={{ a: "Segment", b: "Region" }} readonly={readonly}
-        onChange={(v) => set({ targetMarkets: v })} />
+        onChange={(v) => set({ targetMarkets: v })}
+        help={L(lang, "Segment + region where we will compare competitors. Add one priority market per row.", "Segment und Region, in denen wir Wettbewerber vergleichen. Eine Zeile pro Prioritätsmarkt.")} />
       <PairList label={L(lang, "Known competitors", "Bekannte Wettbewerber")} items={c.knownCompetitors}
         keys={{ a: "name", b: "clientBelief" }}
         labels={{ a: L(lang, "Name", "Name"), b: L(lang, "Client belief", "Kundenbild") }} readonly={readonly}
-        onChange={(v) => set({ knownCompetitors: v })} />
+        onChange={(v) => set({ knownCompetitors: v })}
+        help={L(lang, "Competitors the client already named and their perceived strength or weakness.", "Wettbewerber, die der Kunde bereits genannt hat, und deren vermutete Stärke oder Schwäche.")} />
       <StringList label={L(lang, "Benchmark criteria", "Benchmark-Kriterien")} values={c.benchmarkCriteria} readonly={readonly}
-        onChange={(v) => set({ benchmarkCriteria: v })} />
+        onChange={(v) => set({ benchmarkCriteria: v })}
+        help={L(lang, "Dimensions to compare, e.g. price, features, ease of use, service, brand.", "Dimensionen zum Vergleich, z. B. Preis, Features, Bedienkomfort, Service, Marke.")} />
       <div className="grid gap-3 sm:grid-cols-4">
-        <Field label={L(lang, "Depth cap", "Tiefen-Cap")}>
+        <Field label={L(lang, "Depth cap", "Tiefen-Cap")}
+          help={L(lang, "Maximum number of competitors to profile in depth.", "Maximale Anzahl an Wettbewerbern, die detailliert profiliert werden.")}>
           <Input type="number" disabled={readonly} value={c.depthCap}
             onChange={(e) => set({ depthCap: Number(e.target.value) || 0 })} />
         </Field>
-        <Field label={L(lang, "Target margin", "Zielmarge")} empty={!c.targetCosting.targetMargin}>
-          <Input disabled={readonly} value={c.targetCosting.targetMargin}
+        <Field label={L(lang, "Target margin", "Zielmarge")} empty={!c.targetCosting.targetMargin}
+          help={L(lang, "Desired margin or cost target we want to hit.", "Gewünschte Marge oder Kosten-Ziel, das wir erreichen wollen.")}>
+          <Input disabled={readonly} value={c.targetCosting.targetMargin} placeholder={L(lang, "e.g. 30%", "z. B. 30 %")}
             onChange={(e) => set({ targetCosting: { ...c.targetCosting, targetMargin: e.target.value } })} />
         </Field>
-        <Field label={L(lang, "Current cost", "Aktuelle Kosten")} empty={!c.targetCosting.currentCost}>
-          <Input disabled={readonly} value={c.targetCosting.currentCost}
+        <Field label={L(lang, "Current cost", "Aktuelle Kosten")} empty={!c.targetCosting.currentCost}
+          help={L(lang, "Current cost baseline we want to improve or beat.", "Aktuelle Kostenbasis, die wir verbessern oder unterbieten wollen.")}>
+          <Input disabled={readonly} value={c.targetCosting.currentCost} placeholder={L(lang, "e.g. €50k per unit", "z. B. 50 k€ pro Einheit")}
             onChange={(e) => set({ targetCosting: { ...c.targetCosting, currentCost: e.target.value } })} />
         </Field>
-        <Field label={L(lang, "WTP anchors", "WTP-Anker")} empty={!c.targetCosting.wtpAnchors}>
-          <Input disabled={readonly} value={c.targetCosting.wtpAnchors}
+        <Field label={L(lang, "WTP anchors", "WTP-Anker")} empty={!c.targetCosting.wtpAnchors}
+          help={L(lang, "Willingness-to-pay evidence or benchmarks, e.g. current prices customers accept.", "Zahlungsbereitschafts-Evidenz oder Benchmarks, z. B. aktuelle Preise, die Kunden akzeptieren.")}>
+          <Input disabled={readonly} value={c.targetCosting.wtpAnchors} placeholder={L(lang, "e.g. competitor prices, survey results", "z. B. Wettbewerberpreise, Umfrageergebnisse")}
             onChange={(e) => set({ targetCosting: { ...c.targetCosting, wtpAnchors: e.target.value } })} />
         </Field>
       </div>
@@ -322,10 +334,12 @@ function CompetitorFields({ h, onChange, readonly, lang }: { h: HypothesisData; 
         ))}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={L(lang, "Preferences", "Präferenzen")} empty={!c.preferences}>
+        <Field label={L(lang, "Preferences", "Präferenzen")} empty={!c.preferences}
+          help={L(lang, "Specific focus or sources for competitor research, e.g. public decks, analyst reports.", "Spezifischer Fokus oder Quellen für die Wettbewerbsrecherche, z. B. öffentliche Decks, Analystenreports.")}>
           <Textarea disabled={readonly} rows={2} value={c.preferences} onChange={(e) => set({ preferences: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Additional comments", "Zusätzliche Kommentare")} empty={!c.additionalComments}>
+        <Field label={L(lang, "Additional comments", "Zusätzliche Kommentare")} empty={!c.additionalComments}
+          help={L(lang, "Other context that should shape the competitor scan.", "Weiterer Kontext, der den Wettbewerbs-Scan prägen sollte.")}>
           <Textarea disabled={readonly} rows={2} value={c.additionalComments} onChange={(e) => set({ additionalComments: e.target.value })} />
         </Field>
       </div>
