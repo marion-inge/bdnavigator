@@ -73,17 +73,6 @@ export function MarketPotentialScanOutcome({ files }: Props) {
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [xlsxFile?.id, docxFile?.id]);
 
-  if (!xlsxFile && !docxFile) {
-    return (
-      <div className="rounded-lg border border-border p-6 text-sm text-muted-foreground">
-        {L(
-          "Upload the Market Potential Scan deliverables (Excel model + Word report) in the Scan Pack to see the outcome here.",
-          "Bitte die Market-Potential-Scan-Deliverables (Excel-Modell + Word-Bericht) im Scan Pack hochladen, um das Ergebnis hier zu sehen.",
-        )}
-      </div>
-    );
-  }
-
   // Bottom-up filters
   const [segFilter, setSegFilter] = useState<string>("all");
   const [regFilter, setRegFilter] = useState<string>("all");
@@ -117,6 +106,18 @@ export function MarketPotentialScanOutcome({ files }: Props) {
       cum5y: find(/5-yr cumulative/i),
     };
   }, [data]);
+
+  if (!xlsxFile && !docxFile) {
+    return (
+      <div className="rounded-lg border border-border p-6 text-sm text-muted-foreground">
+        {L(
+          "Upload the Market Potential Scan deliverables (Excel model + Word report) in the Scan Pack to see the outcome here.",
+          "Bitte die Market-Potential-Scan-Deliverables (Excel-Modell + Word-Bericht) im Scan Pack hochladen, um das Ergebnis hier zu sehen.",
+        )}
+      </div>
+    );
+  }
+
 
   return (
     <div className="space-y-4">

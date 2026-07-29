@@ -76,7 +76,16 @@ export function CustomerScanOutcome({ files }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xlsxFile?.id, docxFile?.id]);
 
-  if (!xlsxFile && !docxFile) return null;
+  if (!xlsxFile && !docxFile) {
+    return (
+      <div className="rounded-lg border border-border p-6 text-sm text-muted-foreground">
+        {L(
+          "Upload the Customer Scan deliverables (Excel database + Word report) in the Scan Pack to see the outcome here.",
+          "Bitte die Customer-Scan-Deliverables (Excel-Datenbank + Word-Bericht) im Scan Pack hochladen, um das Ergebnis hier zu sehen.",
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-md border border-border bg-muted/20 p-3 mt-2 space-y-3">
