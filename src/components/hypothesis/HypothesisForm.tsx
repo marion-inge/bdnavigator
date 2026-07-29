@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Trash2, Plus } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Trash2, Plus, HelpCircle } from "lucide-react";
 import {
   HypothesisData, ScanKey,
   createDefaultIndustry, createDefaultCustomer, createDefaultCompetitor,
@@ -21,11 +22,23 @@ interface Props {
 
 const L = (lang: string, en: string, de: string) => (lang === "de" ? de : en);
 
-function Field({ label, children, empty }: { label: string; children: React.ReactNode; empty?: boolean }) {
+function Field({ label, children, empty, help }: { label: string; children: React.ReactNode; empty?: boolean; help?: string }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         <label className="text-xs font-medium text-muted-foreground">{label}</label>
+        {help && (
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/70 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs">
+                <p>{help}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         {empty && (
           <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-amber-500/50 text-amber-600 dark:text-amber-400">
             needs input
