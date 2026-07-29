@@ -233,6 +233,5 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
     </Tabs>
     </EditableSection>
-    </div>
   );
 }
