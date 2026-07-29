@@ -191,10 +191,10 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
 
       {/* Three Horizons of Growth */}
-      <TabsContent value="threeHorizons">
-        <Card>
+      <TabsContent value="threeHorizons" className="flex-1 flex flex-col">
+        <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saThreeHorizons" as any)}</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 flex-1 flex flex-col">
             {(() => {
               const th = is.threeHorizons;
               const horizons = [
