@@ -353,38 +353,51 @@ function MarketPotentialFields({ h, onChange, readonly, lang }: { h: HypothesisD
   return (
     <>
       <div className="grid gap-3 sm:grid-cols-3">
-        <Field label={L(lang, "Price / unit or seat", "Preis / Einheit oder Seat")} empty={!m.pricePerUnitOrSeat}>
-          <Input disabled={readonly} value={m.pricePerUnitOrSeat} onChange={(e) => set({ pricePerUnitOrSeat: e.target.value })} />
+        <Field label={L(lang, "Price / unit or seat", "Preis / Einheit oder Seat")} empty={!m.pricePerUnitOrSeat}
+          help={L(lang, "Assumed price per unit or seat used in the market model.", "Angenommener Preis pro Einheit oder Seat, der im Marktmodell verwendet wird.")}>
+          <Input disabled={readonly} value={m.pricePerUnitOrSeat} placeholder={L(lang, "e.g. 500", "z. B. 500")}
+            onChange={(e) => set({ pricePerUnitOrSeat: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Recurring / one-time", "Wiederkehrend / einmalig")} empty={!m.recurringOrOneTime}>
+        <Field label={L(lang, "Recurring / one-time", "Wiederkehrend / einmalig")} empty={!m.recurringOrOneTime}
+          help={L(lang, "Is the revenue recurring or one-time?", "Ist der Umsatz wiederkehrend oder einmalig?")}>
           <Input disabled={readonly} value={m.recurringOrOneTime}
             onChange={(e) => set({ recurringOrOneTime: e.target.value as any })}
             placeholder="recurring / one_time" />
         </Field>
-        <Field label={L(lang, "Currency", "Währung")}>
-          <Input disabled={readonly} value={m.currency} onChange={(e) => set({ currency: e.target.value })} />
+        <Field label={L(lang, "Currency", "Währung")}
+          help={L(lang, "Currency used for the model, e.g. EUR, USD.", "Währung des Modells, z. B. EUR, USD.")}>
+          <Input disabled={readonly} value={m.currency} placeholder="EUR / USD" onChange={(e) => set({ currency: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Base year", "Basisjahr")} empty={!m.baseYear}>
-          <Input disabled={readonly} value={m.baseYear} onChange={(e) => set({ baseYear: e.target.value })} />
+        <Field label={L(lang, "Base year", "Basisjahr")} empty={!m.baseYear}
+          help={L(lang, "Year used as the baseline for the model.", "Jahr, das als Basis für das Modell verwendet wird.")}>
+          <Input disabled={readonly} value={m.baseYear} placeholder="2025" onChange={(e) => set({ baseYear: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Win-rate assumption", "Annahme Gewinnrate")} empty={!m.winRateAssumption}>
-          <Input disabled={readonly} value={m.winRateAssumption} onChange={(e) => set({ winRateAssumption: e.target.value })} />
+        <Field label={L(lang, "Win-rate assumption", "Annahme Gewinnrate")} empty={!m.winRateAssumption}
+          help={L(lang, "Expected win-rate from opportunity to closed deal.", "Erwartete Gewinnrate von Opportunity bis zum Abschluss.")}>
+          <Input disabled={readonly} value={m.winRateAssumption} placeholder={L(lang, "e.g. 20%", "z. B. 20 %")}
+            onChange={(e) => set({ winRateAssumption: e.target.value })} />
         </Field>
-        <Field label={L(lang, "Adoption assumption", "Annahme Adoption")} empty={!m.adoptionAssumption}>
-          <Input disabled={readonly} value={m.adoptionAssumption} onChange={(e) => set({ adoptionAssumption: e.target.value })} />
+        <Field label={L(lang, "Adoption assumption", "Annahme Adoption")} empty={!m.adoptionAssumption}
+          help={L(lang, "Expected customer adoption rate over time.", "Erwartete Adoptionsrate der Kunden über Zeit.")}>
+          <Input disabled={readonly} value={m.adoptionAssumption} placeholder={L(lang, "e.g. linear 5-year ramp", "z. B. linearer 5-Jahres-Anstieg")}
+            onChange={(e) => set({ adoptionAssumption: e.target.value })} />
         </Field>
       </div>
-      <Field label={L(lang, "Addressable share assumption", "Annahme adressierbarer Anteil")} empty={!m.addressableShareAssumption}>
-        <Input disabled={readonly} value={m.addressableShareAssumption} onChange={(e) => set({ addressableShareAssumption: e.target.value })} />
+      <Field label={L(lang, "Addressable share assumption", "Annahme adressierbarer Anteil")} empty={!m.addressableShareAssumption}
+        help={L(lang, "Share of the total market we realistically can serve.", "Anteil des Gesamtmarktes, den wir realistisch bedienen können.")}>
+        <Input disabled={readonly} value={m.addressableShareAssumption} placeholder={L(lang, "e.g. 10% of reachable accounts", "z. B. 10 % der erreichbaren Accounts")
+          onChange={(e) => set({ addressableShareAssumption: e.target.value })} />
       </Field>
       <PairList label={L(lang, "Units per customer type", "Einheiten pro Kundentyp")} items={m.unitsPerCustomerType}
         keys={{ a: "customerType", b: "units" }}
         labels={{ a: L(lang, "Customer type", "Kundentyp"), b: L(lang, "Units", "Einheiten") }}
-        readonly={readonly} onChange={(v) => set({ unitsPerCustomerType: v })} />
+        readonly={readonly} onChange={(v) => set({ unitsPerCustomerType: v })}
+        help={L(lang, "How many units or seats does each customer type buy?", "Wie viele Einheiten oder Seats kauft jeder Kundentyp?")} />
       <div className="grid gap-3 sm:grid-cols-3">
         {(["conservative", "realistic", "aggressive"] as const).map((k) => (
-          <Field key={k} label={L(lang, `Scenario – ${k}`, `Szenario – ${k}`)} empty={!m.scenarios[k]}>
-            <Textarea disabled={readonly} rows={2} value={m.scenarios[k]}
+          <Field key={k} label={L(lang, `Scenario – ${k}`, `Szenario – ${k}`)} empty={!m.scenarios[k]}
+            help={L(lang, `Description of the ${k} scenario.`, `Beschreibung des ${k}-Szenarios.`)}>
+            <Textarea disabled={readonly} rows={2} value={m.scenarios[k]} placeholder={L(lang, `Describe the ${k} scenario...`, `Beschreiben Sie das ${k}-Szenario...`)}
               onChange={(e) => set({ scenarios: { ...m.scenarios, [k]: e.target.value } })} />
           </Field>
         ))}
@@ -398,24 +411,33 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
   const set = (patch: any) => onChange({ ...b, ...patch });
   return (
     <>
-      <Field label={L(lang, "Offering description", "Angebotsbeschreibung")} empty={!b.offeringDescription}>
-        <Textarea disabled={readonly} rows={3} value={b.offeringDescription} onChange={(e) => set({ offeringDescription: e.target.value })} />
+      <Field label={L(lang, "Offering description", "Angebotsbeschreibung")} empty={!b.offeringDescription}
+        help={L(lang, "A short description of the offering for the buying-center mapping.", "Kurze Beschreibung des Angebots für die Buying-Center-Abbildung.")}>
+        <Textarea disabled={readonly} rows={3} value={b.offeringDescription}
+          placeholder={L(lang, "Describe the offering the buying center will evaluate...", "Beschreiben Sie das Angebot, das das Buying Center bewerten wird...")}
+          onChange={(e) => set({ offeringDescription: e.target.value })} />
       </Field>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={L(lang, "Seed input type", "Seed-Input-Typ")} empty={!b.seedInputType}>
+        <Field label={L(lang, "Seed input type", "Seed-Input-Typ")} empty={!b.seedInputType}
+          help={L(lang, "Where will the initial account list come from?", "Woher kommt die ursprüngliche Account-Liste?")}>
           <Input disabled={readonly} value={b.seedInputType} onChange={(e) => set({ seedInputType: e.target.value })}
             placeholder="customer_scan_db / crm_export / lead_list / manual_account_list" />
         </Field>
-        <Field label={L(lang, "Depth", "Tiefe")} empty={!b.depth}>
+        <Field label={L(lang, "Depth", "Tiefe")} empty={!b.depth}
+          help={L(lang, "How deep should the buying-center mapping be?", "Wie tief soll die Buying-Center-Abbildung sein?")}>
           <Input disabled={readonly} value={b.depth} onChange={(e) => set({ depth: e.target.value })}
             placeholder="full_mapping_50 / contact_coverage_400" />
         </Field>
       </div>
-      <Field label={L(lang, "Shortlist rule", "Shortlist-Regel")} empty={!b.shortlistRule}>
-        <Textarea disabled={readonly} rows={2} value={b.shortlistRule} onChange={(e) => set({ shortlistRule: e.target.value })} />
+      <Field label={L(lang, "Shortlist rule", "Shortlist-Regel")} empty={!b.shortlistRule}
+        help={L(lang, "Rules for selecting which accounts should be included in the buying-center map.", "Regeln für die Auswahl der Accounts, die in die Buying-Center-Karte aufgenommen werden.")}>
+        <Textarea disabled={readonly} rows={2} value={b.shortlistRule} placeholder={L(lang, "e.g. revenue > 50M, active buying signals", "z. B. Umsatz > 50 Mio., aktive Buying-Signals")
+          onChange={(e) => set({ shortlistRule: e.target.value })} />
       </Field>
-      <Field label={L(lang, "Delivery notes", "Liefer-Notizen")} empty={!b.deliveryNotes}>
-        <Textarea disabled={readonly} rows={2} value={b.deliveryNotes} onChange={(e) => set({ deliveryNotes: e.target.value })} />
+      <Field label={L(lang, "Delivery notes", "Liefer-Notizen")} empty={!b.deliveryNotes}
+        help={L(lang, "Any specific output requirements or format preferences.", "Besondere Ausgabe-Anforderungen oder Formatpräferenzen.")}>
+        <Textarea disabled={readonly} rows={2} value={b.deliveryNotes} placeholder={L(lang, "e.g. map decision-makers and influencers per account", "z. B. Entscheider und Influencer pro Account abbilden")
+          onChange={(e) => set({ deliveryNotes: e.target.value })} />
       </Field>
     </>
   );
