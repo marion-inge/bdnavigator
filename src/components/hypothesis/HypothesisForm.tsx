@@ -431,12 +431,12 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
       </div>
       <Field label={L(lang, "Shortlist rule", "Shortlist-Regel")} empty={!b.shortlistRule}
         help={L(lang, "Rules for selecting which accounts should be included in the buying-center map.", "Regeln für die Auswahl der Accounts, die in die Buying-Center-Karte aufgenommen werden.")}>
-        <Textarea disabled={readonly} rows={2} value={b.shortlistRule} placeholder={L(lang, "e.g. revenue > 50M, active buying signals", "z. B. Umsatz > 50 Mio., aktive Buying-Signals")
+        <Textarea disabled={readonly} rows={2} value={b.shortlistRule} placeholder={L(lang, "e.g. revenue > 50M, active buying signals", "z. B. Umsatz > 50 Mio., aktive Buying-Signals")}
           onChange={(e) => set({ shortlistRule: e.target.value })} />
       </Field>
       <Field label={L(lang, "Delivery notes", "Liefer-Notizen")} empty={!b.deliveryNotes}
         help={L(lang, "Any specific output requirements or format preferences.", "Besondere Ausgabe-Anforderungen oder Formatpräferenzen.")}>
-        <Textarea disabled={readonly} rows={2} value={b.deliveryNotes} placeholder={L(lang, "e.g. map decision-makers and influencers per account", "z. B. Entscheider und Influencer pro Account abbilden")
+        <Textarea disabled={readonly} rows={2} value={b.deliveryNotes} placeholder={L(lang, "e.g. map decision-makers and influencers per account", "z. B. Entscheider und Influencer pro Account abbilden")}
           onChange={(e) => set({ deliveryNotes: e.target.value })} />
       </Field>
     </>
