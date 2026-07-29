@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import JSZip from "https://esm.sh/jszip@3.10.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,10 +8,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const MAX_BYTES = 8 * 1024 * 1024;
+const MAX_BYTES = 20 * 1024 * 1024;
 
-function classify(mime: string, name: string): "text" | "image" | "pdf" | "unsupported" {
+type Kind = "text" | "image" | "pdf" | "docx" | "xlsx" | "pptx" | "unsupported";
+
+function classify(mime: string, name: string): Kind {
   const lower = (name || "").toLowerCase();
+  if (lower.endsWith(".docx") || mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") return "docx";
+  if (lower.endsWith(".xlsx") || mime === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return "xlsx";
+  if (lower.endsWith(".pptx") || mime === "application/vnd.openxmlformats-officedocument.presentationml.presentation") return "pptx";
   if ((mime || "").startsWith("text/") || mime === "application/json" || /\.(txt|md|csv|json|log|html|xml)$/i.test(lower)) return "text";
   if ((mime || "").startsWith("image/") || /\.(png|jpe?g|gif|webp)$/i.test(lower)) return "image";
   if (mime === "application/pdf" || lower.endsWith(".pdf")) return "pdf";
@@ -33,17 +39,102 @@ function b64ToBuf(b64: string): Uint8Array {
   return out;
 }
 
+function stripXml(xml: string): string {
+  return xml
+    .replace(/<w:p[^>]*\/>/g, "\n")
+    .replace(/<\/w:p>/g, "\n")
+    .replace(/<\/a:p>/g, "\n")
+    .replace(/<w:tab[^>]*\/>/g, "\t")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n");
+}
+
+async function extractDocx(buf: Uint8Array): Promise<string> {
+  const zip = await JSZip.loadAsync(buf);
+  const doc = zip.file("word/document.xml");
+  if (!doc) return "";
+  return stripXml(await doc.async("string"));
+}
+
+async function extractPptx(buf: Uint8Array): Promise<string> {
+  const zip = await JSZip.loadAsync(buf);
+  const slideFiles = Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort();
+  const parts: string[] = [];
+  for (const name of slideFiles) {
+    const f = zip.file(name);
+    if (!f) continue;
+    parts.push(`[${name.split("/").pop()}]\n${stripXml(await f.async("string"))}`);
+  }
+  return parts.join("\n\n");
+}
+
+async function extractXlsx(buf: Uint8Array): Promise<string> {
+  const zip = await JSZip.loadAsync(buf);
+  // shared strings
+  const shared: string[] = [];
+  const ss = zip.file("xl/sharedStrings.xml");
+  if (ss) {
+    const xml = await ss.async("string");
+    const re = /<si[^>]*>([\s\S]*?)<\/si>/g;
+    let m;
+    while ((m = re.exec(xml)) !== null) shared.push(stripXml(m[1]).replace(/\n/g, " ").trim());
+  }
+  const sheetFiles = Object.keys(zip.files).filter((n) => /^xl\/worksheets\/sheet\d+\.xml$/.test(n)).sort();
+  const parts: string[] = [];
+  for (const name of sheetFiles) {
+    const f = zip.file(name);
+    if (!f) continue;
+    const xml = await f.async("string");
+    const rows: string[] = [];
+    const rowRe = /<row[^>]*>([\s\S]*?)<\/row>/g;
+    let rm;
+    while ((rm = rowRe.exec(xml)) !== null) {
+      const cells: string[] = [];
+      const cellRe = /<c[^>]*(?:\s+t="([^"]+)")?[^>]*>([\s\S]*?)<\/c>/g;
+      let cm;
+      while ((cm = cellRe.exec(rm[1])) !== null) {
+        const t = cm[1];
+        const inner = cm[2];
+        const vMatch = /<v>([\s\S]*?)<\/v>/.exec(inner);
+        const isMatch = /<is>([\s\S]*?)<\/is>/.exec(inner);
+        let val = "";
+        if (isMatch) val = stripXml(isMatch[1]).trim();
+        else if (vMatch) {
+          if (t === "s") { const idx = parseInt(vMatch[1], 10); val = shared[idx] ?? ""; }
+          else val = vMatch[1];
+        }
+        if (val) cells.push(val);
+      }
+      if (cells.length) rows.push(cells.join(" | "));
+    }
+    if (rows.length) parts.push(`[${name.split("/").pop()}]\n${rows.join("\n")}`);
+  }
+  return parts.join("\n\n");
+}
+
 async function toContentBlock(name: string, mime: string, buf: Uint8Array): Promise<any> {
   const kind = classify(mime, name);
   if (kind === "unsupported") {
     return { type: "text", text: `[Attachment "${name}" (${mime || "binary"}) cannot be read. Please convert to PDF, plain text, or image.]` };
   }
   if (buf.byteLength > MAX_BYTES) {
-    return { type: "text", text: `[Attachment "${name}" exceeded 8 MB and was skipped.]` };
+    return { type: "text", text: `[Attachment "${name}" exceeded 20 MB and was skipped.]` };
   }
   if (kind === "text") {
     const text = new TextDecoder().decode(buf).slice(0, 80_000);
     return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End ---` };
+  }
+  if (kind === "docx" || kind === "xlsx" || kind === "pptx") {
+    try {
+      const text = (kind === "docx" ? await extractDocx(buf) : kind === "xlsx" ? await extractXlsx(buf) : await extractPptx(buf)).slice(0, 120_000);
+      if (!text.trim()) return { type: "text", text: `[Attachment "${name}": no readable text found.]` };
+      return { type: "text", text: `--- File: ${name} (${kind}) ---\n${text}\n--- End ---` };
+    } catch (e) {
+      console.error("office extract failed", name, e);
+      return { type: "text", text: `[Attachment "${name}": failed to extract text.]` };
+    }
   }
   const b64 = bufToBase64(buf);
   if (kind === "image") {
