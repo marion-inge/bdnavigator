@@ -49,28 +49,28 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
             <CardContent className="space-y-6 flex-1 flex flex-col">
               <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full max-w-2xl mx-auto h-[280px]">
                 <div />
-                <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saExistingProduct")}</div>
-                <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saNewProduct")}</div>
-                <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saExistingMarket")}</div>
+                <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saExistingProduct")}</div>
+                <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saNewProduct")}</div>
+                <div className="text-base font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saExistingMarket")}</div>
                 <button type="button" disabled={readonly}
                   onClick={() => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, position: "market_penetration" } } })}
-                  className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.ansoff.position === "market_penetration" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                  className={`p-4 rounded-md border text-base font-medium transition-colors ${is.ansoff.position === "market_penetration" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                   {t("saAnsoffMarketPenetration")}
                 </button>
                 <button type="button" disabled={readonly}
                   onClick={() => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, position: "product_development" } } })}
-                  className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.ansoff.position === "product_development" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                  className={`p-4 rounded-md border text-base font-medium transition-colors ${is.ansoff.position === "product_development" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                   {t("saAnsoffProductDevelopment")}
                 </button>
-                <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saNewMarket")}</div>
+                <div className="text-base font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saNewMarket")}</div>
                 <button type="button" disabled={readonly}
                   onClick={() => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, position: "market_development" } } })}
-                  className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.ansoff.position === "market_development" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                  className={`p-4 rounded-md border text-base font-medium transition-colors ${is.ansoff.position === "market_development" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                   {t("saAnsoffMarketDevelopment")}
                 </button>
                 <button type="button" disabled={readonly}
                   onClick={() => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, position: "diversification" } } })}
-                  className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.ansoff.position === "diversification" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                  className={`p-4 rounded-md border text-base font-medium transition-colors ${is.ansoff.position === "diversification" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                   {t("saAnsoffDiversification")}
                 </button>
               </div>
@@ -98,24 +98,24 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
           <CardContent className="space-y-6 flex-1 flex flex-col">
             <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full max-w-2xl mx-auto h-[280px]">
               <div />
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saRelativeMarketShare")}</div>
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saRelativeMarketShare")}</div>
-              <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckHigh")} {t("saMarketGrowth")}</div>
+              <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saRelativeMarketShare")}</div>
+              <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saRelativeMarketShare")}</div>
+              <div className="text-base font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckHigh")} {t("saMarketGrowth")}</div>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, position: "question_mark" } } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.bcg.position === "question_mark" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                className={`p-4 rounded-md border text-base font-medium transition-colors ${is.bcg.position === "question_mark" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 ❓ {t("saBcgQuestionMark")}
               </button>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, position: "star" } } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.bcg.position === "star" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                className={`p-4 rounded-md border text-base font-medium transition-colors ${is.bcg.position === "star" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 ⭐ {t("saBcgStar")}
               </button>
-              <div className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckLow")} {t("saMarketGrowth")}</div>
+              <div className="text-base font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">{t("saMckLow")} {t("saMarketGrowth")}</div>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, position: "dog" } } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.bcg.position === "dog" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                className={`p-4 rounded-md border text-base font-medium transition-colors ${is.bcg.position === "dog" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 🐕 {t("saBcgDog")}
               </button>
               <button type="button" disabled={readonly} onClick={() => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, position: "cash_cow" } } })}
-                className={`p-4 rounded-md border text-sm font-medium transition-colors ${is.bcg.position === "cash_cow" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
+                className={`p-4 rounded-md border text-base font-medium transition-colors ${is.bcg.position === "cash_cow" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"}`}>
                 🐄 {t("saBcgCashCow")}
               </button>
             </div>
@@ -142,12 +142,12 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
           <CardContent className="space-y-6 flex-1 flex flex-col">
             <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full max-w-3xl mx-auto h-[320px]">
               <div />
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
-              <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saCompetitiveStrength")}</div>
+              <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
+              <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
+              <div className="text-center text-base font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saCompetitiveStrength")}</div>
               {(["high", "medium", "low"] as const).map((ia) => (
                 <>
-                  <div key={`label-${ia}`} className="text-xs font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">
+                  <div key={`label-${ia}`} className="text-base font-medium text-muted-foreground flex items-center pr-2 [writing-mode:vertical-lr] rotate-180">
                     {t(ia === "high" ? "saMckHigh" : ia === "medium" ? "saMckMedium" : "saMckLow")} {t("saIndustryAttractiveness")}
                   </div>
                   {(["low", "medium", "high"] as const).map((cs) => {
@@ -165,7 +165,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                     return (
                       <button key={pos} type="button" disabled={readonly}
                         onClick={() => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, position: pos } } })}
-                        className={`p-3 rounded-md border text-xs font-medium transition-colors ${is.mckinsey.position === pos ? "ring-2 ring-primary bg-primary/20 text-foreground border-primary" : `${colorMap[pos]} text-muted-foreground border-border`}`}>
+                        className={`p-3 rounded-md border text-base font-medium transition-colors ${is.mckinsey.position === pos ? "ring-2 ring-primary bg-primary/20 text-foreground border-primary" : `${colorMap[pos]} text-muted-foreground border-border`}`}>
                         {labels[pos]}
                       </button>
                     );
@@ -208,8 +208,8 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                       <button key={h.value} type="button" disabled={readonly}
                         onClick={() => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, horizon: h.value } } })}
                         className={`p-4 rounded-md border text-left transition-colors ${th.horizon === h.value ? "ring-2 ring-primary bg-primary/20 text-foreground border-primary" : `${h.color} text-muted-foreground`}`}>
-                        <div className="text-sm font-semibold mb-1">{h.label}</div>
-                        <div className="text-xs">{h.desc}</div>
+                        <div className="text-base font-semibold mb-1">{h.label}</div>
+                        <div className="text-base">{h.desc}</div>
                       </button>
                     ))}
                   </div>
