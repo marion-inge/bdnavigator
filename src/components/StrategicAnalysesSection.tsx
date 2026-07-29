@@ -75,8 +75,8 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                 </button>
               </div>
               <div className="space-y-3">
-                <div><Label>{t("saDescription")}</Label><Textarea value={is.ansoff.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
-                <div><Label>{t("saRationale")}</Label><Textarea value={is.ansoff.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                <div><Label className="text-base font-semibold">{t("saDescription")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.ansoff.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                <div><Label className="text-base font-semibold">{t("saRationale")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.ansoff.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, ansoff: { ...is.ansoff, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
               </div>
               {opportunityId && !readonly && (
                 <IdaFrameworkButton
@@ -120,8 +120,8 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               </button>
             </div>
             <div className="space-y-3">
-              <div><Label>{t("saDescription")}</Label><Textarea value={is.bcg.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
-              <div><Label>{t("saRationale")}</Label><Textarea value={is.bcg.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+              <div><Label className="text-base font-semibold">{t("saDescription")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.bcg.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+              <div><Label className="text-base font-semibold">{t("saRationale")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.bcg.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, bcg: { ...is.bcg, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
             {opportunityId && !readonly && (
               <IdaFrameworkButton
@@ -174,8 +174,8 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               ))}
             </div>
             <div className="space-y-3">
-              <div><Label>{t("saDescription")}</Label><Textarea value={is.mckinsey.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
-              <div><Label>{t("saRationale")}</Label><Textarea value={is.mckinsey.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+              <div><Label className="text-base font-semibold">{t("saDescription")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.mckinsey.description} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+              <div><Label className="text-base font-semibold">{t("saRationale")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={is.mckinsey.rationale} onChange={(e) => update({ ...data, ideaScoring: { ...is, mckinsey: { ...is.mckinsey, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
             </div>
             {opportunityId && !readonly && (
               <IdaFrameworkButton
@@ -214,8 +214,8 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
                     ))}
                   </div>
                   <div className="space-y-3">
-                    <div><Label>{t("saDescription")}</Label><Textarea value={th.description} onChange={e => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
-                    <div><Label>{t("saRationale")}</Label><Textarea value={th.rationale} onChange={e => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
+                    <div><Label className="text-base font-semibold">{t("saDescription")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={th.description} onChange={e => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, description: e.target.value } } })} placeholder={t("saDescPlaceholder")} disabled={readonly} /></div>
+                    <div><Label className="text-base font-semibold">{t("saRationale")}</Label><Textarea className="min-h-[160px] text-base leading-relaxed" value={th.rationale} onChange={e => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, rationale: e.target.value } } })} placeholder={t("saRationalePlaceholder")} disabled={readonly} /></div>
                   </div>
                 </>
               );
