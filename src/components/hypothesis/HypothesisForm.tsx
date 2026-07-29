@@ -65,34 +65,55 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
     <div className="space-y-6">
       {/* Core */}
       <div className="border rounded-lg p-4 space-y-4 bg-card">
-        <h3 className="text-sm font-semibold">{L(language, "Core / Hypothesis", "Kern / Hypothese")}</h3>
+        <div>
+          <h3 className="text-sm font-semibold">{L(language, "Core / Hypothesis", "Kern / Hypothese")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {L(language,
+              "Fill in the basics of the idea. Hover the help icons for guidance on what each field should contain. Fields marked with 'needs input' are empty.",
+              "Füllen Sie die Grundlagen der Idee aus. Halten Sie den Mauszeiger über die Hilfe-Symbole, um zu sehen, was in jedes Feld gehört. Felder mit 'needs input' sind noch leer.")}
+          </p>
+        </div>
 
-        <Field label={L(language, "Hypothesis statement", "Hypothesen-Aussage")} empty={!h.core.hypothesisStatement}>
+        <Field
+          label={L(language, "Hypothesis statement", "Hypothesen-Aussage")}
+          empty={!h.core.hypothesisStatement}
+          help={L(language, "One sentence capturing the idea, the target customer, and the expected value. Example: 'We help [ICP] achieve [outcome] by [solution].'", "Ein Satz, der die Idee, den Zielkunden und den erwarteten Nutzen beschreibt. Beispiel: 'Wir helfen [ICP], [Ergebnis] zu erreichen, indem wir [Lösung] anbieten.'")}
+        >
           <Textarea disabled={readonly} rows={2} value={h.core.hypothesisStatement}
+            placeholder={L(language, "We help... by...", "Wir helfen... durch...")}
             onChange={(e) => setCore({ hypothesisStatement: e.target.value })} />
         </Field>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label={L(language, "Client company", "Kunde / Unternehmen")} empty={!h.core.client.company}>
+          <Field label={L(language, "Client company", "Kunde / Unternehmen")} empty={!h.core.client.company}
+            help={L(language, "Name of the company or client sponsoring this opportunity.", "Name des Unternehmens oder Kunden, der diese Opportunity vorantreibt.")}>
             <Input disabled={readonly} value={h.core.client.company}
+              placeholder={L(language, "Company name", "Unternehmensname")}
               onChange={(e) => setCore({ client: { ...h.core.client, company: e.target.value } })} />
           </Field>
-          <Field label={L(language, "Business unit", "Geschäftseinheit")} empty={!h.core.client.businessUnit}>
+          <Field label={L(language, "Business unit", "Geschäftseinheit")} empty={!h.core.client.businessUnit}
+            help={L(language, "Internal division or team that will own the solution.", "Interne Division oder Team, das die Lösung verantwortet.")}>
             <Input disabled={readonly} value={h.core.client.businessUnit}
+              placeholder={L(language, "e.g. Digital Products", "z. B. Digital Products")}
               onChange={(e) => setCore({ client: { ...h.core.client, businessUnit: e.target.value } })} />
           </Field>
-          <Field label={L(language, "Offering name", "Angebotsname")} empty={!h.core.offering.name}>
+          <Field label={L(language, "Offering name", "Angebotsname")} empty={!h.core.offering.name}
+            help={L(language, "Short working name for the product, service, or initiative.", "Kurzer Arbeitsname für das Produkt, die Dienstleistung oder die Initiative.")}>
             <Input disabled={readonly} value={h.core.offering.name}
+              placeholder={L(language, "e.g. NOVI Mobile", "z. B. NOVI Mobile")}
               onChange={(e) => setCore({ offering: { ...h.core.offering, name: e.target.value } })} />
           </Field>
-          <Field label={L(language, "Business model", "Geschäftsmodell")} empty={!h.core.offering.businessModel}>
+          <Field label={L(language, "Business model", "Geschäftsmodell")} empty={!h.core.offering.businessModel}
+            help={L(language, "How will we make money? Choose one-time, recurring, or service.", "Wie verdienen wir Geld? Wählen Sie one-time, recurring oder service.")}>
             <Input disabled={readonly} value={h.core.offering.businessModel} placeholder="one-time / recurring / service"
               onChange={(e) => setCore({ offering: { ...h.core.offering, businessModel: e.target.value as any } })} />
           </Field>
         </div>
 
-        <Field label={L(language, "Offering description", "Angebotsbeschreibung")} empty={!h.core.offering.description}>
+        <Field label={L(language, "Offering description", "Angebotsbeschreibung")} empty={!h.core.offering.description}
+          help={L(language, "What the offering does and which customer problem it solves.", "Was die Lösung leistet und welches Kundenproblem sie löst.")}>
           <Textarea disabled={readonly} rows={3} value={h.core.offering.description}
+            placeholder={L(language, "Describe the solution and the problem it solves...", "Beschreiben Sie die Lösung und das Problem, das sie löst...")}
             onChange={(e) => setCore({ offering: { ...h.core.offering, description: e.target.value } })} />
         </Field>
 
@@ -101,6 +122,7 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
           values={h.core.offering.specAnchors}
           readonly={readonly}
           onChange={(v) => setCore({ offering: { ...h.core.offering, specAnchors: v } })}
+          help={L(language, "Concrete features or capabilities that must be true for the solution to work.", "Konkrete Features oder Fähigkeiten, die die Lösung erfüllen muss.")}
         />
 
         <PairList
@@ -110,6 +132,7 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
           labels={{ a: L(language, "Segment", "Segment"), b: L(language, "Region", "Region") }}
           readonly={readonly}
           onChange={(v) => setCore({ targetMarkets: v })}
+          help={L(language, "Segment + region pairs you want to address first. Add one row per priority market.", "Segment- und Regions-Paare, die Sie zuerst angehen wollen. Eine Zeile pro Prioritätsmarkt.")}
         />
       </div>
 
