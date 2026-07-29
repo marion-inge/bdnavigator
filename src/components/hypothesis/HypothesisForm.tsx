@@ -391,10 +391,24 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
 
 /* ---------- Reusable list widgets ---------- */
 
-function StringList({ label, values, onChange, readonly }: { label: string; values: string[]; onChange: (v: string[]) => void; readonly?: boolean }) {
+function StringList({ label, values, onChange, readonly, help }: { label: string; values: string[]; onChange: (v: string[]) => void; readonly?: boolean; help?: string }) {
   return (
-    <div className="space-y-1">
-      <label className="text-xs font-medium text-muted-foreground">{label}</label>
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-muted-foreground">{label}</label>
+        {help && (
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/70 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs">
+                <p>{help}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       <div className="space-y-1">
         {values.map((v, i) => (
           <div key={i} className="flex gap-2">
@@ -419,12 +433,26 @@ function StringList({ label, values, onChange, readonly }: { label: string; valu
 }
 
 function PairList<T extends Record<string, any>>(
-  { label, items, keys, labels, onChange, readonly }:
-  { label: string; items: T[]; keys: { a: keyof T & string; b: keyof T & string }; labels: { a: string; b: string }; onChange: (v: T[]) => void; readonly?: boolean }
+  { label, items, keys, labels, onChange, readonly, help }:
+  { label: string; items: T[]; keys: { a: keyof T & string; b: keyof T & string }; labels: { a: string; b: string }; onChange: (v: T[]) => void; readonly?: boolean; help?: string }
 ) {
   return (
-    <div className="space-y-1">
-      <label className="text-xs font-medium text-muted-foreground">{label}</label>
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-muted-foreground">{label}</label>
+        {help && (
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/70 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs">
+                <p>{help}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       <div className="space-y-1">
         {items.map((it, i) => (
           <div key={i} className="flex gap-2">
