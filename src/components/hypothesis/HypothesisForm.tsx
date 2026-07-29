@@ -385,7 +385,7 @@ function MarketPotentialFields({ h, onChange, readonly, lang }: { h: HypothesisD
       </div>
       <Field label={L(lang, "Addressable share assumption", "Annahme adressierbarer Anteil")} empty={!m.addressableShareAssumption}
         help={L(lang, "Share of the total market we realistically can serve.", "Anteil des Gesamtmarktes, den wir realistisch bedienen können.")}>
-        <Input disabled={readonly} value={m.addressableShareAssumption} placeholder={L(lang, "e.g. 10% of reachable accounts", "z. B. 10 % der erreichbaren Accounts")
+        <Input disabled={readonly} value={m.addressableShareAssumption} placeholder={L(lang, "e.g. 10% of reachable accounts", "z. B. 10 % der erreichbaren Accounts")}
           onChange={(e) => set({ addressableShareAssumption: e.target.value })} />
       </Field>
       <PairList label={L(lang, "Units per customer type", "Einheiten pro Kundentyp")} items={m.unitsPerCustomerType}
