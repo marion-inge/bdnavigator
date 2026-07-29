@@ -506,8 +506,8 @@ export default function OpportunityDetail() {
 
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="w-full mx-auto px-4 sm:px-6 xl:px-8 py-6">
+        <main className="flex-1 overflow-y-auto flex flex-col">
+          <div className="flex-1 flex flex-col w-full mx-auto px-4 sm:px-6 xl:px-8 py-6">
             {activeTab === "overview" && (
               <OpportunityOverview opportunity={opp} onAdvanceStage={handleAdvanceStage} onUpdate={(updates) => updateOpportunity(opp.id, updates)} onStartScoring={() => setActiveTab("scoring")} onRevertStage={() => revertStage(opp.id)} />
             )}
