@@ -47,7 +47,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
           <Card className="flex-1 flex flex-col">
             <CardHeader><CardTitle>{t("saAnsoff")}</CardTitle></CardHeader>
             <CardContent className="space-y-6 flex-1 flex flex-col">
-              <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full flex-1 min-h-0">
+              <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full max-w-2xl mx-auto h-[280px]">
                 <div />
                 <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saExistingProduct")}</div>
                 <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saNewProduct")}</div>
@@ -96,7 +96,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
         <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saBcg")}</CardTitle></CardHeader>
           <CardContent className="space-y-6 flex-1 flex flex-col">
-            <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full flex-1 min-h-0">
+            <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full max-w-2xl mx-auto h-[280px]">
               <div />
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saRelativeMarketShare")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckHigh")} {t("saRelativeMarketShare")}</div>
@@ -140,7 +140,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
         <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saMckinsey")}</CardTitle></CardHeader>
           <CardContent className="space-y-6 flex-1 flex flex-col">
-            <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full flex-1 min-h-0">
+            <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full max-w-3xl mx-auto h-[320px]">
               <div />
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckMedium")} {t("saCompetitiveStrength")}</div>
@@ -203,7 +203,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               ];
               return (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full flex-1 min-h-0">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-4xl mx-auto">
                     {horizons.map((h) => (
                       <button key={h.value} type="button" disabled={readonly}
                         onClick={() => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, horizon: h.value } } })}
