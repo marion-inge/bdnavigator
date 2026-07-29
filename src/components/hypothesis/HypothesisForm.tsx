@@ -183,11 +183,14 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
   );
 }
 
-function ScanPanel({ value, title, children }: { value: string; title: string; children: React.ReactNode }) {
+function ScanPanel({ value, title, intro, children }: { value: string; title: string; intro?: string; children: React.ReactNode }) {
   return (
     <AccordionItem value={value} className="border rounded-lg mb-3 bg-card px-4">
       <AccordionTrigger className="text-sm font-semibold hover:no-underline">{title}</AccordionTrigger>
-      <AccordionContent className="pt-2 pb-4 space-y-3">{children}</AccordionContent>
+      <AccordionContent className="pt-2 pb-4 space-y-3">
+        {intro && <p className="text-xs text-muted-foreground leading-snug">{intro}</p>}
+        {children}
+      </AccordionContent>
     </AccordionItem>
   );
 }
