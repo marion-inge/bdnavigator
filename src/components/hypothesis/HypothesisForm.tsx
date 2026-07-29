@@ -148,27 +148,32 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
       {scans.length > 0 && (
         <Accordion type="multiple" defaultValue={scans}>
           {scans.includes("industry") && (
-            <ScanPanel value="industry" title={L(language, "Industry Scan", "Branchen-Scan")}>
+            <ScanPanel value="industry" title={L(language, "Industry Scan", "Branchen-Scan")}
+              intro={L(language, "Define the scope of the industry research: purpose, depth, segments, and geographies. These inputs guide the market-intelligence scan.", "Definieren Sie den Umfang der Branchenrecherche: Zweck, Tiefe, Segmente und Geografien. Diese Inputs steuern den Market-Intelligence-Scan.")}>
               <IndustryFields h={h} onChange={(v) => set({ industry: v })} readonly={readonly} lang={language} />
             </ScanPanel>
           )}
           {scans.includes("customer") && (
-            <ScanPanel value="customer" title={L(language, "Customer Scan", "Kunden-Scan")}>
+            <ScanPanel value="customer" title={L(language, "Customer Scan", "Kunden-Scan")}
+              intro={L(language, "Describe the customers you want to understand: products, use cases, types, tiering rules, and any special preferences for the research.", "Beschreiben Sie die Kunden, die Sie verstehen wollen: Produkte, Anwendungsfälle, Typen, Tiering-Regeln und besondere Präferenzen für die Recherche.")}>
               <CustomerFields h={h} onChange={(v) => set({ customer: v })} readonly={readonly} lang={language} />
             </ScanPanel>
           )}
           {scans.includes("competitor") && (
-            <ScanPanel value="competitor" title={L(language, "Competitor Scan", "Wettbewerber-Scan")}>
+            <ScanPanel value="competitor" title={L(language, "Competitor Scan", "Wettbewerber-Scan")}
+              intro={L(language, "Set the benchmark for competitor analysis: what we offer, who we compare against, which dimensions to score, and what frameworks to deliver.", "Legen Sie den Benchmark für die Wettbewerbsanalyse fest: unser Angebot, mit wem wir vergleichen, welche Dimensionen bewertet werden und welche Frameworks geliefert werden sollen.")}>
               <CompetitorFields h={h} onChange={(v) => set({ competitor: v })} readonly={readonly} lang={language} />
             </ScanPanel>
           )}
           {scans.includes("market_potential") && (
-            <ScanPanel value="market_potential" title={L(language, "Market Potential Scan", "Marktpotenzial-Scan")}>
+            <ScanPanel value="market_potential" title={L(language, "Market Potential Scan", "Marktpotenzial-Scan")}
+              intro={L(language, "Provide the assumptions for sizing the market: price, adoption, win-rate, and scenario narratives. The model will build bottom-up revenue cases.", "Geben Sie die Annahmen für die Marktgrößenberechnung an: Preis, Adoption, Gewinnrate und Szenario-Narrative. Das Modell erstellt Bottom-up-Umsatzfälle.")}>
               <MarketPotentialFields h={h} onChange={(v) => set({ marketPotential: v })} readonly={readonly} lang={language} />
             </ScanPanel>
           )}
           {scans.includes("buying_center") && (
-            <ScanPanel value="buying_center" title={L(language, "Buying Center Scan", "Buying-Center-Scan")}>
+            <ScanPanel value="buying_center" title={L(language, "Buying Center Scan", "Buying-Center-Scan")}
+              intro={L(language, "Specify how to map the buying center: the offering, seed account source, shortlist rules, depth of coverage, and delivery format.", "Legen Sie fest, wie das Buying Center gemappt werden soll: das Angebot, die Ausgangs-Account-Quelle, Shortlist-Regeln, Abdeckungstiefe und Lieferformat.")}>
               <BuyingCenterFields h={h} onChange={(v) => set({ buyingCenter: v })} readonly={readonly} lang={language} />
             </ScanPanel>
           )}
