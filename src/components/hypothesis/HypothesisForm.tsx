@@ -203,20 +203,30 @@ function IndustryFields({ h, onChange, readonly, lang }: { h: HypothesisData; on
   return (
     <>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={L(lang, "Study purpose", "Studienzweck")} empty={!i.studyPurpose}>
+        <Field label={L(lang, "Study purpose", "Studienzweck")} empty={!i.studyPurpose}
+          help={L(lang, "Why do we need this scan? Pick a purpose such as market entry, geo expansion, or competitive positioning.", "Warum brauchen wir diesen Scan? Wählen Sie einen Zweck wie Markteintritt, Geo-Expansion oder Wettbewerbspositionierung.")}>
           <Input disabled={readonly} value={i.studyPurpose} onChange={(e) => set({ studyPurpose: e.target.value })}
             placeholder="market_entry / geo_expansion / partner_supplier_search / competitive_positioning / portfolio_gap_screening" />
         </Field>
-        <Field label={L(lang, "Depth", "Tiefe")} empty={!i.depth}>
+        <Field label={L(lang, "Depth", "Tiefe")} empty={!i.depth}
+          help={L(lang, "How thorough should the research be? strategic_overview = high level; thorough = detailed; exhaustive = complete.", "Wie gründlich soll die Recherche sein? strategic_overview = grob; thorough = detailliert; exhaustive = vollständig.")}>
           <Input disabled={readonly} value={i.depth} onChange={(e) => set({ depth: e.target.value })}
             placeholder="strategic_overview / thorough / exhaustive" />
         </Field>
       </div>
-      <StringList label={L(lang, "Segments in depth", "Segmente (Tiefe)")} values={i.segmentsInDepth} readonly={readonly} onChange={(v) => set({ segmentsInDepth: v })} />
+      <StringList label={L(lang, "Segments in depth", "Segmente (Tiefe)")} values={i.segmentsInDepth} readonly={readonly}
+        onChange={(v) => set({ segmentsInDepth: v })}
+        help={L(lang, "Specific industry segments to research in detail. Add one segment per row.", "Spezifische Branchensegmente, die detailliert recherchiert werden sollen. Eine Zeile pro Segment.")} />
       <div className="grid gap-3 sm:grid-cols-3">
-        <StringList label={L(lang, "Geography – primary", "Geografie – primär")} values={i.geography.primary} readonly={readonly} onChange={(v) => set({ geography: { ...i.geography, primary: v } })} />
-        <StringList label={L(lang, "Geography – baseline", "Geografie – Baseline")} values={i.geography.baseline} readonly={readonly} onChange={(v) => set({ geography: { ...i.geography, baseline: v } })} />
-        <StringList label={L(lang, "Geography – light", "Geografie – leicht")} values={i.geography.light} readonly={readonly} onChange={(v) => set({ geography: { ...i.geography, light: v } })} />
+        <StringList label={L(lang, "Geography – primary", "Geografie – primär")} values={i.geography.primary} readonly={readonly}
+          onChange={(v) => set({ geography: { ...i.geography, primary: v } })}
+          help={L(lang, "Markets that are most important and need the deepest research.", "Märkte, die am wichtigsten sind und die tiefste Recherche benötigen.")} />
+        <StringList label={L(lang, "Geography – baseline", "Geografie – Baseline")} values={i.geography.baseline} readonly={readonly}
+          onChange={(v) => set({ geography: { ...i.geography, baseline: v } })}
+          help={L(lang, "Markets that need a standard level of research for comparison.", "Märkte, die für den Vergleich mit Standardtiefe recherchiert werden.")} />
+        <StringList label={L(lang, "Geography – light", "Geografie – leicht")} values={i.geography.light} readonly={readonly}
+          onChange={(v) => set({ geography: { ...i.geography, light: v } })}
+          help={L(lang, "Markets to cover only lightly as context.", "Märkte, die nur als Kontext leicht abgedeckt werden.")} />
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {(["valueChainMap", "wordStudy", "excelPlayerDb", "slideDeck"] as const).map((k) => (
@@ -234,21 +244,21 @@ function IndustryFields({ h, onChange, readonly, lang }: { h: HypothesisData; on
 function CustomerFields({ h, onChange, readonly, lang }: { h: HypothesisData; onChange: (v: any) => void; readonly?: boolean; lang: string }) {
   const c = h.customer ?? createDefaultCustomer();
   const set = (patch: any) => onChange({ ...c, ...patch });
-  const fields: Array<[keyof typeof c, string, string]> = [
-    ["products", "Products", "Produkte"],
-    ["reportMode", "Report mode", "Report-Modus"],
-    ["useCases", "Use cases", "Anwendungsfälle"],
-    ["businessModel", "Business model", "Geschäftsmodell"],
-    ["targetMarket", "Target market", "Zielmarkt"],
-    ["customerTypes", "Customer types", "Kundentypen"],
-    ["preferences", "Preferences", "Präferenzen"],
-    ["tierCriteria", "Tier criteria", "Tier-Kriterien"],
-    ["additionalComments", "Additional comments", "Zusätzliche Kommentare"],
+  const fields: Array<[keyof typeof c, string, string, string, string]> = [
+    ["products", "Products", "Produkte", "Which products or services should the customer scan cover?", "Welche Produkte oder Dienstleistungen soll der Kunden-Scan abdecken?"],
+    ["reportMode", "Report mode", "Report-Modus", "Output format expected. e.g. executive summary, full database, slide deck.", "Erwartetes Ausgabeformat. z. B. Executive Summary, vollständige Datenbank, Folien-Deck."],
+    ["useCases", "Use cases", "Anwendungsfälle", "Main use cases or jobs-to-be-done the target customers have.", "Haupt-Anwendungsfälle oder jobs-to-be-done der Zielkunden."],
+    ["businessModel", "Business model", "Geschäftsmodell", "How the target customers make money. This helps frame the value proposition.", "Wie die Zielkunden Geld verdienen. Hilft, das Wertversprechen zu formulieren."],
+    ["targetMarket", "Target market", "Zielmarkt", "Sub-segment or industry of the customers we want to interview.", "Teilsegment oder Branche der Kunden, die wir befragen wollen."],
+    ["customerTypes", "Customer types", "Kundentypen", "Ideal customer profiles (ICPs) or roles to include in the research.", "Ideal Customer Profiles (ICPs) oder Rollen, die in die Recherche einbezogen werden sollen."],
+    ["preferences", "Preferences", "Präferenzen", "Specific questions, sources, formats, or regions to focus on.", "Spezifische Fragen, Quellen, Formate oder Regionen, auf die der Fokus liegen soll."],
+    ["tierCriteria", "Tier criteria", "Tier-Kriterien", "Rules for segmenting customers into tiers, e.g. revenue, headcount, digital maturity.", "Regeln für die Einteilung der Kunden in Tiers, z. B. Umsatz, Mitarbeiterzahl, digitale Reife."],
+    ["additionalComments", "Additional comments", "Zusätzliche Kommentare", "Any other context the researcher should know.", "Jeder weitere Kontext, den der Rechercheur kennen sollte."],
   ];
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      {fields.map(([k, en, de]) => (
-        <Field key={k as string} label={L(lang, en, de)} empty={!c[k]}>
+      {fields.map(([k, en, de, enHelp, deHelp]) => (
+        <Field key={k as string} label={L(lang, en, de)} empty={!c[k]} help={L(lang, enHelp, deHelp)}>
           <Textarea disabled={readonly} rows={2} value={c[k] as string} onChange={(e) => set({ [k]: e.target.value })} />
         </Field>
       ))}
