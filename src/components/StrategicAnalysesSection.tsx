@@ -204,7 +204,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
               ];
               return (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full flex-1 min-h-0">
                     {horizons.map((h) => (
                       <button key={h.value} type="button" disabled={readonly}
                         onClick={() => update({ ...data, ideaScoring: { ...is, threeHorizons: { ...th, horizon: h.value } } })}
