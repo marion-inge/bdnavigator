@@ -32,8 +32,7 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
   const is = data.ideaScoring;
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly}>
+    <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => setEditing(false)} readonly={propReadonly} className="flex-1 flex flex-col min-h-0">
     <Tabs defaultValue={defaultTab || "ansoff"} key={defaultTab} className="space-y-6 flex-1 flex flex-col">
       <TabsList className="flex-wrap h-auto gap-1 p-1 shrink-0">
         <TabsTrigger value="ansoff" className="text-xs sm:text-sm">{t("saAnsoff")}</TabsTrigger>
