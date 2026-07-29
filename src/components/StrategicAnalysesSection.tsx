@@ -137,10 +137,10 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsContent>
 
       {/* McKinsey Matrix */}
-      <TabsContent value="mckinsey">
-        <Card>
+      <TabsContent value="mckinsey" className="flex-1 flex flex-col">
+        <Card className="flex-1 flex flex-col">
           <CardHeader><CardTitle>{t("saMckinsey")}</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 flex-1 flex flex-col">
             <div className="grid grid-cols-[auto_1fr_1fr_1fr] grid-rows-[auto_1fr_1fr_1fr] gap-1 w-full">
               <div />
               <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saMckLow")} {t("saCompetitiveStrength")}</div>
