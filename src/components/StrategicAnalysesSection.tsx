@@ -43,11 +43,11 @@ export function StrategicAnalysesSection({ strategicAnalyses, onSave, readonly: 
       </TabsList>
 
       {/* Ansoff Matrix */}
-      <TabsContent value="ansoff">
-        <div className="space-y-6">
-          <Card>
+      <TabsContent value="ansoff" className="flex-1 flex flex-col">
+        <div className="space-y-6 flex-1 flex flex-col">
+          <Card className="flex-1 flex flex-col">
             <CardHeader><CardTitle>{t("saAnsoff")}</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
               <div className="grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-1 w-full">
                 <div />
                 <div className="text-center text-xs font-medium text-muted-foreground py-2">{t("saExistingProduct")}</div>
