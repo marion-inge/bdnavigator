@@ -16,11 +16,11 @@ export function EditableSection({ editing, onEdit, onSave, readonly, children, d
   const { language } = useI18n();
 
   if (readonly) {
-    return <div className={className}>{children}</div>;
+    return <div className={`display-mode ${className ?? ""}`}>{children}</div>;
   }
 
   return (
-    <div className={className}>
+    <div className={`${editing ? "" : "display-mode"} ${className ?? ""}`}>
       <div className="flex justify-end mb-4 sticky top-2 z-10">
         {editing ? (
           <div className="flex gap-2 bg-card/95 backdrop-blur-sm rounded-lg border border-border px-3 py-2 shadow-sm">
