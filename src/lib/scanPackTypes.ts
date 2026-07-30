@@ -77,7 +77,7 @@ export const SCAN_RECOMMENDED_PREDECESSORS: Record<ScanPackKey, ScanPackKey[]> =
   industry: [],
   customer: ["industry"],
   competitor: ["industry"],
-  market_potential: ["customer"],
+  market_potential: ["industry", "customer", "competitor"],
   buying_center: ["customer"],
   assembler: ["industry", "customer", "competitor", "market_potential", "buying_center"],
 };
