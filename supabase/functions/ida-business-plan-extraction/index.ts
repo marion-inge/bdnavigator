@@ -480,6 +480,21 @@ ${FIELD_GUIDE[scope]}`;
   }
 }
 
+/** Gemini occasionally returns MALFORMED_FUNCTION_CALL on the larger schemas.
+ *  Retry once before giving up on the section. */
+async function runSectionWithRetry(
+  scope: SectionScope,
+  blocks: any[],
+  anchor: string,
+  lang: string,
+  apiKey: string,
+): Promise<any> {
+  const first = await runSection(scope, blocks, anchor, lang, apiKey);
+  if (first && Object.keys(first).length > 0) return first;
+  console.warn(`Section ${scope} returned nothing — retrying once`);
+  return await runSection(scope, blocks, anchor, lang, apiKey);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -607,7 +622,7 @@ serve(async (req) => {
     // Run sections in parallel — each call has a small schema and a generous
     // output budget, so the model has room to be thorough per section.
     const results = await Promise.allSettled(
-      sections.map((s) => runSection(s, blocks, anchor, lang, LOVABLE_API_KEY)),
+      sections.map((s) => runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY)),
     );
 
     const proposal: any = {};
