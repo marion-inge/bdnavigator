@@ -408,6 +408,7 @@ async function runSection(
   anchor: string,
   lang: string,
   apiKey: string,
+  model = "google/gemini-2.5-flash",
 ): Promise<any> {
   const schema = buildSchema(scope);
 
@@ -434,7 +435,7 @@ ${FIELD_GUIDE[scope]}`;
     body: JSON.stringify({
       // Flash is dramatically faster than Pro on multi-document calls
       // and avoids the upstream idle timeouts we were seeing with Pro.
-      model: "google/gemini-2.5-flash",
+      model,
       max_tokens: 16000,
       messages: [
         { role: "system", content: systemPrompt },
@@ -480,8 +481,11 @@ ${FIELD_GUIDE[scope]}`;
   }
 }
 
-/** Gemini occasionally returns MALFORMED_FUNCTION_CALL on the larger schemas.
- *  Retry once before giving up on the section. */
+/** The upstream gateway intermittently returns 429/5xx, and Gemini occasionally
+ *  returns MALFORMED_FUNCTION_CALL on the larger schemas. Retry with exponential
+ *  backoff and fall back to a second model before giving up on a section. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function runSectionWithRetry(
   scope: SectionScope,
   blocks: any[],
@@ -489,11 +493,34 @@ async function runSectionWithRetry(
   lang: string,
   apiKey: string,
 ): Promise<any> {
-  const first = await runSection(scope, blocks, anchor, lang, apiKey);
-  if (first && Object.keys(first).length > 0) return first;
-  console.warn(`Section ${scope} returned nothing — retrying once`);
-  return await runSection(scope, blocks, anchor, lang, apiKey);
+  const models = [
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-flash-lite",
+    "google/gemini-2.5-pro",
+  ];
+  let lastError: any;
+
+  for (let attempt = 0; attempt < models.length; attempt++) {
+    if (attempt > 0) {
+      const wait = Math.min(8000, 1000 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 400);
+      console.warn(`Section ${scope} retry ${attempt} with ${models[attempt]} after ${wait}ms`);
+      await sleep(wait);
+    }
+    try {
+      const result = await runSection(scope, blocks, anchor, lang, apiKey, models[attempt]);
+      if (result && Object.keys(result).length > 0) return result;
+      lastError = new Error(`empty_result_${scope}`);
+    } catch (e: any) {
+      lastError = e;
+      // Don't burn retries on non-transient failures.
+      if (e?.status === 402) throw e;
+      if (e?.status && e.status !== 429 && e.status < 500) throw e;
+    }
+  }
+  throw lastError ?? new Error(`section_failed_${scope}`);
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -622,10 +649,14 @@ serve(async (req) => {
       : [scope, "overview"];
 
 
-    // Run sections in parallel — each call has a small schema and a generous
-    // output budget, so the model has room to be thorough per section.
+    // Run sections in parallel, staggered by 400ms so we don't hit the
+    // gateway with N identical multi-document calls in the same instant
+    // (that is what produced the 503 "upstream_error" bursts).
     const results = await Promise.allSettled(
-      sections.map((s) => runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY)),
+      sections.map(async (s, i) => {
+        await sleep(i * 400);
+        return await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY);
+      }),
     );
 
     const proposal: any = {};
@@ -655,8 +686,15 @@ serve(async (req) => {
 
     if (Object.keys(proposal).length === 0) {
       const firstErr: any = results.find((r) => r.status === "rejected") as any;
-      const status = firstErr?.reason?.status === 429 ? 429 : firstErr?.reason?.status === 402 ? 402 : 500;
-      const message = status === 429 ? "Rate limit exceeded." : status === 402 ? "AI credits exhausted." : "IDA could not extract any fields. Try again or select different documents.";
+      const st = firstErr?.reason?.status;
+      const status = st === 429 ? 429 : st === 402 ? 402 : st === 503 ? 503 : 500;
+      const message = status === 429
+        ? "Rate limit exceeded — please wait a moment and try again."
+        : status === 402
+        ? "AI credits exhausted."
+        : status === 503
+        ? "The AI service is temporarily overloaded. Please try again in a minute."
+        : "IDA could not extract any fields. Try again or select different documents.";
       return new Response(JSON.stringify({ error: message }), {
         status, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
