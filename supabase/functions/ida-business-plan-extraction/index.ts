@@ -304,6 +304,14 @@ function buildSchema(scope: SectionScope) {
           },
           additionalProperties: false,
         },
+      },
+      additionalProperties: false,
+    };
+  }
+  if (scope === "som_models") {
+    props.som = {
+      type: "object",
+      properties: {
         valuePropositionCanvas: { type: "object", properties: strProps(VPC_KEYS), additionalProperties: false },
         customerBenefitAnalysis: { type: "object", properties: strProps(CBA_KEYS), additionalProperties: false },
         threeCircleModel: { type: "object", properties: strProps(THREE_KEYS), additionalProperties: false },
