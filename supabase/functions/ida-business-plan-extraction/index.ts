@@ -408,6 +408,7 @@ async function runSection(
   anchor: string,
   lang: string,
   apiKey: string,
+  model = "google/gemini-2.5-flash",
 ): Promise<any> {
   const schema = buildSchema(scope);
 
