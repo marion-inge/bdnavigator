@@ -732,7 +732,9 @@ export const SOM_FIELDS: IdaFieldDef[] = [
 export const ALL_FIELDS: IdaFieldDef[] = [...TAM_FIELDS, ...SAM_FIELDS, ...SOM_FIELDS];
 
 export function fieldsForGroup(group: ProposalGroup | "all"): IdaFieldDef[] {
-  if (group === "tam") return TAM_FIELDS;
+  // The "Customers Found" database lives under sam.* but is also shown on the TAM
+  // overview (bottom-up TAM), so offer it when filling TAM too.
+  if (group === "tam") return [...TAM_FIELDS, ...SAM_FIELDS.filter(f => f.section === "Customers Found")];
   if (group === "sam") return SAM_FIELDS;
   if (group === "som") return SOM_FIELDS;
   if (group === "overview") return [

@@ -40,6 +40,8 @@ interface Props {
   readonly?: boolean;
   strategicAnalyses?: StrategicAnalyses;
   onSaveTam?: (tam: TamModels) => void;
+  onSaveSam?: (sam: any) => void;
+
   opportunityTitle?: string;
   opportunityDescription?: string;
   solutionDescription?: string;
@@ -58,7 +60,7 @@ function calcCagr(values: MarketYearValue[]): string {
   return `${((Math.pow(last / first, 1 / n) - 1) * 100).toFixed(1)}%`;
 }
 
-export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, onSaveTam, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
+export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, onSaveTam, onSaveSam, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
@@ -507,13 +509,19 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
         )}
 
         {/* Customers Found */}
-        {onSaveTam && (
+        {onSaveSam && (
           <CustomersFoundTab
-            data={(strategicAnalyses?.tam || {}) as TamModels}
-            onSave={onSaveTam}
+            data={{
+              ...((strategicAnalyses?.sam || {}) as any),
+              customersFound:
+                (strategicAnalyses?.sam as any)?.customersFound ??
+                (strategicAnalyses?.tam as any)?.customersFound,
+            }}
+            onSave={onSaveSam}
             readonly={readonly}
           />
         )}
+
 
         {/* Supporting Models Note */}
         <Card className="border-dashed">

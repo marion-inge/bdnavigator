@@ -617,7 +617,10 @@ serve(async (req) => {
       ? ["overview"]
       : scope === "sam"
       ? ["sam", "sam_customers", "overview"]
+      : scope === "tam"
+      ? ["tam", "sam_customers", "overview"]
       : [scope, "overview"];
+
 
     // Run sections in parallel — each call has a small schema and a generous
     // output budget, so the model has room to be thorough per section.
