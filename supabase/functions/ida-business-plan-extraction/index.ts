@@ -435,7 +435,7 @@ ${FIELD_GUIDE[scope]}`;
     body: JSON.stringify({
       // Flash is dramatically faster than Pro on multi-document calls
       // and avoids the upstream idle timeouts we were seeing with Pro.
-      model: "google/gemini-2.5-flash",
+      model,
       max_tokens: 16000,
       messages: [
         { role: "system", content: systemPrompt },
