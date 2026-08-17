@@ -175,7 +175,7 @@ const THREE_KEYS = ["ourValue","competitorValue","customerNeeds","ourUnique","th
 const POS_KEYS = ["targetAudience","category","keyBenefit","reasonToBelieve","competitiveAlternative","differentiator","statement","description","rationale"];
 const TC_KEYS = ["marketPriceRationale","marginRationale","gapAnalysis","actionPlan","overallAssessment"];
 
-type SectionScope = "overview" | "tam" | "sam" | "sam_customers" | "som";
+type SectionScope = "overview" | "tam" | "sam" | "sam_customers" | "som" | "som_models";
 
 function buildSchema(scope: SectionScope) {
   const props: Record<string, any> = {};
@@ -372,7 +372,8 @@ const SECTION_DESCRIPTIONS: Record<SectionScope, string> = {
   tam: "the TAM strategic models: Market Research, PESTEL (Political/Economic/Social/Technological/Environmental/Legal), Value Chain, Porter's Five Forces (all 5 forces), and SWOT (Strengths/Weaknesses/Opportunities/Threats)",
   sam: "the SAM section: Customer Landscape narrative, Business Model Canvas (all 9 blocks), Lean Canvas (all 9 blocks), and the Risk narrative",
   sam_customers: "the SAM 'Customers Found' account database only (a detailed table of concrete customer accounts, mirroring the Customer Scan output)",
-  som: "the SOM section: Competitor narrative, Value Proposition Canvas (jobs/pains/gains, products, pain relievers, gain creators), Customer Benefit Analysis (functional/emotional/social/self-expressive), Three Circles, Positioning statement, and Target Costing narrative",
+  som: "the SOM Competitor Analysis only (narrative plus a detailed competitor table)",
+  som_models: "the SOM strategic models only: Value Proposition Canvas, Customer Benefit Analysis, Three Circles, Positioning statement and Target Costing narrative",
 };
 
 const FIELD_GUIDE: Record<SectionScope, string> = {
@@ -401,11 +402,12 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - customersFound: description, researchScope, bottomUpAssumptions, averageValuePerCustomer (M€), entries[]
 - entries[]: one row per concrete company/account named in the documents (company, country, geography, tier A-E, customerType, segment, parentGroup, variantCount, estimatedValue in M€, status, rationale, sources, notes).
 - Leave a field as "" or 0 when the documents do not support it. Never invent accounts. If no concrete companies are named, return an empty entries array.`,
-  som: `Fill every field you can support across these models:
-- competitorAnalysis: description, rationale, entries[] — IMPORTANT: extract every competitor mentioned in the documents as a separate row with name, strengths, weaknesses, marketShare, strategy and threatLevel (1-5). Do not merge competitors into a single paragraph.
+  som: `Extract ONLY the Competitor Analysis:
+- competitorAnalysis: description, rationale, entries[] — IMPORTANT: extract every competitor mentioned in the documents as a separate row with name, strengths, weaknesses, marketShare, strategy and threatLevel (1-5). Do not merge competitors into a single paragraph.`,
+  som_models: `Fill EVERY field of EVERY model below — none may be left out. Where the documents give only partial evidence, reason from the opportunity context and the evidence you do have, and state the assumption inside the text.
 - valuePropositionCanvas (VPC): customerJobs, customerPains, customerGains, productsServices, painRelievers, gainCreators, description, rationale
 - customerBenefitAnalysis (CBA): functionalBenefits, emotionalBenefits, socialBenefits, selfExpressiveBenefits, description, rationale
-- threeCircleModel: ourValue, competitorValue, customerNeeds, ourUnique, theirUnique, commonValue, unmetNeeds, description, rationale
+- threeCircleModel (MANDATORY, all nine): ourValue (what WE deliver of value to the customer), competitorValue (what competitors deliver), customerNeeds (what the customer actually wants), ourUnique (value only we provide), theirUnique (value only competitors provide), commonValue (value both provide), unmetNeeds (needs nobody serves yet), description, rationale
 - positioningStatement: targetAudience, category, keyBenefit, reasonToBelieve, competitiveAlternative, differentiator, statement, description, rationale
 - targetCosting: marketPriceRationale, marginRationale, gapAnalysis, actionPlan, overallAssessment`,
 };
@@ -647,13 +649,15 @@ serve(async (req) => {
     // For a single-area scope (tam/sam/som), also run the "overview" section so
     // the TAM/SAM/SOM Overview text fields get proposed alongside the models.
     const sections: SectionScope[] = scope === "all"
-      ? ["overview", "tam", "sam", "sam_customers", "som"]
+      ? ["overview", "tam", "sam", "sam_customers", "som", "som_models"]
       : scope === "overview"
       ? ["overview"]
       : scope === "sam"
       ? ["sam", "sam_customers", "overview"]
       : scope === "tam"
       ? ["tam", "sam_customers", "overview"]
+      : scope === "som"
+      ? ["som", "som_models", "overview"]
       : [scope, "overview"];
 
 
