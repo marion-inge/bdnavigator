@@ -649,10 +649,14 @@ serve(async (req) => {
       : [scope, "overview"];
 
 
-    // Run sections in parallel — each call has a small schema and a generous
-    // output budget, so the model has room to be thorough per section.
+    // Run sections in parallel, staggered by 400ms so we don't hit the
+    // gateway with N identical multi-document calls in the same instant
+    // (that is what produced the 503 "upstream_error" bursts).
     const results = await Promise.allSettled(
-      sections.map((s) => runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY)),
+      sections.map(async (s, i) => {
+        await sleep(i * 400);
+        return await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY);
+      }),
     );
 
     const proposal: any = {};
