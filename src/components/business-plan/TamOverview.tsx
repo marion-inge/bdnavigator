@@ -40,6 +40,8 @@ interface Props {
   readonly?: boolean;
   strategicAnalyses?: StrategicAnalyses;
   onSaveTam?: (tam: TamModels) => void;
+  onSaveSam?: (sam: any) => void;
+
   opportunityTitle?: string;
   opportunityDescription?: string;
   solutionDescription?: string;
