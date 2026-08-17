@@ -1080,8 +1080,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Rationale", value: s.rationale },
     ], pw);
   }
-  if (tam?.customersFound?.entries?.length) {
-    const cf = tam.customersFound;
+  const cfSource = (sa?.sam as any)?.customersFound?.entries?.length ? (sa?.sam as any).customersFound : (tam as any)?.customersFound;
+  if (cfSource?.entries?.length) {
+    const cf = cfSource;
+
     y = addLongText(doc, y, "Customers Found – Research Scope", cf.researchScope, pw);
     y = addLongText(doc, y, "Bottom-up Assumptions", cf.bottomUpAssumptions, pw);
     if (cf.averageValuePerCustomer) y = addKeyValue(doc, y, "Avg Value per Customer (M EUR)", String(cf.averageValuePerCustomer));
