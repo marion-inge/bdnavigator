@@ -481,8 +481,11 @@ ${FIELD_GUIDE[scope]}`;
   }
 }
 
-/** Gemini occasionally returns MALFORMED_FUNCTION_CALL on the larger schemas.
- *  Retry once before giving up on the section. */
+/** The upstream gateway intermittently returns 429/5xx, and Gemini occasionally
+ *  returns MALFORMED_FUNCTION_CALL on the larger schemas. Retry with exponential
+ *  backoff and fall back to a second model before giving up on a section. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function runSectionWithRetry(
   scope: SectionScope,
   blocks: any[],
@@ -490,11 +493,34 @@ async function runSectionWithRetry(
   lang: string,
   apiKey: string,
 ): Promise<any> {
-  const first = await runSection(scope, blocks, anchor, lang, apiKey);
-  if (first && Object.keys(first).length > 0) return first;
-  console.warn(`Section ${scope} returned nothing — retrying once`);
-  return await runSection(scope, blocks, anchor, lang, apiKey);
+  const models = [
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-flash-lite",
+    "google/gemini-2.5-pro",
+  ];
+  let lastError: any;
+
+  for (let attempt = 0; attempt < models.length; attempt++) {
+    if (attempt > 0) {
+      const wait = Math.min(8000, 1000 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 400);
+      console.warn(`Section ${scope} retry ${attempt} with ${models[attempt]} after ${wait}ms`);
+      await sleep(wait);
+    }
+    try {
+      const result = await runSection(scope, blocks, anchor, lang, apiKey, models[attempt]);
+      if (result && Object.keys(result).length > 0) return result;
+      lastError = new Error(`empty_result_${scope}`);
+    } catch (e: any) {
+      lastError = e;
+      // Don't burn retries on non-transient failures.
+      if (e?.status === 402) throw e;
+      if (e?.status && e.status !== 429 && e.status < 500) throw e;
+    }
+  }
+  throw lastError ?? new Error(`section_failed_${scope}`);
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
