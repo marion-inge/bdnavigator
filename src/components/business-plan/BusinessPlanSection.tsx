@@ -198,16 +198,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           <TabsContent value="sam-customers">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-customers-found">
-            <CustomersFoundTab
-              {...samProps}
-              title={bp("Customers Found – Customer Scan", "Gefundene Kunden – Customer Scan")}
-              description={bp(
-                "Detailed overview of customers identified through the Customer Scan (tier-ranked A–E). Import the Customer Scan Excel database, or add accounts manually. Feeds bottom-up SAM sizing and Buying Center Scan seeding.",
-                "Detailübersicht der über den Customer Scan identifizierten Kunden (Tier A–E). Excel-Datenbank des Customer Scan importieren oder Accounts manuell hinzufügen. Speist die Bottom-Up-SAM-Berechnung und den Buying Center Scan.",
-              )}
-            />
-          </TabsContent>
           <TabsContent value="sam-strategic">
             <StrategicFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
@@ -255,6 +245,16 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           </TabsContent>
           <TabsContent value="som-competitor">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
+          </TabsContent>
+          <TabsContent value="som-customers-found">
+            <CustomersFoundTab
+              {...samProps}
+              title={bp("Customers Found – Customer Scan", "Gefundene Kunden – Customer Scan")}
+              description={bp(
+                "Detailed overview of customers identified through the Customer Scan (tier-ranked A–E). Import the Customer Scan Excel database, or add accounts manually. Feeds bottom-up sizing and Buying Center Scan seeding.",
+                "Detailübersicht der über den Customer Scan identifizierten Kunden (Tier A–E). Excel-Datenbank des Customer Scan importieren oder Accounts manuell hinzufügen. Speist die Bottom-Up-Berechnung und den Buying Center Scan.",
+              )}
+            />
           </TabsContent>
           <TabsContent value="som-pilot">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />

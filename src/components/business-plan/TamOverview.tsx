@@ -17,7 +17,6 @@ import { invokeFunction } from "@/lib/backendAdapter";
 import { toast } from "sonner";
 import idaRobot from "@/assets/ida-robot.png";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
-import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 
 interface TamScenario {
   projections: MarketYearValue[];
@@ -508,19 +507,6 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </div>
         )}
 
-        {/* Customers Found */}
-        {onSaveSam && (
-          <CustomersFoundTab
-            data={{
-              ...((strategicAnalyses?.sam || {}) as any),
-              customersFound:
-                (strategicAnalyses?.sam as any)?.customersFound ??
-                (strategicAnalyses?.tam as any)?.customersFound,
-            }}
-            onSave={onSaveSam}
-            readonly={readonly}
-          />
-        )}
 
 
         {/* Supporting Models Note */}
