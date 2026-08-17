@@ -649,60 +649,83 @@ serve(async (req) => {
       : [scope, "overview"];
 
 
-    // Run sections in parallel, staggered by 400ms so we don't hit the
-    // gateway with N identical multi-document calls in the same instant
-    // (that is what produced the 503 "upstream_error" bursts).
-    const results = await Promise.allSettled(
-      sections.map(async (s, i) => {
-        await sleep(i * 400);
-        return await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY);
-      }),
-    );
+    // The whole extraction can take several minutes. The platform kills any
+    // request that sends no bytes for 150s (IDLE_TIMEOUT), so we stream the
+    // response: harmless whitespace keepalives while we work, then the JSON
+    // payload (leading whitespace is valid JSON, so the client parses it).
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        let done = false;
+        const keepAlive = setInterval(() => {
+          if (!done) {
+            try { controller.enqueue(encoder.encode(" ")); } catch { /* closed */ }
+          }
+        }, 10_000);
 
-    const proposal: any = {};
-    const failures: string[] = [];
-    results.forEach((r, i) => {
-      const s = sections[i];
-      if (r.status === "fulfilled") {
-        let value: any = r.value || {};
-        // When "overview" is run as a companion to a single-area scope,
-        // keep only that area's overview.* to avoid proposing unrelated fields.
-        if (s === "overview" && scope !== "all" && scope !== "overview" && value?.overview) {
-          value = { overview: { [scope]: value.overview[scope] } };
+        const finish = (payload: unknown) => {
+          done = true;
+          clearInterval(keepAlive);
+          try { controller.enqueue(encoder.encode(JSON.stringify(payload))); } catch { /* closed */ }
+          controller.close();
+        };
+
+        try {
+          // Run sections in parallel, staggered by 400ms so we don't hit the
+          // gateway with N identical multi-document calls in the same instant.
+          const results = await Promise.allSettled(
+            sections.map(async (s, i) => {
+              await sleep(i * 400);
+              return await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY);
+            }),
+          );
+
+          const proposal: any = {};
+          const failures: string[] = [];
+          results.forEach((r, i) => {
+            const s = sections[i];
+            if (r.status === "fulfilled") {
+              let value: any = r.value || {};
+              // When "overview" is run as a companion to a single-area scope,
+              // keep only that area's overview.* to avoid unrelated fields.
+              if (s === "overview" && scope !== "all" && scope !== "overview" && value?.overview) {
+                value = { overview: { [scope]: value.overview[scope] } };
+              }
+              for (const k of Object.keys(value)) {
+                proposal[k] = { ...(proposal[k] || {}), ...(value[k] || {}) };
+              }
+            } else {
+              console.error(`Section ${s} failed`, r.reason);
+              failures.push(s);
+            }
+          });
+
+          if (Object.keys(proposal).length === 0) {
+            const firstErr: any = results.find((r) => r.status === "rejected") as any;
+            const st = firstErr?.reason?.status;
+            const message = st === 429
+              ? "Rate limit exceeded — please wait a moment and try again."
+              : st === 402
+              ? "AI credits exhausted."
+              : st === 503
+              ? "The AI service is temporarily overloaded. Please try again in a minute."
+              : "IDA could not extract any fields. Try again or select different documents.";
+            finish({ error: message });
+            return;
+          }
+
+          finish({ proposal, filesUsed: usedFiles, scope, failedSections: failures });
+        } catch (e) {
+          console.error("ida-business-plan-extraction stream error", e);
+          finish({ error: e instanceof Error ? e.message : "Unknown" });
         }
-        // Deep-merge one level so overview.* and tam.*/sam.*/som.* coexist.
-        for (const k of Object.keys(value)) {
-          proposal[k] = { ...(proposal[k] || {}), ...(value[k] || {}) };
-        }
-      } else {
-        const err: any = r.reason;
-        console.error(`Section ${s} failed`, err);
-        failures.push(s);
-        if (err?.status === 429 || err?.status === 402) {
-          // bubble up rate-limit / credits errors when ALL sections failed
-        }
-      }
+      },
     });
 
-    if (Object.keys(proposal).length === 0) {
-      const firstErr: any = results.find((r) => r.status === "rejected") as any;
-      const st = firstErr?.reason?.status;
-      const status = st === 429 ? 429 : st === 402 ? 402 : st === 503 ? 503 : 500;
-      const message = status === 429
-        ? "Rate limit exceeded — please wait a moment and try again."
-        : status === 402
-        ? "AI credits exhausted."
-        : status === 503
-        ? "The AI service is temporarily overloaded. Please try again in a minute."
-        : "IDA could not extract any fields. Try again or select different documents.";
-      return new Response(JSON.stringify({ error: message }), {
-        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    return new Response(JSON.stringify({ proposal, filesUsed: usedFiles, scope, failedSections: failures }), {
+    return new Response(stream, {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     console.error("ida-business-plan-extraction error", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
