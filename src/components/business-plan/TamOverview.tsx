@@ -508,19 +508,6 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
           </div>
         )}
 
-        {/* Customers Found */}
-        {onSaveSam && (
-          <CustomersFoundTab
-            data={{
-              ...((strategicAnalyses?.sam || {}) as any),
-              customersFound:
-                (strategicAnalyses?.sam as any)?.customersFound ??
-                (strategicAnalyses?.tam as any)?.customersFound,
-            }}
-            onSave={onSaveSam}
-            readonly={readonly}
-          />
-        )}
 
 
         {/* Supporting Models Note */}
