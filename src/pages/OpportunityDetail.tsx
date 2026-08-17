@@ -185,6 +185,8 @@ export default function OpportunityDetail() {
       children: [
         { key: "som-overview", label: bp("Overview", "Übersicht") },
         { key: "som-competitor", label: bp("Competitors", "Wettbewerb") },
+        { key: "som-customers-found", label: bp("Customers Found", "Gefundene Kunden") },
+
         
         { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
         { key: "som-vpc", label: "VPC" },
