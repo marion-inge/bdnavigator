@@ -156,6 +156,8 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
               strategicAnalyses={saData}
               onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
+              onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
+
               opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
               solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
           </TabsContent>
