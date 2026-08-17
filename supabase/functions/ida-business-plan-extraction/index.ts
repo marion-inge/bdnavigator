@@ -686,8 +686,15 @@ serve(async (req) => {
 
     if (Object.keys(proposal).length === 0) {
       const firstErr: any = results.find((r) => r.status === "rejected") as any;
-      const status = firstErr?.reason?.status === 429 ? 429 : firstErr?.reason?.status === 402 ? 402 : 500;
-      const message = status === 429 ? "Rate limit exceeded." : status === 402 ? "AI credits exhausted." : "IDA could not extract any fields. Try again or select different documents.";
+      const st = firstErr?.reason?.status;
+      const status = st === 429 ? 429 : st === 402 ? 402 : st === 503 ? 503 : 500;
+      const message = status === 429
+        ? "Rate limit exceeded — please wait a moment and try again."
+        : status === 402
+        ? "AI credits exhausted."
+        : status === 503
+        ? "The AI service is temporarily overloaded. Please try again in a minute."
+        : "IDA could not extract any fields. Try again or select different documents.";
       return new Response(JSON.stringify({ error: message }), {
         status, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
