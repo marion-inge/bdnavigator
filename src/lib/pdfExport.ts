@@ -1141,9 +1141,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
     const sca = samO.salesChannelAnalysis;
     if (sca?.entries?.length) {
       y = addTable(doc, y, "Sales Channel Analysis",
-        ["Channel", "Type", "Reach", "Cost", "Segments", "Rating"],
-        sca.entries.map(c => [c.channelName, c.channelType, c.reach, c.costLevel, c.targetSegments, String(c.rating)]),
-        pw);
+        ["Channel", "Type", "Reach", "Cost", "Segments", "Rating", "Notes"],
+        sca.entries.map(c => [c.channelName, c.channelType, c.reach, c.costLevel, c.targetSegments, String(c.rating), c.notes || ""]),
+        pw, { 6: { cellWidth: 40 } });
+
       y = addLongText(doc, y, "Channel Strategy", sca.channelStrategy, pw);
       y = addLongText(doc, y, "Channel Mix", sca.channelMix, pw);
     }
