@@ -3,6 +3,8 @@ import autoTable from "jspdf-autotable";
 import { Opportunity, Scoring, calculateTotalScore, SCORING_WEIGHTS, STAGE_ORDER } from "./types";
 import { getQuestionsByCategory, ROUGH_SCORING_QUESTIONS } from "./roughScoringQuestions";
 import { loadAssessment, AIAssessmentResult, getRatingLabel } from "./aiAssessmentService";
+import { calculateYearData, calculateAccumulatedCashFlow, calculateNPV, calculatePaybackPeriod, calculateAverageROCE } from "./investmentCalculations";
+
 
 const STAGE_LABELS_EN: Record<string, string> = {
   idea: "Idea",
