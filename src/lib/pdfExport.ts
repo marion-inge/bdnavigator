@@ -99,10 +99,11 @@ function addKeyValue(doc: jsPDF, y: number, key: string, value: string): number 
   }
   doc.setFont("helvetica", "bold");
   doc.text(key + ":", 14, y);
+  const keyWidth = doc.getTextWidth(key + ":  ");
   doc.setFont("helvetica", "normal");
-  const keyWidth = doc.getTextWidth(key + ": ");
   doc.text(value || "—", 14 + keyWidth, y);
   return y + 6;
+
 }
 
 function ensureSpace(doc: jsPDF, y: number, needed: number): number {
