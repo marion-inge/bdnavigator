@@ -956,7 +956,108 @@ function addYearValues(doc: jsPDF, y: number, title: string, values: any[], unit
     values.map((v: any) => [String(v.year), fmt(v.value)]), pw);
 }
 
+function money(n: number | undefined | null): string {
+  if (n === undefined || n === null || isNaN(n as number)) return "—";
+  return Math.round(n).toLocaleString("en-US");
+}
+
+function pct(n: number | undefined | null, alreadyPct = false): string {
+  if (n === undefined || n === null || isNaN(n as number)) return "—";
+  return `${((alreadyPct ? n : n * 100)).toFixed(1)} %`;
+}
+
+/** Renders the full Business Case: summary metrics + investment calculation sheet. */
+function addBusinessCaseSections(doc: jsPDF, y: number, opp: Opportunity, pw: number): number {
+  const bc = opp.businessCase;
+  const ic = opp.investmentCase;
+  const hasBc = bc && (bc.investmentCost || bc.expectedRevenue || bc.roi || bc.npv || bc.paybackPeriod || bc.breakEvenMonths || hasText(bc.notes));
+  const hasIc = ic && ic.yearData?.length;
+  if (!hasBc && !hasIc) return y;
+
+  doc.addPage();
+  y = 20;
+  y = addSectionTitle(doc, y, "Business Case");
+
+  if (hasBc && bc) {
+    y = addTable(doc, y, "Summary Metrics", ["Metric", "Value"], [
+      ["Investment Cost (EUR)", money(bc.investmentCost)],
+      ["Expected Annual Revenue (EUR)", money(bc.expectedRevenue)],
+      ["ROI (%)", bc.roi ? bc.roi.toFixed(1) : "—"],
+      ["Break-Even (months)", bc.breakEvenMonths ? String(bc.breakEvenMonths) : "—"],
+      ["Payback Period (months)", bc.paybackPeriod ? String(bc.paybackPeriod) : "—"],
+      ["NPV (EUR)", money(bc.npv)],
+    ], pw, { 0: { cellWidth: 70, fontStyle: "bold" } });
+    y = addLongText(doc, y, "Business Case Notes", bc.notes || "", pw);
+  }
+
+  if (!hasIc || !ic) return y;
+
+  const p = ic.parameters;
+  const calcs = calculateYearData(p, ic.yearData);
+  const accumulated = calculateAccumulatedCashFlow(calcs);
+  const npv = calculateNPV(calcs, p.wacc);
+  const payback = calculatePaybackPeriod(calcs);
+  const avgRoce = calculateAverageROCE(calcs);
+
+  y = addTable(doc, y, "Key Results", ["Indicator", "Value"], [
+    ["NPV (EUR)", money(npv)],
+    ["Payback Period (years)", payback !== null ? payback.toFixed(1) : "not reached"],
+    ["Average ROCE", pct(avgRoce)],
+    ["Total Investment (EUR)", money(calcs.reduce((s, c) => s + c.totalInvestment, 0))],
+    ["Total R&D (EUR)", money(calcs.reduce((s, c) => s + c.totalRD, 0))],
+    ["Total Sales (EUR)", money(calcs.reduce((s, c) => s + c.sales, 0))],
+    ["Cumulative Cash Flow (EUR)", money(accumulated.length ? accumulated[accumulated.length - 1].accumulated : 0)],
+  ], pw, { 0: { cellWidth: 70, fontStyle: "bold" } });
+
+  y = addTable(doc, y, "Parameters", ["Parameter", "Value", "Parameter", "Value"], [
+    ["Project Start", String(p.projectStart), "Start of Operation", String(p.startOfOperation)],
+    ["Project Duration (years)", String(p.projectDuration), "Software Only", p.isSoftwareOnly ? "Yes" : "No"],
+    ["Market Size (EUR)", money(p.marketSize), "Market Growth Rate", pct(p.marketGrowthRate, true)],
+    ["Portfolio Coverage", pct(p.portfolioCoverage, true), "Visibility", pct(p.visibility, true)],
+    ["Visibility Growth Rate", pct(p.visibilityGrowthRate, true), "Hitrate", pct(p.hitrate, true)],
+    ["Selling Expenses", pct(p.sellingExpensesPct, true), "G&A Expenses", pct(p.gaExpensesPct, true)],
+    ["R&D Depreciation (years)", String(p.rdDepreciationYears), "Invest Depreciation (years)", String(p.investDepreciationYears)],
+    ["WACC", pct(p.wacc, true), "Inventory Days", String(p.inventoryDays)],
+    ["Receivable Days", String(p.receivableDays), "Payable Days", String(p.payableDays)],
+  ], pw, { 0: { fontStyle: "bold", fillColor: HEADER_BG }, 2: { fontStyle: "bold", fillColor: HEADER_BG } });
+
+  y = addTable(doc, y, "Yearly Inputs (EUR)",
+    ["Year", "Invest ext.", "Invest int.", "R&D ext.", "R&D int.", "Sales", "GM %", "Selling", "G&A", "Other"],
+    ic.yearData.map(d => [
+      String(d.year), money(d.investmentExternal), money(d.investmentInternal),
+      money(d.rdExternal), money(d.rdInternal), money(d.sales),
+      `${d.grossMarginPct}`, money(d.sellingExpenses), money(d.gaExpenses), money(d.otherExpenses),
+    ]), pw, { 0: { cellWidth: 13 } });
+
+  y = addTable(doc, y, "Profit & Loss (EUR)",
+    ["Year", "Sales", "COGS", "Gross Margin", "Depr. Invest", "Depr. R&D", "Selling", "G&A", "EBIT", "EBIT %"],
+    calcs.map(c => [
+      String(c.year), money(c.sales), money(c.cogs), money(c.grossMarginAbs),
+      money(c.investDepr), money(c.rdDepr), money(c.sellingExp), money(c.gaExp),
+      money(c.ebit), pct(c.ebitPct),
+    ]), pw, { 0: { cellWidth: 13 } });
+
+  y = addTable(doc, y, "Capital Employed & ROCE (EUR)",
+    ["Year", "Inventories", "Receivables", "Payables", "Working Capital", "Non-Current Assets", "Capital Employed", "ROCE"],
+    calcs.map(c => [
+      String(c.year), money(c.inventories), money(c.receivables), money(c.payables),
+      money(c.workingCapital), money(c.nonCurrentAssets), money(c.capitalEmployed), pct(c.roce),
+    ]), pw, { 0: { cellWidth: 13 } });
+
+  y = addTable(doc, y, "Cash Flow (EUR)",
+    ["Year", "EBIT", "Investment", "R&D", "Depreciation", "Δ Working Capital", "Annual Cash Flow", "Accumulated"],
+    calcs.map((c, i) => [
+      String(c.year), money(c.ebit), money(c.totalInvestment), money(c.totalRD),
+      money(c.investDepr + c.rdDepr), money(c.deltaWorkingCapital),
+      money(c.annualCashFlow), money(accumulated[i]?.accumulated),
+    ]), pw, { 0: { cellWidth: 13 } });
+
+  y = addLongText(doc, y, "Investment Case Notes", ic.notes || "", pw);
+  return y;
+}
+
 export async function exportBusinessPlanPdf(opp: Opportunity) {
+
   const doc = new jsPDF();
   const pw = doc.internal.pageSize.getWidth();
 
