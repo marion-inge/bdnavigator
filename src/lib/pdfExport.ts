@@ -1202,6 +1202,22 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Details", value: o.details },
     ], pw);
   }
+  if (bp?.commercialViability) {
+    const cv = bp.commercialViability;
+    y = addKeyValue(doc, y, "Commercial Viability Score", `${cv.score} / 5`);
+    y = addFieldGroup(doc, y, "Commercial Viability", [
+      { label: "Pricing Model", value: cv.pricingModel },
+      { label: "Unit Price (EUR)", value: cv.unitPrice ? fmt(cv.unitPrice) : "" },
+      { label: "Gross Margin (%)", value: cv.grossMargin ? fmt(cv.grossMargin) : "" },
+      { label: "Break-Even Units", value: cv.breakEvenUnits ? fmt(cv.breakEvenUnits) : "" },
+      { label: "Details", value: cv.details },
+    ], pw);
+    if (cv.projections?.some(p => p.revenue > 0 || p.costs > 0)) {
+      y = addTable(doc, y, "Revenue Projections", ["Year", "Revenue (EUR)", "Costs (EUR)", "Profit (EUR)"],
+        cv.projections.map(p => [String(p.year), fmt(p.revenue), fmt(p.costs), fmt(p.revenue - p.costs)]), pw);
+    }
+  }
+
   if (bp?.risk) {
     y = addKeyValue(doc, y, "Risk Score", `${bp.risk.score} / 5`);
     y = addLongText(doc, y, "Risk – Details", bp.risk.details, pw);
