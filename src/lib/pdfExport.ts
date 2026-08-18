@@ -1014,10 +1014,35 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
 
   // TAM projections from marketAttractiveness
   const ma = bp?.marketAttractiveness?.analysis;
+  if (bp?.marketAttractiveness) {
+    y = addKeyValue(doc, y, "Market Attractiveness Score", `${bp.marketAttractiveness.score} / 5`);
+  }
   if (ma) {
     y = addYearValues(doc, y, "TAM Projections", ma.tamProjections || [], "M EUR", pw);
-    y = addLongText(doc, y, "TAM Description", ma.tamDescription || "", pw);
+    y = addFieldGroup(doc, y, "Market Analysis", [
+      { label: "TAM", value: ma.tam },
+      { label: "TAM Description", value: ma.tamDescription },
+      { label: "SAM", value: ma.sam },
+      { label: "Market Growth Rate", value: ma.marketGrowthRate },
+      { label: "Target Customers", value: ma.targetCustomers },
+      { label: "Customer Relationship", value: ma.customerRelationship },
+      { label: "Competitors", value: ma.competitors },
+      { label: "Competitive Position", value: ma.competitivePosition },
+    ], pw);
+    if (ma.customerSegments?.length) {
+      y = addTable(doc, y, "Customer Segments (Market Analysis)", ["Segment", "Size", "Description"],
+        ma.customerSegments.map(s => [s.name, fmt(s.size), s.description]), pw);
+    }
+    if (ma.competitorEntries?.length) {
+      y = addTable(doc, y, "Competitor Entries", ["Competitor", "Market Share (%)", "Threat Level", "Dimension Ratings"],
+        ma.competitorEntries.map(c => [
+          c.name, fmt(c.marketShare), String(c.threatLevel ?? "—"),
+          (c.dimensionRatings || []).map(d => `${d.dimension}: ${d.score}${d.comment ? ` (${d.comment})` : ""}`).join("; "),
+        ]), pw, { 3: { cellWidth: 70 } });
+    }
+    y = addRegions(doc, y, "Market Analysis – Geographic Breakdown", ma.geographicalRegions || [], pw);
   }
+
 
   // TAM Models
   const tam = sa?.tam;
