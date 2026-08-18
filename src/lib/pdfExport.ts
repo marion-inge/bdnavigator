@@ -1408,6 +1408,11 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
     }
   }
 
+  // ═══ BUSINESS CASE ═══
+  y = addBusinessCaseSections(doc, y, opp, pw);
+
+
+
   // Footer
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
