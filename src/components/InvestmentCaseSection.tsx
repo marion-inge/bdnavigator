@@ -172,7 +172,7 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
       {!propReadonly && (
         <div className="flex items-center justify-between gap-2">
           {hasBpData && (
-            <Button variant="outline" size="sm" onClick={importFromBusinessPlan} disabled={!editing} className="gap-1.5 text-xs">
+            <Button variant="outline" size="sm" onClick={() => { setEditing(true); importFromBusinessPlan(); }} className="gap-1.5 text-xs">
               <Download className="h-3.5 w-3.5" />
               {bp("Import from Business Plan", "Aus Business Plan übernehmen")}
             </Button>
