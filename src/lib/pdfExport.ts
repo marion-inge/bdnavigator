@@ -1047,7 +1047,7 @@ function addBusinessCaseSections(doc: jsPDF, y: number, opp: Opportunity, pw: nu
     ]), pw, { 0: { cellWidth: 13 } });
 
   y = addTable(doc, y, "Cash Flow (EUR)",
-    ["Year", "EBIT", "Investment", "R&D", "Depreciation", "Δ Working Capital", "Annual Cash Flow", "Accumulated"],
+    ["Year", "EBIT", "Investment", "R&D", "Depreciation", "Change in Working Capital", "Annual Cash Flow", "Accumulated"],
     calcs.map((c, i) => [
       String(c.year), money(c.ebit), money(c.totalInvestment), money(c.totalRD),
       money(c.investDepr + c.rdDepr), money(c.deltaWorkingCapital),
