@@ -914,14 +914,14 @@ function addLongText(doc: jsPDF, y: number, label: string, text: string, pw: num
   return r.y + 3;
 }
 
-function addFieldGroup(doc: jsPDF, y: number, title: string, fields: Field[], pw: number): number {
-  const shown = fields.filter(f => hasText(f.value));
+function addFieldGroup(doc: jsPDF, y: number, title: string, fields: Field[], pw: number, always = false): number {
+  const shown = always ? fields : fields.filter(f => hasText(f.value));
   if (shown.length === 0) return y;
   y = ensureSpace(doc, y, 14);
   y = addSubSectionTitle(doc, y, title);
   autoTable(doc, {
     startY: y,
-    body: shown.map(f => [f.label, decodeHtmlEntities(String(f.value))]),
+    body: shown.map(f => [f.label, hasText(f.value) ? decodeHtmlEntities(String(f.value)) : "—"]),
     styles: { fontSize: 8.5, cellPadding: 2.5, valign: "top" },
     columnStyles: { 0: { cellWidth: 55, fontStyle: "bold", fillColor: HEADER_BG }, 1: { cellWidth: pw - 28 - 55 } },
     margin: { left: 14, right: 14 },
@@ -929,6 +929,7 @@ function addFieldGroup(doc: jsPDF, y: number, title: string, fields: Field[], pw
   });
   return (doc as any).lastAutoTable.finalY + 4;
 }
+
 
 function addTable(doc: jsPDF, y: number, title: string, head: string[], body: any[][], pw: number, colStyles?: any): number {
   if (body.length === 0) return y;
