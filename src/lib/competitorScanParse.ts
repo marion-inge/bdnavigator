@@ -90,101 +90,110 @@ export interface CompetitorScanData {
   assumptions: AssumptionRow[];
 }
 
-const num = (v: any): number | null => {
-  if (v === null || v === undefined || v === "") return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-};
-const str = (v: any) => (v === null || v === undefined ? "" : String(v).trim());
-
-function sheetRows(wb: XLSX.WorkBook, name: string): any[][] {
-  const ws = wb.Sheets[name];
-  if (!ws) return [];
-  return XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" }) as any[][];
-}
+import {
+  findSheetName, sheetRows, findHeaderRow, buildColMap, dataRows, cell, cellNum, str, num, norm,
+} from "./xlsxParseUtils";
 
 export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanData> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
 
-  // --- Competitor Database (headers at row 3, data from row 4). Watch marker at some row breaks it into shortlist vs watch pre-list.
-  const dbRows = sheetRows(wb, "Competitor Database");
+  const excluded = /assumption|watch|benchmark|share|win|trend|source|summary|methodolog|framework|cover|read\s*me/i;
+
+  // --- Competitor Database --------------------------------------------------
+  const dbSheet =
+    findSheetName(wb, [/competitor\s*database/i, /competitor/i, /longlist|shortlist/i, /database|db\b/i]) ||
+    wb.SheetNames.find((n) => !excluded.test(n));
+  const dbRows = sheetRows(wb, dbSheet);
+  const dbHdr = findHeaderRow(dbRows, [
+    "company", "competitor", "tier", "camp", "regions", "momentum", "discovery method", "overlap",
+  ]);
+  const dbMap = buildColMap(dbRows[dbHdr] || []);
   const competitors: CompetitorRow[] = [];
   let shortlistMode = true;
-  const headerIdx = dbRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "company");
-  if (headerIdx >= 0) {
-    for (let i = headerIdx + 1; i < dbRows.length; i++) {
-      const r = dbRows[i];
-      const first = str(r[0]);
-      if (!first) continue;
-      if (/watch list/i.test(first)) { shortlistMode = false; continue; }
-      competitors.push({
-        company: first,
-        camp: str(r[1]),
-        tier: str(r[2]).replace(/\s*\(.*\)/, "").trim(),
-        tierConfidence: str(r[3]),
-        O: num(r[4]),
-        P: num(r[5]),
-        E: num(r[6]),
-        shortlistScore: num(r[7]),
-        shortlistDecision: str(r[8]),
-        hq: str(r[9]),
-        ownership: str(r[10]),
-        regions: str(r[11]),
-        momentum: str(r[12]),
-        discoveryMethod: str(r[13]),
-        assumptionIds: str(r[14]),
-        overlap: str(r[15]),
-        source: str(r[16]),
-        isShortlist: shortlistMode,
-      });
-    }
+  for (const r of dataRows(dbRows, dbHdr)) {
+    const company = cell(r, dbMap, ["company", "competitor", "name", "organisation", "organization"]) || str(r[0]);
+    if (!company) continue;
+    if (/watch\s*list/i.test(company)) { shortlistMode = false; continue; }
+    if (/^(company|competitor|name)$/i.test(company)) continue;
+    const decision = cell(r, dbMap, ["shortlist decision", "decision", "status"]);
+    competitors.push({
+      company,
+      camp: cell(r, dbMap, ["camp", "group", "category", "archetype"]),
+      tier: cell(r, dbMap, ["competitor tier", "tier"]).replace(/\s*\(.*\)/, "").trim(),
+      tierConfidence: cell(r, dbMap, ["tier confidence", "confidence"]),
+      O: cellNum(r, dbMap, ["offering overlap", "overlap score", "o score", "o"]),
+      P: cellNum(r, dbMap, ["market presence", "presence", "p score", "p"]),
+      E: cellNum(r, dbMap, ["encounter evidence", "encounter", "e score", "e"]),
+      shortlistScore: cellNum(r, dbMap, ["shortlist score", "score", "total"]),
+      shortlistDecision: decision,
+      hq: cell(r, dbMap, ["hq", "headquarters", "country"]),
+      ownership: cell(r, dbMap, ["ownership", "owner"]),
+      regions: cell(r, dbMap, ["regions", "region", "geography"]),
+      momentum: cell(r, dbMap, ["momentum", "trend"]),
+      discoveryMethod: cell(r, dbMap, ["discovery method", "discovery"]),
+      assumptionIds: cell(r, dbMap, ["assumption ids", "assumption id", "assumptions"]),
+      overlap: cell(r, dbMap, ["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
+      source: cell(r, dbMap, ["source", "sources", "evidence"]),
+      isShortlist: shortlistMode && !/watch|excluded/i.test(decision),
+    });
   }
 
-  // --- Watch List sheet
-  const watchRows = sheetRows(wb, "Watch List");
-  const watchHdr = watchRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "company");
-  const watch: WatchRow[] = [];
-  if (watchHdr >= 0) {
-    for (let i = watchHdr + 1; i < watchRows.length; i++) {
-      const r = watchRows[i];
-      if (!str(r[0])) continue;
-      watch.push({
-        company: str(r[0]),
-        camp: str(r[1]),
-        O: num(r[2]),
-        P: num(r[3]),
-        E: num(r[4]),
-        reason: str(r[5]),
-      });
-    }
-  }
+  // --- Watch List -----------------------------------------------------------
+  const watchRows = sheetRows(wb, findSheetName(wb, [/watch/i]));
+  const watchHdr = findHeaderRow(watchRows, ["company", "camp", "reason", "o", "p", "e"]);
+  const watchMap = buildColMap(watchRows[watchHdr] || []);
+  const watch: WatchRow[] = dataRows(watchRows, watchHdr)
+    .map((r) => ({
+      company: cell(r, watchMap, ["company", "competitor", "name"]),
+      camp: cell(r, watchMap, ["camp", "group", "category"]),
+      O: cellNum(r, watchMap, ["offering overlap", "o"]),
+      P: cellNum(r, watchMap, ["market presence", "p"]),
+      E: cellNum(r, watchMap, ["encounter evidence", "e"]),
+      reason: cell(r, watchMap, ["reason", "why watched", "rationale", "note"]),
+    }))
+    .filter((r) => r.company && !/^company$/i.test(r.company));
 
-  // --- Benchmarking Matrix
-  const bmRows = sheetRows(wb, "Benchmarking Matrix");
-  const bmHdrIdx = bmRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "criterion");
+  // --- Benchmarking Matrix --------------------------------------------------
+  const bmRows = sheetRows(wb, findSheetName(wb, [/benchmark/i, /matrix/i]));
+  const bmHdrIdx = findHeaderRow(bmRows, ["criterion", "criteria", "category"]);
   let bmCompetitors: string[] = [];
   const criteria: BenchmarkCriterion[] = [];
   if (bmHdrIdx >= 0) {
-    const hdr = bmRows[bmHdrIdx];
-    // columns 0=Criterion, 1=Category, 2=AVL ref, 3.. = competitors
-    bmCompetitors = hdr.slice(3).map(str).filter(Boolean);
-    for (let i = bmHdrIdx + 1; i < bmRows.length; i++) {
-      const r = bmRows[i];
-      const criterion = str(r[0]);
+    const hdr = (bmRows[bmHdrIdx] || []).map(str);
+    const meta = new Set(["criterion", "criteria", "category", "weight", "notes"]);
+    const isRef = (h: string) => /ref|client|our|baseline/i.test(h);
+    const compCols: { name: string; idx: number }[] = [];
+    let refIdx = -1;
+    hdr.forEach((h, i) => {
+      const n = norm(h);
+      if (!h) return;
+      if (meta.has(n)) return;
+      if (refIdx < 0 && isRef(h)) { refIdx = i; return; }
+      compCols.push({ name: h, idx: i });
+    });
+    bmCompetitors = compCols.map((c) => c.name);
+    const critIdx = hdr.findIndex((h) => /criteri/i.test(h));
+    const catIdx = hdr.findIndex((h) => /categor/i.test(h));
+    for (const r of dataRows(bmRows, bmHdrIdx)) {
+      const criterion = str(r[critIdx >= 0 ? critIdx : 0]);
       if (!criterion) continue;
       const scores: Record<string, string> = {};
-      bmCompetitors.forEach((c, idx) => { scores[c] = str(r[3 + idx]); });
-      criteria.push({ criterion, category: str(r[1]), ref: str(r[2]), scores });
+      compCols.forEach((c) => { scores[c.name] = str(r[c.idx]); });
+      criteria.push({
+        criterion,
+        category: catIdx >= 0 ? str(r[catIdx]) : "",
+        ref: refIdx >= 0 ? str(r[refIdx]) : "",
+        scores,
+      });
     }
   }
 
-  // --- Market Share
-  const msRows = sheetRows(wb, "Market Share Model");
+  // --- Market Share ---------------------------------------------------------
+  const msRows = sheetRows(wb, findSheetName(wb, [/market\s*share/i, /share/i]));
   const marketShareContext: { label: string; value: string }[] = [];
   const marketShare: MarketShareRow[] = [];
-  const msHdrIdx = msRows.findIndex((r) => /competitor\s*\/\s*group/i.test(String(r?.[0] ?? "")));
-  // context = rows before header where col A is a label and col B is text
+  const msHdrIdx = findHeaderRow(msRows, ["competitor", "share", "method", "confidence"]);
   for (let i = 0; i < (msHdrIdx >= 0 ? msHdrIdx : msRows.length); i++) {
     const label = str(msRows[i]?.[0]); const val = str(msRows[i]?.[1]);
     if (label && val && !/shares stated/i.test(label) && !/market share/i.test(label)) {
@@ -192,9 +201,9 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
     }
   }
   if (msHdrIdx >= 0) {
-    for (let i = msHdrIdx + 1; i < msRows.length; i++) {
-      const r = msRows[i];
-      const comp = str(r[0]);
+    const msMap = buildColMap(msRows[msHdrIdx] || []);
+    for (const r of dataRows(msRows, msHdrIdx)) {
+      const comp = cell(r, msMap, ["competitor", "competitor group", "company", "player"]) || str(r[0]);
       if (!comp) continue;
       if (/reconciliation/i.test(comp)) {
         marketShareContext.push({ label: comp, value: str(r[1]) });
@@ -202,73 +211,66 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
       }
       marketShare.push({
         competitor: comp,
-        share: str(r[1]),
-        method: str(r[2]),
-        confidence: str(r[3]),
-        basis: str(r[4]),
+        share: cell(r, msMap, ["share", "share range", "estimate"]),
+        method: cell(r, msMap, ["method", "method tag"]),
+        confidence: cell(r, msMap, ["confidence"]),
+        basis: cell(r, msMap, ["basis", "evidence", "source", "note"]),
       });
     }
   }
 
-  // --- Win-Rate Modifiers
-  const wrRows = sheetRows(wb, "Win-Rate Modifiers");
-  const wrHdr = wrRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "segment");
-  const winRate: WinRateRow[] = [];
-  if (wrHdr >= 0) {
-    for (let i = wrHdr + 1; i < wrRows.length; i++) {
-      const r = wrRows[i];
-      const seg = str(r[0]);
-      if (!seg || /^note$/i.test(seg)) continue;
-      winRate.push({
-        segment: seg,
-        region: str(r[1]),
-        density: str(r[2]),
-        gaining: str(r[3]),
-        modifier: num(r[4]) ?? str(r[4]),
-        confidence: str(r[5]),
-        basis: str(r[6]),
-      });
-    }
-  }
+  // --- Win-Rate Modifiers ---------------------------------------------------
+  const wrRows = sheetRows(wb, findSheetName(wb, [/win\s*-?\s*rate/i, /modifier/i]));
+  const wrHdr = findHeaderRow(wrRows, ["segment", "region", "density", "modifier"]);
+  const wrMap = buildColMap(wrRows[wrHdr] || []);
+  const winRate: WinRateRow[] = dataRows(wrRows, wrHdr)
+    .map((r) => ({
+      segment: cell(r, wrMap, ["segment"]),
+      region: cell(r, wrMap, ["region", "geography"]),
+      density: cell(r, wrMap, ["density", "competitive density"]),
+      gaining: cell(r, wrMap, ["gaining", "gaining competitor", "momentum"]),
+      modifier: cellNum(r, wrMap, ["modifier", "win rate modifier"]) ?? cell(r, wrMap, ["modifier"]),
+      confidence: cell(r, wrMap, ["confidence"]),
+      basis: cell(r, wrMap, ["basis", "rationale", "note", "assumption"]),
+    }))
+    .filter((r) => r.segment && !/^note$/i.test(r.segment));
 
-  // --- Trends
-  const trRows = sheetRows(wb, "Trends & Signals");
-  const trHdr = trRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "competitor");
+  // --- Trends ---------------------------------------------------------------
+  const trRows = sheetRows(wb, findSheetName(wb, [/trend/i, /signal/i]));
+  const trHdr = findHeaderRow(trRows, ["competitor", "momentum", "direction", "signal"]);
+  const trMap = buildColMap(trRows[trHdr] || []);
   const trends: TrendRow[] = [];
   const convergent: ConvergentTrend[] = [];
   let convergentMode = false;
-  if (trHdr >= 0) {
-    for (let i = trHdr + 1; i < trRows.length; i++) {
-      const r = trRows[i];
-      const a = str(r[0]);
-      if (!a) continue;
-      if (/convergent trends/i.test(a)) { convergentMode = true; continue; }
-      if (convergentMode) {
-        convergent.push({ trend: a, detail: str(r[1]) });
-      } else {
-        trends.push({ competitor: a, momentum: str(r[1]), direction: str(r[2]) });
-      }
-    }
-  }
-
-  // --- Assumptions
-  const asRows = sheetRows(wb, "Assumptions");
-  const asHdr = asRows.findIndex((r) => String(r?.[0] ?? "").toLowerCase() === "id");
-  const assumptions: AssumptionRow[] = [];
-  if (asHdr >= 0) {
-    for (let i = asHdr + 1; i < asRows.length; i++) {
-      const r = asRows[i];
-      if (!str(r[0])) continue;
-      assumptions.push({
-        id: str(r[0]),
-        area: str(r[1]),
-        assumption: str(r[2]),
-        basis: str(r[3]),
-        confidence: str(r[4]),
-        impact: str(r[5]),
+  for (const r of dataRows(trRows, trHdr)) {
+    const a = cell(r, trMap, ["competitor", "company", "trend"]) || str(r[0]);
+    if (!a) continue;
+    if (/convergent trends/i.test(a)) { convergentMode = true; continue; }
+    if (convergentMode) {
+      convergent.push({ trend: a, detail: str(r[1]) });
+    } else {
+      trends.push({
+        competitor: a,
+        momentum: cell(r, trMap, ["momentum"]) || str(r[1]),
+        direction: cell(r, trMap, ["direction", "strategic direction", "signal"]) || str(r[2]),
       });
     }
   }
+
+  // --- Assumptions ----------------------------------------------------------
+  const asRows = sheetRows(wb, findSheetName(wb, [/assumption/i]));
+  const asHdr = findHeaderRow(asRows, ["id", "area", "assumption", "basis", "confidence", "impact"]);
+  const asMap = buildColMap(asRows[asHdr] || []);
+  const assumptions: AssumptionRow[] = dataRows(asRows, asHdr)
+    .map((r) => ({
+      id: cell(r, asMap, ["id", "assumption id"]),
+      area: cell(r, asMap, ["area", "topic"]),
+      assumption: cell(r, asMap, ["assumption", "description"]),
+      basis: cell(r, asMap, ["basis", "evidence", "rationale"]),
+      confidence: cell(r, asMap, ["confidence"]),
+      impact: cell(r, asMap, ["impact", "affects"]),
+    }))
+    .filter((r) => r.id || r.assumption);
 
   return {
     competitors,
@@ -282,3 +284,4 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
     assumptions,
   };
 }
+

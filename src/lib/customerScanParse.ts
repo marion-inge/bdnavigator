@@ -1,5 +1,8 @@
 import * as XLSX from "xlsx";
 import JSZip from "jszip";
+import {
+  findSheetName, sheetRows, findHeaderRow, buildColMap, dataRows, cell, str,
+} from "./xlsxParseUtils";
 
 export interface CustomerRow {
   company: string;
@@ -39,86 +42,96 @@ export interface CustomerScanXlsxData {
   summarySheet: string[];
 }
 
-const norm = (s: string) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
-
-function pickCol(row: any, keys: string[]): string {
-  for (const k of Object.keys(row)) {
-    if (keys.includes(norm(k))) return String(row[k] ?? "").trim();
-  }
-  return "";
-}
-
 export async function parseCustomerXlsx(file: Blob): Promise<CustomerScanXlsxData> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
 
-  const findSheet = (rx: RegExp) => wb.SheetNames.find((n) => rx.test(n));
+  const excluded = /summary|methodology|watch|criteria|assumption|cross|source|glossar|cover|read\s*me/i;
 
   const customerSheet =
-    findSheet(/customer\s*database|customers?/i) || wb.SheetNames.find((n) => !/summary|methodology|watch|criteria|assumption|cross/i.test(n));
-  const assumpSheet = findSheet(/assumption/i);
-  const watchSheet = findSheet(/watch/i);
-  const summarySheet = findSheet(/summary/i);
+    findSheetName(wb, [
+      /customer\s*database/i,
+      /customer/i,
+      /compan(y|ies)/i,
+      /account/i,
+      /database|db\b/i,
+    ]) || wb.SheetNames.find((n) => !excluded.test(n));
 
-  const customers: CustomerRow[] = customerSheet
-    ? (XLSX.utils.sheet_to_json(wb.Sheets[customerSheet], { defval: "" }) as any[])
-        .map((r) => ({
-          company: pickCol(r, ["company", "companyname", "name"]),
-          segment: pickCol(r, ["segment"]),
-          region: pickCol(r, ["region", "geography"]),
-          country: pickCol(r, ["country"]),
-          tier: (pickCol(r, ["customerfittier", "tier", "fittier"]).toUpperCase().charAt(0) || ""),
-          tierConfidence: pickCol(r, ["tierconfidence", "confidence"]),
-          industryFitTier: pickCol(r, ["industryfittier"]),
-          valueChainLayer: pickCol(r, ["valuechainlayer", "layer"]),
-          subRoleBuyerType: pickCol(r, ["subrolebuyertype", "subrole", "buyertype"]),
-          portfolioFit: pickCol(r, ["portfoliofit"]),
-          knownProjects: pickCol(r, ["knownprojectsactivityrecency", "knownprojects", "projects"]),
-          productRelevance: pickCol(r, ["productrelevance"]),
-          crossSell: pickCol(r, ["c8clientcrosssell", "crosssell"]),
-          assumptionIds: pickCol(r, ["assumptionids"]),
-          discoveryMethod: pickCol(r, ["discoverymethod"]),
-          sellTo: pickCol(r, ["sellto"]),
-          tierRationale: pickCol(r, ["tierrationalechain", "tierrationale", "rationale"]),
-          caveats: pickCol(r, ["caveats"]),
-          source: pickCol(r, ["sourceevidencetierrecency", "source", "sources"]),
-        }))
-        .filter((r) => r.company)
-    : [];
+  const assumpSheet = findSheetName(wb, [/assumption/i]);
+  const watchSheet = findSheetName(wb, [/watch/i]);
+  const summarySheet = findSheetName(wb, [/summary|executive|overview/i]);
 
-  const assumptions: AssumptionRow[] = assumpSheet
-    ? (XLSX.utils.sheet_to_json(wb.Sheets[assumpSheet], { defval: "" }) as any[])
-        .map((r) => ({
-          id: pickCol(r, ["id"]),
-          area: pickCol(r, ["area"]),
-          assumption: pickCol(r, ["assumption"]),
-          basis: pickCol(r, ["basisevidencerationale", "basis"]),
-          confidence: pickCol(r, ["confidence57", "confidence"]),
-          impact: pickCol(r, ["impactwhatitaffects", "impact"]),
-        }))
-        .filter((r) => r.id || r.assumption)
-    : [];
+  // ---- Customers -----------------------------------------------------------
+  const custRows = sheetRows(wb, customerSheet);
+  const custHdr = findHeaderRow(custRows, [
+    "company", "customer", "segment", "region", "country", "tier", "discovery method",
+  ]);
+  const custMap = buildColMap(custRows[custHdr] || []);
 
-  const watchList = watchSheet
-    ? (XLSX.utils.sheet_to_json(wb.Sheets[watchSheet], { defval: "" }) as any[])
-        .map((r) => ({
-          tier: pickCol(r, ["tier"]),
-          company: pickCol(r, ["company"]),
-          type: pickCol(r, ["type"]),
-          role: pickCol(r, ["roleinecosystemwhywatched", "role"]),
-          source: pickCol(r, ["source", "sources"]),
-        }))
-        .filter((r) => r.company)
-    : [];
+  const customers: CustomerRow[] = dataRows(custRows, custHdr)
+    .map((r) => {
+      const tierRaw = cell(r, custMap, ["customer fit tier", "customerfittier", "fit tier", "tier"]);
+      return {
+        company: cell(r, custMap, ["company", "company name", "customer", "name", "organisation", "organization", "account"]),
+        segment: cell(r, custMap, ["segment", "sub segment", "industry"]),
+        region: cell(r, custMap, ["region", "geography", "geo"]),
+        country: cell(r, custMap, ["country", "hq country", "location"]),
+        tier: (tierRaw.toUpperCase().replace(/[^A-E]/g, "").charAt(0) || ""),
+        tierConfidence: cell(r, custMap, ["tier confidence", "confidence"]),
+        industryFitTier: cell(r, custMap, ["industry fit tier", "industryfittier"]),
+        valueChainLayer: cell(r, custMap, ["value chain layer", "layer"]),
+        subRoleBuyerType: cell(r, custMap, ["sub role buyer type", "sub role", "buyer type", "role"]),
+        portfolioFit: cell(r, custMap, ["portfolio fit"]),
+        knownProjects: cell(r, custMap, ["known projects", "projects", "activity"]),
+        productRelevance: cell(r, custMap, ["product relevance", "relevance", "use case"]),
+        crossSell: cell(r, custMap, ["cross sell", "c8 client cross sell", "client usage"]),
+        assumptionIds: cell(r, custMap, ["assumption ids", "assumption id", "assumptions"]),
+        discoveryMethod: cell(r, custMap, ["discovery method", "discovery"]),
+        sellTo: cell(r, custMap, ["sell to", "what to sell", "offering"]),
+        tierRationale: cell(r, custMap, ["tier rationale", "rationale", "reasoning"]),
+        caveats: cell(r, custMap, ["caveat", "caveats", "risk"]),
+        source: cell(r, custMap, ["source", "sources", "evidence"]),
+      };
+    })
+    .filter((r) => r.company && !/^(company|customer|name)$/i.test(r.company));
 
-  const summaryRows = summarySheet
-    ? (XLSX.utils.sheet_to_json(wb.Sheets[summarySheet], { header: 1, defval: "" }) as any[][])
-        .map((r) => r.filter(Boolean).join("  "))
-        .filter(Boolean)
-    : [];
+  // ---- Assumptions ---------------------------------------------------------
+  const asRows = sheetRows(wb, assumpSheet);
+  const asHdr = findHeaderRow(asRows, ["id", "area", "assumption", "basis", "confidence", "impact"]);
+  const asMap = buildColMap(asRows[asHdr] || []);
+  const assumptions: AssumptionRow[] = dataRows(asRows, asHdr)
+    .map((r) => ({
+      id: cell(r, asMap, ["id", "assumption id"]),
+      area: cell(r, asMap, ["area", "topic"]),
+      assumption: cell(r, asMap, ["assumption", "description"]),
+      basis: cell(r, asMap, ["basis", "evidence", "rationale"]),
+      confidence: cell(r, asMap, ["confidence"]),
+      impact: cell(r, asMap, ["impact", "affects"]),
+    }))
+    .filter((r) => r.id || r.assumption);
+
+  // ---- Watch list ----------------------------------------------------------
+  const wRows = sheetRows(wb, watchSheet);
+  const wHdr = findHeaderRow(wRows, ["company", "tier", "type", "role", "source"]);
+  const wMap = buildColMap(wRows[wHdr] || []);
+  const watchList = dataRows(wRows, wHdr)
+    .map((r) => ({
+      tier: cell(r, wMap, ["tier"]),
+      company: cell(r, wMap, ["company", "name", "organisation", "organization"]),
+      type: cell(r, wMap, ["type", "category"]),
+      role: cell(r, wMap, ["role", "why watched", "reason"]),
+      source: cell(r, wMap, ["source", "sources"]),
+    }))
+    .filter((r) => r.company);
+
+  // ---- Summary -------------------------------------------------------------
+  const summaryRows = sheetRows(wb, summarySheet)
+    .map((r) => r.map(str).filter(Boolean).join("  "))
+    .filter(Boolean);
 
   return { customers, assumptions, watchList, summarySheet: summaryRows };
 }
+
 
 // --------------------------------------------------------------------------
 // DOCX text extraction: pulls headings + paragraphs from word/document.xml
