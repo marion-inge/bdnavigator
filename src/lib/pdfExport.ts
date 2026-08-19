@@ -1587,21 +1587,7 @@ async function addBusinessPlanBody(doc: jsPDF, opp: Opportunity, startY: number,
   // ═══ CHARTS ═══
   y = await addChartsSection(doc, y, opp, pw);
 
-
-
-
-  // Footer
-  const pageCount = doc.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text(
-      `NOVI – Business Plan – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
-      pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
-    );
-  }
-
-  doc.save(`${opp.title.replace(/[^a-zA-Z0-9 ]/g, "_")}_BusinessPlan.pdf`);
+  return y;
 }
+
 
