@@ -4,6 +4,7 @@ import { Opportunity, Scoring, calculateTotalScore, SCORING_WEIGHTS, STAGE_ORDER
 import { getQuestionsByCategory, ROUGH_SCORING_QUESTIONS } from "./roughScoringQuestions";
 import { loadAssessment, AIAssessmentResult, getRatingLabel } from "./aiAssessmentService";
 import { calculateYearData, calculateAccumulatedCashFlow, calculateNPV, calculatePaybackPeriod, calculateAverageROCE } from "./investmentCalculations";
+import { buildBusinessPlanCharts, type PdfChart } from "./pdfCharts";
 
 
 const STAGE_LABELS_EN: Record<string, string> = {
