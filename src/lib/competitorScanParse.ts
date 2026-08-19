@@ -195,6 +195,49 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
     competitors.push(row);
   }
 
+  // --- Optional "Competitor Profiles" sheet: merge extra detail by company ----
+  const profSheet = findSheetName(wb, [/profile/i]);
+  if (profSheet && profSheet !== dbSheet) {
+    const pRows = sheetRows(wb, profSheet);
+    const pHdr = findHeaderRow(pRows, ["company", "competitor", "description", "strengths", "offering"]);
+    if (pHdr >= 0) {
+      const pMap = buildColMap(pRows[pHdr] || []);
+      const pHeader = (pRows[pHdr] || []).map(str);
+      const nameIdx = colIndex(pMap, ["company", "competitor", "name"]);
+      for (const r of dataRows(pRows, pHdr)) {
+        const name = str(r[nameIdx >= 0 ? nameIdx : 0]);
+        if (!name) continue;
+        const target = competitors.find((c) => norm(c.company) === norm(name));
+        if (!target) continue;
+        const assign = (key: keyof CompetitorRow, aliases: string[]) => {
+          const v = cell(r, pMap, aliases);
+          if (v && !target[key]) (target as any)[key] = v;
+        };
+        assign("description", ["description", "profile", "summary", "about"]);
+        assign("offering", ["offering", "products", "solutions"]);
+        assign("strengths", ["strengths", "strength"]);
+        assign("weaknesses", ["weaknesses", "weakness", "gaps"]);
+        assign("differentiation", ["differentiation", "usp", "positioning"]);
+        assign("pricing", ["pricing", "price"]);
+        assign("businessModel", ["business model", "revenue model"]);
+        assign("revenue", ["revenue", "turnover"]);
+        assign("employees", ["employees", "headcount"]);
+        assign("founded", ["founded", "established"]);
+        assign("website", ["website", "url"]);
+        assign("references", ["reference customers", "references", "installed base"]);
+        assign("strategySignals", ["strategy signals", "signals", "strategy"]);
+        assign("notes", ["notes", "comment"]);
+        pHeader.forEach((h, i) => {
+          const v = str(r[i]);
+          if (!h || !v || i === nameIdx) return;
+          const already = target.extra.some((e) => norm(e.label) === norm(h))
+            || Object.values(target).some((val) => typeof val === "string" && val === v);
+          if (!already) target.extra.push({ label: h, value: v });
+        });
+      }
+    }
+  }
+
 
   // --- Watch List -----------------------------------------------------------
   const watchRows = sheetRows(wb, findSheetName(wb, [/watch/i]));
