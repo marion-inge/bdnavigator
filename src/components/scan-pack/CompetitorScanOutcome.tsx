@@ -7,12 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from "recharts";
-import { Loader2, RefreshCw, Swords, TrendingUp, TrendingDown, Minus, Target } from "lucide-react";
+import { Loader2, RefreshCw, Swords, TrendingUp, TrendingDown, Minus, Target, ChevronDown, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import type { ScanFileMeta } from "@/lib/scanPackTypes";
-import { parseCompetitorXlsx, CompetitorScanData } from "@/lib/competitorScanParse";
+import { parseCompetitorXlsx, CompetitorScanData, CompetitorRow } from "@/lib/competitorScanParse";
+
 import { parseCustomerDocx, DocxSection } from "@/lib/customerScanParse";
 
 const BUCKET = "scan-deliverables";
