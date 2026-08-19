@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -353,8 +353,8 @@ function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
               const key = `${c.company}-${i}`;
               const isOpen = open === key;
               return (
-                <>
-                  <TableRow key={key} className="cursor-pointer" onClick={() => setOpen(isOpen ? null : key)}>
+                <Fragment key={key}>
+                  <TableRow className="cursor-pointer" onClick={() => setOpen(isOpen ? null : key)}>
                     <TableCell className="text-muted-foreground">
                       {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
                     </TableCell>
@@ -384,13 +384,13 @@ function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
                     <TableCell className="text-xs text-muted-foreground whitespace-normal max-w-[360px]">{c.overlap}</TableCell>
                   </TableRow>
                   {isOpen && (
-                    <TableRow key={`${key}-detail`} className="hover:bg-transparent">
+                    <TableRow className="hover:bg-transparent">
                       <TableCell colSpan={10} className="bg-muted/40 p-3">
                         <CompetitorDetail c={c} L={L} />
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               );
             })}
           </TableBody>
