@@ -133,7 +133,7 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
       momentum: cell(r, dbMap, ["momentum", "trend"]),
       discoveryMethod: cell(r, dbMap, ["discovery method", "discovery"]),
       assumptionIds: cell(r, dbMap, ["assumption ids", "assumption id", "assumptions"]),
-      overlap: cell(r, dbMap, ["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"]),
+      overlap: cell(r, dbMap, ["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
       source: cell(r, dbMap, ["source", "sources", "evidence"]),
       isShortlist: shortlistMode && !/watch|excluded/i.test(decision),
     });

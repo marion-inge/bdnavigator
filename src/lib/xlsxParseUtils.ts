@@ -80,9 +80,18 @@ export function colIndex(map: ColMap, aliases: string[]): number {
   return -1;
 }
 
+/** Exact-only column resolution (no fuzzy fallback). */
+export function exactIndex(map: ColMap, aliases: string[]): number {
+  for (const a of aliases) {
+    const n = norm(a);
+    if (n && n in map) return map[n];
+  }
+  return -1;
+}
+
 /** Read a cell from a row by column aliases. */
-export function cell(row: any[], map: ColMap, aliases: string[]): string {
-  const i = colIndex(map, aliases);
+export function cell(row: any[], map: ColMap, aliases: string[], strict = false): string {
+  const i = strict ? exactIndex(map, aliases) : colIndex(map, aliases);
   return i >= 0 ? str(row[i]) : "";
 }
 
