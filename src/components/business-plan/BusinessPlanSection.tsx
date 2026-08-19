@@ -22,13 +22,11 @@ import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, Embedd
 import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
-import { Globe, Target, TrendingUp, BarChart3, FileDown } from "lucide-react";
+import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import idaRobot from "@/assets/ida-robot.png";
 import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
 import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
-import { exportBusinessPlanPdf } from "@/lib/pdfExport";
-import { useStore } from "@/lib/store";
 
 
 export type StrategicAnalysisTab = string;
