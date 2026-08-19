@@ -2,16 +2,19 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import {
   AreaChart, Area, BarChart, Bar, ComposedChart, Line, XAxis, YAxis,
-  CartesianGrid, Legend, ReferenceLine, Cell,
+  CartesianGrid, ReferenceLine, Cell,
 } from "recharts";
 import type { Opportunity } from "./types";
 import { calculateYearData, calculateAccumulatedCashFlow } from "./investmentCalculations";
+
+export interface PdfChartLegend { label: string; color: string; }
 
 export interface PdfChart {
   title: string;
   dataUrl: string;
   width: number;
   height: number;
+  legend?: PdfChartLegend[];
 }
 
 const AXIS = { fontSize: 11, fill: "#475569" } as const;
@@ -85,9 +88,9 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
   const charts: PdfChart[] = [];
   const bp: any = opp.businessPlan;
   const ma: any = bp?.marketAttractiveness?.analysis;
-  const push = async (title: string, node: React.ReactElement, h = 300) => {
+  const push = async (title: string, node: React.ReactElement, h = 300, legend?: PdfChartLegend[]) => {
     const dataUrl = await rasterize(node, W, h);
-    if (dataUrl) charts.push({ title, dataUrl, width: W, height: h });
+    if (dataUrl) charts.push({ title, dataUrl, width: W, height: h, legend });
   };
 
   const tamProj: any[] = ma?.tamProjections || [];
@@ -107,12 +110,13 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
         <XAxis dataKey="year" tick={AXIS} />
         <YAxis tick={AXIS} />
-        <Legend />
         <Area isAnimationActive={false} type="monotone" dataKey="TAM" stroke={BLUE} fill={BLUE} fillOpacity={0.15} strokeWidth={2} />
         <Area isAnimationActive={false} type="monotone" dataKey="SAM" stroke={GREEN} fill={GREEN} fillOpacity={0.2} strokeWidth={2} />
         <Area isAnimationActive={false} type="monotone" dataKey="SOM" stroke={AMBER} fill={AMBER} fillOpacity={0.3} strokeWidth={2} />
       </AreaChart>
-    ), 320);
+    ), 320, [
+      { label: "TAM", color: BLUE }, { label: "SAM", color: GREEN }, { label: "SOM", color: AMBER },
+    ]);
   }
 
   // 2-4. Individual projections
@@ -150,12 +154,13 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
         <XAxis type="number" domain={[0, 5]} tick={AXIS} />
         <YAxis type="category" dataKey="region" width={150} tick={AXIS} />
-        <Legend />
         <Bar isAnimationActive={false} dataKey="TAM" fill={BLUE} />
         <Bar isAnimationActive={false} dataKey="SAM" fill={GREEN} />
         <Bar isAnimationActive={false} dataKey="SOM" fill={AMBER} />
       </BarChart>
-    ), h);
+    ), h, [
+      { label: "TAM", color: BLUE }, { label: "SAM", color: GREEN }, { label: "SOM", color: AMBER },
+    ]);
   }
 
   // 6. Revenue vs. Costs (commercial viability)
@@ -172,12 +177,13 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
         <XAxis dataKey="year" tick={AXIS} />
         <YAxis tick={AXIS} />
-        <Legend />
         <Bar isAnimationActive={false} dataKey="Revenue" fill={GREEN} />
         <Bar isAnimationActive={false} dataKey="Costs" fill={RED} />
         <Line isAnimationActive={false} type="monotone" dataKey="Margin" stroke={BLUE} strokeWidth={2} dot={false} />
       </ComposedChart>
-    ), 300);
+    ), 300, [
+      { label: "Revenue", color: GREEN }, { label: "Costs", color: RED }, { label: "Margin (line)", color: BLUE },
+    ]);
   }
 
   // 7-8. Investment case: cash flow & ROCE
@@ -196,14 +202,17 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
           <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
           <XAxis dataKey="year" tick={AXIS} />
           <YAxis tick={AXIS} />
-          <Legend />
           <ReferenceLine y={0} stroke="#94a3b8" />
           <Bar isAnimationActive={false} dataKey="Annual">
             {data.map((d, i) => <Cell key={i} fill={d.Annual >= 0 ? GREEN : RED} />)}
           </Bar>
           <Line isAnimationActive={false} type="monotone" dataKey="Accumulated" stroke={BLUE} strokeWidth={2} dot={false} />
         </ComposedChart>
-      ), 300);
+      ), 300, [
+        { label: "Annual cash flow (positive)", color: GREEN },
+        { label: "Annual cash flow (negative)", color: RED },
+        { label: "Accumulated (line)", color: BLUE },
+      ]);
     }
     if (calcs.length) {
       const roceData = calcs.map((c: any) => ({ year: String(c.year), ROCE: Number((num(c.roce) * 100).toFixed(1)) }));
