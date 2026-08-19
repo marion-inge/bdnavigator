@@ -333,6 +333,7 @@ function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
         <Table>
           <TableHeader className="sticky top-0 bg-background z-10">
             <TableRow>
+              <TableHead className="w-[28px]" />
               <TableHead className="w-[60px]">Tier</TableHead>
               <TableHead>{L("Company", "Unternehmen")}</TableHead>
               <TableHead>{L("Camp", "Camp")}</TableHead>
@@ -345,40 +346,116 @@ function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((c, i) => (
-              <TableRow key={`${c.company}-${i}`}>
-                <TableCell>
-                  {c.tier ? (
-                    <Badge style={{ backgroundColor: TIER_COLORS[c.tier] || "hsl(var(--muted))", color: "white" }} className="text-xs px-2">
-                      {c.tier}
-                    </Badge>
-                  ) : "—"}
-                </TableCell>
-                <TableCell className="font-medium text-xs">{c.company}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">{c.camp}</TableCell>
-                <TableCell className="text-xs">{c.hq}</TableCell>
-                <TableCell>
-                  {c.momentum ? (
-                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: MOMENTUM_COLORS[c.momentum] || undefined }}>
-                      {c.momentum === "GAINING" ? <TrendingUp className="h-3 w-3" />
-                       : c.momentum === "LOSING" ? <TrendingDown className="h-3 w-3" />
-                       : <Minus className="h-3 w-3" />}
-                      {c.momentum}
-                    </span>
-                  ) : "—"}
-                </TableCell>
-                <TableCell className="text-xs">{c.O ?? "—"}</TableCell>
-                <TableCell className="text-xs">{c.P ?? "—"}</TableCell>
-                <TableCell className="text-xs">{c.E ?? "—"}</TableCell>
-                <TableCell className="text-xs text-muted-foreground whitespace-normal max-w-[360px]">{c.overlap}</TableCell>
-              </TableRow>
-            ))}
+            {filtered.map((c, i) => {
+              const key = `${c.company}-${i}`;
+              const isOpen = open === key;
+              return (
+                <>
+                  <TableRow key={key} className="cursor-pointer" onClick={() => setOpen(isOpen ? null : key)}>
+                    <TableCell className="text-muted-foreground">
+                      {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                    </TableCell>
+                    <TableCell>
+                      {c.tier ? (
+                        <Badge style={{ backgroundColor: TIER_COLORS[c.tier] || "hsl(var(--muted))", color: "white" }} className="text-xs px-2">
+                          {c.tier}
+                        </Badge>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell className="font-medium text-xs">{c.company}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{c.camp}</TableCell>
+                    <TableCell className="text-xs">{c.hq}</TableCell>
+                    <TableCell>
+                      {c.momentum ? (
+                        <span className="inline-flex items-center gap-1 text-xs" style={{ color: MOMENTUM_COLORS[c.momentum] || undefined }}>
+                          {c.momentum === "GAINING" ? <TrendingUp className="h-3 w-3" />
+                           : c.momentum === "LOSING" ? <TrendingDown className="h-3 w-3" />
+                           : <Minus className="h-3 w-3" />}
+                          {c.momentum}
+                        </span>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell className="text-xs">{c.O ?? "—"}</TableCell>
+                    <TableCell className="text-xs">{c.P ?? "—"}</TableCell>
+                    <TableCell className="text-xs">{c.E ?? "—"}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground whitespace-normal max-w-[360px]">{c.overlap}</TableCell>
+                  </TableRow>
+                  {isOpen && (
+                    <TableRow key={`${key}-detail`} className="hover:bg-transparent">
+                      <TableCell colSpan={10} className="bg-muted/40 p-3">
+                        <CompetitorDetail c={c} L={L} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
     </div>
   );
 }
+
+function CompetitorDetail({ c, L }: { c: CompetitorRow; L: <T,>(en: T, de: T) => T }) {
+  const fields: { label: string; value: string }[] = [
+    { label: L("Description", "Beschreibung"), value: c.description },
+    { label: L("Offering / products", "Angebot / Produkte"), value: c.offering },
+    { label: L("Strengths", "Stärken"), value: c.strengths },
+    { label: L("Weaknesses / gaps", "Schwächen / Lücken"), value: c.weaknesses },
+    { label: L("Differentiation", "Differenzierung"), value: c.differentiation },
+    { label: L("Reference customers", "Referenzkunden"), value: c.references },
+    { label: L("Strategy signals", "Strategiesignale"), value: c.strategySignals },
+    { label: L("Pricing", "Preisniveau"), value: c.pricing },
+    { label: L("Business model", "Geschäftsmodell"), value: c.businessModel },
+    { label: L("Revenue", "Umsatz"), value: c.revenue },
+    { label: L("Employees", "Mitarbeiter"), value: c.employees },
+    { label: L("Founded", "Gegründet"), value: c.founded },
+    { label: L("Ownership", "Eigentümer"), value: c.ownership },
+    { label: L("Regions", "Regionen"), value: c.regions },
+    { label: L("Website", "Website"), value: c.website },
+    { label: L("Threat level", "Bedrohungsgrad"), value: c.threatLevel },
+    { label: L("Tier confidence", "Tier-Konfidenz"), value: c.tierConfidence },
+    { label: L("Shortlist score", "Shortlist-Score"), value: c.shortlistScore != null ? String(c.shortlistScore) : "" },
+    { label: L("Shortlist decision", "Shortlist-Entscheid"), value: c.shortlistDecision },
+    { label: L("Discovery method", "Discovery-Methode"), value: c.discoveryMethod },
+    { label: L("Assumptions", "Annahmen"), value: c.assumptionIds },
+    { label: L("Recency", "Aktualität"), value: c.recency },
+    { label: L("Notes", "Notizen"), value: c.notes },
+    { label: L("Sources", "Quellen"), value: c.source },
+    ...c.extra,
+  ].filter((f) => f.value);
+
+  if (fields.length === 0) {
+    return <div className="text-[11px] text-muted-foreground italic">{L("No further detail in the uploaded database.", "Keine weiteren Details in der hochgeladenen Datenbank.")}</div>;
+  }
+
+  const isLong = (v: string) => v.length > 80;
+  const short = fields.filter((f) => !isLong(f.value));
+  const long = fields.filter((f) => isLong(f.value));
+
+  return (
+    <div className="space-y-3">
+      {long.map((f, i) => (
+        <div key={`l-${i}`}>
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{f.label}</div>
+          <div className="text-xs whitespace-pre-wrap">{f.value}</div>
+        </div>
+      ))}
+      {short.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2">
+          {short.map((f, i) => (
+            <div key={`s-${i}`} className="min-w-0">
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{f.label}</div>
+              <div className="text-xs break-words">{f.value}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 // ============================================================================
 
