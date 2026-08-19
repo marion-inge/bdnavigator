@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, STAGE_ORDER, BusinessPlanData } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
@@ -33,6 +34,7 @@ export default function OpportunityDetail() {
   const navigate = useNavigate();
   const { getOpportunity, updateScoring, updateBusinessPlan, updateInvestmentCase, updateBusinessCase, addGateDecision, updateGateDecision, deleteGateDecision, revertStage, updateOpportunity, deleteOpportunity } = useStore();
   const { t, language } = useI18n();
+  const confirm = useConfirm();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
@@ -255,7 +257,7 @@ export default function OpportunityDetail() {
               <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => exportOpportunityPdf(opp)} title="PDF Export">
                 <FileDown className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={handleDelete}>
+              <Button variant="outline" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm(() => handleDelete())}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>

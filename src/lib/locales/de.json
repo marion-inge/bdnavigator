@@ -68,6 +68,7 @@
   "cancelEdit": "Abbrechen",
   "revertStage": "Zur vorherigen Phase zurückkehren",
   "confirmDelete": "Sind Sie sicher?",
+  "confirmDeleteMessage": "Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie fortfahren?",
   "revertConfirm": "Möchten Sie wirklich zur vorherigen Phase zurückkehren?",
   "moveToRoughScoring": "Zum Ideen-Scoring",
   "moveToDetailedScoring": "Zum Business Plan",

@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { PilotAgreement } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const statusColors: Record<string, string> = {
 
 export function PilotCustomerGtmSection({ agreements, notes, onUpdate, readonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
 
   const add = () => {
     onUpdate([...agreements, {
@@ -86,7 +88,7 @@ export function PilotCustomerGtmSection({ agreements, notes, onUpdate, readonly 
                   </div>
                 </div>
                 {!readonly && (
-                  <Button variant="ghost" size="icon" onClick={() => remove(a.id)}
+                  <Button variant="ghost" size="icon" onClick={() => confirm(() => remove(a.id))}
                     className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0 mt-4">
                     <Trash2 className="h-4 w-4" />
                   </Button>

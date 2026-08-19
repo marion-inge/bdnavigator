@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +42,7 @@ const TIER_COLORS: Record<string, string> = {
 
 export function CustomersFoundTab({ data, onSave, readonly: propReadonly, title, description }: Props) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -303,7 +305,7 @@ export function CustomersFoundTab({ data, onSave, readonly: propReadonly, title,
                       </TableCell>
                       {!readonly && (
                         <TableCell>
-                          <Button size="icon" variant="ghost" onClick={() => removeEntry(e.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                          <Button size="icon" variant="ghost" onClick={() => confirm(() => removeEntry(e.id))}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                         </TableCell>
                       )}
                     </TableRow>

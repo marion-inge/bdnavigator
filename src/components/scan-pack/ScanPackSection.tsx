@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -120,7 +121,7 @@ const STATUS_LABEL: Record<ScanStatus, { en: string; de: string }> = {
 
 export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
   const { language } = useI18n();
-  const L = <T,>(en: T, de: T) => (language === "de" ? de : en);
+  const confirm = useConfirm();
 
   const initialPack = useMemo(
     () => autoUpgradeStatuses(opportunity.scanPack ?? createDefaultScanPack(), opportunity.hypothesis),
@@ -225,9 +226,9 @@ interface CardProps {
 
 function ScanCard({ meta, state, pack, opportunity, update, readonly, allScansDone, L }: CardProps) {
   const { language } = useI18n();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const confirm = useConfirm();
+  const confirm = useConfirm();
   const [uploading, setUploading] = useState(false);
-
   const isAssembler = meta.key === "assembler";
   const hardGated = isAssembler && !allScansDone;
 
@@ -411,7 +412,7 @@ function ScanCard({ meta, state, pack, opportunity, update, readonly, allScansDo
                   <Download className="h-3 w-3" />
                 </Button>
                 {!readonly && !hardGated && (
-                  <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive" onClick={() => removeFile(f)}>
+                  <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive" onClick={() => confirm(() => removeFile(f))}>
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 )}

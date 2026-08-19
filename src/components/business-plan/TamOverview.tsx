@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue, StrategicAnalyses, TamModels } from "@/lib/types";
 import { TamOverviewData, createDefaultTamOverview } from "@/lib/businessPlanTypes";
@@ -61,6 +62,7 @@ function calcCagr(values: MarketYearValue[]): string {
 
 export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strategicAnalyses, onSaveTam, onSaveSam, opportunityTitle, opportunityDescription, solutionDescription, industry, geography, technology }: Props) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const analysis = scoring.marketAttractiveness.analysis;
@@ -369,7 +371,7 @@ export function TamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
                           </button>
                         ))}
                       </div>
-                      {!readonly && <Button size="icon" variant="ghost" onClick={() => removeRegion(i)} className="h-8 w-8 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                      {!readonly && <Button size="icon" variant="ghost" onClick={() => confirm(() => removeRegion(i))} className="h-8 w-8 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>}
                     </div>
                     <Textarea value={r.notes} onChange={e => updateRegion(i, { notes: e.target.value })} placeholder={bp("Drivers, barriers, regulatory notes...", "Treiber, Barrieren, regulatorische Hinweise...")} disabled={readonly} rows={2} />
                   </div>

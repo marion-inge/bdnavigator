@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { LeadGenerationData, LeadGenChannel, LeadGenActivity } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ interface Props {
 
 export function LeadGenerationSection({ data, onUpdate, readonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
 
   const addChannel = () => {
     onUpdate({ ...data, channels: [...data.channels, { id: crypto.randomUUID(), channel: "", strategy: "", targetLeads: 0, actualLeads: 0, conversionRate: 0 }] });
@@ -84,7 +86,7 @@ export function LeadGenerationSection({ data, onUpdate, readonly }: Props) {
                       </div>
                     </div>
                     {!readonly && (
-                      <Button variant="ghost" size="icon" onClick={() => removeChannel(ch.id)}
+                      <Button variant="ghost" size="icon" onClick={() => confirm(() => removeChannel(ch.id))}
                         className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0 mt-4">
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -137,7 +139,7 @@ export function LeadGenerationSection({ data, onUpdate, readonly }: Props) {
                   </SelectContent>
                 </Select>
                 {!readonly && (
-                  <Button variant="ghost" size="icon" onClick={() => removeActivity(act.id)}
+                  <Button variant="ghost" size="icon" onClick={() => confirm(() => removeActivity(act.id))}
                     className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>

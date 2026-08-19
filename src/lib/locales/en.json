@@ -68,6 +68,7 @@
   "cancelEdit": "Cancel",
   "revertStage": "Revert to Previous Stage",
   "confirmDelete": "Are you sure?",
+  "confirmDeleteMessage": "This action cannot be undone. Do you want to continue?",
   "revertConfirm": "Are you sure you want to go back to the previous stage?",
   "moveToRoughScoring": "Move to Idea Scoring",
   "moveToDetailedScoring": "Move to Business Plan",

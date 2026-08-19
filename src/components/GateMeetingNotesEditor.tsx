@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { GateRecord, GateMeetingNotes, GateActionItem } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,7 @@ const createEmptyMeetingNotes = (): GateMeetingNotes => ({
 
 export function GateMeetingNotesEditor({ gate, gates, onUpdateDecision }: Props) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const gateRecord = gates.find(g => g.gate === gate);
@@ -157,7 +159,7 @@ export function GateMeetingNotesEditor({ gate, gates, onUpdateDecision }: Props)
                 {notes.participants.map((p, i) => (
                   <span key={i} className="inline-flex items-center gap-1 bg-muted text-muted-foreground rounded-full px-2.5 py-0.5 text-xs">
                     {p}
-                    <button onClick={() => removeParticipant(i)} className="hover:text-destructive"><X className="h-3 w-3" /></button>
+                    <button onClick={() => confirm(() => removeParticipant(i))} className="hover:text-destructive"><X className="h-3 w-3" /></button>
                   </span>
                 ))}
               </div>
@@ -260,7 +262,7 @@ export function GateMeetingNotesEditor({ gate, gates, onUpdateDecision }: Props)
                         onChange={(e) => updateActionItem(item.id, { dueDate: e.target.value })}
                         className="text-xs h-7 flex-1"
                       />
-                      <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => removeActionItem(item.id)}>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => confirm(() => removeActionItem(item.id))}>
                         <X className="h-3 w-3" />
                       </Button>
                     </div>

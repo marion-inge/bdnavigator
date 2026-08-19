@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { GoToMarketPlan, ChecklistItem, createDefaultGoToMarketPlan, LeadGenerationData, BusinessCase, createDefaultBusinessCase, DetailedScoring, createDefaultDetailedScoring } from "@/lib/types";
@@ -31,6 +32,7 @@ const defaultLeadGen: LeadGenerationData = { channels: [], activities: [], pipel
 
 export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadonly, businessCase, onSaveBusinessCase, detailedScoring, onSaveDetailedScoring }: Props) {
   const { t, language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [data, setData] = useState<GoToMarketPlan>(goToMarketPlan || createDefaultGoToMarketPlan());
   const [editing, setEditing] = useState(false);
@@ -165,7 +167,7 @@ export function GoToMarketSection({ goToMarketPlan, onSave, readonly: propReadon
                           className={`flex-1 ${item.done ? "line-through text-muted-foreground" : ""}`}
                         />
                         {!readonly && (
-                          <Button variant="ghost" size="icon" onClick={() => removeChecklistItem(item.id)}
+                          <Button variant="ghost" size="icon" onClick={() => confirm(() => removeChecklistItem(item.id))}
                             className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0">
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>

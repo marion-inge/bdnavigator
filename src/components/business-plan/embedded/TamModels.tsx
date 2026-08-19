@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { StrategicAnalyses, createDefaultStrategicAnalyses, createDefaultValueChain, ValueChainStage, TamModels } from "@/lib/types";
@@ -31,6 +32,7 @@ interface EmbeddedModelProps {
 // ── Market Research ──
 export function EmbeddedMarketResearch({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -62,6 +64,7 @@ export function EmbeddedMarketResearch({ data, onSave, readonly: propReadonly }:
 // ── PESTEL ──
 export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportunity }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -130,6 +133,7 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportuni
 // ── Porter's Five Forces ──
 export function EmbeddedPorter({ data, onSave, readonly: propReadonly, opportunity }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -221,6 +225,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly, opportuni
 // ── SWOT ──
 export function EmbeddedSwot({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -258,6 +263,7 @@ export function EmbeddedSwot({ data, onSave, readonly: propReadonly }: EmbeddedM
 // ── Industry Value Chain ──
 export function EmbeddedValueChain({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -300,7 +306,7 @@ export function EmbeddedValueChain({ data, onSave, readonly: propReadonly }: Emb
               <div className="flex items-center gap-2">
                 <Input value={stage.name} onChange={e => updateStage(stage.id, { name: e.target.value })} placeholder={bp("Stage name", "Stufenname")} disabled={readonly} className="flex-1" />
                 <Button variant={stage.isOurPosition ? "default" : "outline"} size="sm" onClick={() => updateStage(stage.id, { isOurPosition: !stage.isOurPosition })} disabled={readonly} className="gap-1 text-xs"><MapPin className="h-3 w-3" /></Button>
-                {!readonly && <Button variant="ghost" size="icon" onClick={() => removeStage(stage.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeStage(stage.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground whitespace-nowrap">{bp("Margin", "Marge")}:</span>

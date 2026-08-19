@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { I18nProvider } from "@/lib/i18n";
 import { StoreProvider } from "@/lib/store";
+import { ConfirmProvider } from "@/components/ConfirmProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import OpportunityDetail from "./pages/OpportunityDetail";
@@ -22,22 +23,24 @@ const App = () => (
     <TooltipProvider>
       <I18nProvider>
         <StoreProvider>
-          <Toaster />
-          <Sonner />
-          <ErrorBoundary>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/opportunity/:id" element={<OpportunityDetail />} />
-                <Route path="/guide" element={<ProcessGuide />} />
-                <Route path="/features" element={<FeatureOverview />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/prompts" element={<PromptLibrary />} />
-                <Route path="/training" element={<TrainingAcademy />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </ErrorBoundary>
+          <ConfirmProvider>
+            <Toaster />
+            <Sonner />
+            <ErrorBoundary>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/opportunity/:id" element={<OpportunityDetail />} />
+                  <Route path="/guide" element={<ProcessGuide />} />
+                  <Route path="/features" element={<FeatureOverview />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/prompts" element={<PromptLibrary />} />
+                  <Route path="/training" element={<TrainingAcademy />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </ErrorBoundary>
+          </ConfirmProvider>
         </StoreProvider>
       </I18nProvider>
     </TooltipProvider>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { fetchOpportunityFiles, uploadOpportunityFile, deleteOpportunityFile, getFileUrl, updateFileComment } from "@/lib/backendAdapter";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ interface Props {
 
 export function FileAttachments({ opportunityId, category, title, compact }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -251,7 +253,7 @@ export function FileAttachments({ opportunityId, category, title, compact }: Pro
                   variant="ghost"
                   className="h-7 w-7 text-destructive hover:bg-destructive/10"
                   title={t("filesDelete")}
-                  onClick={() => handleDelete(file)}
+                  onClick={() => confirm(() => handleDelete(file))}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>

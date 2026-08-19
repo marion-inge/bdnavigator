@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { GateRecord, GateDecision, GateMeetingNotes, GateActionItem, Stage, STAGE_ORDER } from "@/lib/types";
 import { useState } from "react";
@@ -36,6 +37,7 @@ const createEmptyMeetingNotes = (): GateMeetingNotes => ({
 
 export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onUpdateDecision, onDeleteDecision, onRevertStage }: GateDecisionSectionProps) {
   const { t, language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
 
   const [decision, setDecision] = useState<GateDecision>("go");
@@ -291,7 +293,7 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
                               variant="ghost"
                               size="icon"
                               className={`h-7 w-7 ${confirmDeleteId === g.id ? "text-destructive bg-destructive/10" : "text-muted-foreground"}`}
-                              onClick={() => handleDelete(g.id)}
+                              onClick={() => confirm(() => handleDelete(g.id))}
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
@@ -411,6 +413,7 @@ function MeetingNotesForm({
   updateActionItem: (setter: React.Dispatch<React.SetStateAction<GateMeetingNotes>>, id: string, patch: Partial<GateActionItem>) => void;
   removeActionItem: (setter: React.Dispatch<React.SetStateAction<GateMeetingNotes>>, id: string) => void;
 }) {
+  const confirm = useConfirm();
   return (
     <Collapsible open={show} onOpenChange={setShow}>
       <CollapsibleTrigger asChild>
@@ -433,7 +436,7 @@ function MeetingNotesForm({
             {notes.participants.map((p, i) => (
               <span key={i} className="inline-flex items-center gap-1 bg-muted text-muted-foreground rounded-full px-2.5 py-0.5 text-xs">
                 {p}
-                <button onClick={() => removeParticipant(setNotes, i)} className="hover:text-destructive">
+                <button onClick={() => confirm(() => removeParticipant(setNotes, i))} className="hover:text-destructive">
                   <X className="h-3 w-3" />
                 </button>
               </span>
@@ -523,7 +526,7 @@ function MeetingNotesForm({
                       onChange={(e) => updateActionItem(setNotes, item.id, { dueDate: e.target.value })}
                       className="text-xs h-7 flex-1"
                     />
-                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => removeActionItem(setNotes, item.id)}>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => confirm(() => removeActionItem(setNotes, item.id))}>
                       <X className="h-3 w-3" />
                     </Button>
                   </div>

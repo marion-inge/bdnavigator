@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n, TranslationKey } from "@/lib/i18n";
 import { DetailedScoring, AlignmentDimension, CapabilityGap } from "@/lib/types";
 import { useState } from "react";
@@ -29,6 +30,7 @@ const DEFAULT_DIMENSIONS: AlignmentDimension[] = [
 
 export function StrategicFitTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState({
     ...scoring.strategicFit,
     alignmentDimensions: scoring.strategicFit.alignmentDimensions?.length
@@ -319,7 +321,7 @@ export function StrategicFitTab({ scoring, onUpdate, readonly: propReadonly }: P
                         {gapSize > 0 ? `−${gapSize}` : "✓"}
                       </span>
                       {!readonly && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeGap(i)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => confirm(() => removeGap(i))}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       )}

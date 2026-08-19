@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, PilotCustomerData, PilotCustomerEntry, PilotContactStatus } from "@/lib/types";
 import { useState } from "react";
@@ -31,6 +32,7 @@ const statusConfig: Record<PilotContactStatus, { label: string; color: string }>
 
 export function PilotCustomerTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState<PilotCustomerData>(scoring.pilotCustomer || defaultPilotData);
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -140,7 +142,7 @@ export function PilotCustomerTab({ scoring, onUpdate, readonly: propReadonly }: 
                   </div>
                 </div>
                 {!readonly && (
-                  <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)}
+                  <Button variant="ghost" size="icon" onClick={() => confirm(() => removeEntry(entry.id))}
                     className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0 mt-4">
                     <Trash2 className="h-4 w-4" />
                   </Button>
