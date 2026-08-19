@@ -278,6 +278,8 @@ function CompetitorsView({ data, L }: { data: CompetitorScanData; L: <T,>(en: T,
   const [momFilter, setMomFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [scope, setScope] = useState<"shortlist" | "all">("shortlist");
+  const [open, setOpen] = useState<string | null>(null);
+
 
   const rows = data.competitors.filter((c) => scope === "all" || c.isShortlist);
   const camps = Array.from(new Set(rows.map((c) => c.camp).filter(Boolean))).sort();
