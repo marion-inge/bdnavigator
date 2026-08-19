@@ -49,7 +49,7 @@ export function BusinessCaseAssessment({ opportunityId, title, description, indu
     setError(null);
     try {
       const { data, error: fnError } = await invokeFunction("business-case-assessment", {
-        body: { kpis, parameters, yearData, title, description, industry, technology, language },
+        kpis, parameters, yearData, title, description, industry, technology, language,
       });
       if (fnError) throw new Error(fnError.message);
       if (data?.error) throw new Error(data.error);
