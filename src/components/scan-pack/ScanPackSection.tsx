@@ -121,7 +121,7 @@ const STATUS_LABEL: Record<ScanStatus, { en: string; de: string }> = {
 
 export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
   const { language } = useI18n();
-  const L = (en: string, de: string) => (language === "de" ? de : en);
+  const L = <T,>(en: T, de: T): T => (language === "de" ? de : en);
 
   const initialPack = useMemo(
     () => autoUpgradeStatuses(opportunity.scanPack ?? createDefaultScanPack(), opportunity.hypothesis),
