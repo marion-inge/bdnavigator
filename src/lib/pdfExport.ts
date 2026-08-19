@@ -1473,32 +1473,36 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
   }
 
   // Competitor Landscape
-  if (bp?.competitorLandscape) {
-    y = addKeyValue(doc, y, "Competitor Landscape Score", `${bp.competitorLandscape.score} / 5`);
-    const cla: any = bp.competitorLandscape.analysis || {};
-    y = addLongText(doc, y, "Competitor Landscape Notes", cla.notes || cla.description || "", pw);
+  {
+    const cl: any = bp?.competitorLandscape || {};
+    y = addKeyValue(doc, y, "Competitor Landscape Score", cl.score ? `${cl.score} / 5` : "—");
+    const cla: any = cl.analysis || {};
+    y = addFieldGroup(doc, y, "Competitor Landscape", [
+      { label: "Notes", value: cla.notes || cla.description },
+    ], pw, true);
   }
-  if (bp?.pilotCustomer) {
-    y = addKeyValue(doc, y, "Pilot Customer Score", `${bp.pilotCustomer.score} / 5`);
-    y = addLongText(doc, y, "Pilot Notes", bp.pilotCustomer.notes, pw);
-    if (bp.pilotCustomer.entries?.length) {
+  {
+    const pc: any = bp?.pilotCustomer || {};
+    y = addKeyValue(doc, y, "Pilot Customer Score", pc.score ? `${pc.score} / 5` : "—");
+    y = addFieldGroup(doc, y, "Pilot Customer", [{ label: "Notes", value: pc.notes }], pw, true);
+    if (pc.entries?.length) {
       y = addTable(doc, y, "Pilot Customer Candidates",
         ["Name", "Industry", "Status", "Validation", "Feedback"],
-        bp.pilotCustomer.entries.map(e => [e.name, e.industry, e.contactStatus, e.validationResults, e.feedback]), pw);
+        pc.entries.map((e: any) => [e.name, e.industry, e.contactStatus, e.validationResults, e.feedback]), pw);
     }
   }
 
-  const som = sa?.som;
+  const som: any = sa?.som || {};
   if (som?.competitorAnalysis?.entries?.length) {
     const c = som.competitorAnalysis;
     y = addTable(doc, y, "Competitor Analysis",
       ["Competitor", "Market Share", "Threat", "Strengths", "Weaknesses", "Strategy"],
-      c.entries.map(e => [e.name, e.marketShare, String(e.threatLevel), e.strengths, e.weaknesses, e.strategy]), pw);
+      c.entries.map((e: any) => [e.name, e.marketShare, String(e.threatLevel), e.strengths, e.weaknesses, e.strategy]), pw);
     y = addLongText(doc, y, "Competitor Analysis – Description", c.description, pw);
     y = addLongText(doc, y, "Competitor Analysis – Rationale", c.rationale, pw);
   }
-  if (som?.valuePropositionCanvas) {
-    const v = som.valuePropositionCanvas;
+  {
+    const v: any = som.valuePropositionCanvas || {};
     y = addFieldGroup(doc, y, "Value Proposition Canvas", [
       { label: "Customer Jobs", value: v.customerJobs },
       { label: "Customer Pains", value: v.customerPains },
@@ -1508,10 +1512,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Gain Creators", value: v.gainCreators },
       { label: "Description", value: v.description },
       { label: "Rationale", value: v.rationale },
-    ], pw);
+    ], pw, true);
   }
-  if (som?.customerBenefitAnalysis) {
-    const c = som.customerBenefitAnalysis;
+  {
+    const c: any = som.customerBenefitAnalysis || {};
     y = addFieldGroup(doc, y, "Customer Benefit Analysis", [
       { label: "Functional Benefits", value: c.functionalBenefits },
       { label: "Emotional Benefits", value: c.emotionalBenefits },
@@ -1519,10 +1523,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Self-Expressive Benefits", value: c.selfExpressiveBenefits },
       { label: "Description", value: c.description },
       { label: "Rationale", value: c.rationale },
-    ], pw);
+    ], pw, true);
   }
-  if (som?.threeCircleModel) {
-    const t = som.threeCircleModel;
+  {
+    const t: any = som.threeCircleModel || {};
     y = addFieldGroup(doc, y, "Three Circle Model", [
       { label: "Our Value", value: t.ourValue },
       { label: "Competitor Value", value: t.competitorValue },
@@ -1533,10 +1537,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Unmet Needs", value: t.unmetNeeds },
       { label: "Description", value: t.description },
       { label: "Rationale", value: t.rationale },
-    ], pw);
+    ], pw, true);
   }
-  if (som?.positioningStatement) {
-    const p = som.positioningStatement;
+  {
+    const p: any = som.positioningStatement || {};
     y = addFieldGroup(doc, y, "Positioning Statement", [
       { label: "Target Audience", value: p.targetAudience },
       { label: "Category", value: p.category },
@@ -1547,18 +1551,18 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Statement", value: p.statement },
       { label: "Description", value: p.description },
       { label: "Rationale", value: p.rationale },
-    ], pw);
+    ], pw, true);
   }
   if (som?.positioningLandscape?.entries?.length) {
     const pl = som.positioningLandscape;
     y = addTable(doc, y, `Positioning Landscape (X: ${pl.xAxisLabel || "—"}, Y: ${pl.yAxisLabel || "—"})`,
       ["Name", "Ours", "X", "Y"],
-      pl.entries.map(e => [e.name, e.isOurs ? "Yes" : "—", String(e.xValue), String(e.yValue)]), pw);
+      pl.entries.map((e: any) => [e.name, e.isOurs ? "Yes" : "—", String(e.xValue), String(e.yValue)]), pw);
     y = addLongText(doc, y, "Positioning Landscape – Description", pl.description, pw);
     y = addLongText(doc, y, "Positioning Landscape – Rationale", pl.rationale, pw);
   }
-  if (som?.targetCosting) {
-    const tc = som.targetCosting;
+  {
+    const tc: any = som.targetCosting || {};
     y = addFieldGroup(doc, y, "Target Costing", [
       { label: "Market Price", value: tc.marketPrice },
       { label: "Target Margin %", value: tc.targetMarginPct },
@@ -1568,13 +1572,14 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Gap Analysis", value: tc.gapAnalysis },
       { label: "Action Plan", value: tc.actionPlan },
       { label: "Overall Assessment", value: tc.overallAssessment },
-    ], pw);
+    ], pw, true);
     if (tc.components?.length) {
       y = addTable(doc, y, "Target Costing – Components",
         ["Component", "Current Cost", "Allowable Cost", "Gap", "Actions"],
-        tc.components.map(c => [c.name, fmt(c.currentCost), fmt(c.allowableCost), fmt((c.currentCost || 0) - (c.allowableCost || 0)), c.actions]), pw);
+        tc.components.map((c: any) => [c.name, fmt(c.currentCost), fmt(c.allowableCost), fmt((c.currentCost || 0) - (c.allowableCost || 0)), c.actions]), pw);
     }
   }
+
 
   // ═══ BUSINESS CASE ═══
   y = addBusinessCaseSections(doc, y, opp, pw);
