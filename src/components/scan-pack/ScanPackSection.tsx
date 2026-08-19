@@ -121,7 +121,7 @@ const STATUS_LABEL: Record<ScanStatus, { en: string; de: string }> = {
 
 export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
   const { language } = useI18n();
-  const confirm = useConfirm();
+  const L = (en: string, de: string) => (language === "de" ? de : en);
 
   const initialPack = useMemo(
     () => autoUpgradeStatuses(opportunity.scanPack ?? createDefaultScanPack(), opportunity.hypothesis),
@@ -226,7 +226,7 @@ interface CardProps {
 
 function ScanCard({ meta, state, pack, opportunity, update, readonly, allScansDone, L }: CardProps) {
   const { language } = useI18n();
-  const confirm = useConfirm();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const confirm = useConfirm();
   const [uploading, setUploading] = useState(false);
   const isAssembler = meta.key === "assembler";
