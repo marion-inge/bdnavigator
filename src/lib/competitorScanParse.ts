@@ -19,7 +19,27 @@ export interface CompetitorRow {
   overlap: string;
   source: string;
   isShortlist: boolean;
+  // --- richer profile fields -------------------------------------------------
+  description: string;
+  offering: string;
+  strengths: string;
+  weaknesses: string;
+  differentiation: string;
+  pricing: string;
+  businessModel: string;
+  revenue: string;
+  employees: string;
+  founded: string;
+  website: string;
+  references: string;
+  strategySignals: string;
+  threatLevel: string;
+  recency: string;
+  notes: string;
+  /** Every column that is not mapped above, preserved verbatim. */
+  extra: { label: string; value: string }[];
 }
+
 
 export interface BenchmarkCriterion {
   criterion: string;
