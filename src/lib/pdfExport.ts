@@ -1078,7 +1078,8 @@ async function addChartsSection(doc: jsPDF, y: number, opp: Opportunity, pw: num
   const ph = doc.internal.pageSize.getHeight();
   for (const c of charts) {
     const imgH = (c.height / c.width) * maxW;
-    if (y + imgH + 14 > ph - 15) {
+    const legendH = c.legend?.length ? 6 : 0;
+    if (y + imgH + 14 + legendH > ph - 15) {
       doc.addPage();
       y = 20;
     }
@@ -1088,9 +1089,24 @@ async function addChartsSection(doc: jsPDF, y: number, opp: Opportunity, pw: num
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     y += 5;
+    if (c.legend?.length) {
+      let lx = 14;
+      doc.setFontSize(8);
+      for (const item of c.legend) {
+        doc.setFillColor(item.color);
+        doc.rect(lx, y - 2.6, 3, 3, "F");
+        doc.setTextColor(70);
+        doc.text(item.label, lx + 4.5, y);
+        lx += 8 + doc.getTextWidth(item.label);
+      }
+      doc.setTextColor(0);
+      doc.setFontSize(10);
+      y += 4;
+    }
     doc.addImage(c.dataUrl, "PNG", 14, y, maxW, imgH);
     y += imgH + 9;
   }
+
   return y;
 }
 
