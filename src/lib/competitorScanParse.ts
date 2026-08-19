@@ -19,7 +19,27 @@ export interface CompetitorRow {
   overlap: string;
   source: string;
   isShortlist: boolean;
+  // --- richer profile fields -------------------------------------------------
+  description: string;
+  offering: string;
+  strengths: string;
+  weaknesses: string;
+  differentiation: string;
+  pricing: string;
+  businessModel: string;
+  revenue: string;
+  employees: string;
+  founded: string;
+  website: string;
+  references: string;
+  strategySignals: string;
+  threatLevel: string;
+  recency: string;
+  notes: string;
+  /** Every column that is not mapped above, preserved verbatim. */
+  extra: { label: string; value: string }[];
 }
+
 
 export interface BenchmarkCriterion {
   criterion: string;
@@ -92,7 +112,9 @@ export interface CompetitorScanData {
 
 import {
   findSheetName, sheetRows, findHeaderRow, buildColMap, dataRows, cell, cellNum, str, num, norm,
+  colIndex, exactIndex,
 } from "./xlsxParseUtils";
+
 
 export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanData> {
   const buf = await file.arrayBuffer();
@@ -109,35 +131,113 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
     "company", "competitor", "tier", "camp", "regions", "momentum", "discovery method", "overlap",
   ]);
   const dbMap = buildColMap(dbRows[dbHdr] || []);
+  const dbHeader = (dbRows[dbHdr] || []).map(str);
   const competitors: CompetitorRow[] = [];
   let shortlistMode = true;
   for (const r of dataRows(dbRows, dbHdr)) {
-    const company = cell(r, dbMap, ["company", "competitor", "name", "organisation", "organization"]) || str(r[0]);
+    const used = new Set<number>();
+    const g = (aliases: string[], strict = false) => {
+      const i = strict ? exactIndex(dbMap, aliases) : colIndex(dbMap, aliases);
+      if (i >= 0) used.add(i);
+      return i >= 0 ? str(r[i]) : "";
+    };
+    const gn = (aliases: string[]) => {
+      const i = colIndex(dbMap, aliases);
+      if (i >= 0) used.add(i);
+      return i >= 0 ? num(r[i]) : null;
+    };
+
+    const company = g(["company", "competitor", "name", "organisation", "organization"]) || str(r[0]);
     if (!company) continue;
     if (/watch\s*list/i.test(company)) { shortlistMode = false; continue; }
     if (/^(company|competitor|name)$/i.test(company)) continue;
-    const decision = cell(r, dbMap, ["shortlist decision", "decision", "status"]);
-    competitors.push({
+    const decision = g(["shortlist decision", "decision", "status"]);
+    const row: CompetitorRow = {
       company,
-      camp: cell(r, dbMap, ["camp", "group", "category", "archetype"]),
-      tier: cell(r, dbMap, ["competitor tier", "tier"]).replace(/\s*\(.*\)/, "").trim(),
-      tierConfidence: cell(r, dbMap, ["tier confidence", "confidence"]),
-      O: cellNum(r, dbMap, ["offering overlap", "overlap score", "o score", "o"]),
-      P: cellNum(r, dbMap, ["market presence", "presence", "p score", "p"]),
-      E: cellNum(r, dbMap, ["encounter evidence", "encounter", "e score", "e"]),
-      shortlistScore: cellNum(r, dbMap, ["shortlist score", "score", "total"]),
+      camp: g(["camp", "group", "category", "archetype"]),
+      tier: g(["competitor tier", "tier"]).replace(/\s*\(.*\)/, "").trim(),
+      tierConfidence: g(["tier confidence", "confidence"]),
+      O: gn(["offering overlap", "overlap score", "o score", "o"]),
+      P: gn(["market presence", "presence", "p score", "p"]),
+      E: gn(["encounter evidence", "encounter", "e score", "e"]),
+      shortlistScore: gn(["shortlist score", "score", "total"]),
       shortlistDecision: decision,
-      hq: cell(r, dbMap, ["hq", "headquarters", "country"]),
-      ownership: cell(r, dbMap, ["ownership", "owner"]),
-      regions: cell(r, dbMap, ["regions", "region", "geography"]),
-      momentum: cell(r, dbMap, ["momentum", "trend"]),
-      discoveryMethod: cell(r, dbMap, ["discovery method", "discovery"]),
-      assumptionIds: cell(r, dbMap, ["assumption ids", "assumption id", "assumptions"]),
-      overlap: cell(r, dbMap, ["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
-      source: cell(r, dbMap, ["source", "sources", "evidence"]),
+      hq: g(["hq", "headquarters", "country", "location"]),
+      ownership: g(["ownership", "owner", "listed"]),
+      regions: g(["regions", "region", "geography", "markets served"]),
+      momentum: g(["momentum", "trend"]),
+      discoveryMethod: g(["discovery method", "discovery"]),
+      assumptionIds: g(["assumption ids", "assumption id", "assumptions"]),
+      overlap: g(["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
+      source: g(["source", "sources", "evidence"]),
+      description: g(["description", "company description", "profile", "summary", "about", "what they do"]),
+      offering: g(["offering", "products", "product", "product portfolio", "solutions", "key products"]),
+      strengths: g(["strengths", "strength", "key strengths"]),
+      weaknesses: g(["weaknesses", "weakness", "gaps", "limitations"]),
+      differentiation: g(["differentiation", "differentiator", "usp", "value proposition", "positioning"]),
+      pricing: g(["pricing", "price", "price level", "pricing signals", "price point"]),
+      businessModel: g(["business model", "revenue model", "model"]),
+      revenue: g(["revenue", "turnover", "sales", "segment revenue"]),
+      employees: g(["employees", "headcount", "staff", "size"]),
+      founded: g(["founded", "year founded", "established"]),
+      website: g(["website", "url", "web", "homepage"]),
+      references: g(["reference customers", "references", "customers", "installed base", "key accounts", "proof"]),
+      strategySignals: g(["strategy signals", "strategic signals", "signals", "strategy", "recent moves", "m&a"]),
+      threatLevel: g(["threat", "threat level", "risk"]),
+      recency: g(["recency", "recency flag", "as of", "last verified", "date"]),
+      notes: g(["notes", "note", "comment", "comments", "remarks"]),
+      extra: [],
       isShortlist: shortlistMode && !/watch|excluded/i.test(decision),
-    });
+    };
+    row.extra = dbHeader
+      .map((h, i) => ({ label: h, value: str(r[i]) }))
+      .filter((x, i) => x.label && x.value && !used.has(i));
+    competitors.push(row);
   }
+
+  // --- Optional "Competitor Profiles" sheet: merge extra detail by company ----
+  const profSheet = findSheetName(wb, [/profile/i]);
+  if (profSheet && profSheet !== dbSheet) {
+    const pRows = sheetRows(wb, profSheet);
+    const pHdr = findHeaderRow(pRows, ["company", "competitor", "description", "strengths", "offering"]);
+    if (pHdr >= 0) {
+      const pMap = buildColMap(pRows[pHdr] || []);
+      const pHeader = (pRows[pHdr] || []).map(str);
+      const nameIdx = colIndex(pMap, ["company", "competitor", "name"]);
+      for (const r of dataRows(pRows, pHdr)) {
+        const name = str(r[nameIdx >= 0 ? nameIdx : 0]);
+        if (!name) continue;
+        const target = competitors.find((c) => norm(c.company) === norm(name));
+        if (!target) continue;
+        const assign = (key: keyof CompetitorRow, aliases: string[]) => {
+          const v = cell(r, pMap, aliases);
+          if (v && !target[key]) (target as any)[key] = v;
+        };
+        assign("description", ["description", "profile", "summary", "about"]);
+        assign("offering", ["offering", "products", "solutions"]);
+        assign("strengths", ["strengths", "strength"]);
+        assign("weaknesses", ["weaknesses", "weakness", "gaps"]);
+        assign("differentiation", ["differentiation", "usp", "positioning"]);
+        assign("pricing", ["pricing", "price"]);
+        assign("businessModel", ["business model", "revenue model"]);
+        assign("revenue", ["revenue", "turnover"]);
+        assign("employees", ["employees", "headcount"]);
+        assign("founded", ["founded", "established"]);
+        assign("website", ["website", "url"]);
+        assign("references", ["reference customers", "references", "installed base"]);
+        assign("strategySignals", ["strategy signals", "signals", "strategy"]);
+        assign("notes", ["notes", "comment"]);
+        pHeader.forEach((h, i) => {
+          const v = str(r[i]);
+          if (!h || !v || i === nameIdx) return;
+          const already = target.extra.some((e) => norm(e.label) === norm(h))
+            || Object.values(target).some((val) => typeof val === "string" && val === v);
+          if (!already) target.extra.push({ label: h, value: v });
+        });
+      }
+    }
+  }
+
 
   // --- Watch List -----------------------------------------------------------
   const watchRows = sheetRows(wb, findSheetName(wb, [/watch/i]));
