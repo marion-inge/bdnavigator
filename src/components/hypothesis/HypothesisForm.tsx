@@ -448,8 +448,8 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
 /* ---------- Reusable list widgets ---------- */
 
 function StringList({ label, values, onChange, readonly, help }: { label: string; values: string[]; onChange: (v: string[]) => void; readonly?: boolean; help?: string }) {
-  return (
   const confirm = useConfirm();
+  return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         <label className="text-xs font-medium text-muted-foreground">{label}</label>
@@ -492,9 +492,9 @@ function StringList({ label, values, onChange, readonly, help }: { label: string
 function PairList<T extends Record<string, any>>(
   { label, items, keys, labels, onChange, readonly, help }:
   { label: string; items: T[]; keys: { a: keyof T & string; b: keyof T & string }; labels: { a: string; b: string }; onChange: (v: T[]) => void; readonly?: boolean; help?: string }
+) {
   const confirm = useConfirm();
   return (
-  const confirm = useConfirm();
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         <label className="text-xs font-medium text-muted-foreground">{label}</label>
