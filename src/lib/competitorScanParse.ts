@@ -112,7 +112,9 @@ export interface CompetitorScanData {
 
 import {
   findSheetName, sheetRows, findHeaderRow, buildColMap, dataRows, cell, cellNum, str, num, norm,
+  colIndex, exactIndex,
 } from "./xlsxParseUtils";
+
 
 export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanData> {
   const buf = await file.arrayBuffer();
