@@ -159,7 +159,7 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
   }
 
   // 6. Revenue vs. Costs (commercial viability)
-  const cvProj: any[] = bp?.commercialViability?.analysis?.projections || [];
+  const cvProj: any[] = bp?.commercialViability?.projections || [];
   if (cvProj.some(p => num(p.revenue) > 0 || num(p.costs) > 0)) {
     const data = cvProj.map(p => ({
       year: `Y${p.year}`,
@@ -188,7 +188,7 @@ export async function buildBusinessPlanCharts(opp: Opportunity): Promise<PdfChar
     if (acc.length) {
       const data = acc.map((a: any) => ({
         year: String(a.year),
-        Annual: num(a.annualCashFlow),
+        Annual: num(a.annual),
         Accumulated: num(a.accumulated),
       }));
       await push("Cash Flow Development (EUR)", (
