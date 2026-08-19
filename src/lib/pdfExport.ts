@@ -1317,44 +1317,47 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
     y = addLongText(doc, y, "SAM Description", ma.samDescription || "", pw);
   }
 
-  // SAM detailed scoring subcategories
-  if (bp?.strategicFit) {
-    y = addKeyValue(doc, y, "Strategic Fit Score", `${bp.strategicFit.score} / 5`);
-    y = addLongText(doc, y, "Strategic Fit – Details", bp.strategicFit.details, pw);
-    if (bp.strategicFit.alignmentDimensions?.length) {
+  // SAM detailed scoring subcategories (always rendered)
+  {
+    const sf: any = bp?.strategicFit || {};
+    y = addKeyValue(doc, y, "Strategic Fit Score", sf.score ? `${sf.score} / 5` : "—");
+    y = addFieldGroup(doc, y, "Strategic Fit", [{ label: "Details", value: sf.details }], pw, true);
+    if (sf.alignmentDimensions?.length) {
       y = addTable(doc, y, "Alignment Dimensions", ["Dimension", "Current", "Required"],
-        bp.strategicFit.alignmentDimensions.map(d => [d.label, String(d.current), String(d.required)]), pw);
+        sf.alignmentDimensions.map((d: any) => [d.label, String(d.current), String(d.required)]), pw);
     }
-    if (bp.strategicFit.capabilityGaps?.length) {
+    if (sf.capabilityGaps?.length) {
       y = addTable(doc, y, "Capability Gaps", ["Capability", "Current", "Required", "Priority", "Action"],
-        bp.strategicFit.capabilityGaps.map(g => [g.capability, String(g.currentLevel), String(g.requiredLevel), g.priority, g.action]), pw);
+        sf.capabilityGaps.map((g: any) => [g.capability, String(g.currentLevel), String(g.requiredLevel), g.priority, g.action]), pw);
     }
   }
-  if (bp?.portfolioFit) {
-    y = addKeyValue(doc, y, "Portfolio Fit Score", `${bp.portfolioFit.score} / 5`);
-    if (bp.portfolioFit.dimensions?.length) {
+  {
+    const pfit: any = bp?.portfolioFit || {};
+    y = addKeyValue(doc, y, "Portfolio Fit Score", pfit.score ? `${pfit.score} / 5` : "—");
+    if (pfit.dimensions?.length) {
       y = addTable(doc, y, "Portfolio Fit Dimensions", ["Dimension", "Score", "Notes"],
-        bp.portfolioFit.dimensions.map(d => [d.label, String(d.score), d.notes]), pw);
+        pfit.dimensions.map((d: any) => [d.label, String(d.score), d.notes]), pw);
     }
     y = addFieldGroup(doc, y, "Portfolio Fit – Details", [
-      { label: "Cannibalization Risk", value: bp.portfolioFit.cannibalizationRisk },
-      { label: "Cross-Selling Potential", value: bp.portfolioFit.crossSellingPotential },
-      { label: "Shared Resources", value: bp.portfolioFit.sharedResources },
-      { label: "Notes", value: bp.portfolioFit.notes },
-    ], pw);
+      { label: "Cannibalization Risk", value: pfit.cannibalizationRisk },
+      { label: "Cross-Selling Potential", value: pfit.crossSellingPotential },
+      { label: "Shared Resources", value: pfit.sharedResources },
+      { label: "Notes", value: pfit.notes },
+    ], pw, true);
   }
-  if (bp?.feasibility) {
-    y = addKeyValue(doc, y, "Feasibility Score", `${bp.feasibility.score} / 5`);
-    if (bp.feasibility.trl) y = addKeyValue(doc, y, "TRL", String(bp.feasibility.trl));
-    y = addLongText(doc, y, "Feasibility – Details", bp.feasibility.details, pw);
-    if (bp.feasibility.milestones?.length) {
+  {
+    const fe: any = bp?.feasibility || {};
+    y = addKeyValue(doc, y, "Feasibility Score", fe.score ? `${fe.score} / 5` : "—");
+    y = addKeyValue(doc, y, "TRL", fe.trl ? String(fe.trl) : "—");
+    y = addFieldGroup(doc, y, "Feasibility", [{ label: "Details", value: fe.details }], pw, true);
+    if (fe.milestones?.length) {
       y = addTable(doc, y, "Feasibility Milestones", ["Milestone", "Target Date", "Status"],
-        bp.feasibility.milestones.map((m: any) => [m.name || m.milestone, m.targetDate || m.date, m.status]), pw);
+        fe.milestones.map((m: any) => [m.name || m.milestone, m.targetDate || m.date, m.status]), pw);
     }
   }
-  if (bp?.organisationalReadiness) {
-    const o = bp.organisationalReadiness;
-    y = addKeyValue(doc, y, "Organisational Readiness Score", `${o.score} / 5`);
+  {
+    const o: any = bp?.organisationalReadiness || {};
+    y = addKeyValue(doc, y, "Organisational Readiness Score", o.score ? `${o.score} / 5` : "—");
     y = addFieldGroup(doc, y, "Organisational Readiness", [
       { label: "Culture", value: o.culture },
       { label: "Processes", value: o.processes },
@@ -1363,38 +1366,39 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Resources", value: o.resources },
       { label: "Stakeholders", value: o.stakeholders },
       { label: "Details", value: o.details },
-    ], pw);
+    ], pw, true);
   }
-  if (bp?.commercialViability) {
-    const cv = bp.commercialViability;
-    y = addKeyValue(doc, y, "Commercial Viability Score", `${cv.score} / 5`);
+  {
+    const cv: any = bp?.commercialViability || {};
+    y = addKeyValue(doc, y, "Commercial Viability Score", cv.score ? `${cv.score} / 5` : "—");
     y = addFieldGroup(doc, y, "Commercial Viability", [
       { label: "Pricing Model", value: cv.pricingModel },
       { label: "Unit Price (EUR)", value: cv.unitPrice ? fmt(cv.unitPrice) : "" },
       { label: "Gross Margin (%)", value: cv.grossMargin ? fmt(cv.grossMargin) : "" },
       { label: "Break-Even Units", value: cv.breakEvenUnits ? fmt(cv.breakEvenUnits) : "" },
       { label: "Details", value: cv.details },
-    ], pw);
-    if (cv.projections?.some(p => p.revenue > 0 || p.costs > 0)) {
+    ], pw, true);
+    if (cv.projections?.some((p: any) => p.revenue > 0 || p.costs > 0)) {
       y = addTable(doc, y, "Revenue Projections", ["Year", "Revenue (EUR)", "Costs (EUR)", "Profit (EUR)"],
-        cv.projections.map(p => [String(p.year), fmt(p.revenue), fmt(p.costs), fmt(p.revenue - p.costs)]), pw);
+        cv.projections.map((p: any) => [String(p.year), fmt(p.revenue), fmt(p.costs), fmt(p.revenue - p.costs)]), pw);
     }
   }
 
-  if (bp?.risk) {
-    y = addKeyValue(doc, y, "Risk Score", `${bp.risk.score} / 5`);
-    y = addLongText(doc, y, "Risk – Details", bp.risk.details, pw);
-    if (bp.risk.riskItems?.length) {
+  {
+    const rk: any = bp?.risk || {};
+    y = addKeyValue(doc, y, "Risk Score", rk.score ? `${rk.score} / 5` : "—");
+    y = addFieldGroup(doc, y, "Risk", [{ label: "Details", value: rk.details }], pw, true);
+    if (rk.riskItems?.length) {
       y = addTable(doc, y, "Risk Register", ["Risk", "Category", "Probability", "Impact", "Mitigation"],
-        bp.risk.riskItems.map(r => [r.name, r.category, String(r.probability), String(r.impact), r.mitigation]), pw);
+        rk.riskItems.map((r: any) => [r.name, r.category, String(r.probability), String(r.impact), r.mitigation]), pw);
     }
   }
 
-  const sam = sa?.sam;
+  const sam: any = sa?.sam || {};
   if (sam?.customerSegmentation?.entries?.length) {
     const cs = sam.customerSegmentation;
     y = addTable(doc, y, "Customer Segmentation", ["Segment", "Size", "Needs", "WTP", "Priority"],
-      cs.entries.map(e => [e.name, e.size, e.needs, e.willingnessToPay, e.priority]), pw);
+      cs.entries.map((e: any) => [e.name, e.size, e.needs, e.willingnessToPay, e.priority]), pw);
     y = addLongText(doc, y, "Segmentation – Description", cs.description, pw);
     y = addLongText(doc, y, "Segmentation – Rationale", cs.rationale, pw);
   }
@@ -1410,8 +1414,8 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
   renderInterviews("Internal Affiliate Interviews", sam?.internalAffiliateInterviews);
   renderInterviews("Internal BU Interviews", sam?.internalBUInterviews);
 
-  if (sam?.businessModelling) {
-    const b = sam.businessModelling;
+  {
+    const b: any = sam.businessModelling || {};
     y = addFieldGroup(doc, y, "Business Model Canvas", [
       { label: "Value Proposition", value: b.valueProposition },
       { label: "Customer Segments", value: b.customerSegments },
@@ -1424,10 +1428,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Cost Structure", value: b.costStructure },
       { label: "Description", value: b.description },
       { label: "Rationale", value: b.rationale },
-    ], pw);
+    ], pw, true);
   }
-  if (sam?.leanCanvas) {
-    const l = sam.leanCanvas;
+  {
+    const l: any = sam.leanCanvas || {};
     y = addFieldGroup(doc, y, "Lean Canvas", [
       { label: "Problem", value: l.problem },
       { label: "Solution", value: l.solution },
@@ -1440,8 +1444,9 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Revenue Streams", value: l.revenueStreams },
       { label: "Description", value: l.description },
       { label: "Rationale", value: l.rationale },
-    ], pw);
+    ], pw, true);
   }
+
 
   // ═══ SOM ═══
   y += 4;
