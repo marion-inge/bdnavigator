@@ -1200,10 +1200,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
   }
 
 
-  // TAM Models
-  const tam = sa?.tam;
-  if (tam?.marketResearch) {
-    const mr = tam.marketResearch;
+  // TAM Models (always rendered so the PDF mirrors the app structure)
+  const tam: any = sa?.tam || {};
+  {
+    const mr: any = tam.marketResearch || {};
     y = addFieldGroup(doc, y, "Market Research", [
       { label: "Secondary Research", value: mr.secondaryResearch },
       { label: "Primary Research", value: mr.primaryResearch },
@@ -1212,10 +1212,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Central Insights", value: mr.centralInsights },
       { label: "Description", value: mr.description },
       { label: "Rationale", value: mr.rationale },
-    ], pw);
+    ], pw, true);
   }
-  if (tam?.pestel) {
-    const p = tam.pestel;
+  {
+    const p: any = tam.pestel || {};
     y = addFieldGroup(doc, y, "PESTEL Analysis", [
       { label: "Political", value: p.political },
       { label: "Economic", value: p.economic },
@@ -1225,19 +1225,25 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Legal", value: p.legal },
       { label: "Description", value: p.description },
       { label: "Rationale", value: p.rationale },
-    ], pw);
+    ], pw, true);
   }
   if (tam?.valueChain?.stages?.length) {
     y = addTable(doc, y, "Industry Value Chain",
       ["Stage", "Our Position", "Margin (1-5)", "Differentiators", "Dynamics"],
-      tam.valueChain.stages.map(s => [s.name, s.isOurPosition ? "Yes" : "—", String(s.marginAttractiveness), s.differentiators, s.dynamics]),
+      tam.valueChain.stages.map((s: any) => [s.name, s.isOurPosition ? "Yes" : "—", String(s.marginAttractiveness), s.differentiators, s.dynamics]),
       pw, { 3: { cellWidth: 50 }, 4: { cellWidth: 50 } });
     y = addLongText(doc, y, "Value Chain – Description", tam.valueChain.description, pw);
     y = addLongText(doc, y, "Value Chain – Rationale", tam.valueChain.rationale, pw);
+  } else {
+    y = addFieldGroup(doc, y, "Industry Value Chain", [
+      { label: "Stages", value: "" },
+      { label: "Description", value: tam.valueChain?.description },
+      { label: "Rationale", value: tam.valueChain?.rationale },
+    ], pw, true);
   }
-  if (tam?.porter) {
-    const pf = tam.porter;
-    const fRow = (name: string, f: any) => [name, INTENSITY_LABEL[f.intensity] || String(f.intensity), f.description || ""];
+  {
+    const pf: any = tam.porter || {};
+    const fRow = (name: string, f: any) => [name, f ? (INTENSITY_LABEL[f.intensity] || String(f.intensity ?? "—")) : "—", f?.description || "—"];
     y = addTable(doc, y, "Porter's Five Forces",
       ["Force", "Intensity", "Description"],
       [
@@ -1250,8 +1256,8 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
     y = addLongText(doc, y, "Porter – Description", pf.description, pw);
     y = addLongText(doc, y, "Porter – Rationale", pf.rationale, pw);
   }
-  if (tam?.swot) {
-    const s = tam.swot;
+  {
+    const s: any = tam.swot || {};
     y = addFieldGroup(doc, y, "SWOT Analysis", [
       { label: "Strengths", value: s.strengths },
       { label: "Weaknesses", value: s.weaknesses },
@@ -1259,7 +1265,8 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
       { label: "Threats", value: s.threats },
       { label: "Description", value: s.description },
       { label: "Rationale", value: s.rationale },
-    ], pw);
+    ], pw, true);
+
   }
   const cfSource = (sa?.sam as any)?.customersFound?.entries?.length ? (sa?.sam as any).customersFound : (tam as any)?.customersFound;
   if (cfSource?.entries?.length) {
