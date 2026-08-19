@@ -4,6 +4,7 @@ import { Opportunity, Scoring, calculateTotalScore, SCORING_WEIGHTS, STAGE_ORDER
 import { getQuestionsByCategory, ROUGH_SCORING_QUESTIONS } from "./roughScoringQuestions";
 import { loadAssessment, AIAssessmentResult, getRatingLabel } from "./aiAssessmentService";
 import { calculateYearData, calculateAccumulatedCashFlow, calculateNPV, calculatePaybackPeriod, calculateAverageROCE } from "./investmentCalculations";
+import { buildBusinessPlanCharts, type PdfChart } from "./pdfCharts";
 
 
 const STAGE_LABELS_EN: Record<string, string> = {
@@ -1059,6 +1060,56 @@ function addBusinessCaseSections(doc: jsPDF, y: number, opp: Opportunity, pw: nu
   return y;
 }
 
+/** Renders all available charts as images, one per block, paginating as needed. */
+async function addChartsSection(doc: jsPDF, y: number, opp: Opportunity, pw: number): Promise<number> {
+  let charts: PdfChart[] = [];
+  try {
+    charts = await buildBusinessPlanCharts(opp);
+  } catch {
+    charts = [];
+  }
+  if (!charts.length) return y;
+
+  doc.addPage();
+  y = 20;
+  y = addSectionTitle(doc, y, "Charts & Visualisations");
+
+  const maxW = pw - 28;
+  const ph = doc.internal.pageSize.getHeight();
+  for (const c of charts) {
+    const imgH = (c.height / c.width) * maxW;
+    const legendH = c.legend?.length ? 6 : 0;
+    if (y + imgH + 14 + legendH > ph - 15) {
+      doc.addPage();
+      y = 20;
+    }
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text(c.title, 14, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    y += 5;
+    if (c.legend?.length) {
+      let lx = 14;
+      doc.setFontSize(8);
+      for (const item of c.legend) {
+        doc.setFillColor(item.color);
+        doc.rect(lx, y - 2.6, 3, 3, "F");
+        doc.setTextColor(70);
+        doc.text(item.label, lx + 4.5, y);
+        lx += 8 + doc.getTextWidth(item.label);
+      }
+      doc.setTextColor(0);
+      doc.setFontSize(10);
+      y += 4;
+    }
+    doc.addImage(c.dataUrl, "PNG", 14, y, maxW, imgH);
+    y += imgH + 9;
+  }
+
+  return y;
+}
+
 export async function exportBusinessPlanPdf(opp: Opportunity) {
 
   const doc = new jsPDF();
@@ -1514,6 +1565,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
 
   // ═══ BUSINESS CASE ═══
   y = addBusinessCaseSections(doc, y, opp, pw);
+
+  // ═══ CHARTS ═══
+  y = await addChartsSection(doc, y, opp, pw);
+
 
 
 
