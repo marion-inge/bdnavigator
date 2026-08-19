@@ -1515,6 +1515,10 @@ export async function exportBusinessPlanPdf(opp: Opportunity) {
   // ═══ BUSINESS CASE ═══
   y = addBusinessCaseSections(doc, y, opp, pw);
 
+  // ═══ CHARTS ═══
+  y = await addChartsSection(doc, y, opp, pw);
+
+
 
 
   // Footer
