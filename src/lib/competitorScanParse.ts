@@ -129,35 +129,70 @@ export async function parseCompetitorXlsx(file: Blob): Promise<CompetitorScanDat
     "company", "competitor", "tier", "camp", "regions", "momentum", "discovery method", "overlap",
   ]);
   const dbMap = buildColMap(dbRows[dbHdr] || []);
+  const dbHeader = (dbRows[dbHdr] || []).map(str);
   const competitors: CompetitorRow[] = [];
   let shortlistMode = true;
   for (const r of dataRows(dbRows, dbHdr)) {
-    const company = cell(r, dbMap, ["company", "competitor", "name", "organisation", "organization"]) || str(r[0]);
+    const used = new Set<number>();
+    const g = (aliases: string[], strict = false) => {
+      const i = strict ? exactIndex(dbMap, aliases) : colIndex(dbMap, aliases);
+      if (i >= 0) used.add(i);
+      return i >= 0 ? str(r[i]) : "";
+    };
+    const gn = (aliases: string[]) => {
+      const i = colIndex(dbMap, aliases);
+      if (i >= 0) used.add(i);
+      return i >= 0 ? num(r[i]) : null;
+    };
+
+    const company = g(["company", "competitor", "name", "organisation", "organization"]) || str(r[0]);
     if (!company) continue;
     if (/watch\s*list/i.test(company)) { shortlistMode = false; continue; }
     if (/^(company|competitor|name)$/i.test(company)) continue;
-    const decision = cell(r, dbMap, ["shortlist decision", "decision", "status"]);
-    competitors.push({
+    const decision = g(["shortlist decision", "decision", "status"]);
+    const row: CompetitorRow = {
       company,
-      camp: cell(r, dbMap, ["camp", "group", "category", "archetype"]),
-      tier: cell(r, dbMap, ["competitor tier", "tier"]).replace(/\s*\(.*\)/, "").trim(),
-      tierConfidence: cell(r, dbMap, ["tier confidence", "confidence"]),
-      O: cellNum(r, dbMap, ["offering overlap", "overlap score", "o score", "o"]),
-      P: cellNum(r, dbMap, ["market presence", "presence", "p score", "p"]),
-      E: cellNum(r, dbMap, ["encounter evidence", "encounter", "e score", "e"]),
-      shortlistScore: cellNum(r, dbMap, ["shortlist score", "score", "total"]),
+      camp: g(["camp", "group", "category", "archetype"]),
+      tier: g(["competitor tier", "tier"]).replace(/\s*\(.*\)/, "").trim(),
+      tierConfidence: g(["tier confidence", "confidence"]),
+      O: gn(["offering overlap", "overlap score", "o score", "o"]),
+      P: gn(["market presence", "presence", "p score", "p"]),
+      E: gn(["encounter evidence", "encounter", "e score", "e"]),
+      shortlistScore: gn(["shortlist score", "score", "total"]),
       shortlistDecision: decision,
-      hq: cell(r, dbMap, ["hq", "headquarters", "country"]),
-      ownership: cell(r, dbMap, ["ownership", "owner"]),
-      regions: cell(r, dbMap, ["regions", "region", "geography"]),
-      momentum: cell(r, dbMap, ["momentum", "trend"]),
-      discoveryMethod: cell(r, dbMap, ["discovery method", "discovery"]),
-      assumptionIds: cell(r, dbMap, ["assumption ids", "assumption id", "assumptions"]),
-      overlap: cell(r, dbMap, ["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
-      source: cell(r, dbMap, ["source", "sources", "evidence"]),
+      hq: g(["hq", "headquarters", "country", "location"]),
+      ownership: g(["ownership", "owner", "listed"]),
+      regions: g(["regions", "region", "geography", "markets served"]),
+      momentum: g(["momentum", "trend"]),
+      discoveryMethod: g(["discovery method", "discovery"]),
+      assumptionIds: g(["assumption ids", "assumption id", "assumptions"]),
+      overlap: g(["offering overlap note", "overlap note", "offering description", "offering summary", "overlap comment"], true),
+      source: g(["source", "sources", "evidence"]),
+      description: g(["description", "company description", "profile", "summary", "about", "what they do"]),
+      offering: g(["offering", "products", "product", "product portfolio", "solutions", "key products"]),
+      strengths: g(["strengths", "strength", "key strengths"]),
+      weaknesses: g(["weaknesses", "weakness", "gaps", "limitations"]),
+      differentiation: g(["differentiation", "differentiator", "usp", "value proposition", "positioning"]),
+      pricing: g(["pricing", "price", "price level", "pricing signals", "price point"]),
+      businessModel: g(["business model", "revenue model", "model"]),
+      revenue: g(["revenue", "turnover", "sales", "segment revenue"]),
+      employees: g(["employees", "headcount", "staff", "size"]),
+      founded: g(["founded", "year founded", "established"]),
+      website: g(["website", "url", "web", "homepage"]),
+      references: g(["reference customers", "references", "customers", "installed base", "key accounts", "proof"]),
+      strategySignals: g(["strategy signals", "strategic signals", "signals", "strategy", "recent moves", "m&a"]),
+      threatLevel: g(["threat", "threat level", "risk"]),
+      recency: g(["recency", "recency flag", "as of", "last verified", "date"]),
+      notes: g(["notes", "note", "comment", "comments", "remarks"]),
+      extra: [],
       isShortlist: shortlistMode && !/watch|excluded/i.test(decision),
-    });
+    };
+    row.extra = dbHeader
+      .map((h, i) => ({ label: h, value: str(r[i]) }))
+      .filter((x, i) => x.label && x.value && !used.has(i));
+    competitors.push(row);
   }
+
 
   // --- Watch List -----------------------------------------------------------
   const watchRows = sheetRows(wb, findSheetName(wb, [/watch/i]));
