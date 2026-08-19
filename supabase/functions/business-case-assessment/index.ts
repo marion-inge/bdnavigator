@@ -15,7 +15,18 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { kpis, parameters, yearData, title, description, industry, technology, language } = await req.json();
+    const raw = await req.json();
+    const payload = raw?.kpis ? raw : (raw?.body ?? raw);
+    const { title, description, industry, technology, language } = payload;
+    const kpis = payload.kpis ?? {};
+    const parameters = payload.parameters ?? {};
+    const yearData = Array.isArray(payload.yearData) ? payload.yearData : [];
+
+    if (!payload.kpis) {
+      return new Response(JSON.stringify({ error: "Missing business case data (kpis)." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const lang = language === "de" ? "German" : "English";
 
