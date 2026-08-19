@@ -113,28 +113,14 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
     </Button>
   );
 
-  const { getOpportunity } = useStore();
-
-  const handleDownloadPdf = async () => {
-    if (!opportunityId) return;
-    const opp = getOpportunity(opportunityId);
-    if (!opp) return;
-    await exportBusinessPlanPdf(opp);
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-end gap-2">
-        {opportunityId && (
-          <Button type="button" size="sm" variant="outline" onClick={handleDownloadPdf} className="gap-2">
-            <FileDown className="h-4 w-4" />
-            {bp("Download Business Plan (PDF)", "Businessplan herunterladen (PDF)")}
-          </Button>
-        )}
         {canRunIda && (
           <IdaButton scope="all" label={bp("Fill Business Plan with IDA", "Businessplan mit IDA ausfüllen")} />
         )}
       </div>
+
 
 
 
