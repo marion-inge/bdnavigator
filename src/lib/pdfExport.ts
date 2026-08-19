@@ -1111,27 +1111,27 @@ async function addChartsSection(doc: jsPDF, y: number, opp: Opportunity, pw: num
   return y;
 }
 
-export async function exportBusinessPlanPdf(opp: Opportunity) {
+async function addBusinessPlanBody(doc: jsPDF, opp: Opportunity, startY: number, includeOverview = true): Promise<number> {
 
-  const doc = new jsPDF();
   const pw = doc.internal.pageSize.getWidth();
-
-  addHeader(doc, "NOVI – Business Plan");
-  let y = 38;
+  let y = startY;
 
   // ─── OVERVIEW ─────────────────────────────────────────────────
-  y = addSectionTitle(doc, y, "Opportunity");
-  y = addKeyValue(doc, y, "Title", opp.title);
-  y = addKeyValue(doc, y, "Stage", STAGE_LABELS_EN[opp.stage] || opp.stage);
-  y = addKeyValue(doc, y, "Industry", opp.industry);
-  y = addKeyValue(doc, y, "Geography", opp.geography);
-  y = addKeyValue(doc, y, "Business Field", opp.technology);
-  y = addKeyValue(doc, y, "Owner", opp.owner);
-  y = addLongText(doc, y + 2, "Problem Description", opp.description || "", pw);
-  y = addLongText(doc, y, "Solution Idea & Differentiator", opp.solutionDescription || "", pw);
+  if (includeOverview) {
+    y = addSectionTitle(doc, y, "Opportunity");
+    y = addKeyValue(doc, y, "Title", opp.title);
+    y = addKeyValue(doc, y, "Stage", STAGE_LABELS_EN[opp.stage] || opp.stage);
+    y = addKeyValue(doc, y, "Industry", opp.industry);
+    y = addKeyValue(doc, y, "Geography", opp.geography);
+    y = addKeyValue(doc, y, "Business Field", opp.technology);
+    y = addKeyValue(doc, y, "Owner", opp.owner);
+    y = addLongText(doc, y + 2, "Problem Description", opp.description || "", pw);
+    y = addLongText(doc, y, "Solution Idea & Differentiator", opp.solutionDescription || "", pw);
+  }
 
   const bp = opp.businessPlan;
   const sa = opp.strategicAnalyses;
+
 
   // ─── COMBINED INTERPRETATION ────────────────────────────────
   const ci = bp?.combinedInterpretation;
