@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,6 +53,7 @@ function Field({ label, children, empty, help }: { label: string; children: Reac
 
 export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const h = hypothesis;
 
   const set = (patch: Partial<HypothesisData>) =>
@@ -446,6 +448,7 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
 /* ---------- Reusable list widgets ---------- */
 
 function StringList({ label, values, onChange, readonly, help }: { label: string; values: string[]; onChange: (v: string[]) => void; readonly?: boolean; help?: string }) {
+  const confirm = useConfirm();
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
@@ -470,7 +473,7 @@ function StringList({ label, values, onChange, readonly, help }: { label: string
               const next = [...values]; next[i] = e.target.value; onChange(next);
             }} />
             {!readonly && (
-              <Button variant="ghost" size="icon" onClick={() => onChange(values.filter((_, j) => j !== i))}>
+              <Button variant="ghost" size="icon" onClick={() => confirm(() => onChange(values.filter((_, j) => j !== i)))}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             )}
@@ -490,6 +493,7 @@ function PairList<T extends Record<string, any>>(
   { label, items, keys, labels, onChange, readonly, help }:
   { label: string; items: T[]; keys: { a: keyof T & string; b: keyof T & string }; labels: { a: string; b: string }; onChange: (v: T[]) => void; readonly?: boolean; help?: string }
 ) {
+  const confirm = useConfirm();
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
@@ -515,7 +519,7 @@ function PairList<T extends Record<string, any>>(
             <Input disabled={readonly} placeholder={labels.b} value={(it as any)[keys.b] ?? ""}
               onChange={(e) => { const next = [...items]; (next[i] as any)[keys.b] = e.target.value; onChange(next); }} />
             {!readonly && (
-              <Button variant="ghost" size="icon" onClick={() => onChange(items.filter((_, j) => j !== i))}>
+              <Button variant="ghost" size="icon" onClick={() => confirm(() => onChange(items.filter((_, j) => j !== i)))}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             )}

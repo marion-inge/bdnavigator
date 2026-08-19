@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n, TranslationKey } from "@/lib/i18n";
 import { DetailedScoring, RiskItem } from "@/lib/types";
 import { useState } from "react";
@@ -33,6 +34,7 @@ const CATEGORY_BORDER: Record<RiskItem["category"], string> = {
 
 export function RiskTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState({
     ...scoring.risk,
     riskItems: scoring.risk.riskItems ?? [],
@@ -268,7 +270,7 @@ export function RiskTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
                         {riskScore}
                       </span>
                       {!readonly && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeRiskItem(i)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => confirm(() => removeRiskItem(i))}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       )}

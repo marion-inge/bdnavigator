@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { SomModels, ValuePropositionCanvas, CustomerBenefitAnalysis, ThreeCircleModel, PositioningStatement, PositioningLandscapeData, PositioningLandscapeEntry, TargetCostingData, TargetCostingComponent } from "@/lib/types";
 import { useState } from "react";
@@ -20,6 +21,7 @@ interface EmbeddedModelProps {
 // ── Value Proposition Canvas ──
 export function EmbeddedVPC({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -69,6 +71,7 @@ export function EmbeddedVPC({ data, onSave, readonly: propReadonly }: EmbeddedMo
 // ── Customer Benefit Analysis ──
 export function EmbeddedCBA({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -105,6 +108,7 @@ export function EmbeddedCBA({ data, onSave, readonly: propReadonly }: EmbeddedMo
 // ── Three Circle Model ──
 export function EmbeddedThreeCircles({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -137,6 +141,7 @@ export function EmbeddedThreeCircles({ data, onSave, readonly: propReadonly }: E
 // ── Positioning Statement ──
 export function EmbeddedPositioning({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -167,6 +172,7 @@ export function EmbeddedPositioning({ data, onSave, readonly: propReadonly }: Em
 // ── Positioning Landscape ──
 export function EmbeddedPositioningLandscape({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -209,7 +215,7 @@ export function EmbeddedPositioningLandscape({ data, onSave, readonly: propReado
                 <Button variant={entry.isOurs ? "default" : "outline"} size="sm" onClick={() => updateEntry(entry.id, { isOurs: !entry.isOurs })} disabled={readonly}>Us</Button>
                 <div className="flex items-center gap-1"><span className="text-xs">X:</span><Slider min={0} max={10} step={1} value={[entry.xValue]} onValueChange={([v]) => updateEntry(entry.id, { xValue: v })} disabled={readonly} className="w-20" /></div>
                 <div className="flex items-center gap-1"><span className="text-xs">Y:</span><Slider min={0} max={10} step={1} value={[entry.yValue]} onValueChange={([v]) => updateEntry(entry.id, { yValue: v })} disabled={readonly} className="w-20" /></div>
-                {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeEntry(entry.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
             </div>
           ))}
@@ -229,6 +235,7 @@ const defaultTargetCosting: TargetCostingData = {
 
 export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -312,7 +319,7 @@ export function EmbeddedTargetCosting({ data, onSave, readonly: propReadonly }: 
                           <td className="p-2"><Input type="number" value={comp.allowableCost || ""} onChange={e => updateComponent(comp.id, { allowableCost: parseFloat(e.target.value) || 0 })} disabled={readonly} className="h-8 text-right" /></td>
                           <td className={`p-2 text-right font-medium ${gap > 0 ? "text-destructive" : "text-primary"}`}>{gap.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</td>
                           <td className="p-2"><Input value={comp.actions} onChange={e => updateComponent(comp.id, { actions: e.target.value })} disabled={readonly} className="h-8" placeholder={bp("Cost reduction measures", "Kostensenkungsmaßnahmen")} /></td>
-                          {!readonly && <td className="p-2"><Button variant="ghost" size="icon" onClick={() => removeComponent(comp.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button></td>}
+                          {!readonly && <td className="p-2"><Button variant="ghost" size="icon" onClick={() => confirm(() => removeComponent(comp.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button></td>}
                         </tr>
                       );
                     })}

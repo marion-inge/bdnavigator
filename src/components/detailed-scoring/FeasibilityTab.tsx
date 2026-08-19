@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n, TranslationKey } from "@/lib/i18n";
 import { DetailedScoring, FeasibilityMilestone } from "@/lib/types";
 import { useState } from "react";
@@ -28,6 +29,7 @@ const TRL_DESCRIPTIONS: Record<number, { en: string; de: string }> = {
 
 export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t, language } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState({
     ...scoring.feasibility,
     trl: scoring.feasibility.trl ?? 1,
@@ -238,7 +240,7 @@ export function FeasibilityTab({ scoring, onUpdate, readonly: propReadonly }: Pr
                             </SelectContent>
                           </Select>
                           {!readonly && (
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeMilestone(originalIndex)}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => confirm(() => removeMilestone(originalIndex))}>
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           )}

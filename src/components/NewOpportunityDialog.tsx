@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useState, useRef } from "react";
 import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
@@ -20,6 +21,7 @@ const MAX_SIZE = 20 * 1024 * 1024;
 
 export function NewOpportunityDialog() {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const { addOpportunity } = useStore();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -144,7 +146,7 @@ export function NewOpportunityDialog() {
                       <span className="truncate">{f.name}</span>
                       <span className="text-muted-foreground shrink-0">({Math.round(f.size / 1024)} KB)</span>
                     </span>
-                    <Button type="button" size="icon" variant="ghost" className="h-5 w-5 shrink-0" onClick={() => removeFile(i)}>
+                    <Button type="button" size="icon" variant="ghost" className="h-5 w-5 shrink-0" onClick={() => confirm(() => removeFile(i))}>
                       <X className="h-3 w-3" />
                     </Button>
                   </li>

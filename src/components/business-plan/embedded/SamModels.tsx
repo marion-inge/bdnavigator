@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { SamModels, CustomerSegmentEntry, CustomerInterviewEntry, InternalInterviewEntry, BusinessModelCanvas, LeanCanvas } from "@/lib/types";
 import { useState } from "react";
@@ -19,6 +20,7 @@ interface EmbeddedModelProps {
 // ── Customer Segmentation ──
 export function EmbeddedCustomerSegmentation({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -42,7 +44,7 @@ export function EmbeddedCustomerSegmentation({ data, onSave, readonly: propReado
                   <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
                   <SelectContent><SelectItem value="high">🔴 High</SelectItem><SelectItem value="medium">🟡 Medium</SelectItem><SelectItem value="low">🟢 Low</SelectItem></SelectContent>
                 </Select>
-                {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeEntry(entry.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <div><Label className="text-xs">{bp("Size", "Größe")}</Label><Input value={entry.size} onChange={e => updateEntry(entry.id, { size: e.target.value })} disabled={readonly} className="mt-1" /></div>
@@ -61,6 +63,7 @@ export function EmbeddedCustomerSegmentation({ data, onSave, readonly: propReado
 // ── Customer Interviews ──
 export function EmbeddedCustomerInterviews({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -82,7 +85,7 @@ export function EmbeddedCustomerInterviews({ data, onSave, readonly: propReadonl
                 <Input type="date" value={entry.date} onChange={e => updateEntry(entry.id, { date: e.target.value })} disabled={readonly} className="w-36" />
                 <Input value={entry.customerName} onChange={e => updateEntry(entry.id, { customerName: e.target.value })} placeholder={bp("Customer", "Kunde")} disabled={readonly} className="flex-1" />
                 <Input value={entry.role} onChange={e => updateEntry(entry.id, { role: e.target.value })} placeholder={bp("Role", "Rolle")} disabled={readonly} className="w-40" />
-                {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeEntry(entry.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <div><Label className="text-xs">{bp("Key Insights", "Zentrale Insights")}</Label><Textarea value={entry.keyInsights} onChange={e => updateEntry(entry.id, { keyInsights: e.target.value })} disabled={readonly} rows={2} className="mt-1" /></div>
@@ -101,6 +104,7 @@ export function EmbeddedCustomerInterviews({ data, onSave, readonly: propReadonl
 // ── Internal Interviews (shared form) ──
 function InternalInterviewsForm({ title, icon, dataKey, data, onSave, readonly: propReadonly }: EmbeddedModelProps & { title: string; icon: string; dataKey: "internalAffiliateInterviews" | "internalBUInterviews" }) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -123,7 +127,7 @@ function InternalInterviewsForm({ title, icon, dataKey, data, onSave, readonly: 
                 <Input value={entry.intervieweeName} onChange={e => updateEntry(entry.id, { intervieweeName: e.target.value })} placeholder={bp("Name", "Name")} disabled={readonly} className="flex-1 min-w-[120px]" />
                 <Input value={entry.role} onChange={e => updateEntry(entry.id, { role: e.target.value })} placeholder={bp("Role", "Rolle")} disabled={readonly} className="w-36" />
                 <Input value={entry.department} onChange={e => updateEntry(entry.id, { department: e.target.value })} placeholder={bp("Department / Affiliate", "Abteilung / Affiliate")} disabled={readonly} className="w-44" />
-                {!readonly && <Button variant="ghost" size="icon" onClick={() => removeEntry(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeEntry(entry.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <div><Label className="text-xs">{bp("Key Insights", "Zentrale Insights")}</Label><Textarea value={entry.keyInsights} onChange={e => updateEntry(entry.id, { keyInsights: e.target.value })} disabled={readonly} rows={2} className="mt-1" /></div>
@@ -141,12 +145,14 @@ function InternalInterviewsForm({ title, icon, dataKey, data, onSave, readonly: 
 
 export function EmbeddedInternalAffiliateInterviews(props: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   return <InternalInterviewsForm {...props} title={bp("Internal Affiliate Interviews", "Interne Affiliate-Interviews")} icon="🏢" dataKey="internalAffiliateInterviews" />;
 }
 
 export function EmbeddedInternalBUInterviews(props: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   return <InternalInterviewsForm {...props} title={bp("Internal BU Interviews", "Interne BU-Interviews")} icon="🏗️" dataKey="internalBUInterviews" />;
 }
@@ -154,6 +160,7 @@ export function EmbeddedInternalBUInterviews(props: EmbeddedModelProps) {
 // ── Business Model Canvas ──
 export function EmbeddedBMC({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -195,6 +202,7 @@ export function EmbeddedBMC({ data, onSave, readonly: propReadonly }: EmbeddedMo
 // ── Lean Canvas ──
 export function EmbeddedLeanCanvas({ data, onSave, readonly: propReadonly }: EmbeddedModelProps) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;

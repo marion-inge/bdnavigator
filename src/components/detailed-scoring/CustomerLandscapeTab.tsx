@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, CustomerSegment } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ const PIE_COLORS = [
 
 export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -145,7 +147,7 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
                 <Input value={seg.name} onChange={(e) => updateSegment(idx, "name", e.target.value)} disabled={readonly} placeholder={t("maSegmentName")} className="flex-1" />
                 <Input type="number" value={seg.size} onChange={(e) => updateSegment(idx, "size", Number(e.target.value))} disabled={readonly} placeholder={t("maSegmentSize")} className="w-24" />
                 {!readonly && (
-                  <Button variant="ghost" size="sm" onClick={() => removeSegment(idx)}>
+                  <Button variant="ghost" size="sm" onClick={() => confirm(() => removeSegment(idx))}>
                     <Trash2 className="h-3 w-3 text-destructive" />
                   </Button>
                 )}

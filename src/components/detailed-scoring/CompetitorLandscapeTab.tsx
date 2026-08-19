@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { DetailedScoring, CompetitorEntry, CompetitorDimensionRating } from "@/lib/types";
@@ -41,6 +42,7 @@ const RADAR_COLORS = [
 
 export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadonly, opportunity }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -255,7 +257,7 @@ export function CompetitorLandscapeTab({ scoring, onUpdate, readonly: propReadon
               ))}
             </div>
             {!readonly && (
-              <Button variant="ghost" size="sm" onClick={() => removeCompetitor(idx)}>
+              <Button variant="ghost" size="sm" onClick={() => confirm(() => removeCompetitor(idx))}>
                 <Trash2 className="h-3 w-3 text-destructive" />
               </Button>
             )}

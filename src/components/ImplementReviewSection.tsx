@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { ImplementReview, ChecklistItem, createDefaultImplementReview } from "@/lib/types";
@@ -20,6 +21,7 @@ interface Props {
 
 export function ImplementReviewSection({ implementReview, onSave, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [data, setData] = useState<ImplementReview>(implementReview || createDefaultImplementReview());
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -142,7 +144,7 @@ export function ImplementReviewSection({ implementReview, onSave, readonly: prop
                   className={`flex-1 ${item.done ? "line-through text-muted-foreground" : ""}`}
                 />
                 {!readonly && (
-                  <Button variant="ghost" size="icon" onClick={() => removeChecklistItem(item.id)}
+                  <Button variant="ghost" size="icon" onClick={() => confirm(() => removeChecklistItem(item.id))}
                     className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive shrink-0">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>

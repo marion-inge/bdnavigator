@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, GeographicalRegion, MarketYearValue } from "@/lib/types";
 import { useState } from "react";
@@ -21,6 +22,7 @@ const DEFAULT_PROJECTIONS = [1,2,3,4,5].map((y) => ({ year: y, value: 0 }));
 
 export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
+  const confirm = useConfirm();
   const [local, setLocal] = useState(scoring.marketAttractiveness);
   const [dirty, setDirty] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -267,7 +269,7 @@ export function MarketAttractivenessTab({ scoring, onUpdate, readonly: propReado
                   ))}
                 </div>
                 {!readonly && (
-                  <Button variant="ghost" size="sm" onClick={() => removeRegion(idx)}>
+                  <Button variant="ghost" size="sm" onClick={() => confirm(() => removeRegion(idx))}>
                     <Trash2 className="h-3 w-3 text-destructive" />
                   </Button>
                 )}

@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ interface Props {
 
 export function SalesChannelAnalysisTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { language } = useI18n();
+  const confirm = useConfirm();
   const bp = (en: string, de: string) => language === "de" ? de : en;
   const [editing, setEditing] = useState(false);
   const readonly = propReadonly || !editing;
@@ -95,7 +97,7 @@ export function SalesChannelAnalysisTab({ scoring, onUpdate, readonly: propReado
                         <Label className="text-xs whitespace-nowrap">{bp("Rating", "Bewertung")}:</Label>
                         <Input type="number" min={1} max={5} value={entry.rating} onChange={e => updateChannel(entry.id, { rating: Number(e.target.value) })} disabled={readonly} className="w-14" />
                       </div>
-                      {!readonly && <Button variant="ghost" size="icon" onClick={() => removeChannel(entry.id)} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
+                      {!readonly && <Button variant="ghost" size="icon" onClick={() => confirm(() => removeChannel(entry.id))} className="text-destructive h-8 w-8"><Trash2 className="h-3.5 w-3.5" /></Button>}
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div><Label className="text-xs">{bp("Reach / Coverage", "Reichweite / Abdeckung")}</Label><Textarea value={entry.reach} onChange={e => updateChannel(entry.id, { reach: e.target.value })} disabled={readonly} rows={2} className="mt-1" /></div>
