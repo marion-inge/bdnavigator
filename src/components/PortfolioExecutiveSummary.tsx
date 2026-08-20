@@ -9,8 +9,6 @@ interface Props {
   opportunities: Opportunity[];
 }
 
-const STORAGE_KEY = "novi_portfolio_exec_summary";
-
 function buildDigest(opportunities: Opportunity[]) {
   return opportunities.map((o) => {
     const ma = o.businessPlan?.marketAttractiveness?.analysis as any;
@@ -85,15 +83,8 @@ function renderLine(line: string, i: number) {
 }
 
 export function PortfolioExecutiveSummary({ opportunities }: Props) {
-  const stored = (() => {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    } catch {
-      return null;
-    }
-  })();
-  const [summary, setSummary] = useState<string>(stored?.summary || "");
-  const [generatedAt, setGeneratedAt] = useState<string>(stored?.generatedAt || "");
+  const [summary, setSummary] = useState<string>("");
+  const [generatedAt, setGeneratedAt] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const generate = async () => {
@@ -111,7 +102,6 @@ export function PortfolioExecutiveSummary({ opportunities }: Props) {
       if (data?.error) throw new Error(data.error);
       setSummary(data.summary);
       setGeneratedAt(data.generatedAt);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ summary: data.summary, generatedAt: data.generatedAt }));
       toast.success("Executive summary generated");
     } catch (e: any) {
       toast.error(e.message || "Could not generate the summary");
