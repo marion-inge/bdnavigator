@@ -1,6 +1,6 @@
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
-import { GateRecord, GateDecision, GateMeetingNotes, GateActionItem, Stage, STAGE_ORDER } from "@/lib/types";
+import { GateRecord, GateDecision, GateMeetingNotes, GateActionItem, Stage, STAGE_ORDER, GATE_IDS, GateId } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,11 +131,7 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
     }
   };
 
-  const gateLabel = (gate: string) => {
-    if (gate === "gate1") return t("stage_gate1");
-    if (gate === "gate2") return t("stage_gate2");
-    return t("stage_gate3" as any);
-  };
+  const gateLabel = (gate: string) => t(`stage_${gate}` as any);
 
   // Helpers for participants
   const addParticipant = (setter: React.Dispatch<React.SetStateAction<GateMeetingNotes>>, name: string, inputSetter: React.Dispatch<React.SetStateAction<string>>) => {
