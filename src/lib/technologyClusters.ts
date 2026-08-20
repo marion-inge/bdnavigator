@@ -127,14 +127,26 @@ export const GEOGRAPHY_CLUSTERS: TagCluster[] = [
   },
 ];
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Short keywords must match a whole word ("ai" must not hit "air quality"),
+// longer ones match as a word prefix ("manufactur" hits "manufacturing").
+function matches(text: string, keyword: string): boolean {
+  const kw = keyword.trim();
+  if (!kw) return false;
+  const pattern = kw.length <= 3 ? `\\b${escapeRe(kw)}\\b` : `\\b${escapeRe(kw)}`;
+  return new RegExp(pattern, "i").test(text);
+}
+
 export function clusterByKeywords(raw: string | undefined | null, clusters: TagCluster[]): string {
   if (!raw || !raw.trim()) return "Unspecified";
   const text = ` ${raw.toLowerCase().replace(/[_\-/]/g, " ")} `;
   for (const cluster of clusters) {
-    if (cluster.keywords.some((kw) => text.includes(kw))) return cluster.name;
+    if (cluster.keywords.some((kw) => matches(text, kw))) return cluster.name;
   }
   return "Other";
 }
+
 
 export const clusterTechnology = (raw: string | undefined | null) =>
   clusterByKeywords(raw, TECHNOLOGY_CLUSTERS);
