@@ -47,7 +47,7 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{bp("Stage-Gate Process", "Stage-Gate-Prozess")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "Each idea progresses through 9 stages with 3 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
+              "Each idea progresses through 7 phases with 5 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
               "Jede Idee durchläuft 9 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
@@ -144,7 +144,7 @@ export default function ProcessGuide() {
               icon={<GitMerge className="h-5 w-5 text-primary" />}
               title={bp("Stage Gates (G1, G2, G3)", "Stage Gates (G1, G2, G3)")}
               description={bp(
-                "Three gate decisions control progression: G1 (after Idea Scoring → Business Plan), G2 (after Business Plan → Business Case), G3 (after Business Case → Implementation). Each gate documents Go/No-Go/Hold with rationale, date, and conditions. Gates can be edited or reverted.",
+                "Five gate decisions control progression: G1 (after Idea Scoring), G2 (after Market Intelligence), G3 (after TAM SAM SOM), G4 (after Market Verification), G5 (after Business Case). Each gate documents Go/No-Go/Hold with rationale, date, and conditions. Gates can be edited or reverted.",
                 "Drei Gate-Entscheidungen steuern den Fortschritt: G1 (nach Ideen-Scoring → Business Plan), G2 (nach Business Plan → Business Case), G3 (nach Business Case → Umsetzung). Jedes Gate dokumentiert Go/No-Go/Hold mit Begründung, Datum und Bedingungen. Gates können bearbeitet oder rückgängig gemacht werden."
               )}
             />
@@ -369,18 +369,21 @@ export default function ProcessGuide() {
   );
 }
 
-/* Stage flow visual — 7-stage process with 3 gates */
+/* Stage flow visual — 7-phase process with 5 gates */
 function StageFlowDiagram({ bp }: { bp: (en: string, de: string) => string }) {
   const stages = [
-    { label: bp("Idea Entry", "Ideeneingabe"), color: "bg-stage-idea" },
-    { label: bp("Idea Scoring", "Ideen-Scoring"), color: "bg-stage-rough-scoring" },
+    { label: bp("1 Idea & Scoring", "1 Idee & Scoring"), color: "bg-stage-rough-scoring" },
     { label: "G1", color: "bg-stage-gate1" },
-    { label: bp("Business Plan", "Business Plan"), color: "bg-stage-detailed-scoring" },
+    { label: bp("2 Market Intelligence", "2 Marktintelligenz"), color: "bg-stage-market-intel" },
     { label: "G2", color: "bg-stage-gate2" },
-    { label: bp("Business Case", "Business Case"), color: "bg-stage-business-case" },
+    { label: bp("3 TAM SAM SOM", "3 TAM SAM SOM"), color: "bg-stage-detailed-scoring" },
     { label: "G3", color: "bg-stage-gate3" },
-    { label: bp("Implementation & GTM", "Umsetzung & GTM"), color: "bg-stage-gtm" },
-    { label: bp("Implement & Review", "Umsetzung & Review"), color: "bg-stage-implement-review" },
+    { label: bp("4 Market Verification", "4 Marktverifizierung"), color: "bg-stage-verify-market" },
+    { label: "G4", color: "bg-stage-gate4" },
+    { label: bp("5 Business Case", "5 Business Case"), color: "bg-stage-business-case" },
+    { label: "G5", color: "bg-stage-gate5" },
+    { label: bp("6 Implementation & GTM", "6 Umsetzung & GTM"), color: "bg-stage-gtm" },
+    { label: bp("7 Implement & Review", "7 Umsetzung & Review"), color: "bg-stage-implement-review" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
