@@ -1,5 +1,7 @@
 // Maps free-text industry inputs onto a small set of readable clusters.
 // Matching is keyword based and case-insensitive; first matching cluster wins.
+import { clusterByKeywords } from "./technologyClusters";
+
 
 export interface IndustryCluster {
   name: string;
