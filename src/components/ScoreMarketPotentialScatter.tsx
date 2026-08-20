@@ -105,7 +105,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-baseline justify-between mb-3 gap-2">
-        <h3 className="text-sm font-semibold text-card-foreground">Score × Market Potential</h3>
+        <h3 className="text-sm font-semibold text-card-foreground">Score × Peak SOM</h3>
         <span className="text-[11px] text-muted-foreground">Bubble size = NPV · hover for payback &amp; ROCE</span>
       </div>
       <ResponsiveContainer width="100%" height={320}>
