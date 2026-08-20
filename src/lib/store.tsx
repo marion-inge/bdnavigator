@@ -422,11 +422,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [updateLocal]
   );
 
-  const GATE_STAGE_INDEX: Record<string, number> = {
-    gate1: STAGE_ORDER.indexOf("gate1"),
-    gate2: STAGE_ORDER.indexOf("gate2"),
-    gate3: STAGE_ORDER.indexOf("gate3"),
-  };
+  const GATE_STAGE_INDEX: Record<string, number> = Object.fromEntries(
+    GATE_IDS.map((g) => [g, STAGE_ORDER.indexOf(g)]),
+  );
 
   const revertStage = useCallback(
     (id: string) => {
