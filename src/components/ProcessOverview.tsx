@@ -3,9 +3,10 @@ import { useI18n } from "@/lib/i18n";
 const STAGES = [
   { key: "idea", labelKey: "proc_idea", subKey: "proc_idea_sub", gateAfter: false, color: "bg-[hsl(var(--stage-idea))]" },
   { key: "idea_scoring", labelKey: "proc_ideaScoring", subKey: "proc_ideaScoring_sub", gateAfter: true, color: "bg-[hsl(var(--stage-rough-scoring))]" },
-  { key: "market_intel", labelKey: "proc_marketIntel", subKey: "proc_marketIntel_sub", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
-  { key: "verify_market", labelKey: "proc_verifyMarket", subKey: "proc_verifyMarket_sub", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
-  { key: "business_case", labelKey: "proc_businessCase", subKey: "proc_businessCase_sub", gateAfter: true, color: "bg-[hsl(var(--stage-gtm))]" },
+  { key: "market_intel", labelKey: "proc_marketIntel", subKey: "proc_marketIntel_sub", gateAfter: true, color: "bg-[hsl(var(--stage-market-intel))]" },
+  { key: "tam_sam_som", labelKey: "proc_tamSamSom", subKey: "proc_tamSamSom_sub", gateAfter: true, color: "bg-[hsl(var(--stage-detailed-scoring))]" },
+  { key: "verify_market", labelKey: "proc_verifyMarket", subKey: "proc_verifyMarket_sub", gateAfter: true, color: "bg-[hsl(var(--stage-verify-market))]" },
+  { key: "business_case", labelKey: "proc_businessCase", subKey: "proc_businessCase_sub", gateAfter: true, color: "bg-[hsl(var(--stage-business-case))]" },
   { key: "impl_gtm", labelKey: "proc_implGtm", subKey: "proc_implGtm_sub", gateAfter: false, color: "bg-[hsl(var(--stage-gtm))]" },
   { key: "impl_review", labelKey: "proc_implReview", subKey: "proc_implReview_sub", gateAfter: false, color: "bg-[hsl(var(--stage-implement-review))]" },
 ] as const;
