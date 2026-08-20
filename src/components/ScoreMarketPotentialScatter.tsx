@@ -90,7 +90,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
 
   if (points.length === 0) return null;
 
-  const maxScore = Math.max(...points.map((p) => p.score), 10);
+  const maxScore = 5;
   const midScore = maxScore / 2;
   const maxPot = Math.max(...points.map((p) => p.potential));
   const midPot = maxPot / 2;
@@ -105,7 +105,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-baseline justify-between mb-3 gap-2">
-        <h3 className="text-sm font-semibold text-card-foreground">Score × Market Potential</h3>
+        <h3 className="text-sm font-semibold text-card-foreground">Score × Peak SOM</h3>
         <span className="text-[11px] text-muted-foreground">Bubble size = NPV · hover for payback &amp; ROCE</span>
       </div>
       <ResponsiveContainer width="100%" height={320}>
@@ -122,7 +122,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
           <YAxis
             type="number"
             dataKey="potential"
-            name="Market Potential"
+            name="SOM (peak, M€)"
             tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
             tickFormatter={(v: number) => formatM(v)}
           />
@@ -144,7 +144,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
                 <div className="rounded-md border border-border bg-card p-2.5 text-xs shadow-md max-w-[260px]">
                   <div className="font-semibold text-card-foreground mb-1">{p.title}</div>
                   <div className="text-muted-foreground">Score: <span className="text-card-foreground">{p.score.toFixed(1)}</span></div>
-                  <div className="text-muted-foreground">Market potential: <span className="text-card-foreground">{formatM(p.potential)}</span></div>
+                  <div className="text-muted-foreground">Peak SOM: <span className="text-card-foreground">{formatM(p.potential)}</span></div>
                   <div className="text-muted-foreground">NPV: <span className="text-card-foreground">{p.npv !== null ? money(p.npv) : "—"}</span></div>
                   <div className="text-muted-foreground">Payback: <span className="text-card-foreground">{p.payback !== null ? `${p.payback.toFixed(1)} yrs` : "—"}</span></div>
                   <div className="text-muted-foreground">Avg. ROCE: <span className="text-card-foreground">{p.roce !== null ? `${p.roce.toFixed(1)}%` : "—"}</span></div>
