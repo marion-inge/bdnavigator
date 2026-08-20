@@ -59,18 +59,13 @@ export function GateDecisionSection({ gates, currentStage, onSubmitDecision, onU
   const [showRevertConfirm, setShowRevertConfirm] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<Record<string, boolean>>({});
 
-  const canDecideGate1 = currentStage === "gate1";
-  const canDecideGate2 = currentStage === "gate2";
-  const canDecideGate3 = currentStage === "gate3";
-  const activeGate = canDecideGate1 ? "gate1" : canDecideGate2 ? "gate2" : canDecideGate3 ? "gate3" : null;
+  const activeGate: GateId | null = (GATE_IDS as string[]).includes(currentStage) ? (currentStage as GateId) : null;
 
-  const canRevert = ["rough_scoring", "gate1", "detailed_scoring", "gate2", "investment_case", "gate3", "business_case", "implement_review"].includes(currentStage);
+  const canRevert = ["rough_scoring", "gate1", "market_intel", "gate2", "business_plan", "gate3", "verify_market", "gate4", "investment_case", "gate5", "business_case", "implement_review"].includes(currentStage);
 
-  const GATE_STAGE_INDEX: Record<string, number> = {
-    gate1: STAGE_ORDER.indexOf("gate1"),
-    gate2: STAGE_ORDER.indexOf("gate2"),
-    gate3: STAGE_ORDER.indexOf("gate3"),
-  };
+  const GATE_STAGE_INDEX: Record<string, number> = Object.fromEntries(
+    GATE_IDS.map((g) => [g, STAGE_ORDER.indexOf(g)]),
+  );
   const currentStageIdx = STAGE_ORDER.indexOf(currentStage);
   const visibleGates = gates.filter((g) => {
     const gateIdx = GATE_STAGE_INDEX[g.gate];
