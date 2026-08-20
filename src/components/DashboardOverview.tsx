@@ -71,7 +71,6 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   };
 
   const industryData = useMemo(() => countTags((o) => o.industry), [opportunities]);
-  const geoData = useMemo(() => countTags((o) => o.geography), [opportunities]);
   const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
 
   if (opportunities.length === 0) return null;
