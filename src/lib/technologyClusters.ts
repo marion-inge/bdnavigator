@@ -8,6 +8,46 @@ export interface TagCluster {
 
 export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
   {
+    name: "Services & Solutions",
+    keywords: [
+      "non testing", "non-testing", "tech center", "engineering service",
+      "consult", "as a service", "subscription", "training", "operating model",
+      "business model", "aftersales", "after sales", "maintenance service",
+    ],
+  },
+  {
+
+    name: "Testing & Test Systems",
+    keywords: [
+      "test", "testing", "test bench", "testbed", "prototyp", "validation",
+      "calibration", "dyno", "dynamometer", "chamber", "climatic", "vacuum chamber",
+      "emulation", "simulation", "hil", "durability", "endurance", "certification",
+    ],
+  },
+  {
+    name: "E-Mobility & Powertrain",
+    keywords: [
+      "e-motor", "emotor", "e motor", "electric motor", "motor", "inverter",
+      "powertrain", "drivetrain", "propulsion", "transmission", "axle", "brake",
+      "e-drive", "edrive", "engine", "vehicle", "racing", "e-mobility",
+    ],
+  },
+  {
+    name: "Battery, Hydrogen & Fuel Cell",
+    keywords: [
+      "battery", "cell testing", "fuel cell", " fc ", "electroly", "hydrogen",
+      "h2", "bms", "charging", "stack",
+    ],
+  },
+  {
+    name: "Emissions & Environmental Analytics",
+    keywords: [
+      "emission", "air quality", "environmental", "exhaust", "particle",
+      "pollution", "co2", "noise", "vibration", "measurment", "measurement",
+    ],
+  },
+  {
+
     name: "AI & Data Analytics",
     keywords: [
       "ai", "artificial intelligence", "machine learning", "ml", "deep learning",
@@ -67,11 +107,12 @@ export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
     ],
   },
   {
-    name: "Life Science & Biotech",
+    name: "Life Science & Health",
     keywords: [
-      "bio", "biotech", "genom", "medical device", "pharma", "diagnost",
-      "cell", "enzyme", "fermentation",
+      "bio", "biotech", "genom", "medical device", "medical", "pharma", "diagnost",
+      "health", "cell", "enzyme", "fermentation",
     ],
+
   },
   {
     name: "Electronics & Hardware",
@@ -127,14 +168,26 @@ export const GEOGRAPHY_CLUSTERS: TagCluster[] = [
   },
 ];
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Short keywords must match a whole word ("ai" must not hit "air quality"),
+// longer ones match as a word prefix ("manufactur" hits "manufacturing").
+function matches(text: string, keyword: string): boolean {
+  const kw = keyword.trim();
+  if (!kw) return false;
+  const pattern = kw.length <= 3 ? `\\b${escapeRe(kw)}\\b` : `\\b${escapeRe(kw)}`;
+  return new RegExp(pattern, "i").test(text);
+}
+
 export function clusterByKeywords(raw: string | undefined | null, clusters: TagCluster[]): string {
   if (!raw || !raw.trim()) return "Unspecified";
   const text = ` ${raw.toLowerCase().replace(/[_\-/]/g, " ")} `;
   for (const cluster of clusters) {
-    if (cluster.keywords.some((kw) => text.includes(kw))) return cluster.name;
+    if (cluster.keywords.some((kw) => matches(text, kw))) return cluster.name;
   }
   return "Other";
 }
+
 
 export const clusterTechnology = (raw: string | undefined | null) =>
   clusterByKeywords(raw, TECHNOLOGY_CLUSTERS);

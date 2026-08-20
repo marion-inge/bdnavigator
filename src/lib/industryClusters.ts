@@ -1,5 +1,7 @@
 // Maps free-text industry inputs onto a small set of readable clusters.
 // Matching is keyword based and case-insensitive; first matching cluster wins.
+import { clusterByKeywords } from "./technologyClusters";
+
 
 export interface IndustryCluster {
   name: string;
@@ -86,10 +88,6 @@ export const INDUSTRY_CLUSTERS: IndustryCluster[] = [
 ];
 
 export function clusterIndustry(raw: string | undefined | null): string {
-  if (!raw || !raw.trim()) return "Unspecified";
-  const text = ` ${raw.toLowerCase().replace(/[_\-/]/g, " ")} `;
-  for (const cluster of INDUSTRY_CLUSTERS) {
-    if (cluster.keywords.some((kw) => text.includes(kw))) return cluster.name;
-  }
-  return "Other";
+  return clusterByKeywords(raw, INDUSTRY_CLUSTERS);
 }
+
