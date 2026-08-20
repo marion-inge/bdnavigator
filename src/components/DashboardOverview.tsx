@@ -96,7 +96,7 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Industry Pie */}
         <div className="rounded-lg border border-border bg-card p-4">
           <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByIndustry")}</h3>
@@ -108,22 +108,6 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
             </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Geography Bar */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByGeography")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={geoData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={72} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
-                {geoData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
-              </Bar>
-            </BarChart>
           </ResponsiveContainer>
         </div>
 
