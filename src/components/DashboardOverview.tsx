@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
 import { clusterIndustry } from "@/lib/industryClusters";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { clusterTechnology, clusterGeography } from "@/lib/technologyClusters";
 
 
@@ -90,23 +91,35 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
         />
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ClusterChart title={t("dashByIndustry")} data={industryData} colorOffset={0} />
-        <ClusterChart title={t("dashByTechnology")} data={techData} colorOffset={3} />
-        <ClusterChart title={t("dashByGeography")} data={geoData} colorOffset={5} />
-
+      {/* Distribution charts – tabbed */}
+      <div className="rounded-lg border border-border bg-card p-4">
+        <Tabs defaultValue="industry" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="industry" className="text-xs sm:text-sm">{t("dashByIndustry")}</TabsTrigger>
+            <TabsTrigger value="technology" className="text-xs sm:text-sm">{t("dashByTechnology")}</TabsTrigger>
+            <TabsTrigger value="geography" className="text-xs sm:text-sm">{t("dashByGeography")}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="industry" className="mt-3">
+            <ClusterChart data={industryData} colorOffset={0} />
+          </TabsContent>
+          <TabsContent value="technology" className="mt-3">
+            <ClusterChart data={techData} colorOffset={3} />
+          </TabsContent>
+          <TabsContent value="geography" className="mt-3">
+            <ClusterChart data={geoData} colorOffset={5} />
+          </TabsContent>
+        </Tabs>
       </div>
+
     </div>
   );
 }
 
 interface ClusterDatum { name: string; value: number; examples: string[] }
 
-function ClusterChart({ title, data, colorOffset }: { title: string; data: ClusterDatum[]; colorOffset: number }) {
+function ClusterChart({ data, colorOffset }: { data: ClusterDatum[]; colorOffset: number }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="text-sm font-semibold text-card-foreground mb-3">{title}</h3>
+    <div>
       <ResponsiveContainer width="100%" height={Math.max(180, data.length * 24)}>
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
