@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Opportunity, calculateTotalScore } from "@/lib/types";
 import {
-  PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
+  Cell, ResponsiveContainer, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
+import { clusterIndustry } from "@/lib/industryClusters";
+
 
 interface DashboardOverviewProps {
   opportunities: Opportunity[];
@@ -70,7 +72,20 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
       .sort((a, b) => b.value - a.value);
   };
 
-  const industryData = useMemo(() => countTags((o) => o.industry), [opportunities]);
+  // Free-text industry inputs are grouped into readable clusters
+  const industryData = useMemo(() => {
+    const counts: Record<string, { value: number; examples: Set<string> }> = {};
+    opportunities.forEach((o) => {
+      const cluster = clusterIndustry(o.industry);
+      if (!counts[cluster]) counts[cluster] = { value: 0, examples: new Set() };
+      counts[cluster].value += 1;
+      if (o.industry?.trim()) counts[cluster].examples.add(o.industry.trim());
+    });
+    return Object.entries(counts)
+      .map(([name, v]) => ({ name, value: v.value, examples: Array.from(v.examples).slice(0, 5) }))
+      .sort((a, b) => b.value - a.value);
+  }, [opportunities]);
+
   const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
 
   if (opportunities.length === 0) return null;
@@ -97,18 +112,27 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Industry Pie */}
+        {/* Industry clusters */}
         <div className="rounded-lg border border-border bg-card p-4">
           <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByIndustry")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie data={industryData} cx="50%" cy="50%" outerRadius={55} innerRadius={28} dataKey="value" paddingAngle={2}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} style={{ fontSize: 9 }}>
+          <ResponsiveContainer width="100%" height={Math.max(180, industryData.length * 24)}>
+            <BarChart data={industryData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
+              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+              <Tooltip
+                contentStyle={TOOLTIP_STYLE}
+                formatter={(value: number, _n, item: { payload?: { examples?: string[] } }) => {
+                  const ex = item?.payload?.examples ?? [];
+                  return [ex.length ? `${value} — ${ex.join("; ")}` : value, "Ideas"];
+                }}
+              />
+              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
                 {industryData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
-              </Pie>
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
-            </PieChart>
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
+
         </div>
 
         {/* Technology Bar */}
