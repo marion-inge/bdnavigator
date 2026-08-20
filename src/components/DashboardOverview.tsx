@@ -7,6 +7,8 @@ import {
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
 import { clusterIndustry } from "@/lib/industryClusters";
+import { clusterTechnology, clusterGeography } from "@/lib/technologyClusters";
+
 
 
 interface DashboardOverviewProps {
