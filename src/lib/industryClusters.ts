@@ -86,10 +86,6 @@ export const INDUSTRY_CLUSTERS: IndustryCluster[] = [
 ];
 
 export function clusterIndustry(raw: string | undefined | null): string {
-  if (!raw || !raw.trim()) return "Unspecified";
-  const text = ` ${raw.toLowerCase().replace(/[_\-/]/g, " ")} `;
-  for (const cluster of INDUSTRY_CLUSTERS) {
-    if (cluster.keywords.some((kw) => text.includes(kw))) return cluster.name;
-  }
-  return "Other";
+  return clusterByKeywords(raw, INDUSTRY_CLUSTERS);
 }
+
