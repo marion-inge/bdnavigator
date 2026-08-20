@@ -142,7 +142,10 @@ export default function Index() {
         <>
         <ProcessOverview />
 
+        <PortfolioExecutiveSummary opportunities={opportunities} />
+
         <DashboardOverview opportunities={opportunities} />
+
 
         <PipelineFunnel
           data={funnelData}
