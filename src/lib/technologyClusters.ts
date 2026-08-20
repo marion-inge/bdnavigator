@@ -107,11 +107,12 @@ export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
     ],
   },
   {
-    name: "Life Science & Biotech",
+    name: "Life Science & Health",
     keywords: [
-      "bio", "biotech", "genom", "medical device", "pharma", "diagnost",
-      "cell", "enzyme", "fermentation",
+      "bio", "biotech", "genom", "medical device", "medical", "pharma", "diagnost",
+      "health", "cell", "enzyme", "fermentation",
     ],
+
   },
   {
     name: "Electronics & Hardware",
