@@ -104,7 +104,6 @@ export function PortfolioExecutiveSummary({ opportunities }: Props) {
       if (data?.error) throw new Error(data.error);
       setSummary(data.summary);
       setGeneratedAt(data.generatedAt);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ summary: data.summary, generatedAt: data.generatedAt }));
       toast.success("Executive summary generated");
     } catch (e: any) {
       toast.error(e.message || "Could not generate the summary");
