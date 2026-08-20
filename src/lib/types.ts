@@ -358,7 +358,7 @@ export interface GateMeetingNotes {
 
 export interface GateRecord {
   id: string;
-  gate: "gate1" | "gate2" | "gate3";
+  gate: GateId;
   decision: GateDecision;
   comment: string;
   decider: string;
