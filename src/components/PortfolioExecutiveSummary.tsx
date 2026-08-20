@@ -13,7 +13,7 @@ const STORAGE_KEY = "novi_portfolio_exec_summary";
 
 function buildDigest(opportunities: Opportunity[]) {
   return opportunities.map((o) => {
-    const ma = o.businessPlan?.marketAnalysis as any;
+    const ma = o.businessPlan?.marketAttractiveness?.analysis as any;
     const ic = o.investmentCase as any;
     return {
       title: o.title,
