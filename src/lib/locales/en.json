@@ -29,8 +29,8 @@
   "stage_idea": "Idea",
   "stage_rough_scoring": "Idea Scoring",
   "stage_gate1": "Gate 1",
-  "stage_detailed_scoring": "Business Plan",
-  "stage_business_plan": "Business Plan",
+  "stage_detailed_scoring": "TAM SAM SOM Analysis",
+  "stage_business_plan": "TAM SAM SOM Analysis",
   "stage_gate2": "Gate 2",
   "stage_investment_case": "Business Case",
   "stage_gate3": "Gate 3",
@@ -789,5 +789,13 @@
   "filesCommentPlaceholder": "Add a comment...",
   "filesSave": "Save",
   "filesUploading": "Uploading...",
-  "filesMaxSize": "Max. 20 MB per file"
+  "filesMaxSize": "Max. 20 MB per file",
+  "stage_market_intel": "Market Intelligence",
+  "stage_verify_market": "Market Verification",
+  "stage_gate4": "Gate 4",
+  "stage_gate5": "Gate 5",
+  "proc_tamSamSom": "TAM SAM SOM Analysis",
+  "proc_tamSamSom_sub": "Market sizing & strategic models",
+  "guideStage_gate4": "Fourth review. Confirms the market verification evidence before the financial business case is built.",
+  "guideStage_gate5": "Fifth review. Evaluates the financial business case and decides whether to proceed to implementation and go-to-market."
 }

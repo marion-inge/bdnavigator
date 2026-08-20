@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
-import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, InvestmentCaseData, STAGE_ORDER, migrateStrategicAnalyses } from "./types";
+import { Opportunity, createDefaultScoring, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, GateRecord, Stage, Scoring, BusinessPlanData, BusinessCase, InvestmentCaseData, STAGE_ORDER, GATE_IDS, GATE_NEXT_STAGE, migrateStrategicAnalyses } from "./types";
 import { MOCK_OPPORTUNITIES } from "./mockData";
 import { fetchAllOpportunities, upsertOpportunityRow, deleteOpportunityRow } from "./backendAdapter";
 import { toast } from "sonner";
@@ -365,15 +365,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           if (o.id !== id) return o;
           const gates = [...o.gates, gate];
           let stage: Stage = o.stage;
-          if (gate.gate === "gate1") {
-            if (gate.decision === "go") stage = "business_plan";
-            else if (gate.decision === "no-go") stage = "closed";
-          } else if (gate.gate === "gate2") {
-            if (gate.decision === "go") stage = "investment_case";
-            else if (gate.decision === "no-go") stage = "closed";
-          } else if (gate.gate === "gate3") {
-            if (gate.decision === "go") stage = "business_case";
-            else if (gate.decision === "no-go") stage = "closed";
+          if (gate.decision === "go") {
+            stage = GATE_NEXT_STAGE[gate.gate] ?? o.stage;
+          } else if (gate.decision === "no-go") {
+            stage = "closed";
           }
           const updates: Partial<Opportunity> = { gates, stage };
           if (stage === "business_plan" && !o.businessPlan) {
@@ -427,11 +422,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [updateLocal]
   );
 
-  const GATE_STAGE_INDEX: Record<string, number> = {
-    gate1: STAGE_ORDER.indexOf("gate1"),
-    gate2: STAGE_ORDER.indexOf("gate2"),
-    gate3: STAGE_ORDER.indexOf("gate3"),
-  };
+  const GATE_STAGE_INDEX: Record<string, number> = Object.fromEntries(
+    GATE_IDS.map((g) => [g, STAGE_ORDER.indexOf(g)]),
+  );
 
   const revertStage = useCallback(
     (id: string) => {

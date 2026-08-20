@@ -17,7 +17,7 @@ import { FileAttachments } from "@/components/FileAttachments";
 import { GateMeetingNotesEditor } from "@/components/GateMeetingNotesEditor";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb, Building2 } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb, Building2, Users } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 import { HypothesisSection } from "@/components/hypothesis/HypothesisSection";
@@ -27,7 +27,7 @@ import { IndustryScanOutcome } from "@/components/scan-pack/IndustryScanOutcome"
 import { CompetitorScanOutcome } from "@/components/scan-pack/CompetitorScanOutcome";
 import { MarketPotentialScanOutcome } from "@/components/scan-pack/MarketPotentialScanOutcome";
 
-type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "competitor_scan_outcome" | "market_potential_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "competitor_scan_outcome" | "market_potential_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "gates_g4_notes" | "gates_g5_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -94,14 +94,16 @@ export default function OpportunityDetail() {
     sa_bcg:              "gate1",
     sa_mckinsey:         "gate1",
     sa_three_horizons:   "gate1",
-    business_plan:       "gate2",
-    investment_case:     "gate3",
+    business_plan:       "gate3",
+    investment_case:     "gate5",
     business_case:       "implement_review",
     implement_review:    "closed",
     gates:               "implement_review",
     gates_g1_notes:      "implement_review",
     gates_g2_notes:      "implement_review",
     gates_g3_notes:      "implement_review",
+    gates_g4_notes:      "implement_review",
+    gates_g5_notes:      "implement_review",
     strategic_analyses:  "implement_review",
     files:               "closed",
   };
@@ -126,6 +128,8 @@ export default function OpportunityDetail() {
     gates_g1_notes:     "",
     gates_g2_notes:     "",
     gates_g3_notes:     "",
+    gates_g4_notes:     "",
+    gates_g5_notes:     "",
     strategic_analyses: "",
     files:              "",
   };
@@ -210,23 +214,96 @@ export default function OpportunityDetail() {
     setSidebarOpen(false);
   };
 
-  const navItems: { key: TabKey; label: string; icon: React.ReactNode; badge?: string }[] = [
-    { key: "overview",            label: t("overview"),          icon: <LayoutDashboard className="h-4 w-4" /> },
-    { key: "scoring",             label: t("roughScoring"),      icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
-    { key: "hypothesis",          label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
-    { key: "scan_pack",           label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${Object.values(opp.scanPack).filter((s: any) => s.status === "done").length}/6` : undefined },
-    { key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
-    { key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
-    { key: "competitor_scan_outcome", label: bp("Competitor Scan Outcome", "Competitor-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
-    { key: "market_potential_scan_outcome", label: bp("Market Potential Scan Outcome", "Market-Potential-Scan-Ergebnis"), icon: <DollarSign className="h-4 w-4" /> },
-    { key: "business_plan",       label: t("detailedScoring"),   icon: <Search className="h-4 w-4" /> },
-    { key: "investment_case",     label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
-    { key: "business_case",       label: t("businessCase"),      icon: <Briefcase className="h-4 w-4" /> },
-    { key: "implement_review",    label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
-    { key: "gates",               label: t("stageGates"),        icon: <GitMerge className="h-4 w-4" /> },
-    { key: "strategic_analyses",  label: t("saTab"),             icon: <LineChart className="h-4 w-4" /> },
-    { key: "files",               label: t("filesTitle"),        icon: <Paperclip className="h-4 w-4" /> },
+  type NavItem = { id: string; key: TabKey; label: string; icon: React.ReactNode; badge?: string; bpTarget?: [string, string] };
+
+  const scansDone = opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0;
+
+  const phaseGroups: { num: number; label: string; items: NavItem[]; gate?: "gate1" | "gate2" | "gate3" | "gate4" | "gate5" }[] = [
+    {
+      num: 1,
+      label: bp("Idea & Idea Scoring", "Idee & Ideen-Scoring"),
+      gate: "gate1",
+      items: [
+        { id: "overview", key: "overview", label: t("overview"), icon: <LayoutDashboard className="h-4 w-4" /> },
+        { id: "hypothesis", key: "hypothesis", label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
+        { id: "scoring", key: "scoring", label: t("roughScoring"), icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
+      ],
+    },
+    {
+      num: 2,
+      label: bp("AI-assisted Market Intelligence", "KI-gestützte Marktintelligenz"),
+      gate: "gate2",
+      items: [
+        { id: "scan_pack", key: "scan_pack", label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${scansDone}/6` : undefined },
+        { id: "industry_scan_outcome", key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
+        { id: "customer_scan_outcome", key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
+        { id: "competitor_scan_outcome", key: "competitor_scan_outcome", label: bp("Competitor Scan Outcome", "Competitor-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
+        { id: "market_potential_scan_outcome", key: "market_potential_scan_outcome", label: bp("Market Potential Scan Outcome", "Market-Potential-Scan-Ergebnis"), icon: <DollarSign className="h-4 w-4" /> },
+      ],
+    },
+    {
+      num: 3,
+      label: bp("TAM SAM SOM Analysis", "TAM SAM SOM Analyse"),
+      gate: "gate3",
+      items: [
+        { id: "business_plan", key: "business_plan", label: bp("TAM SAM SOM", "TAM SAM SOM"), icon: <Search className="h-4 w-4" /> },
+      ],
+    },
+    {
+      num: 4,
+      label: bp("Market Verification", "Marktverifizierung"),
+      gate: "gate4",
+      items: [
+        { id: "verify-customers", key: "business_plan", label: bp("Customer Interviews", "Kundeninterviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-interviews"] },
+        { id: "verify-affiliates", key: "business_plan", label: bp("Affiliate Interviews", "Affiliate-Interviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-affiliate"] },
+        { id: "verify-bu", key: "business_plan", label: bp("BU Interviews", "BU-Interviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-bu"] },
+        { id: "verify-pilot", key: "business_plan", label: bp("Pilot & Leads", "Pilot & Leads"), icon: <Target className="h-4 w-4" />, bpTarget: ["som", "som-pilot"] },
+      ],
+    },
+    {
+      num: 5,
+      label: bp("Business Case", "Business Case"),
+      gate: "gate5",
+      items: [
+        { id: "investment_case", key: "investment_case", label: bp("Business Case", "Business Case"), icon: <DollarSign className="h-4 w-4" /> },
+      ],
+    },
+    {
+      num: 6,
+      label: bp("Implementation & GTM Plan", "Umsetzung & GTM-Plan"),
+      items: [
+        { id: "business_case", key: "business_case", label: t("businessCase"), icon: <Briefcase className="h-4 w-4" /> },
+      ],
+    },
+    {
+      num: 7,
+      label: bp("Implementation & Review", "Umsetzung & Review"),
+      items: [
+        { id: "implement_review", key: "implement_review", label: t("stage_implement_review"), icon: <RefreshCw className="h-4 w-4" /> },
+      ],
+    },
   ];
+
+  const crossCuttingItems: NavItem[] = [
+    { id: "gates", key: "gates", label: t("stageGates"), icon: <GitMerge className="h-4 w-4" /> },
+    { id: "strategic_analyses", key: "strategic_analyses", label: t("saTab"), icon: <LineChart className="h-4 w-4" /> },
+    { id: "files", key: "files", label: t("filesTitle"), icon: <Paperclip className="h-4 w-4" /> },
+  ];
+
+  type NavRow =
+    | { type: "phase"; num: number; label: string }
+    | { type: "gate"; gate: "gate1" | "gate2" | "gate3" | "gate4" | "gate5" }
+    | { type: "section"; label: string }
+    | { type: "item"; item: NavItem };
+
+  const navRows: NavRow[] = [];
+  phaseGroups.forEach((g) => {
+    navRows.push({ type: "phase", num: g.num, label: g.label });
+    g.items.forEach((item) => navRows.push({ type: "item", item }));
+    if (g.gate) navRows.push({ type: "gate", gate: g.gate });
+  });
+  navRows.push({ type: "section", label: bp("Cross-cutting", "Übergreifend") });
+  crossCuttingItems.forEach((item) => navRows.push({ type: "item", item }));
 
   const scoringSubItems: { key: TabKey; label: string }[] = [
     { key: "sa_ansoff",         label: bp("Ansoff Matrix", "Ansoff-Matrix") },
@@ -293,19 +370,78 @@ export default function OpportunityDetail() {
             </Button>
           </div>
 
-          {navItems.map((item) => {
-            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_")) || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
+          {navRows.map((row, rowIdx) => {
+            if (row.type === "phase") {
+              const phaseStages: Record<number, Stage> = { 1: "rough_scoring", 2: "market_intel", 3: "business_plan", 4: "verify_market", 5: "investment_case", 6: "business_case", 7: "implement_review" };
+              const phaseIdx = STAGE_ORDER.indexOf(phaseStages[row.num]);
+              const oppIdx = STAGE_ORDER.indexOf(opp.stage);
+              const isCurrentPhase = opp.stage !== "closed" && oppIdx >= phaseIdx && (row.num === 7 || oppIdx < STAGE_ORDER.indexOf(phaseStages[row.num + 1]));
+              const isFuturePhase = opp.stage !== "closed" && oppIdx < phaseIdx;
+              return (
+                <div key={`phase-${row.num}`} className={`flex items-center gap-2 px-2 pt-4 pb-1 ${isFuturePhase ? "opacity-50" : ""}`}>
+                  <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isCurrentPhase ? "bg-primary text-primary-foreground" : isFuturePhase ? "bg-muted text-muted-foreground" : "bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"}`}>
+                    {row.num}
+                  </span>
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider leading-tight ${isCurrentPhase ? "text-primary" : "text-muted-foreground"}`}>{row.label}</span>
+                </div>
+              );
+            }
+            if (row.type === "section") {
+              return (
+                <div key={`section-${rowIdx}`} className="px-2 pt-5 pb-1 border-t border-border mt-3">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</span>
+                </div>
+              );
+            }
+            if (row.type === "gate") {
+              const record = opp.gates.find((g) => g.gate === row.gate);
+              const gateNo = row.gate.replace("gate", "");
+              const decisionLabel = record
+                ? record.decision === "go" ? "Go" : record.decision === "hold" ? "Hold" : "No-Go"
+                : opp.stage === row.gate ? bp("open", "offen") : bp("pending", "ausstehend");
+              const tone = record
+                ? record.decision === "go" ? "text-[hsl(var(--success))] border-[hsl(var(--success))]/40"
+                  : record.decision === "hold" ? "text-[hsl(var(--warning))] border-[hsl(var(--warning))]/40"
+                  : "text-destructive border-destructive/40"
+                : opp.stage === row.gate ? "text-[hsl(var(--warning))] border-[hsl(var(--warning))]/40" : "text-muted-foreground border-border";
+              return (
+                <button
+                  key={`gate-${row.gate}`}
+                  onClick={() => { setActiveTab("gates"); setSidebarOpen(false); }}
+                  className={`w-full flex items-center gap-2 my-1 px-3 py-1.5 rounded-md border border-dashed text-[11px] font-medium hover:bg-muted transition-colors ${tone}`}
+                >
+                  <span className="h-px flex-1 bg-current opacity-30" />
+                  <span className="shrink-0">Gate {gateNo} · {decisionLabel}</span>
+                  <span className="h-px flex-1 bg-current opacity-30" />
+                </button>
+              );
+            }
+
+            const item = row.item;
+            const isBpTarget = !!item.bpTarget;
+            const isActive = isBpTarget
+              ? activeTab === "business_plan" && bpMainTab === item.bpTarget![0] && bpSubTab === item.bpTarget![1]
+              : (activeTab === item.key && !(item.key === "business_plan" && !!bpSubTab && ["sam-interviews", "sam-affiliate", "sam-bu", "som-pilot"].includes(bpSubTab)))
+                || (item.key === "scoring" && (activeTab as string).startsWith("sa_"))
+                || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
-            const isBpItem = item.key === "business_plan";
+            const isBpItem = item.key === "business_plan" && !isBpTarget;
             const isScoringItem = item.key === "scoring";
             const isGatesItem = item.key === "gates";
             const hasExpander = isBpItem || isScoringItem || isGatesItem;
 
             return (
-              <div key={item.key}>
+              <div key={item.id}>
                 <button
                   onClick={() => {
+                    if (isBpTarget) {
+                      handleBpSubNavClick(item.bpTarget![0], item.bpTarget![1]);
+                      setBpExpanded(false);
+                      setScoringExpanded(false);
+                      setGatesExpanded(false);
+                      return;
+                    }
                     setActiveTab(item.key);
                     setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
@@ -476,10 +612,9 @@ export default function OpportunityDetail() {
                 {/* Gates Sub-Navigation (Meeting Notes) */}
                 {isGatesItem && gatesExpanded && isActive && (
                   <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
-                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes"] as TabKey[]).map((subKey) => {
-                      const label = subKey === "gates_g1_notes" ? bp("G1 Meeting Notes", "G1 Protokoll") :
-                                    subKey === "gates_g2_notes" ? bp("G2 Meeting Notes", "G2 Protokoll") :
-                                    bp("G3 Meeting Notes", "G3 Protokoll");
+                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes", "gates_g4_notes", "gates_g5_notes"] as TabKey[]).map((subKey) => {
+                      const gateNo = subKey.charAt(7);
+                      const label = bp(`G${gateNo} Meeting Notes`, `G${gateNo} Protokoll`);
                       const isSubActive = activeTab === subKey;
                       return (
                         <button
@@ -641,9 +776,9 @@ export default function OpportunityDetail() {
                 onRevertStage={() => revertStage(opp.id)}
               />
             )}
-            {(activeTab === "gates_g1_notes" || activeTab === "gates_g2_notes" || activeTab === "gates_g3_notes") && (
+            {(activeTab as string).startsWith("gates_g") && (
               <GateMeetingNotesEditor
-                gate={activeTab === "gates_g1_notes" ? "gate1" : activeTab === "gates_g2_notes" ? "gate2" : "gate3"}
+                gate={`gate${(activeTab as string).charAt(7)}` as any}
                 gates={opp.gates}
                 onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
               />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
-import { GateRecord, GateMeetingNotes, GateActionItem } from "@/lib/types";
+import { GateRecord, GateMeetingNotes, GateActionItem, GateId } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Users, ListTodo, Plus, X, ClipboardList, Pencil } from "lucide-react";
 
 interface Props {
-  gate: "gate1" | "gate2" | "gate3";
+  gate: GateId;
   gates: GateRecord[];
   onUpdateDecision?: (gateId: string, updates: Partial<GateRecord>) => void;
 }
@@ -35,7 +35,7 @@ export function GateMeetingNotesEditor({ gate, gates, onUpdateDecision }: Props)
   );
   const [newParticipant, setNewParticipant] = useState("");
 
-  const gateLabel = gate === "gate1" ? "Gate 1" : gate === "gate2" ? "Gate 2" : "Gate 3";
+  const gateLabel = `Gate ${gate.replace("gate", "")}`;
 
   const addParticipant = () => {
     if (!newParticipant.trim()) return;

@@ -1,10 +1,10 @@
 import { useI18n } from "@/lib/i18n";
 import { Stage, STAGE_ORDER } from "@/lib/types";
 
-const STAGE_PROGRESS: Record<string, number> = {
-  idea: 0, rough_scoring: 1, gate1: 2, business_plan: 3,
-  gate2: 4, investment_case: 5, gate3: 6, business_case: 7, implement_review: 8, closed: -1,
-};
+const STAGE_PROGRESS: Record<string, number> = Object.fromEntries(
+  STAGE_ORDER.filter((s) => s !== "closed").map((s, i) => [s, i]),
+);
+STAGE_PROGRESS.closed = -1;
 
 interface StageTimelineProps {
   currentStage: Stage;
