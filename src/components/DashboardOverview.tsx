@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Opportunity, calculateTotalScore } from "@/lib/types";
 import {
-  PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
+  Cell, ResponsiveContainer, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
