@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Users, ListTodo, Plus, X, ClipboardList, Pencil } from "lucide-react";
 
 interface Props {
-  gate: "gate1" | "gate2" | "gate3";
+  gate: GateId;
   gates: GateRecord[];
   onUpdateDecision?: (gateId: string, updates: Partial<GateRecord>) => void;
 }
@@ -35,7 +35,7 @@ export function GateMeetingNotesEditor({ gate, gates, onUpdateDecision }: Props)
   );
   const [newParticipant, setNewParticipant] = useState("");
 
-  const gateLabel = gate === "gate1" ? "Gate 1" : gate === "gate2" ? "Gate 2" : "Gate 3";
+  const gateLabel = `Gate ${gate.replace("gate", "")}`;
 
   const addParticipant = () => {
     if (!newParticipant.trim()) return;

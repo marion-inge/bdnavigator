@@ -64,6 +64,10 @@
     --stage-gate2: 280 40% 50%;
     --stage-business-case: 170 50% 40%;
     --stage-gate3: 320 45% 50%;
+    --stage-market-intel: 190 65% 40%;
+    --stage-verify-market: 95 45% 40%;
+    --stage-gate4: 350 50% 50%;
+    --stage-gate5: 20 60% 45%;
     --stage-gtm: 145 55% 40%;
     --stage-implement-review: 30 70% 50%;
     --stage-closed: 220 10% 60%;
