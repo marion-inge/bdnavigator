@@ -17,7 +17,7 @@ import { FileAttachments } from "@/components/FileAttachments";
 import { GateMeetingNotesEditor } from "@/components/GateMeetingNotesEditor";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb, Building2 } from "lucide-react";
+import { ArrowLeft, Trash2, LayoutDashboard, BarChart2, Search, Briefcase, GitMerge, LineChart, CheckCircle2, ChevronRight, ChevronDown, Menu, X, FileDown, RefreshCw, Paperclip, Globe, Target, TrendingUp, FolderOpen, ClipboardList, DollarSign, Lightbulb, Building2, Users } from "lucide-react";
 import { exportOpportunityPdf } from "@/lib/pdfExport";
 import { exportQuestionnairePdf } from "@/lib/questionnaireExport";
 import { HypothesisSection } from "@/components/hypothesis/HypothesisSection";
@@ -370,19 +370,78 @@ export default function OpportunityDetail() {
             </Button>
           </div>
 
-          {navItems.map((item) => {
-            const isActive = activeTab === item.key || (item.key === "scoring" && (activeTab as string).startsWith("sa_")) || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
+          {navRows.map((row, rowIdx) => {
+            if (row.type === "phase") {
+              const phaseStages: Record<number, Stage> = { 1: "rough_scoring", 2: "market_intel", 3: "business_plan", 4: "verify_market", 5: "investment_case", 6: "business_case", 7: "implement_review" };
+              const phaseIdx = STAGE_ORDER.indexOf(phaseStages[row.num]);
+              const oppIdx = STAGE_ORDER.indexOf(opp.stage);
+              const isCurrentPhase = opp.stage !== "closed" && oppIdx >= phaseIdx && (row.num === 7 || oppIdx < STAGE_ORDER.indexOf(phaseStages[row.num + 1]));
+              const isFuturePhase = opp.stage !== "closed" && oppIdx < phaseIdx;
+              return (
+                <div key={`phase-${row.num}`} className={`flex items-center gap-2 px-2 pt-4 pb-1 ${isFuturePhase ? "opacity-50" : ""}`}>
+                  <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isCurrentPhase ? "bg-primary text-primary-foreground" : isFuturePhase ? "bg-muted text-muted-foreground" : "bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"}`}>
+                    {row.num}
+                  </span>
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider leading-tight ${isCurrentPhase ? "text-primary" : "text-muted-foreground"}`}>{row.label}</span>
+                </div>
+              );
+            }
+            if (row.type === "section") {
+              return (
+                <div key={`section-${rowIdx}`} className="px-2 pt-5 pb-1 border-t border-border mt-3">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</span>
+                </div>
+              );
+            }
+            if (row.type === "gate") {
+              const record = opp.gates.find((g) => g.gate === row.gate);
+              const gateNo = row.gate.replace("gate", "");
+              const decisionLabel = record
+                ? record.decision === "go" ? "Go" : record.decision === "hold" ? "Hold" : "No-Go"
+                : opp.stage === row.gate ? bp("open", "offen") : bp("pending", "ausstehend");
+              const tone = record
+                ? record.decision === "go" ? "text-[hsl(var(--success))] border-[hsl(var(--success))]/40"
+                  : record.decision === "hold" ? "text-[hsl(var(--warning))] border-[hsl(var(--warning))]/40"
+                  : "text-destructive border-destructive/40"
+                : opp.stage === row.gate ? "text-[hsl(var(--warning))] border-[hsl(var(--warning))]/40" : "text-muted-foreground border-border";
+              return (
+                <button
+                  key={`gate-${row.gate}`}
+                  onClick={() => { setActiveTab("gates"); setSidebarOpen(false); }}
+                  className={`w-full flex items-center gap-2 my-1 px-3 py-1.5 rounded-md border border-dashed text-[11px] font-medium hover:bg-muted transition-colors ${tone}`}
+                >
+                  <span className="h-px flex-1 bg-current opacity-30" />
+                  <span className="shrink-0">Gate {gateNo} · {decisionLabel}</span>
+                  <span className="h-px flex-1 bg-current opacity-30" />
+                </button>
+              );
+            }
+
+            const item = row.item;
+            const isBpTarget = !!item.bpTarget;
+            const isActive = isBpTarget
+              ? activeTab === "business_plan" && bpMainTab === item.bpTarget![0] && bpSubTab === item.bpTarget![1]
+              : (activeTab === item.key && !(item.key === "business_plan" && !!bpSubTab && ["sam-interviews", "sam-affiliate", "sam-bu", "som-pilot"].includes(bpSubTab)))
+                || (item.key === "scoring" && (activeTab as string).startsWith("sa_"))
+                || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
-            const isBpItem = item.key === "business_plan";
+            const isBpItem = item.key === "business_plan" && !isBpTarget;
             const isScoringItem = item.key === "scoring";
             const isGatesItem = item.key === "gates";
             const hasExpander = isBpItem || isScoringItem || isGatesItem;
 
             return (
-              <div key={item.key}>
+              <div key={item.id}>
                 <button
                   onClick={() => {
+                    if (isBpTarget) {
+                      handleBpSubNavClick(item.bpTarget![0], item.bpTarget![1]);
+                      setBpExpanded(false);
+                      setScoringExpanded(false);
+                      setGatesExpanded(false);
+                      return;
+                    }
                     setActiveTab(item.key);
                     setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
@@ -553,10 +612,9 @@ export default function OpportunityDetail() {
                 {/* Gates Sub-Navigation (Meeting Notes) */}
                 {isGatesItem && gatesExpanded && isActive && (
                   <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
-                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes"] as TabKey[]).map((subKey) => {
-                      const label = subKey === "gates_g1_notes" ? bp("G1 Meeting Notes", "G1 Protokoll") :
-                                    subKey === "gates_g2_notes" ? bp("G2 Meeting Notes", "G2 Protokoll") :
-                                    bp("G3 Meeting Notes", "G3 Protokoll");
+                    {(["gates_g1_notes", "gates_g2_notes", "gates_g3_notes", "gates_g4_notes", "gates_g5_notes"] as TabKey[]).map((subKey) => {
+                      const gateNo = subKey.charAt(7);
+                      const label = bp(`G${gateNo} Meeting Notes`, `G${gateNo} Protokoll`);
                       const isSubActive = activeTab === subKey;
                       return (
                         <button
@@ -718,9 +776,9 @@ export default function OpportunityDetail() {
                 onRevertStage={() => revertStage(opp.id)}
               />
             )}
-            {(activeTab === "gates_g1_notes" || activeTab === "gates_g2_notes" || activeTab === "gates_g3_notes") && (
+            {(activeTab as string).startsWith("gates_g") && (
               <GateMeetingNotesEditor
-                gate={activeTab === "gates_g1_notes" ? "gate1" : activeTab === "gates_g2_notes" ? "gate2" : "gate3"}
+                gate={`gate${(activeTab as string).charAt(7)}` as any}
                 gates={opp.gates}
                 onUpdateDecision={(gateId, updates) => updateGateDecision(opp.id, gateId, updates)}
               />
