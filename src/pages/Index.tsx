@@ -8,6 +8,8 @@ import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { NewOpportunityDialog } from "@/components/NewOpportunityDialog";
 import { PipelineFunnel } from "@/components/PipelineFunnel";
 import { DashboardOverview } from "@/components/DashboardOverview";
+import { PortfolioExecutiveSummary } from "@/components/PortfolioExecutiveSummary";
+
 import { MarketPotentialChart } from "@/components/MarketPotentialChart";
 import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
