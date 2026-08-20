@@ -90,7 +90,7 @@ export function ScoreMarketPotentialScatter({ opportunities }: Props) {
 
   if (points.length === 0) return null;
 
-  const maxScore = Math.max(...points.map((p) => p.score), 10);
+  const maxScore = 5;
   const midScore = maxScore / 2;
   const maxPot = Math.max(...points.map((p) => p.potential));
   const midPot = maxPot / 2;
