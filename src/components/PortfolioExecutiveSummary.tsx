@@ -9,8 +9,6 @@ interface Props {
   opportunities: Opportunity[];
 }
 
-
-
 function buildDigest(opportunities: Opportunity[]) {
   return opportunities.map((o) => {
     const ma = o.businessPlan?.marketAttractiveness?.analysis as any;
