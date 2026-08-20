@@ -43,50 +43,28 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     return { total, active, topScorer };
   }, [opportunities]);
 
-  const splitTags = (raw: string | undefined | null): string[] => {
-    if (!raw) return ["Other"];
-    // strip parenthetical qualifiers like "Global (DACH first)" → "Global"
-    const cleaned = raw.replace(/\([^)]*\)/g, " ");
-    const parts = cleaned
-      .split(/[,/&;]|\bund\b|\band\b/gi)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-    return parts.length > 0 ? parts : ["Other"];
-  };
-
-  const countTags = (getter: (o: Opportunity) => string | undefined) => {
-    const counts: Record<string, number> = {};
-    opportunities.forEach((o) => {
-      const seen = new Set<string>();
-      splitTags(getter(o)).forEach((tag) => {
-        // normalize casing for grouping
-        const key = tag.replace(/\s+/g, " ").trim();
-        const norm = key.charAt(0).toUpperCase() + key.slice(1);
-        if (seen.has(norm.toLowerCase())) return;
-        seen.add(norm.toLowerCase());
-        counts[norm] = (counts[norm] || 0) + 1;
-      });
-    });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
-  };
-
-  // Free-text industry inputs are grouped into readable clusters
-  const industryData = useMemo(() => {
+  const clusterCount = (
+    getter: (o: Opportunity) => string | undefined,
+    clusterFn: (raw: string | undefined | null) => string
+  ) => {
     const counts: Record<string, { value: number; examples: Set<string> }> = {};
     opportunities.forEach((o) => {
-      const cluster = clusterIndustry(o.industry);
+      const raw = getter(o);
+      const cluster = clusterFn(raw);
       if (!counts[cluster]) counts[cluster] = { value: 0, examples: new Set() };
       counts[cluster].value += 1;
-      if (o.industry?.trim()) counts[cluster].examples.add(o.industry.trim());
+      if (raw?.trim()) counts[cluster].examples.add(raw.trim());
     });
     return Object.entries(counts)
       .map(([name, v]) => ({ name, value: v.value, examples: Array.from(v.examples).slice(0, 5) }))
       .sort((a, b) => b.value - a.value);
-  }, [opportunities]);
+  };
 
-  const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
+  // Free-text inputs are grouped into readable clusters
+  const industryData = useMemo(() => clusterCount((o) => o.industry, clusterIndustry), [opportunities]);
+  const techData = useMemo(() => clusterCount((o) => o.technology, clusterTechnology), [opportunities]);
+  const geoData = useMemo(() => clusterCount((o) => o.geography, clusterGeography), [opportunities]);
+
 
   if (opportunities.length === 0) return null;
 
