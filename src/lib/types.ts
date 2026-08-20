@@ -1,21 +1,42 @@
 // Stage identifiers – UI labels differ from code names:
-//   "rough_scoring"      → UI: "Idea Scoring"
-//   "business_plan"      → UI: "Business Plan"
-//   "investment_case"    → UI: "Business Case"
-//   "business_case"      → UI: "Implementation and GTM Plan"
+//   "rough_scoring"      → UI: "Idea Scoring"          (Phase 1)
+//   "market_intel"       → UI: "Market Intelligence"   (Phase 2)
+//   "business_plan"      → UI: "TAM SAM SOM Analysis"  (Phase 3)
+//   "verify_market"      → UI: "Market Verification"   (Phase 4)
+//   "investment_case"    → UI: "Business Case"         (Phase 5)
+//   "business_case"      → UI: "Implementation and GTM Plan" (Phase 6)
+//   "implement_review"   → UI: "Implementation & Review"     (Phase 7)
 export type Stage =
   | "idea"
   | "rough_scoring"       // UI: Idea Scoring
   | "gate1"
-  | "business_plan"       // UI: Business Plan
+  | "market_intel"        // UI: AI-assisted Market Intelligence
   | "gate2"
-  | "investment_case"     // UI: Business Case (Investment Calculation)
+  | "business_plan"       // UI: TAM SAM SOM Analysis
   | "gate3"
+  | "verify_market"       // UI: Market Verification
+  | "gate4"
+  | "investment_case"     // UI: Business Case (Investment Calculation)
+  | "gate5"
   | "business_case"       // UI: Implementation and GTM Plan
   | "implement_review"
   | "closed";
 
+export type GateId = "gate1" | "gate2" | "gate3" | "gate4" | "gate5";
+
+export const GATE_IDS: GateId[] = ["gate1", "gate2", "gate3", "gate4", "gate5"];
+
+/** Stage a gate leads into when the decision is "go". */
+export const GATE_NEXT_STAGE: Record<GateId, Stage> = {
+  gate1: "market_intel",
+  gate2: "business_plan",
+  gate3: "verify_market",
+  gate4: "investment_case",
+  gate5: "business_case",
+};
+
 export type GateDecision = "go" | "hold" | "no-go";
+
 
 export interface ScoringCriterion {
   id: string;
