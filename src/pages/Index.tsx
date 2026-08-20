@@ -11,9 +11,9 @@ import { DashboardOverview } from "@/components/DashboardOverview";
 import { PortfolioExecutiveSummary } from "@/components/PortfolioExecutiveSummary";
 
 import { MarketPotentialChart } from "@/components/MarketPotentialChart";
-import { AnsoffMatrixDashboard } from "@/components/AnsoffMatrixDashboard";
+import { StrategicFrameworksTabs } from "@/components/StrategicFrameworksTabs";
+import { ScoreMarketPotentialScatter } from "@/components/ScoreMarketPotentialScatter";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
-import { ThreeHorizonsDashboard } from "@/components/ThreeHorizonsDashboard";
 import { ProcessOverview } from "@/components/ProcessOverview";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -157,9 +157,9 @@ export default function Index() {
 
         <MarketPotentialChart opportunities={opportunities} />
 
-        <AnsoffMatrixDashboard opportunities={opportunities} />
+        <ScoreMarketPotentialScatter opportunities={opportunities} />
 
-        <ThreeHorizonsDashboard opportunities={opportunities} />
+        <StrategicFrameworksTabs opportunities={opportunities} />
 
         {/* Filters */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">

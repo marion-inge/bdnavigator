@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
 import { clusterIndustry } from "@/lib/industryClusters";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { clusterTechnology, clusterGeography } from "@/lib/technologyClusters";
 
 
@@ -116,10 +117,9 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
 interface ClusterDatum { name: string; value: number; examples: string[] }
 
-function ClusterChart({ title, data, colorOffset }: { title: string; data: ClusterDatum[]; colorOffset: number }) {
+function ClusterChart({ data, colorOffset }: { data: ClusterDatum[]; colorOffset: number }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="text-sm font-semibold text-card-foreground mb-3">{title}</h3>
+    <div>
       <ResponsiveContainer width="100%" height={Math.max(180, data.length * 24)}>
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
