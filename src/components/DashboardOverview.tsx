@@ -99,6 +99,35 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
   );
 }
 
+interface ClusterDatum { name: string; value: number; examples: string[] }
+
+function ClusterChart({ title, data, colorOffset }: { title: string; data: ClusterDatum[]; colorOffset: number }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <h3 className="text-sm font-semibold text-card-foreground mb-3">{title}</h3>
+      <ResponsiveContainer width="100%" height={Math.max(180, data.length * 24)}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE}
+            formatter={(value: number, _n, item: { payload?: { examples?: string[] } }) => {
+              const ex = item?.payload?.examples ?? [];
+              return [ex.length ? `${value} — ${ex.join("; ")}` : value, "Ideas"];
+            }}
+          />
+          <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
+            {data.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[(idx + colorOffset) % CHART_COLORS.length]} />)}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+
+
 function KpiCard({ icon, label, value, sub, color }: {
   icon: React.ReactNode;
   label: string;
