@@ -9,7 +9,7 @@ interface Props {
   opportunities: Opportunity[];
 }
 
-const STORAGE_KEY = "novi_portfolio_exec_summary";
+
 
 function buildDigest(opportunities: Opportunity[]) {
   return opportunities.map((o) => {
