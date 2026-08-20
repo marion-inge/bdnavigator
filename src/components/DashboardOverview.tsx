@@ -70,7 +70,20 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
       .sort((a, b) => b.value - a.value);
   };
 
-  const industryData = useMemo(() => countTags((o) => o.industry), [opportunities]);
+  // Free-text industry inputs are grouped into readable clusters
+  const industryData = useMemo(() => {
+    const counts: Record<string, { value: number; examples: Set<string> }> = {};
+    opportunities.forEach((o) => {
+      const cluster = clusterIndustry(o.industry);
+      if (!counts[cluster]) counts[cluster] = { value: 0, examples: new Set() };
+      counts[cluster].value += 1;
+      if (o.industry?.trim()) counts[cluster].examples.add(o.industry.trim());
+    });
+    return Object.entries(counts)
+      .map(([name, v]) => ({ name, value: v.value, examples: Array.from(v.examples).slice(0, 5) }))
+      .sort((a, b) => b.value - a.value);
+  }, [opportunities]);
+
   const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
 
   if (opportunities.length === 0) return null;
