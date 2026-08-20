@@ -8,6 +8,15 @@ export interface TagCluster {
 
 export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
   {
+    name: "Services & Solutions",
+    keywords: [
+      "non testing", "non-testing", "tech center", "engineering service",
+      "consult", "as a service", "subscription", "training", "operating model",
+      "business model", "aftersales", "after sales", "maintenance service",
+    ],
+  },
+  {
+
     name: "Testing & Test Systems",
     keywords: [
       "test", "testing", "test bench", "testbed", "prototyp", "validation",
