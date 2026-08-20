@@ -10,7 +10,7 @@ export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
   {
     name: "Services & Solutions",
     keywords: [
-      "non testing", "non-testing", "tech center", "engineering service",
+      "service", "non testing", "non-testing", "tech center", "engineering service",
       "consult", "as a service", "subscription", "training", "operating model",
       "business model", "aftersales", "after sales", "maintenance service",
     ],
@@ -119,13 +119,6 @@ export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
     keywords: [
       "electronic", "semiconductor", "chip", "hardware", "pcb", "circuit",
       "power supply", "5g", "telecom", "communication", "rf ",
-    ],
-  },
-  {
-    name: "Services & Business Models",
-    keywords: [
-      "service", "consult", "as a service", "subscription", "training",
-      "operating model", "business model",
     ],
   },
 ];
