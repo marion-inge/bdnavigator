@@ -144,16 +144,15 @@ export default function Index() {
 
         <DashboardOverview opportunities={opportunities} />
 
+        <PipelineFunnel
+          data={funnelData}
+          activeStage={stageFilter}
+          onStageClick={(stage) => setStageFilter(stageFilter === stage ? "all" : stage)}
+        />
+
         <MarketPotentialChart opportunities={opportunities} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <PipelineFunnel
-            data={funnelData}
-            activeStage={stageFilter}
-            onStageClick={(stage) => setStageFilter(stageFilter === stage ? "all" : stage)}
-          />
-          <AnsoffMatrixDashboard opportunities={opportunities} />
-        </div>
+        <AnsoffMatrixDashboard opportunities={opportunities} />
 
         <ThreeHorizonsDashboard opportunities={opportunities} />
 
