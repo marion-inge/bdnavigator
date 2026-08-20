@@ -365,15 +365,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           if (o.id !== id) return o;
           const gates = [...o.gates, gate];
           let stage: Stage = o.stage;
-          if (gate.gate === "gate1") {
-            if (gate.decision === "go") stage = "business_plan";
-            else if (gate.decision === "no-go") stage = "closed";
-          } else if (gate.gate === "gate2") {
-            if (gate.decision === "go") stage = "investment_case";
-            else if (gate.decision === "no-go") stage = "closed";
-          } else if (gate.gate === "gate3") {
-            if (gate.decision === "go") stage = "business_case";
-            else if (gate.decision === "no-go") stage = "closed";
+          if (gate.decision === "go") {
+            stage = GATE_NEXT_STAGE[gate.gate] ?? o.stage;
+          } else if (gate.decision === "no-go") {
+            stage = "closed";
           }
           const updates: Partial<Opportunity> = { gates, stage };
           if (stage === "business_plan" && !o.businessPlan) {
