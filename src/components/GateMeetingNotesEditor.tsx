@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
-import { GateRecord, GateMeetingNotes, GateActionItem } from "@/lib/types";
+import { GateRecord, GateMeetingNotes, GateActionItem, GateId } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
