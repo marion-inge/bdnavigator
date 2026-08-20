@@ -8,6 +8,37 @@ export interface TagCluster {
 
 export const TECHNOLOGY_CLUSTERS: TagCluster[] = [
   {
+    name: "Testing & Test Systems",
+    keywords: [
+      "test", "testing", "test bench", "testbed", "prototyp", "validation",
+      "calibration", "dyno", "dynamometer", "chamber", "climatic", "vacuum chamber",
+      "emulation", "simulation", "hil", "durability", "endurance", "certification",
+    ],
+  },
+  {
+    name: "E-Mobility & Powertrain",
+    keywords: [
+      "e-motor", "emotor", "e motor", "electric motor", "motor", "inverter",
+      "powertrain", "drivetrain", "propulsion", "transmission", "axle", "brake",
+      "e-drive", "edrive", "engine", "vehicle", "racing", "e-mobility",
+    ],
+  },
+  {
+    name: "Battery, Hydrogen & Fuel Cell",
+    keywords: [
+      "battery", "cell testing", "fuel cell", " fc ", "electroly", "hydrogen",
+      "h2", "bms", "charging", "stack",
+    ],
+  },
+  {
+    name: "Emissions & Environmental Analytics",
+    keywords: [
+      "emission", "air quality", "environmental", "exhaust", "particle",
+      "pollution", "co2", "noise", "vibration", "measurment", "measurement",
+    ],
+  },
+  {
+
     name: "AI & Data Analytics",
     keywords: [
       "ai", "artificial intelligence", "machine learning", "ml", "deep learning",
