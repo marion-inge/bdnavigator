@@ -7,6 +7,8 @@ import {
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
 import { clusterIndustry } from "@/lib/industryClusters";
+import { clusterTechnology, clusterGeography } from "@/lib/technologyClusters";
+
 
 
 interface DashboardOverviewProps {
@@ -43,50 +45,28 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
     return { total, active, topScorer };
   }, [opportunities]);
 
-  const splitTags = (raw: string | undefined | null): string[] => {
-    if (!raw) return ["Other"];
-    // strip parenthetical qualifiers like "Global (DACH first)" → "Global"
-    const cleaned = raw.replace(/\([^)]*\)/g, " ");
-    const parts = cleaned
-      .split(/[,/&;]|\bund\b|\band\b/gi)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-    return parts.length > 0 ? parts : ["Other"];
-  };
-
-  const countTags = (getter: (o: Opportunity) => string | undefined) => {
-    const counts: Record<string, number> = {};
-    opportunities.forEach((o) => {
-      const seen = new Set<string>();
-      splitTags(getter(o)).forEach((tag) => {
-        // normalize casing for grouping
-        const key = tag.replace(/\s+/g, " ").trim();
-        const norm = key.charAt(0).toUpperCase() + key.slice(1);
-        if (seen.has(norm.toLowerCase())) return;
-        seen.add(norm.toLowerCase());
-        counts[norm] = (counts[norm] || 0) + 1;
-      });
-    });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
-  };
-
-  // Free-text industry inputs are grouped into readable clusters
-  const industryData = useMemo(() => {
+  const clusterCount = (
+    getter: (o: Opportunity) => string | undefined,
+    clusterFn: (raw: string | undefined | null) => string
+  ) => {
     const counts: Record<string, { value: number; examples: Set<string> }> = {};
     opportunities.forEach((o) => {
-      const cluster = clusterIndustry(o.industry);
+      const raw = getter(o);
+      const cluster = clusterFn(raw);
       if (!counts[cluster]) counts[cluster] = { value: 0, examples: new Set() };
       counts[cluster].value += 1;
-      if (o.industry?.trim()) counts[cluster].examples.add(o.industry.trim());
+      if (raw?.trim()) counts[cluster].examples.add(raw.trim());
     });
     return Object.entries(counts)
       .map(([name, v]) => ({ name, value: v.value, examples: Array.from(v.examples).slice(0, 5) }))
       .sort((a, b) => b.value - a.value);
-  }, [opportunities]);
+  };
 
-  const techData = useMemo(() => countTags((o) => o.technology), [opportunities]);
+  // Free-text inputs are grouped into readable clusters
+  const industryData = useMemo(() => clusterCount((o) => o.industry, clusterIndustry), [opportunities]);
+  const techData = useMemo(() => clusterCount((o) => o.technology, clusterTechnology), [opportunities]);
+  const geoData = useMemo(() => clusterCount((o) => o.geography, clusterGeography), [opportunities]);
+
 
   if (opportunities.length === 0) return null;
 
@@ -112,48 +92,43 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Industry clusters */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByIndustry")}</h3>
-          <ResponsiveContainer width="100%" height={Math.max(180, industryData.length * 24)}>
-            <BarChart data={industryData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={TOOLTIP_STYLE}
-                formatter={(value: number, _n, item: { payload?: { examples?: string[] } }) => {
-                  const ex = item?.payload?.examples ?? [];
-                  return [ex.length ? `${value} — ${ex.join("; ")}` : value, "Ideas"];
-                }}
-              />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
-                {industryData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <ClusterChart title={t("dashByIndustry")} data={industryData} colorOffset={0} />
+        <ClusterChart title={t("dashByTechnology")} data={techData} colorOffset={3} />
+        <ClusterChart title={t("dashByGeography")} data={geoData} colorOffset={5} />
 
-        </div>
-
-        {/* Technology Bar */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByTechnology")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={techData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={72} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
-                {techData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[(idx + 3) % CHART_COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
       </div>
     </div>
   );
 }
+
+interface ClusterDatum { name: string; value: number; examples: string[] }
+
+function ClusterChart({ title, data, colorOffset }: { title: string; data: ClusterDatum[]; colorOffset: number }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <h3 className="text-sm font-semibold text-card-foreground mb-3">{title}</h3>
+      <ResponsiveContainer width="100%" height={Math.max(180, data.length * 24)}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE}
+            formatter={(value: number, _n, item: { payload?: { examples?: string[] } }) => {
+              const ex = item?.payload?.examples ?? [];
+              return [ex.length ? `${value} — ${ex.join("; ")}` : value, "Ideas"];
+            }}
+          />
+          <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
+            {data.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[(idx + colorOffset) % CHART_COLORS.length]} />)}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+
 
 function KpiCard({ icon, label, value, sub, color }: {
   icon: React.ReactNode;
