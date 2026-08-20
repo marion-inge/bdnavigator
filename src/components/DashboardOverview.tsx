@@ -90,44 +90,10 @@ export function DashboardOverview({ opportunities }: DashboardOverviewProps) {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Industry clusters */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByIndustry")}</h3>
-          <ResponsiveContainer width="100%" height={Math.max(180, industryData.length * 24)}>
-            <BarChart data={industryData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={TOOLTIP_STYLE}
-                formatter={(value: number, _n, item: { payload?: { examples?: string[] } }) => {
-                  const ex = item?.payload?.examples ?? [];
-                  return [ex.length ? `${value} — ${ex.join("; ")}` : value, "Ideas"];
-                }}
-              />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
-                {industryData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <ClusterChart title={t("dashByIndustry")} data={industryData} colorOffset={0} />
+        <ClusterChart title={t("dashByTechnology")} data={techData} colorOffset={3} />
+        <ClusterChart title={t("dashByGeography")} data={geoData} colorOffset={5} />
 
-        </div>
-
-        {/* Technology Bar */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold text-card-foreground mb-3">{t("dashByTechnology")}</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={techData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 88%)" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={72} tick={{ fontSize: 10, fill: "hsl(220, 10%, 50%)" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={18}>
-                {techData.map((_, idx) => <Cell key={idx} fill={CHART_COLORS[(idx + 3) % CHART_COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
       </div>
     </div>
   );
