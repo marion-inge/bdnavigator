@@ -6,6 +6,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { Lightbulb, BarChart3 } from "lucide-react";
+import { clusterIndustry } from "@/lib/industryClusters";
+
 
 interface DashboardOverviewProps {
   opportunities: Opportunity[];
