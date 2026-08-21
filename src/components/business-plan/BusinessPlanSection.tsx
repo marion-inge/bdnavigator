@@ -55,7 +55,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
-  const mainTab = activeMainTab || "combined";
+  const mainTab = activeMainTab || "tam";
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
   };
