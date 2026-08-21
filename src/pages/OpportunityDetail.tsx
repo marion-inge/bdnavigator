@@ -84,7 +84,7 @@ export default function OpportunityDetail() {
   const tabStageThreshold: Record<TabKey, Stage> = {
     overview:            "rough_scoring",
     scoring:             "gate1",
-    hypothesis:          "rough_scoring",
+    hypothesis:          "market_intel",
     scan_pack:           "rough_scoring",
     industry_scan_outcome: "rough_scoring",
     customer_scan_outcome: "rough_scoring",
@@ -177,9 +177,7 @@ export default function OpportunityDetail() {
         { key: "sam-org", label: bp("Org Readiness", "Org. Readiness") },
         { key: "sam-risk", label: bp("Risk", "Risiko") },
         
-        { key: "sam-interviews", label: bp("Customer Interviews", "Kundeninterviews") },
-        { key: "sam-affiliate", label: bp("Affiliate Interviews", "Affiliate-Interviews") },
-        { key: "sam-bu", label: bp("BU Interviews", "BU-Interviews") },
+        
         { key: "sam-bmc", label: "BMC" },
         { key: "sam-lean", label: "Lean Canvas" },
       ],
@@ -194,7 +192,7 @@ export default function OpportunityDetail() {
         { key: "som-customers-found", label: bp("Customers Found", "Gefundene Kunden") },
 
         
-        { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
+        
         { key: "som-vpc", label: "VPC" },
         { key: "som-cba", label: bp("Customer Benefit", "Kundennutzen") },
         { key: "som-threecircles", label: bp("Three Circles", "Drei Kreise") },
@@ -225,7 +223,6 @@ export default function OpportunityDetail() {
       gate: "gate1",
       items: [
         { id: "overview", key: "overview", label: t("overview"), icon: <LayoutDashboard className="h-4 w-4" /> },
-        { id: "hypothesis", key: "hypothesis", label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
         { id: "scoring", key: "scoring", label: t("roughScoring"), icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
       ],
     },
@@ -234,6 +231,7 @@ export default function OpportunityDetail() {
       label: bp("AI-assisted Market Intelligence", "KI-gestützte Marktintelligenz"),
       gate: "gate2",
       items: [
+        { id: "hypothesis", key: "hypothesis", label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
         { id: "scan_pack", key: "scan_pack", label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${scansDone}/6` : undefined },
         { id: "industry_scan_outcome", key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
         { id: "customer_scan_outcome", key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
