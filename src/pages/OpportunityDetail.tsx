@@ -39,7 +39,7 @@ export default function OpportunityDetail() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saDefaultTab, setSaDefaultTab] = useState<string | undefined>(undefined);
   const [bpExpanded, setBpExpanded] = useState(false);
-  const [bpMainTab, setBpMainTab] = useState("combined");
+  const [bpMainTab, setBpMainTab] = useState("tam");
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
   const [scoringExpanded, setScoringExpanded] = useState(false);
@@ -144,11 +144,6 @@ export default function OpportunityDetail() {
 
   // Business Plan sub-navigation structure
   const bpSubNav = [
-    {
-      key: "combined",
-      label: bp("Overview", "Übersicht"),
-      icon: <BarChart2 className="h-3 w-3" />,
-    },
     {
       key: "tam",
       label: "TAM",

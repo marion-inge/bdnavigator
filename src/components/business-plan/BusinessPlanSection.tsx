@@ -55,7 +55,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
-  const mainTab = activeMainTab || "combined";
+  const mainTab = activeMainTab || "tam";
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
   };
@@ -122,13 +122,11 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
 
 
-    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
+      {/* Combined Overview — shown permanently above TAM/SAM/SOM */}
+      <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
+        onSaveDetailed={handleUpdateScoring} />
 
-      {/* Combined Overview */}
-      <TabsContent value="combined">
-        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
-          onSaveDetailed={handleUpdateScoring} />
-      </TabsContent>
+    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
