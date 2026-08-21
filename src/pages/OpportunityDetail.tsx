@@ -145,11 +145,6 @@ export default function OpportunityDetail() {
   // Business Plan sub-navigation structure
   const bpSubNav = [
     {
-      key: "combined",
-      label: bp("Overview", "Übersicht"),
-      icon: <BarChart2 className="h-3 w-3" />,
-    },
-    {
       key: "tam",
       label: "TAM",
       icon: <Globe className="h-3 w-3" />,
