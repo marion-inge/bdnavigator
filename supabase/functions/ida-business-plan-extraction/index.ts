@@ -657,7 +657,7 @@ serve(async (req) => {
       : scope === "tam"
       ? ["tam", "sam_customers", "overview"]
       : scope === "som"
-      ? ["som", "som_models", "overview"]
+      ? ["som", "som_models", "sam_customers", "overview"]
       : [scope, "overview"];
 
 
