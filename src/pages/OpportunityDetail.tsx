@@ -223,7 +223,6 @@ export default function OpportunityDetail() {
       gate: "gate1",
       items: [
         { id: "overview", key: "overview", label: t("overview"), icon: <LayoutDashboard className="h-4 w-4" /> },
-        { id: "hypothesis", key: "hypothesis", label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
         { id: "scoring", key: "scoring", label: t("roughScoring"), icon: <BarChart2 className="h-4 w-4" />, badge: totalScore !== null ? `${totalScore.toFixed(1)}` : undefined },
       ],
     },
@@ -232,6 +231,7 @@ export default function OpportunityDetail() {
       label: bp("AI-assisted Market Intelligence", "KI-gestützte Marktintelligenz"),
       gate: "gate2",
       items: [
+        { id: "hypothesis", key: "hypothesis", label: bp("Hypothesis", "Hypothese"), icon: <Lightbulb className="h-4 w-4" /> },
         { id: "scan_pack", key: "scan_pack", label: bp("Scan Pack", "Scan Pack"), icon: <FolderOpen className="h-4 w-4" />, badge: opp.scanPack ? `${scansDone}/6` : undefined },
         { id: "industry_scan_outcome", key: "industry_scan_outcome", label: bp("Industry Scan Outcome", "Industrie-Scan-Ergebnis"), icon: <Building2 className="h-4 w-4" /> },
         { id: "customer_scan_outcome", key: "customer_scan_outcome", label: bp("Customer Scan Outcome", "Customer-Scan-Ergebnis"), icon: <FolderOpen className="h-4 w-4" /> },
