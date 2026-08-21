@@ -135,16 +135,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
         {canRunIda && (
           <div className="flex justify-end mb-2"><IdaButton scope="tam" label={bp("Fill TAM with IDA", "TAM mit IDA ausfüllen")} /></div>
         )}
-        <Tabs value={getSubTab("tam", "tam-overview")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
-          <TabsContent value="tam-overview">
-            <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
-              strategicAnalyses={saData}
-              onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
-              onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
-
-              opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
-              solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-          </TabsContent>
+        <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
+          strategicAnalyses={saData}
+          onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
+          onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
+          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <Tabs value={getSubTab("tam", "tam-research")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-research">
             <EmbeddedMarketResearch {...tamProps} />
           </TabsContent>
@@ -161,7 +158,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
-
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
@@ -169,13 +165,11 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
         {canRunIda && (
           <div className="flex justify-end mb-2"><IdaButton scope="sam" label={bp("Fill SAM with IDA", "SAM mit IDA ausfüllen")} /></div>
         )}
-        <Tabs value={getSubTab("sam", "sam-overview")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
-          <TabsContent value="sam-overview">
-            <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
-              strategicAnalyses={saData}
-              opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
-              solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-          </TabsContent>
+        <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
+          strategicAnalyses={saData}
+          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <Tabs value={getSubTab("sam", "sam-channels")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-channels">
             <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
@@ -220,13 +214,11 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
         {canRunIda && (
           <div className="flex justify-end mb-2"><IdaButton scope="som" label={bp("Fill SOM with IDA", "SOM mit IDA ausfüllen")} /></div>
         )}
-        <Tabs value={getSubTab("som", "som-overview")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
-          <TabsContent value="som-overview">
-            <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
-              strategicAnalyses={saData}
-              opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
-              solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-          </TabsContent>
+        <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
+          strategicAnalyses={saData}
+          opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
+          solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <Tabs value={getSubTab("som", "som-competitor")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-competitor">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
           </TabsContent>
