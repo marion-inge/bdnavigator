@@ -84,7 +84,7 @@ export default function OpportunityDetail() {
   const tabStageThreshold: Record<TabKey, Stage> = {
     overview:            "rough_scoring",
     scoring:             "gate1",
-    hypothesis:          "rough_scoring",
+    hypothesis:          "market_intel",
     scan_pack:           "rough_scoring",
     industry_scan_outcome: "rough_scoring",
     customer_scan_outcome: "rough_scoring",
