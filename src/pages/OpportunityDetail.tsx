@@ -154,7 +154,6 @@ export default function OpportunityDetail() {
       label: "TAM",
       icon: <Globe className="h-3 w-3" />,
       children: [
-        { key: "tam-overview", label: bp("Overview", "Übersicht") },
         { key: "tam-research", label: bp("Market Research", "Marktforschung") },
         { key: "tam-pestel", label: "PESTEL" },
         { key: "tam-valuechain", label: bp("Value Chain", "Wertschöpfungskette") },
@@ -167,7 +166,6 @@ export default function OpportunityDetail() {
       label: "SAM",
       icon: <Target className="h-3 w-3" />,
       children: [
-        { key: "sam-overview", label: bp("Overview", "Übersicht") },
         { key: "sam-channels", label: bp("Sales Channels", "Vertriebskanäle") },
         { key: "sam-customers", label: bp("Customer Landscape", "Kundenlandschaft") },
         
@@ -187,7 +185,6 @@ export default function OpportunityDetail() {
       label: "SOM",
       icon: <TrendingUp className="h-3 w-3" />,
       children: [
-        { key: "som-overview", label: bp("Overview", "Übersicht") },
         { key: "som-competitor", label: bp("Competitors", "Wettbewerb") },
         { key: "som-customers-found", label: bp("Customers Found", "Gefundene Kunden") },
 
