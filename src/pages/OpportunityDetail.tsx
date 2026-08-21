@@ -192,7 +192,7 @@ export default function OpportunityDetail() {
         { key: "som-customers-found", label: bp("Customers Found", "Gefundene Kunden") },
 
         
-        { key: "som-pilot", label: bp("Pilot & Leads", "Pilot & Leads") },
+        
         { key: "som-vpc", label: "VPC" },
         { key: "som-cba", label: bp("Customer Benefit", "Kundennutzen") },
         { key: "som-threecircles", label: bp("Three Circles", "Drei Kreise") },
