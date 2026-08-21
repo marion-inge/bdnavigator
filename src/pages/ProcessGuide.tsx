@@ -48,7 +48,7 @@ export default function ProcessGuide() {
           <p className="text-muted-foreground leading-relaxed">
             {bp(
               "Each idea progresses through 7 phases with 5 gate decisions. Gate reviews ensure only the most promising ideas advance. The process is flexible — stages can be revisited as new information emerges.",
-              "Jede Idee durchläuft 9 Phasen mit 3 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
+              "Jede Idee durchläuft 7 Phasen mit 5 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
           <StageFlowDiagram bp={bp} />
@@ -142,10 +142,10 @@ export default function ProcessGuide() {
 
             <FeatureCard
               icon={<GitMerge className="h-5 w-5 text-primary" />}
-              title={bp("Stage Gates (G1, G2, G3)", "Stage Gates (G1, G2, G3)")}
+              title={bp("Stage Gates (G1–G5)", "Stage Gates (G1–G5)")}
               description={bp(
                 "Five gate decisions control progression: G1 (after Idea Scoring), G2 (after Market Intelligence), G3 (after TAM SAM SOM), G4 (after Market Verification), G5 (after Business Case). Each gate documents Go/No-Go/Hold with rationale, date, and conditions. Gates can be edited or reverted.",
-                "Drei Gate-Entscheidungen steuern den Fortschritt: G1 (nach Ideen-Scoring → Business Plan), G2 (nach Business Plan → Business Case), G3 (nach Business Case → Umsetzung). Jedes Gate dokumentiert Go/No-Go/Hold mit Begründung, Datum und Bedingungen. Gates können bearbeitet oder rückgängig gemacht werden."
+                "Fünf Gate-Entscheidungen steuern den Fortschritt: G1 (nach Ideen-Scoring), G2 (nach Market Intelligence), G3 (nach TAM SAM SOM), G4 (nach Marktverifizierung), G5 (nach Business Case). Jedes Gate dokumentiert Go/No-Go/Hold mit Begründung, Datum und Bedingungen. Gates können bearbeitet oder rückgängig gemacht werden."
               )}
             />
 

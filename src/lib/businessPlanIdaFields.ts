@@ -736,7 +736,7 @@ export function fieldsForGroup(group: ProposalGroup | "all"): IdaFieldDef[] {
   // overview (bottom-up TAM), so offer it when filling TAM too.
   if (group === "tam") return [...TAM_FIELDS, ...SAM_FIELDS.filter(f => f.section === "Customers Found")];
   if (group === "sam") return SAM_FIELDS;
-  if (group === "som") return SOM_FIELDS;
+  if (group === "som") return [...SOM_FIELDS, ...SAM_FIELDS.filter(f => f.section === "Customers Found")];
   if (group === "overview") return [
     ...TAM_FIELDS.filter(f => f.section === "TAM Overview"),
     ...SAM_FIELDS.filter(f => f.section === "SAM Overview"),
