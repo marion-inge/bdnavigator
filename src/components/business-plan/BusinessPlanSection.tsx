@@ -122,13 +122,11 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
 
 
-    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
+      {/* Combined Overview — shown permanently above TAM/SAM/SOM */}
+      <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
+        onSaveDetailed={handleUpdateScoring} />
 
-      {/* Combined Overview */}
-      <TabsContent value="combined">
-        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
-          onSaveDetailed={handleUpdateScoring} />
-      </TabsContent>
+    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
