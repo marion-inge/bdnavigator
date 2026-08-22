@@ -41,7 +41,7 @@ export function exportQuestionnairePdf() {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("NEVO – Idea Scoring Fragenkatalog", 14, 16);
+  doc.text("NOVI – Idea Scoring Fragenkatalog", 14, 16);
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.text("22 Fragen | 5 Kategorien | Druckvorlage", 14, 26);
@@ -212,12 +212,12 @@ export function exportQuestionnairePdf() {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `NEVO – Idea Scoring Fragenkatalog – Seite ${i}/${pageCount}`,
+      `NOVI – Idea Scoring Fragenkatalog – Seite ${i}/${pageCount}`,
       pw / 2,
       ph - 8,
       { align: "center" }
     );
   }
 
-  doc.save(`NEVO_Idea_Scoring_Fragenkatalog.pdf`);
+  doc.save(`NOVI_Idea_Scoring_Fragenkatalog.pdf`);
 }

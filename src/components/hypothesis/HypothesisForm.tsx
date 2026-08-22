@@ -102,7 +102,7 @@ export function HypothesisForm({ hypothesis, onChange, readonly }: Props) {
           <Field label={L(language, "Offering name", "Angebotsname")} empty={!h.core.offering.name}
             help={L(language, "Short working name for the product, service, or initiative.", "Kurzer Arbeitsname für das Produkt, die Dienstleistung oder die Initiative.")}>
             <Input disabled={readonly} value={h.core.offering.name}
-              placeholder={L(language, "e.g. NEVO Mobile", "z. B. NEVO Mobile")}
+              placeholder={L(language, "e.g. NOVI Mobile", "z. B. NOVI Mobile")}
               onChange={(e) => setCore({ offering: { ...h.core.offering, name: e.target.value } })} />
           </Field>
           <Field label={L(language, "Business model", "Geschäftsmodell")} empty={!h.core.offering.businessModel}
@@ -280,7 +280,7 @@ function CompetitorFields({ h, onChange, readonly, lang }: { h: HypothesisData; 
         </Field>
         <Field label={L(lang, "Offering name", "Angebotsname")} empty={!c.offering.name}
           help={L(lang, "Name of the offering we want to compare against competitors.", "Name des Angebots, das wir mit Wettbewerbern vergleichen wollen.")}>
-          <Input disabled={readonly} value={c.offering.name} placeholder={L(lang, "e.g. NEVO Mobile", "z. B. NEVO Mobile")} onChange={(e) => set({ offering: { ...c.offering, name: e.target.value } })} />
+          <Input disabled={readonly} value={c.offering.name} placeholder={L(lang, "e.g. NOVI Mobile", "z. B. NOVI Mobile")} onChange={(e) => set({ offering: { ...c.offering, name: e.target.value } })} />
         </Field>
       </div>
       <Field label={L(lang, "Offering description", "Angebotsbeschreibung")} empty={!c.offering.description}

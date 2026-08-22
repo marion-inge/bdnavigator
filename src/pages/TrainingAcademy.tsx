@@ -10,7 +10,7 @@ import {
   Compass, BookOpen, CheckCircle2, Lightbulb, Globe, Users,
   ShieldCheck, Layers, Calculator, Rocket, Settings,
 } from "lucide-react";
-import nevoLogo from "@/assets/nevo-logo.png";
+import noviLogo from "@/assets/novi-logo-v4.png";
 import trainingMarketVideo from "@/assets/training-market-modeling.mp4";
 import trainingStrategyVideo from "@/assets/training-strategic-frameworks.mp4";
 import trainingBusinessVideo from "@/assets/training-business-case.mp4";
@@ -253,7 +253,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
   {
     id: "tool",
     title: "Tool-Bedienung",
-    description: "NEVO effizient nutzen",
+    description: "NOVI effizient nutzen",
     icon: Settings,
     color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
     lessons: [
@@ -428,7 +428,7 @@ const modulesEN: typeof modulesDE = [
   {
     id: "tool",
     title: "Tool Usage",
-    description: "Using NEVO effectively",
+    description: "Using NOVI effectively",
     icon: Settings,
     color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
     lessons: [
@@ -489,7 +489,7 @@ export default function TrainingAcademy() {
               </div>
             </div>
           </div>
-          <img src={nevoLogo} alt="NEVO" className="h-14 shrink-0" />
+          <img src={noviLogo} alt="NOVI" className="h-14 shrink-0" />
         </div>
       </header>
 

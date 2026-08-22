@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Search, X, BookOpen, Sparkles, HelpCircle, Library, GraduationCap } from "lucide-react";
 
-import nevoLogo from "@/assets/nevo-logo.png";
+import noviLogo from "@/assets/novi-logo-v4.png";
 
 export default function Index() {
   const { opportunities, loading } = useStore();
@@ -104,7 +104,7 @@ export default function Index() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8 py-1 sm:py-2 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <img src={nevoLogo} alt="NEVO" className="h-20 sm:h-24 shrink-0" />
+            <img src={noviLogo} alt="NOVI" className="h-20 sm:h-24 shrink-0" />
             <div className="min-w-0">
               <h1 className="text-base sm:text-xl font-bold text-muted-foreground tracking-tight truncate">{t("appSlogan")}</h1>
             </div>
@@ -248,7 +248,7 @@ export default function Index() {
         {/* Table */}
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <img src={nevoLogo} alt="NEVO" className="h-12 w-12 opacity-40 mb-4" />
+            <img src={noviLogo} alt="NOVI" className="h-12 w-12 opacity-40 mb-4" />
             <p className="text-muted-foreground">{t("noOpportunities")}</p>
           </div>
         ) : (
