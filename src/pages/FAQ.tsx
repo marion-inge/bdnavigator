@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, HelpCircle } from "lucide-react";
-import noviLogo from "@/assets/novi-logo-v4.png";
+import nevoLogo from "@/assets/nevo-logo.png";
 
 export default function FAQ() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function FAQ() {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <img src={noviLogo} alt="NOVI" className="h-12 shrink-0" />
+            <img src={nevoLogo} alt="NEVO" className="h-12 shrink-0" />
             <div className="flex items-center gap-2">
               <HelpCircle className="h-5 w-5 text-primary" />
               <h1 className="text-lg font-bold text-card-foreground">

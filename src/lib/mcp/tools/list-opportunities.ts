@@ -14,7 +14,7 @@ export default defineTool({
   name: "list_opportunities",
   title: "List opportunities",
   description:
-    "List innovation opportunities in the NOVI pipeline. Returns id, title, stage, industry, geography, owner, and creation date. Use `stage` to filter by pipeline stage and `limit` to cap results (default 25, max 200).",
+    "List innovation opportunities in the NEVO pipeline. Returns id, title, stage, industry, geography, owner, and creation date. Use `stage` to filter by pipeline stage and `limit` to cap results (default 25, max 200).",
   inputSchema: {
     stage: z
       .string()

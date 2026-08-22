@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, LayoutDashboard, Target, ClipboardCheck, FileText, BarChart3, Bot, Globe, Shield, Upload, Lightbulb, TrendingUp, Layers, BookOpen, Search } from "lucide-react";
-import noviLogo from "@/assets/novi-logo-v4.png";
+import nevoLogo from "@/assets/nevo-logo.png";
 
 interface FeatureGroup {
   titleEn: string;
@@ -153,7 +153,7 @@ export default function FeatureOverview() {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <img src={noviLogo} alt="NOVI" className="h-12 shrink-0" />
+            <img src={nevoLogo} alt="NEVO" className="h-12 shrink-0" />
             <div>
               <h1 className="text-lg font-bold text-card-foreground">
                 {isDE ? "Feature-Übersicht" : "Feature Overview"}
