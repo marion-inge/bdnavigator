@@ -19,7 +19,7 @@ function anonClient() {
 var list_opportunities_default = defineTool({
   name: "list_opportunities",
   title: "List opportunities",
-  description: "List innovation opportunities in the NOVI pipeline. Returns id, title, stage, industry, geography, owner, and creation date. Use `stage` to filter by pipeline stage and `limit` to cap results (default 25, max 200).",
+  description: "List innovation opportunities in the NEVO pipeline. Returns id, title, stage, industry, geography, owner, and creation date. Use `stage` to filter by pipeline stage and `limit` to cap results (default 25, max 200).",
   inputSchema: {
     stage: z.string().optional().describe("Optional pipeline stage filter, e.g. 'idea', 'assess', 'business_plan'."),
     limit: z.number().int().min(1).max(200).optional().describe("Maximum number of rows to return (default 25, max 200).")
@@ -282,10 +282,10 @@ var submit_scan_result_default = defineTool6({
 
 // src/lib/mcp/index.ts
 var mcp_default = defineMcp({
-  name: "novi-mcp",
-  title: "NOVI Innovation Pipeline",
+  name: "nevo-mcp",
+  title: "NEVO Innovation Pipeline",
   version: "0.2.0",
-  instructions: "Tools for exploring and executing the NOVI innovation opportunity pipeline. Browse with `list_opportunities` / `search_opportunities`, fetch a full record with `get_opportunity`. To run a Scan Pack: read the intake with `get_scan_input`, check current progress with `get_scan_pack_status`, and post results back with `submit_scan_result` (status + summary + key findings). Deliverable files themselves are uploaded through the app UI.",
+  instructions: "Tools for exploring and executing the NEVO innovation opportunity pipeline. Browse with `list_opportunities` / `search_opportunities`, fetch a full record with `get_opportunity`. To run a Scan Pack: read the intake with `get_scan_input`, check current progress with `get_scan_pack_status`, and post results back with `submit_scan_result` (status + summary + key findings). Deliverable files themselves are uploaded through the app UI.",
   tools: [
     list_opportunities_default,
     get_opportunity_default,

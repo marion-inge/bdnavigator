@@ -318,7 +318,7 @@ export async function exportOpportunityPdf(opp: Opportunity) {
   const doc = new jsPDF();
   const pw = doc.internal.pageSize.getWidth();
 
-  addHeader(doc, `NOVI – ${opp.title}`);
+  addHeader(doc, `NEVO – ${opp.title}`);
 
   let y = 38;
 
@@ -687,7 +687,7 @@ export async function exportOpportunityPdf(opp: Opportunity) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `NOVI – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
+      `NEVO – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
@@ -701,7 +701,7 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
   const doc = new jsPDF({ orientation: "landscape" });
   const pw = doc.internal.pageSize.getWidth();
 
-  addHeader(doc, "NOVI – Pipeline Overview");
+  addHeader(doc, "NEVO – Pipeline Overview");
 
   let y = 38;
 
@@ -779,12 +779,12 @@ export function exportDashboardPdf(opportunities: Opportunity[]) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `NOVI – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
+      `NEVO – Exported on ${new Date().toLocaleDateString("en-US")} – Page ${i}/${pageCount}`,
       pw / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" }
     );
   }
 
-  doc.save(`NOVI_Pipeline_${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`NEVO_Pipeline_${new Date().toISOString().slice(0, 10)}.pdf`);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
