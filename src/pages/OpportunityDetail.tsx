@@ -26,8 +26,9 @@ import { CustomerScanOutcome } from "@/components/scan-pack/CustomerScanOutcome"
 import { IndustryScanOutcome } from "@/components/scan-pack/IndustryScanOutcome";
 import { CompetitorScanOutcome } from "@/components/scan-pack/CompetitorScanOutcome";
 import { MarketPotentialScanOutcome } from "@/components/scan-pack/MarketPotentialScanOutcome";
+import { MarketVerificationSection, MarketVerificationTab } from "@/components/MarketVerificationSection";
 
-type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "competitor_scan_outcome" | "market_potential_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "gates_g4_notes" | "gates_g5_notes" | "strategic_analyses" | "files";
+type TabKey = "overview" | "scoring" | "hypothesis" | "scan_pack" | "industry_scan_outcome" | "customer_scan_outcome" | "competitor_scan_outcome" | "market_potential_scan_outcome" | "sa_ansoff" | "sa_bcg" | "sa_mckinsey" | "sa_three_horizons" | "business_plan" | "market_verification" | "investment_case" | "business_case" | "implement_review" | "gates" | "gates_g1_notes" | "gates_g2_notes" | "gates_g3_notes" | "gates_g4_notes" | "gates_g5_notes" | "strategic_analyses" | "files";
 
 export default function OpportunityDetail() {
   const { id } = useParams<{ id: string }>();
@@ -41,6 +42,7 @@ export default function OpportunityDetail() {
   const [bpExpanded, setBpExpanded] = useState(false);
   const [bpMainTab, setBpMainTab] = useState("tam");
   const [bpSubTab, setBpSubTab] = useState<string | undefined>(undefined);
+  const [marketVerificationTab, setMarketVerificationTab] = useState<MarketVerificationTab>("customer");
   const [expandedBpSection, setExpandedBpSection] = useState<string | null>(null);
   const [scoringExpanded, setScoringExpanded] = useState(false);
   const [forceWizardMode, setForceWizardMode] = useState(false);
@@ -95,6 +97,7 @@ export default function OpportunityDetail() {
     sa_mckinsey:         "gate1",
     sa_three_horizons:   "gate1",
     business_plan:       "gate3",
+    market_verification: "gate4",
     investment_case:     "gate5",
     business_case:       "implement_review",
     implement_review:    "closed",
@@ -121,6 +124,7 @@ export default function OpportunityDetail() {
     sa_mckinsey:        "",
     sa_three_horizons:  "",
     business_plan:      "business_plan",
+    market_verification: "verify_market",
     investment_case:    "investment_case",
     business_case:      "business_case",
     implement_review:   "implement_review",
@@ -204,7 +208,7 @@ export default function OpportunityDetail() {
     setSidebarOpen(false);
   };
 
-  type NavItem = { id: string; key: TabKey; label: string; icon: React.ReactNode; badge?: string; bpTarget?: [string, string] };
+  type NavItem = { id: string; key: TabKey; label: string; icon: React.ReactNode; badge?: string; verificationTarget?: MarketVerificationTab };
 
   const scansDone = opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0;
 
@@ -244,10 +248,10 @@ export default function OpportunityDetail() {
       label: bp("Market Verification", "Marktverifizierung"),
       gate: "gate4",
       items: [
-        { id: "verify-customers", key: "business_plan", label: bp("Customer Interviews", "Kundeninterviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-interviews"] },
-        { id: "verify-affiliates", key: "business_plan", label: bp("Affiliate Interviews", "Affiliate-Interviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-affiliate"] },
-        { id: "verify-bu", key: "business_plan", label: bp("BU Interviews", "BU-Interviews"), icon: <Users className="h-4 w-4" />, bpTarget: ["sam", "sam-bu"] },
-        { id: "verify-pilot", key: "business_plan", label: bp("Pilot & Leads", "Pilot & Leads"), icon: <Target className="h-4 w-4" />, bpTarget: ["som", "som-pilot"] },
+        { id: "verify-customers", key: "market_verification", label: bp("Customer Interviews", "Kundeninterviews"), icon: <Users className="h-4 w-4" />, verificationTarget: "customer" },
+        { id: "verify-affiliates", key: "market_verification", label: bp("Affiliate Interviews", "Affiliate-Interviews"), icon: <Users className="h-4 w-4" />, verificationTarget: "affiliate" },
+        { id: "verify-bu", key: "market_verification", label: bp("BU Interviews", "BU-Interviews"), icon: <Users className="h-4 w-4" />, verificationTarget: "bu" },
+        { id: "verify-pilot", key: "market_verification", label: bp("Pilot & Leads", "Pilot & Leads"), icon: <Target className="h-4 w-4" />, verificationTarget: "pilot" },
       ],
     },
     {
