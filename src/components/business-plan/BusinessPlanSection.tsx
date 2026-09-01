@@ -56,6 +56,15 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
   const mainTab = activeMainTab || "tam";
+
+  // Scroll the TAM/SAM/SOM section into view when navigated to a specific
+  // sub-tab from the sidebar (the CombinedOverview above is very tall).
+  const tabsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (activeSubTab && tabsRef.current) {
+      tabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeMainTab, activeSubTab]);
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
   };
