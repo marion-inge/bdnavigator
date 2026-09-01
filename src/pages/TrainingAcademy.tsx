@@ -244,7 +244,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "Stage-Gate-Prozess",
-            body: "Jedes Gate ist ein Entscheidungspunkt:\n• Gate 1: Idee → Business Plan (Go/Hold/No-Go basierend auf Idea Scoring)\n• Gate 2: Business Plan → Business Case (basierend auf Marktanalyse & Scoring)\n• Gate 3: Business Case → Implementation (basierend auf Investment Case & GTM)\n\nGate-Meetings werden mit Protokollen dokumentiert.",
+            body: "Der Prozess hat 7 Phasen und 5 Gates. Jedes Gate ist ein Entscheidungspunkt (Go/Hold/No-Go):\n• Gate 1: nach Idee & Ideen-Scoring → Market Intelligence\n• Gate 2: nach Market Intelligence (Hypothese & Scan Pack) → TAM SAM SOM\n• Gate 3: nach TAM SAM SOM → Marktverifizierung\n• Gate 4: nach Marktverifizierung → Business Case\n• Gate 5: nach Business Case → Umsetzung & GTM\n\nGate-Meetings werden mit Protokollen dokumentiert.",
           },
         ],
       },
@@ -279,7 +279,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Hierarchische Navigation",
-            body: "In einer Idee navigieren Sie über die linke Sidebar:\n• Overview: Stammdaten und Zusammenfassung\n• Idea Scoring: 22-Fragen-Wizard und strategische Modelle\n• Business Plan: TAM/SAM/SOM mit Overview und Modellen\n• Stage Gates: G1, G2, G3 Meeting-Protokolle\n• Business Case: Investment Case und Implementation Plan",
+            body: "In einer Idee navigieren Sie über die linke Sidebar, die nach den 7 Phasen gruppiert ist:\n• Phase 1 — Overview, Idea Scoring (Wizard und strategische Modelle) → G1\n• Phase 2 — Hypothese, Scan Pack und die Scan-Ergebnisse (Industrie, Kunden, Wettbewerb, Marktpotenzial) → G2\n• Phase 3 — TAM/SAM/SOM mit Gesamtübersicht und Modellen → G3\n• Phase 4 — Marktverifizierung: Kundeninterviews, Affiliate-Interviews, BU-Interviews, Pilot & Leads → G4\n• Phase 5 — Business Case / Investment Case → G5\n• Phase 6 — Umsetzung & GTM-Plan\n• Phase 7 — Umsetzung & Review\n\nDie Gate-Protokolle G1–G5 liegen jeweils zwischen den Phasen.",
           },
           {
             heading: "KI-Agenten nutzen",
@@ -420,7 +420,7 @@ const modulesEN: typeof modulesDE = [
         content: [
           { heading: "Investment Case", body: "Summarizes why to invest: expected ROI, required investment, timeline and risk assessment. Created before Gate 2." },
           { heading: "Business Case", body: "Details the implementation and go-to-market plan: development steps, marketing strategy, sales channels, pilot customers and milestones." },
-          { heading: "Stage-Gate Process", body: "Each gate is a decision point:\n• Gate 1: Idea → Business Plan\n• Gate 2: Business Plan → Business Case\n• Gate 3: Business Case → Implementation\n\nGate meetings are documented with meeting notes." },
+          { heading: "Stage-Gate Process", body: "The process has 7 phases and 5 gates. Each gate is a decision point (Go/Hold/No-Go):\n• Gate 1: after Idea & Idea Scoring → Market Intelligence\n• Gate 2: after Market Intelligence (Hypothesis & Scan Pack) → TAM SAM SOM\n• Gate 3: after TAM SAM SOM → Market Verification\n• Gate 4: after Market Verification → Business Case\n• Gate 5: after Business Case → Implementation & GTM\n\nGate meetings are documented with meeting notes." },
         ],
       },
     ],
@@ -442,7 +442,7 @@ const modulesEN: typeof modulesDE = [
       {
         title: "Sidebar Navigation", description: "All areas of an idea", icon: BookOpen,
         content: [
-          { heading: "Hierarchical Navigation", body: "Navigate via the left sidebar:\n• Overview: Master data & summary\n• Idea Scoring: 22-question wizard & strategic models\n• Business Plan: TAM/SAM/SOM with overviews & models\n• Stage Gates: G1, G2, G3 meeting notes\n• Business Case: Investment Case & Implementation Plan" },
+          { heading: "Hierarchical Navigation", body: "Navigate via the left sidebar, which is grouped into the 7 phases:\n• Phase 1 — Overview, Idea Scoring (wizard & strategic models) → G1\n• Phase 2 — Hypothesis, Scan Pack and the scan outcomes (industry, customer, competitor, market potential) → G2\n• Phase 3 — TAM/SAM/SOM with combined overview & models → G3\n• Phase 4 — Market Verification: Customer Interviews, Affiliate Interviews, BU Interviews, Pilot & Leads → G4\n• Phase 5 — Business Case / Investment Case → G5\n• Phase 6 — Implementation & GTM Plan\n• Phase 7 — Implementation & Review\n\nThe gate records G1–G5 sit between the phases." },
           { heading: "Using AI Agents", body: "IDA (pink robot): Evaluates your inputs and creates assessments\nMark (blue robot): Will perform web research for market data in the future\n\nAI estimations are under the 'IDA Estimation' buttons in TAM, SAM and SOM." },
         ],
       },
