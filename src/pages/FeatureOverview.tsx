@@ -80,7 +80,21 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Risk Assessment", de: "Risikobewertung" },
       { en: "Competitor & Customer Landscape", de: "Wettbewerbs- & Kundenlandschaft" },
       { en: "Portfolio Fit & Organisational Readiness", de: "Portfolio-Fit & Organisatorische Bereitschaft" },
-      { en: "Pilot Customer Identification", de: "Pilotkunden-Identifikation" },
+      { en: "Combined TAM/SAM/SOM Overview", de: "TAM/SAM/SOM-Gesamtübersicht", detail: "Always-visible header comparison of all three market levels", detailDe: "Immer sichtbarer Kopfvergleich aller drei Marktebenen" },
+      { en: "IDA Estimations for TAM, SAM, SOM", de: "IDA-Schätzungen für TAM, SAM, SOM", detail: "Three-scenario estimates (conservative/base/optimistic) with assumptions", detailDe: "Drei-Szenarien-Schätzungen (konservativ/basis/optimistisch) mit Annahmen" },
+      { en: "Customers Found (under SOM)", de: "Gefundene Kunden (unter SOM)", detail: "Concrete customer list derived from the customer scan", detailDe: "Konkrete Kundenliste aus dem Customer Scan" },
+    ],
+  },
+  {
+    titleEn: "Market Verification (Phase 4)",
+    titleDe: "Marktverifizierung (Phase 4)",
+    icon: <ClipboardCheck className="h-5 w-5" />,
+    features: [
+      { en: "Dedicated Market Verification Page", de: "Eigene Marktverifizierungs-Seite", detail: "Separate section with four tabs, independent from the TAM/SAM/SOM analysis", detailDe: "Eigener Bereich mit vier Tabs, unabhängig von der TAM/SAM/SOM-Analyse" },
+      { en: "Customer Interviews", de: "Kundeninterviews", detail: "Interview log with insights, quotes and recommendations", detailDe: "Interview-Protokoll mit Erkenntnissen, Zitaten und Empfehlungen" },
+      { en: "Affiliate Interviews", de: "Affiliate-Interviews", detail: "Internal affiliate perspective on the opportunity", detailDe: "Interne Affiliate-Perspektive auf die Opportunity" },
+      { en: "BU Interviews", de: "BU-Interviews", detail: "Business unit stakeholder validation", detailDe: "Validierung durch Business-Unit-Stakeholder" },
+      { en: "Pilot & Leads", de: "Pilot & Leads", detail: "Target pilot customers and lead pipeline for verification", detailDe: "Ziel-Pilotkunden und Lead-Pipeline zur Verifizierung" },
     ],
   },
   {
