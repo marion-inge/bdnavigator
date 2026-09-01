@@ -194,8 +194,27 @@ export default function ProcessGuide() {
                 "Laden Sie Dokumente zu jeder Idee hoch und verwalten Sie diese. Fügen Sie Kommentare zu Dateien für Kontext hinzu. Unterstützt alle gängigen Dateiformate."
               )}
             />
+
+            <FeatureCard
+              icon={<Paperclip className="h-5 w-5 text-primary" />}
+              title={bp("Download / Report Export", "Download / Report-Export")}
+              description={bp(
+                "There is one single download for an idea. It produces a complete PDF report containing the idea data, scoring, business plan with TAM, SAM, SOM and all supporting models (PESTEL, Porter, SWOT, Portfolio Fit, Org Readiness, Three Circles and more), all charts, market verification data, and the full business case.",
+                "Es gibt genau einen Download pro Idee. Er erzeugt einen vollständigen PDF-Report mit Ideendaten, Scoring, Business Plan inkl. TAM, SAM, SOM und allen unterstützenden Modellen (PESTEL, Porter, SWOT, Portfolio Fit, Org Readiness, Drei-Kreise-Modell u.a.), allen Charts, Marktverifizierungsdaten und dem gesamten Business Case."
+              )}
+            />
+
+            <FeatureCard
+              icon={<RefreshCw className="h-5 w-5 text-primary" />}
+              title={bp("Delete Confirmation", "Löschbestätigung")}
+              description={bp(
+                "Every delete action in the tool asks for confirmation first, so entries, interviews, gate records and attachments cannot be removed accidentally.",
+                "Jede Löschaktion im Tool fragt zuerst nach einer Bestätigung, damit Einträge, Interviews, Gate-Protokolle und Anhänge nicht versehentlich entfernt werden."
+              )}
+            />
           </div>
         </section>
+
 
         {/* AI Agents */}
         <section className="space-y-4">
