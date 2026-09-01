@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip, DollarSign, ArrowRightLeft, Rocket } from "lucide-react";
+import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip, DollarSign, ArrowRightLeft, Rocket, Search } from "lucide-react";
 import idaRobot from "@/assets/ida-robot.png";
 import markRobot from "@/assets/mark-robot.png";
 
@@ -78,6 +78,24 @@ export default function ProcessGuide() {
             />
 
             <FeatureCard
+              icon={<BookOpen className="h-5 w-5 text-primary" />}
+              title={bp("Hypothesis", "Hypothese")}
+              description={bp(
+                "Phase 2 starts with a structured hypothesis: problem, target customer, solution, value proposition and the assumptions that must hold true. IDA can draft a first version from the idea data, which you then sharpen. The hypothesis defines what the scans have to prove or disprove.",
+                "Phase 2 beginnt mit einer strukturierten Hypothese: Problem, Zielkunde, Lösung, Nutzenversprechen und die Annahmen, die zutreffen müssen. IDA kann aus den Ideendaten einen ersten Entwurf erstellen, den Sie anschließend schärfen. Die Hypothese definiert, was die Scans belegen oder widerlegen müssen."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Search className="h-5 w-5 text-primary" />}
+              title={bp("Scan Pack & Scan Outcomes", "Scan Pack & Scan-Ergebnisse")}
+              description={bp(
+                "The Scan Pack bundles the AI-assisted market research: Industry, Customer, Buying Center, Competitor and Market Potential scans. Scans build on each other — the Industry Scan feeds the Customer Scan, the Customer Scan feeds the Buying Center Scan, and Industry, Customer and Competitor scans are prerequisites for the Market Potential Scan. The tool warns when a scan is started too early. Uploaded result files are parsed into structured Scan Outcome pages that feed TAM/SAM/SOM.",
+                "Das Scan Pack bündelt die KI-gestützte Marktrecherche: Industrie-, Kunden-, Buying-Center-, Wettbewerbs- und Marktpotenzial-Scan. Die Scans bauen aufeinander auf — der Industrie-Scan speist den Kunden-Scan, der Kunden-Scan das Buying Center, und Industrie-, Kunden- und Wettbewerbs-Scan sind Voraussetzung für den Marktpotenzial-Scan. Das Tool warnt, wenn ein Scan zu früh gestartet wird. Hochgeladene Ergebnisdateien werden in strukturierte Scan-Ergebnisseiten geparst, die in TAM/SAM/SOM einfließen."
+              )}
+            />
+
+            <FeatureCard
               icon={<Globe className="h-5 w-5 text-primary" />}
               title={bp("Business Plan — TAM Overview", "Business Plan — TAM-Übersicht")}
               description={bp(
@@ -112,6 +130,16 @@ export default function ProcessGuide() {
                 "Einheitliche Darstellung der TAM-, SAM- und SOM-Entwicklung über 5 Jahre (alle in M€). Enthält Flächendiagramm-Vergleich, Datentabelle mit CAGR, automatisch berechnete Insights (Konversionsraten, Wachstumsverhältnisse), geografischen Vergleich über alle drei Ebenen und einen Interpretationsabschnitt für strategische Schlussfolgerungen."
               )}
             />
+
+            <FeatureCard
+              icon={<Briefcase className="h-5 w-5 text-primary" />}
+              title={bp("Market Verification (Phase 4)", "Marktverifizierung (Phase 4)")}
+              description={bp(
+                "A separate section — no longer part of the TAM/SAM/SOM analysis — with four tabs: Customer Interviews, Affiliate Interviews, BU Interviews, and Pilot & Leads. Here you confront the modelled market with reality: what customers actually say, how internal affiliates and business units judge the opportunity, and which pilot customers and leads are concretely available. Gate G4 is decided on this evidence.",
+                "Ein eigener Bereich — nicht mehr Teil der TAM/SAM/SOM-Analyse — mit vier Tabs: Kundeninterviews, Affiliate-Interviews, BU-Interviews und Pilot & Leads. Hier wird der modellierte Markt mit der Realität konfrontiert: Was Kunden tatsächlich sagen, wie interne Affiliates und Business Units die Opportunity beurteilen und welche Pilotkunden und Leads konkret verfügbar sind. Gate G4 wird auf dieser Basis entschieden."
+              )}
+            />
+
 
             <FeatureCard
               icon={<DollarSign className="h-5 w-5 text-primary" />}
@@ -166,8 +194,27 @@ export default function ProcessGuide() {
                 "Laden Sie Dokumente zu jeder Idee hoch und verwalten Sie diese. Fügen Sie Kommentare zu Dateien für Kontext hinzu. Unterstützt alle gängigen Dateiformate."
               )}
             />
+
+            <FeatureCard
+              icon={<Paperclip className="h-5 w-5 text-primary" />}
+              title={bp("Download / Report Export", "Download / Report-Export")}
+              description={bp(
+                "There is one single download for an idea. It produces a complete PDF report containing the idea data, scoring, business plan with TAM, SAM, SOM and all supporting models (PESTEL, Porter, SWOT, Portfolio Fit, Org Readiness, Three Circles and more), all charts, market verification data, and the full business case.",
+                "Es gibt genau einen Download pro Idee. Er erzeugt einen vollständigen PDF-Report mit Ideendaten, Scoring, Business Plan inkl. TAM, SAM, SOM und allen unterstützenden Modellen (PESTEL, Porter, SWOT, Portfolio Fit, Org Readiness, Drei-Kreise-Modell u.a.), allen Charts, Marktverifizierungsdaten und dem gesamten Business Case."
+              )}
+            />
+
+            <FeatureCard
+              icon={<RefreshCw className="h-5 w-5 text-primary" />}
+              title={bp("Delete Confirmation", "Löschbestätigung")}
+              description={bp(
+                "Every delete action in the tool asks for confirmation first, so entries, interviews, gate records and attachments cannot be removed accidentally.",
+                "Jede Löschaktion im Tool fragt zuerst nach einer Bestätigung, damit Einträge, Interviews, Gate-Protokolle und Anhänge nicht versehentlich entfernt werden."
+              )}
+            />
           </div>
         </section>
+
 
         {/* AI Agents */}
         <section className="space-y-4">
@@ -355,14 +402,23 @@ export default function ProcessGuide() {
             />
             <FeatureCard
               icon={<span className="text-lg">🧭</span>}
-              title={bp("Strategic Dashboards", "Strategische Dashboards")}
+              title={bp("Strategic Frameworks Tab", "Strategische-Frameworks-Tab")}
               description={bp(
-                "Portfolio-level views with Ansoff Matrix, Three Horizons Model, and strategic analyses across all ideas.",
-                "Portfolio-Ansichten mit Ansoff-Matrix, Drei-Horizonte-Modell und strategischen Analysen über alle Ideen."
+                "A secondary dashboard tab collecting the portfolio frameworks: Ansoff Matrix, McKinsey/GE Matrix, BCG Matrix and Three Horizons — plus a Score × Market Potential scatter plot.",
+                "Ein sekundärer Dashboard-Tab mit den Portfolio-Frameworks: Ansoff-Matrix, McKinsey/GE-Matrix, BCG-Matrix und Drei Horizonte — plus ein Score-×-Marktpotenzial-Streudiagramm."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">🤖</span>}
+              title={bp("Portfolio Executive Summary", "Portfolio-Executive-Summary")}
+              description={bp(
+                "IDA analyses all ideas in the portfolio and writes an executive summary directly on the dashboard. It is regenerated every time the page is opened, so it always reflects the current data.",
+                "IDA analysiert alle Ideen im Portfolio und schreibt eine Executive Summary direkt auf das Dashboard. Sie wird bei jedem Öffnen der Seite neu erzeugt und spiegelt damit immer den aktuellen Datenstand."
               )}
             />
           </div>
         </section>
+
 
       </main>
     </div>

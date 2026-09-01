@@ -23,8 +23,12 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Distribution Charts (Industry, Geography, Technology)", de: "Verteilungsdiagramme (Branche, Geografie, Technologie)", detail: "Pie and bar charts showing portfolio composition", detailDe: "Kreis- und Balkendiagramme zur Portfolio-Zusammensetzung" },
       { en: "Ansoff Matrix Dashboard", de: "Ansoff-Matrix-Dashboard", detail: "Strategic categorization of ideas by market/product newness", detailDe: "Strategische Einordnung nach Markt-/Produktneuheit" },
       { en: "Three Horizons View", de: "Drei-Horizonte-Ansicht", detail: "Portfolio view across innovation horizons", detailDe: "Portfolio-Ansicht über Innovationshorizonte" },
-      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 9-stage gate process with status indicators", detailDe: "Visueller 9-Phasen-Gate-Prozess mit Statusanzeigen" },
-      { en: "Idea Table with Financial Metrics", de: "Ideen-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
+      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 7-phase stage-gate process (G1–G5) with status indicators", detailDe: "Visueller 7-Phasen-Stage-Gate-Prozess (G1–G5) mit Statusanzeigen" },
+      { en: "Portfolio Executive Summary (IDA)", de: "Portfolio-Executive-Summary (IDA)", detail: "AI-generated summary across all ideas, regenerated on every dashboard visit", detailDe: "KI-generierte Zusammenfassung über alle Ideen, bei jedem Dashboard-Besuch neu erzeugt" },
+      { en: "Strategic Frameworks Tab", de: "Strategische-Frameworks-Tab", detail: "Ansoff, McKinsey/GE, BCG and Three Horizons in one secondary dashboard tab", detailDe: "Ansoff, McKinsey/GE, BCG und Drei Horizonte in einem sekundären Dashboard-Tab" },
+      { en: "Score × Market Potential Scatter", de: "Score-×-Marktpotenzial-Scatter", detail: "Scatter plot positioning every idea by score and SOM potential", detailDe: "Streudiagramm, das jede Idee nach Score und SOM-Potenzial positioniert" },
+      { en: "Idea Table with Financial Metrics", de: "Ideen-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, Scan Pack progress, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, Scan-Pack-Fortschritt, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
+
     ],
   },
   {
@@ -36,8 +40,23 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Idea Detail View", de: "Ideen-Detailansicht", detail: "Comprehensive view with tabs for all phases", detailDe: "Umfassende Ansicht mit Tabs für alle Phasen" },
       { en: "Stage Timeline", de: "Phasen-Timeline", detail: "Visual progress tracker through the stage-gate process", detailDe: "Visueller Fortschritts-Tracker durch den Stage-Gate-Prozess" },
       { en: "Editable Sections", de: "Bearbeitbare Sektionen", detail: "Inline editing for all idea fields", detailDe: "Inline-Bearbeitung aller Ideen-Felder" },
+      { en: "Phase-based Sidebar Navigation", de: "Phasenbasierte Sidebar-Navigation", detail: "Sidebar grouped into the 7 phases with gate entries in between", detailDe: "Sidebar gruppiert in die 7 Phasen mit Gate-Einträgen dazwischen" },
+      { en: "Delete Confirmation Everywhere", de: "Löschbestätigung überall", detail: "Every delete action asks for confirmation before removing data", detailDe: "Jede Löschaktion fragt vor dem Entfernen von Daten nach Bestätigung" },
     ],
   },
+  {
+    titleEn: "Market Intelligence & Scan Packs",
+    titleDe: "Market Intelligence & Scan Packs",
+    icon: <Search className="h-5 w-5" />,
+    features: [
+      { en: "Hypothesis Builder", de: "Hypothesen-Builder", detail: "Structured problem/solution/customer hypothesis with IDA-assisted drafting", detailDe: "Strukturierte Problem-/Lösungs-/Kundenhypothese mit IDA-Unterstützung" },
+      { en: "Scan Pack with 6 Scans", de: "Scan Pack mit 6 Scans", detail: "Industry, Customer, Buying Center, Competitor, Market Potential and supporting scans with status tracking", detailDe: "Industrie-, Kunden-, Buying-Center-, Wettbewerbs-, Marktpotenzial- und unterstützende Scans mit Statusverfolgung" },
+      { en: "Scan Dependency Logic", de: "Scan-Abhängigkeitslogik", detail: "Warns when a scan is started before its prerequisite scans are complete", detailDe: "Warnt, wenn ein Scan vor Abschluss seiner Vorgänger-Scans gestartet wird" },
+      { en: "Scan Outcome Parsing", de: "Scan-Ergebnis-Parsing", detail: "Excel/CSV uploads are parsed into structured industry, customer, competitor and market potential outcomes", detailDe: "Excel-/CSV-Uploads werden in strukturierte Industrie-, Kunden-, Wettbewerbs- und Marktpotenzial-Ergebnisse geparst" },
+      { en: "MCP Server Integration", de: "MCP-Server-Integration", detail: "External AI agents can read intake data and post scan results back into NOVI", detailDe: "Externe KI-Agenten können Intake-Daten lesen und Scan-Ergebnisse zurückschreiben" },
+    ],
+  },
+
   {
     titleEn: "Idea Scoring (22 Criteria)",
     titleDe: "Ideen-Scoring (22 Kriterien)",
@@ -61,7 +80,21 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Risk Assessment", de: "Risikobewertung" },
       { en: "Competitor & Customer Landscape", de: "Wettbewerbs- & Kundenlandschaft" },
       { en: "Portfolio Fit & Organisational Readiness", de: "Portfolio-Fit & Organisatorische Bereitschaft" },
-      { en: "Pilot Customer Identification", de: "Pilotkunden-Identifikation" },
+      { en: "Combined TAM/SAM/SOM Overview", de: "TAM/SAM/SOM-Gesamtübersicht", detail: "Always-visible header comparison of all three market levels", detailDe: "Immer sichtbarer Kopfvergleich aller drei Marktebenen" },
+      { en: "IDA Estimations for TAM, SAM, SOM", de: "IDA-Schätzungen für TAM, SAM, SOM", detail: "Three-scenario estimates (conservative/base/optimistic) with assumptions", detailDe: "Drei-Szenarien-Schätzungen (konservativ/basis/optimistisch) mit Annahmen" },
+      { en: "Customers Found (under SOM)", de: "Gefundene Kunden (unter SOM)", detail: "Concrete customer list derived from the customer scan", detailDe: "Konkrete Kundenliste aus dem Customer Scan" },
+    ],
+  },
+  {
+    titleEn: "Market Verification (Phase 4)",
+    titleDe: "Marktverifizierung (Phase 4)",
+    icon: <ClipboardCheck className="h-5 w-5" />,
+    features: [
+      { en: "Dedicated Market Verification Page", de: "Eigene Marktverifizierungs-Seite", detail: "Separate section with four tabs, independent from the TAM/SAM/SOM analysis", detailDe: "Eigener Bereich mit vier Tabs, unabhängig von der TAM/SAM/SOM-Analyse" },
+      { en: "Customer Interviews", de: "Kundeninterviews", detail: "Interview log with insights, quotes and recommendations", detailDe: "Interview-Protokoll mit Erkenntnissen, Zitaten und Empfehlungen" },
+      { en: "Affiliate Interviews", de: "Affiliate-Interviews", detail: "Internal affiliate perspective on the opportunity", detailDe: "Interne Affiliate-Perspektive auf die Opportunity" },
+      { en: "BU Interviews", de: "BU-Interviews", detail: "Business unit stakeholder validation", detailDe: "Validierung durch Business-Unit-Stakeholder" },
+      { en: "Pilot & Leads", de: "Pilot & Leads", detail: "Target pilot customers and lead pipeline for verification", detailDe: "Ziel-Pilotkunden und Lead-Pipeline zur Verifizierung" },
     ],
   },
   {
@@ -100,7 +133,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     titleDe: "Stage-Gate-Prozess",
     icon: <Shield className="h-5 w-5" />,
     features: [
-      { en: "3 Decision Gates (G1, G2, G3)", de: "3 Entscheidungs-Gates (G1, G2, G3)", detail: "Go/No-Go/Pivot decisions with justification and date tracking", detailDe: "Go/No-Go/Pivot-Entscheidungen mit Begründung und Datumsverfolgung" },
+      { en: "5 Decision Gates (G1–G5)", de: "5 Entscheidungs-Gates (G1–G5)", detail: "G1 after Idea Scoring, G2 after Market Intelligence, G3 after TAM SAM SOM, G4 after Market Verification, G5 after Business Case", detailDe: "G1 nach Ideen-Scoring, G2 nach Market Intelligence, G3 nach TAM SAM SOM, G4 nach Marktverifizierung, G5 nach Business Case" },
+      { en: "7 Phases", de: "7 Phasen", detail: "Idea & Scoring, Market Intelligence, TAM SAM SOM, Market Verification, Business Case, Implementation & GTM, Implementation & Review", detailDe: "Idee & Scoring, Market Intelligence, TAM SAM SOM, Marktverifizierung, Business Case, Umsetzung & GTM, Umsetzung & Review" },
       { en: "Gate Reversion Support", de: "Gate-Rücknahme-Unterstützung" },
       { en: "Stage Badges & Timeline", de: "Phasen-Badges & Timeline" },
     ],
@@ -112,7 +146,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     features: [
       { en: "Full-Text Search", de: "Volltextsuche" },
       { en: "Multi-Filter (Stage, Industry, Geography, Technology, Owner)", de: "Multi-Filter (Phase, Branche, Geografie, Technologie, Owner)" },
-      { en: "PDF Export", de: "PDF-Export", detail: "Questionnaire and idea data export", detailDe: "Fragebogen- und Ideen-Datenexport" },
+      { en: "Single Combined Download (PDF)", de: "Einziger kombinierter Download (PDF)", detail: "One download action producing the full report: idea data, scoring, business plan, all TAM/SAM/SOM models, charts and business case", detailDe: "Ein Download-Vorgang für den gesamten Bericht: Ideendaten, Scoring, Business Plan, alle TAM/SAM/SOM-Modelle, Charts und Business Case" },
+      { en: "Charts Rendered into the PDF", de: "Charts im PDF", detail: "Market and financial charts rasterized into the exported document", detailDe: "Markt- und Finanzdiagramme werden in das exportierte Dokument gerendert" },
       { en: "File Attachments", de: "Dateianhänge", detail: "Upload, download, comment on files per idea", detailDe: "Dateien pro Idee hochladen, herunterladen, kommentieren" },
     ],
   },
@@ -133,7 +168,10 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     titleDe: "Dokumentation",
     icon: <BookOpen className="h-5 w-5" />,
     features: [
-      { en: "Tool Guide (9-Step Lifecycle)", de: "Tool-Guide (9-Schritte-Lebenszyklus)", detail: "Complete documentation of the stage-gate process, scoring formula, AI agents, and FAQ", detailDe: "Komplette Dokumentation des Stage-Gate-Prozesses, Scoring-Formel, KI-Agenten und FAQ" },
+      { en: "Tool Guide (7 Phases, 5 Gates)", de: "Tool-Guide (7 Phasen, 5 Gates)", detail: "Complete documentation of the stage-gate process, scoring formula, AI agents, and FAQ", detailDe: "Komplette Dokumentation des Stage-Gate-Prozesses, Scoring-Formel, KI-Agenten und FAQ" },
+      { en: "Prompt Library", de: "Prompt-Bibliothek", detail: "Transparency on every IDA and Mark system prompt, its inputs and outputs", detailDe: "Transparenz über jeden IDA- und Mark-System-Prompt, dessen Eingaben und Ausgaben" },
+      { en: "Training Academy", de: "Training Academy", detail: "Lesson modules with videos on market modeling, strategic frameworks, scoring and tool usage", detailDe: "Lernmodule mit Videos zu Marktmodellierung, strategischen Frameworks, Scoring und Tool-Nutzung" },
+      { en: "FAQ", de: "FAQ", detail: "Answers on gates, reversion, data bridge, scan dependencies and export", detailDe: "Antworten zu Gates, Rücknahme, Datenbrücke, Scan-Abhängigkeiten und Export" },
     ],
   },
 ];
