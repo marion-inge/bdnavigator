@@ -167,6 +167,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
@@ -217,6 +218,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ SOM ═══ */}
@@ -262,6 +264,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedTargetCosting {...somProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ Others ═══ */}
