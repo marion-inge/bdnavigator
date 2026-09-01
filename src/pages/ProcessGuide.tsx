@@ -78,6 +78,24 @@ export default function ProcessGuide() {
             />
 
             <FeatureCard
+              icon={<BookOpen className="h-5 w-5 text-primary" />}
+              title={bp("Hypothesis", "Hypothese")}
+              description={bp(
+                "Phase 2 starts with a structured hypothesis: problem, target customer, solution, value proposition and the assumptions that must hold true. IDA can draft a first version from the idea data, which you then sharpen. The hypothesis defines what the scans have to prove or disprove.",
+                "Phase 2 beginnt mit einer strukturierten Hypothese: Problem, Zielkunde, Lösung, Nutzenversprechen und die Annahmen, die zutreffen müssen. IDA kann aus den Ideendaten einen ersten Entwurf erstellen, den Sie anschließend schärfen. Die Hypothese definiert, was die Scans belegen oder widerlegen müssen."
+              )}
+            />
+
+            <FeatureCard
+              icon={<Search className="h-5 w-5 text-primary" />}
+              title={bp("Scan Pack & Scan Outcomes", "Scan Pack & Scan-Ergebnisse")}
+              description={bp(
+                "The Scan Pack bundles the AI-assisted market research: Industry, Customer, Buying Center, Competitor and Market Potential scans. Scans build on each other — the Industry Scan feeds the Customer Scan, the Customer Scan feeds the Buying Center Scan, and Industry, Customer and Competitor scans are prerequisites for the Market Potential Scan. The tool warns when a scan is started too early. Uploaded result files are parsed into structured Scan Outcome pages that feed TAM/SAM/SOM.",
+                "Das Scan Pack bündelt die KI-gestützte Marktrecherche: Industrie-, Kunden-, Buying-Center-, Wettbewerbs- und Marktpotenzial-Scan. Die Scans bauen aufeinander auf — der Industrie-Scan speist den Kunden-Scan, der Kunden-Scan das Buying Center, und Industrie-, Kunden- und Wettbewerbs-Scan sind Voraussetzung für den Marktpotenzial-Scan. Das Tool warnt, wenn ein Scan zu früh gestartet wird. Hochgeladene Ergebnisdateien werden in strukturierte Scan-Ergebnisseiten geparst, die in TAM/SAM/SOM einfließen."
+              )}
+            />
+
+            <FeatureCard
               icon={<Globe className="h-5 w-5 text-primary" />}
               title={bp("Business Plan — TAM Overview", "Business Plan — TAM-Übersicht")}
               description={bp(
