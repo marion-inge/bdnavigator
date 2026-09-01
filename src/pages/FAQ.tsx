@@ -50,6 +50,76 @@ export default function FAQ() {
                 </AccordionContent>
               </AccordionItem>
 
+              <AccordionItem value="phases">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("Which phases and gates does an idea go through?", "Welche Phasen und Gates durchläuft eine Idee?")}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm text-muted-foreground">
+                    {bp(
+                      "Seven phases with five gates: 1) Idea & Idea Scoring → G1, 2) AI-assisted Market Intelligence (Hypothesis & Scan Pack) → G2, 3) TAM SAM SOM Analysis → G3, 4) Market Verification → G4, 5) Business Case → G5, 6) Implementation & GTM Plan, 7) Implementation & Review.",
+                      "Sieben Phasen mit fünf Gates: 1) Idee & Ideen-Scoring → G1, 2) KI-gestützte Market Intelligence (Hypothese & Scan Pack) → G2, 3) TAM SAM SOM Analyse → G3, 4) Marktverifizierung → G4, 5) Business Case → G5, 6) Umsetzung & GTM-Plan, 7) Umsetzung & Review."
+                    )}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="market-verification">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("Where do I find Market Verification?", "Wo finde ich die Marktverifizierung?")}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm text-muted-foreground">
+                    {bp(
+                      "Market Verification is its own section (Phase 4) in the sidebar — it is no longer part of the TAM/SAM/SOM analysis. It contains four tabs: Customer Interviews, Affiliate Interviews, BU Interviews, and Pilot & Leads. Clicking any of the four sidebar entries opens the page with that tab selected. All previously entered interview and pilot data is preserved.",
+                      "Die Marktverifizierung ist ein eigener Bereich (Phase 4) in der Sidebar — sie ist nicht mehr Teil der TAM/SAM/SOM-Analyse. Sie enthält vier Tabs: Kundeninterviews, Affiliate-Interviews, BU-Interviews und Pilot & Leads. Ein Klick auf einen der vier Sidebar-Einträge öffnet die Seite mit dem jeweiligen Tab. Alle bisher erfassten Interview- und Pilotdaten bleiben erhalten."
+                    )}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="scan-order">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("In which order should the scans be run?", "In welcher Reihenfolge sollten die Scans laufen?")}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm text-muted-foreground">
+                    {bp(
+                      "The scans build on each other: the Industry Scan feeds the Customer Scan, the Customer Scan feeds the Buying Center Scan, and the Industry, Customer and Competitor scans are prerequisites for the Market Potential Scan. The Scan Pack shows a warning when a scan is started before its predecessors are done — you can still proceed, but the results will be weaker.",
+                      "Die Scans bauen aufeinander auf: Der Industrie-Scan speist den Kunden-Scan, der Kunden-Scan den Buying-Center-Scan, und Industrie-, Kunden- und Wettbewerbs-Scan sind Voraussetzung für den Marktpotenzial-Scan. Das Scan Pack zeigt eine Warnung, wenn ein Scan vor seinen Vorgängern gestartet wird — Sie können fortfahren, die Ergebnisse werden aber schwächer."
+                    )}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="export">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("How do I export an idea?", "Wie exportiere ich eine Idee?")}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm text-muted-foreground">
+                    {bp(
+                      "There is one single download per idea. It generates a complete PDF containing idea data, scoring, business plan with TAM/SAM/SOM and all supporting models, all charts, market verification, and the business case.",
+                      "Es gibt genau einen Download pro Idee. Er erzeugt ein vollständiges PDF mit Ideendaten, Scoring, Business Plan inkl. TAM/SAM/SOM und allen unterstützenden Modellen, allen Charts, Marktverifizierung und Business Case."
+                    )}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="delete-confirm">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("Can I accidentally delete data?", "Kann ich versehentlich Daten löschen?")}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm text-muted-foreground">
+                    {bp(
+                      "No. Every delete action in the tool opens a confirmation dialog first, naming what will be removed.",
+                      "Nein. Jede Löschaktion im Tool öffnet zuerst einen Bestätigungsdialog, der benennt, was entfernt wird."
+                    )}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
               <AccordionItem value="skip-stages">
                 <AccordionTrigger className="text-sm font-medium">
                   {bp("Can I skip stages?", "Kann ich Stages überspringen?")}
@@ -57,12 +127,13 @@ export default function FAQ() {
                 <AccordionContent>
                   <p className="text-sm text-muted-foreground">
                     {bp(
-                      "No, stages must be completed in order. Each gate decision (G1, G2, G3) is only available when the idea is at the corresponding gate stage. However, you can fill in data for later sections at any time — the stage only controls which gate decisions are available.",
-                      "Nein, die Phasen müssen in der Reihenfolge durchlaufen werden. Jede Gate-Entscheidung (G1, G2, G3) ist nur verfügbar, wenn sich die Idee in der entsprechenden Gate-Phase befindet. Sie können jedoch jederzeit Daten für spätere Bereiche eintragen — die Phase steuert nur, welche Gate-Entscheidungen verfügbar sind."
+                      "No, stages must be completed in order. Each gate decision (G1–G5) is only available when the idea is at the corresponding gate stage. However, you can fill in data for later sections at any time — the stage only controls which gate decisions are available.",
+                      "Nein, die Phasen müssen in der Reihenfolge durchlaufen werden. Jede Gate-Entscheidung (G1–G5) ist nur verfügbar, wenn sich die Idee in der entsprechenden Gate-Phase befindet. Sie können jedoch jederzeit Daten für spätere Bereiche eintragen — die Phase steuert nur, welche Gate-Entscheidungen verfügbar sind."
                     )}
                   </p>
                 </AccordionContent>
               </AccordionItem>
+
 
               <AccordionItem value="edit-gate">
                 <AccordionTrigger className="text-sm font-medium">
