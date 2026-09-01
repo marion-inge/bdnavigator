@@ -57,12 +57,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
   const mainTab = activeMainTab || "tam";
 
-  // Scroll the TAM/SAM/SOM section into view when navigated to a specific
-  // sub-tab from the sidebar (the CombinedOverview above is very tall).
-  const tabsRef = useRef<HTMLDivElement>(null);
+  // Scroll the active sub-tab content into view when navigated to a specific
+  // sub-tab from the sidebar (the CombinedOverview + section overview above
+  // are very tall, so without this the target content sits below the fold).
+  const subTabsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (activeSubTab && tabsRef.current) {
-      tabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (activeSubTab && subTabsRef.current) {
+      subTabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [activeMainTab, activeSubTab]);
   const handleMainTabChange = (value: string) => {
@@ -135,7 +136,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
       <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
         onSaveDetailed={handleUpdateScoring} />
 
-    <Tabs ref={tabsRef} value={mainTab} onValueChange={handleMainTabChange} className="space-y-6 scroll-mt-4">
+    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
