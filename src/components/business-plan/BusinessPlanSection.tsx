@@ -157,19 +157,19 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
         <Tabs value={getSubTab("tam", "tam-research")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
-          <TabsContent value="tam-research" data-bp-subtab="tam-research" className="scroll-mt-4">
+          <TabsContent value="tam-research" data-bp-subtab="tam-research" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedMarketResearch {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-pestel" data-bp-subtab="tam-pestel" className="scroll-mt-4">
+          <TabsContent value="tam-pestel" data-bp-subtab="tam-pestel" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPestel {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-valuechain" data-bp-subtab="tam-valuechain" className="scroll-mt-4">
+          <TabsContent value="tam-valuechain" data-bp-subtab="tam-valuechain" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedValueChain {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-porter" data-bp-subtab="tam-porter" className="scroll-mt-4">
+          <TabsContent value="tam-porter" data-bp-subtab="tam-porter" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPorter {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-swot" data-bp-subtab="tam-swot" className="scroll-mt-4">
+          <TabsContent value="tam-swot" data-bp-subtab="tam-swot" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
@@ -185,40 +185,40 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
         <Tabs value={getSubTab("sam", "sam-channels")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
-          <TabsContent value="sam-channels" data-bp-subtab="sam-channels" className="scroll-mt-4">
+          <TabsContent value="sam-channels" data-bp-subtab="sam-channels" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-customers" data-bp-subtab="sam-customers" className="scroll-mt-4">
+          <TabsContent value="sam-customers" data-bp-subtab="sam-customers" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-strategic" data-bp-subtab="sam-strategic" className="scroll-mt-4">
+          <TabsContent value="sam-strategic" data-bp-subtab="sam-strategic" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <StrategicFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-portfolio" data-bp-subtab="sam-portfolio" className="scroll-mt-4">
+          <TabsContent value="sam-portfolio" data-bp-subtab="sam-portfolio" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <PortfolioFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-feasibility" data-bp-subtab="sam-feasibility" className="scroll-mt-4">
+          <TabsContent value="sam-feasibility" data-bp-subtab="sam-feasibility" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <FeasibilityTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-org" data-bp-subtab="sam-org" className="scroll-mt-4">
+          <TabsContent value="sam-org" data-bp-subtab="sam-org" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-risk" data-bp-subtab="sam-risk" className="scroll-mt-4">
+          <TabsContent value="sam-risk" data-bp-subtab="sam-risk" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-interviews" data-bp-subtab="sam-interviews" className="scroll-mt-4">
+          <TabsContent value="sam-interviews" data-bp-subtab="sam-interviews" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedCustomerInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-affiliate" data-bp-subtab="sam-affiliate" className="scroll-mt-4">
+          <TabsContent value="sam-affiliate" data-bp-subtab="sam-affiliate" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedInternalAffiliateInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-bu" data-bp-subtab="sam-bu" className="scroll-mt-4">
+          <TabsContent value="sam-bu" data-bp-subtab="sam-bu" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedInternalBUInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-bmc" data-bp-subtab="sam-bmc" className="scroll-mt-4">
+          <TabsContent value="sam-bmc" data-bp-subtab="sam-bmc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedBMC {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-lean" data-bp-subtab="sam-lean" className="scroll-mt-4">
+          <TabsContent value="sam-lean" data-bp-subtab="sam-lean" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
@@ -234,10 +234,10 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
         <Tabs value={getSubTab("som", "som-competitor")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
-          <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4">
+          <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
           </TabsContent>
-          <TabsContent value="som-customers-found" data-bp-subtab="som-customers-found" className="scroll-mt-4">
+          <TabsContent value="som-customers-found" data-bp-subtab="som-customers-found" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CustomersFoundTab
               {...samProps}
               title={bp("Customers Found – Customer Scan", "Gefundene Kunden – Customer Scan")}
@@ -247,22 +247,22 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
               )}
             />
           </TabsContent>
-          <TabsContent value="som-pilot" data-bp-subtab="som-pilot" className="scroll-mt-4">
+          <TabsContent value="som-pilot" data-bp-subtab="som-pilot" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="som-vpc" data-bp-subtab="som-vpc" className="scroll-mt-4">
+          <TabsContent value="som-vpc" data-bp-subtab="som-vpc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedVPC {...somProps} />
           </TabsContent>
-          <TabsContent value="som-cba" data-bp-subtab="som-cba" className="scroll-mt-4">
+          <TabsContent value="som-cba" data-bp-subtab="som-cba" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedCBA {...somProps} />
           </TabsContent>
-          <TabsContent value="som-threecircles" data-bp-subtab="som-threecircles" className="scroll-mt-4">
+          <TabsContent value="som-threecircles" data-bp-subtab="som-threecircles" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedThreeCircles {...somProps} />
           </TabsContent>
-          <TabsContent value="som-positioning" data-bp-subtab="som-positioning" className="scroll-mt-4">
+          <TabsContent value="som-positioning" data-bp-subtab="som-positioning" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPositioning {...somProps} />
           </TabsContent>
-          <TabsContent value="som-targetcosting" data-bp-subtab="som-targetcosting" className="scroll-mt-4">
+          <TabsContent value="som-targetcosting" data-bp-subtab="som-targetcosting" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedTargetCosting {...somProps} />
           </TabsContent>
         </Tabs>
