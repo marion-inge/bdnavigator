@@ -420,7 +420,7 @@ export default function OpportunityDetail() {
                 || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
             const current = isTabCurrent(item.key);
-            const isBpItem = item.key === "business_plan" && !isBpTarget;
+            const isBpItem = item.key === "business_plan";
             const isScoringItem = item.key === "scoring";
             const isGatesItem = item.key === "gates";
             const hasExpander = isBpItem || isScoringItem || isGatesItem;
