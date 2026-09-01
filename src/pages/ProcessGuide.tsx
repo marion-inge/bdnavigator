@@ -402,14 +402,23 @@ export default function ProcessGuide() {
             />
             <FeatureCard
               icon={<span className="text-lg">🧭</span>}
-              title={bp("Strategic Dashboards", "Strategische Dashboards")}
+              title={bp("Strategic Frameworks Tab", "Strategische-Frameworks-Tab")}
               description={bp(
-                "Portfolio-level views with Ansoff Matrix, Three Horizons Model, and strategic analyses across all ideas.",
-                "Portfolio-Ansichten mit Ansoff-Matrix, Drei-Horizonte-Modell und strategischen Analysen über alle Ideen."
+                "A secondary dashboard tab collecting the portfolio frameworks: Ansoff Matrix, McKinsey/GE Matrix, BCG Matrix and Three Horizons — plus a Score × Market Potential scatter plot.",
+                "Ein sekundärer Dashboard-Tab mit den Portfolio-Frameworks: Ansoff-Matrix, McKinsey/GE-Matrix, BCG-Matrix und Drei Horizonte — plus ein Score-×-Marktpotenzial-Streudiagramm."
+              )}
+            />
+            <FeatureCard
+              icon={<span className="text-lg">🤖</span>}
+              title={bp("Portfolio Executive Summary", "Portfolio-Executive-Summary")}
+              description={bp(
+                "IDA analyses all ideas in the portfolio and writes an executive summary directly on the dashboard. It is regenerated every time the page is opened, so it always reflects the current data.",
+                "IDA analysiert alle Ideen im Portfolio und schreibt eine Executive Summary direkt auf das Dashboard. Sie wird bei jedem Öffnen der Seite neu erzeugt und spiegelt damit immer den aktuellen Datenstand."
               )}
             />
           </div>
         </section>
+
 
       </main>
     </div>
