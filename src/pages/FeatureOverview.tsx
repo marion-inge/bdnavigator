@@ -146,7 +146,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     features: [
       { en: "Full-Text Search", de: "Volltextsuche" },
       { en: "Multi-Filter (Stage, Industry, Geography, Technology, Owner)", de: "Multi-Filter (Phase, Branche, Geografie, Technologie, Owner)" },
-      { en: "PDF Export", de: "PDF-Export", detail: "Questionnaire and idea data export", detailDe: "Fragebogen- und Ideen-Datenexport" },
+      { en: "Single Combined Download (PDF)", de: "Einziger kombinierter Download (PDF)", detail: "One download action producing the full report: idea data, scoring, business plan, all TAM/SAM/SOM models, charts and business case", detailDe: "Ein Download-Vorgang für den gesamten Bericht: Ideendaten, Scoring, Business Plan, alle TAM/SAM/SOM-Modelle, Charts und Business Case" },
+      { en: "Charts Rendered into the PDF", de: "Charts im PDF", detail: "Market and financial charts rasterized into the exported document", detailDe: "Markt- und Finanzdiagramme werden in das exportierte Dokument gerendert" },
       { en: "File Attachments", de: "Dateianhänge", detail: "Upload, download, comment on files per idea", detailDe: "Dateien pro Idee hochladen, herunterladen, kommentieren" },
     ],
   },
