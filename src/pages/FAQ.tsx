@@ -43,8 +43,8 @@ export default function FAQ() {
                 <AccordionContent>
                   <p className="text-sm text-muted-foreground">
                     {bp(
-                      "When you revert to a previous stage, all gate records at or beyond the target stage are automatically deleted to maintain data integrity. For example, reverting from Business Case back to Business Plan will remove the G2 gate decision. Your data in each section (scoring, business plan, etc.) is preserved — only the gate decisions are affected.",
-                      "Wenn Sie zu einer früheren Phase zurückkehren, werden alle Gate-Einträge ab der Zielphase automatisch gelöscht, um die Datenintegrität zu gewährleisten. Beispiel: Ein Rückschritt vom Business Case zum Business Plan entfernt die G2-Gate-Entscheidung. Ihre Daten in den einzelnen Bereichen (Scoring, Business Plan etc.) bleiben erhalten — nur die Gate-Entscheidungen sind betroffen."
+                      "When you revert to a previous phase, all gate records at or beyond the target phase are automatically deleted to maintain data integrity. For example, reverting from Market Verification back to TAM SAM SOM removes the G3 gate decision. Your data in each section (scoring, scans, business plan, interviews, business case) is preserved — only the gate decisions are affected.",
+                      "Wenn Sie zu einer früheren Phase zurückkehren, werden alle Gate-Einträge ab der Zielphase automatisch gelöscht, um die Datenintegrität zu gewährleisten. Beispiel: Ein Rückschritt von der Marktverifizierung zur TAM-SAM-SOM-Analyse entfernt die G3-Gate-Entscheidung. Ihre Daten in den einzelnen Bereichen (Scoring, Scans, Business Plan, Interviews, Business Case) bleiben erhalten — nur die Gate-Entscheidungen sind betroffen."
                     )}
                   </p>
                 </AccordionContent>
