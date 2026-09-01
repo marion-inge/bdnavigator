@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CombinedOverview } from "./CombinedOverview";
 import { TamOverview } from "./TamOverview";
@@ -56,6 +56,16 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
 
   const mainTab = activeMainTab || "tam";
+
+  // Scroll the active sub-tab content into view when navigated to a specific
+  // sub-tab from the sidebar (the CombinedOverview + section overview above
+  // are very tall, so without this the target content sits below the fold).
+  const subTabsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (activeSubTab && subTabsRef.current) {
+      subTabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeMainTab, activeSubTab]);
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
   };
@@ -139,6 +149,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <div ref={mainTab === "tam" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("tam", "tam-research")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-research">
             <EmbeddedMarketResearch {...tamProps} />
@@ -156,6 +167,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
@@ -167,6 +179,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           strategicAnalyses={saData}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <div ref={mainTab === "sam" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("sam", "sam-channels")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-channels">
             <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -205,6 +218,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ SOM ═══ */}
@@ -216,6 +230,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           strategicAnalyses={saData}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
+        <div ref={mainTab === "som" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("som", "som-competitor")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-competitor">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
@@ -249,6 +264,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             <EmbeddedTargetCosting {...somProps} />
           </TabsContent>
         </Tabs>
+        </div>
       </TabsContent>
 
       {/* ═══ Others ═══ */}
