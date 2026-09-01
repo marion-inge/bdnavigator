@@ -23,8 +23,12 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Distribution Charts (Industry, Geography, Technology)", de: "Verteilungsdiagramme (Branche, Geografie, Technologie)", detail: "Pie and bar charts showing portfolio composition", detailDe: "Kreis- und Balkendiagramme zur Portfolio-Zusammensetzung" },
       { en: "Ansoff Matrix Dashboard", de: "Ansoff-Matrix-Dashboard", detail: "Strategic categorization of ideas by market/product newness", detailDe: "Strategische Einordnung nach Markt-/Produktneuheit" },
       { en: "Three Horizons View", de: "Drei-Horizonte-Ansicht", detail: "Portfolio view across innovation horizons", detailDe: "Portfolio-Ansicht über Innovationshorizonte" },
-      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 9-stage gate process with status indicators", detailDe: "Visueller 9-Phasen-Gate-Prozess mit Statusanzeigen" },
-      { en: "Idea Table with Financial Metrics", de: "Ideen-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
+      { en: "Process Overview Diagram", de: "Prozessübersicht-Diagramm", detail: "Visual 7-phase stage-gate process (G1–G5) with status indicators", detailDe: "Visueller 7-Phasen-Stage-Gate-Prozess (G1–G5) mit Statusanzeigen" },
+      { en: "Portfolio Executive Summary (IDA)", de: "Portfolio-Executive-Summary (IDA)", detail: "AI-generated summary across all ideas, regenerated on every dashboard visit", detailDe: "KI-generierte Zusammenfassung über alle Ideen, bei jedem Dashboard-Besuch neu erzeugt" },
+      { en: "Strategic Frameworks Tab", de: "Strategische-Frameworks-Tab", detail: "Ansoff, McKinsey/GE, BCG and Three Horizons in one secondary dashboard tab", detailDe: "Ansoff, McKinsey/GE, BCG und Drei Horizonte in einem sekundären Dashboard-Tab" },
+      { en: "Score × Market Potential Scatter", de: "Score-×-Marktpotenzial-Scatter", detail: "Scatter plot positioning every idea by score and SOM potential", detailDe: "Streudiagramm, das jede Idee nach Score und SOM-Potenzial positioniert" },
+      { en: "Idea Table with Financial Metrics", de: "Ideen-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, Scan Pack progress, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, Scan-Pack-Fortschritt, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
+
     ],
   },
   {
