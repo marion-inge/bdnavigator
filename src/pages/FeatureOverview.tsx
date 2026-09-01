@@ -40,8 +40,23 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Idea Detail View", de: "Ideen-Detailansicht", detail: "Comprehensive view with tabs for all phases", detailDe: "Umfassende Ansicht mit Tabs für alle Phasen" },
       { en: "Stage Timeline", de: "Phasen-Timeline", detail: "Visual progress tracker through the stage-gate process", detailDe: "Visueller Fortschritts-Tracker durch den Stage-Gate-Prozess" },
       { en: "Editable Sections", de: "Bearbeitbare Sektionen", detail: "Inline editing for all idea fields", detailDe: "Inline-Bearbeitung aller Ideen-Felder" },
+      { en: "Phase-based Sidebar Navigation", de: "Phasenbasierte Sidebar-Navigation", detail: "Sidebar grouped into the 7 phases with gate entries in between", detailDe: "Sidebar gruppiert in die 7 Phasen mit Gate-Einträgen dazwischen" },
+      { en: "Delete Confirmation Everywhere", de: "Löschbestätigung überall", detail: "Every delete action asks for confirmation before removing data", detailDe: "Jede Löschaktion fragt vor dem Entfernen von Daten nach Bestätigung" },
     ],
   },
+  {
+    titleEn: "Market Intelligence & Scan Packs",
+    titleDe: "Market Intelligence & Scan Packs",
+    icon: <Search className="h-5 w-5" />,
+    features: [
+      { en: "Hypothesis Builder", de: "Hypothesen-Builder", detail: "Structured problem/solution/customer hypothesis with IDA-assisted drafting", detailDe: "Strukturierte Problem-/Lösungs-/Kundenhypothese mit IDA-Unterstützung" },
+      { en: "Scan Pack with 6 Scans", de: "Scan Pack mit 6 Scans", detail: "Industry, Customer, Buying Center, Competitor, Market Potential and supporting scans with status tracking", detailDe: "Industrie-, Kunden-, Buying-Center-, Wettbewerbs-, Marktpotenzial- und unterstützende Scans mit Statusverfolgung" },
+      { en: "Scan Dependency Logic", de: "Scan-Abhängigkeitslogik", detail: "Warns when a scan is started before its prerequisite scans are complete", detailDe: "Warnt, wenn ein Scan vor Abschluss seiner Vorgänger-Scans gestartet wird" },
+      { en: "Scan Outcome Parsing", de: "Scan-Ergebnis-Parsing", detail: "Excel/CSV uploads are parsed into structured industry, customer, competitor and market potential outcomes", detailDe: "Excel-/CSV-Uploads werden in strukturierte Industrie-, Kunden-, Wettbewerbs- und Marktpotenzial-Ergebnisse geparst" },
+      { en: "MCP Server Integration", de: "MCP-Server-Integration", detail: "External AI agents can read intake data and post scan results back into NOVI", detailDe: "Externe KI-Agenten können Intake-Daten lesen und Scan-Ergebnisse zurückschreiben" },
+    ],
+  },
+
   {
     titleEn: "Idea Scoring (22 Criteria)",
     titleDe: "Ideen-Scoring (22 Kriterien)",
