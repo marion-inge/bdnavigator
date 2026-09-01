@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CombinedOverview } from "./CombinedOverview";
 import { TamOverview } from "./TamOverview";
@@ -57,14 +57,21 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
   const mainTab = activeMainTab || "tam";
 
-  // Scroll the active sub-tab content into view when navigated to a specific
-  // sub-tab from the sidebar (the CombinedOverview + section overview above
-  // are very tall, so without this the target content sits below the fold).
-  const subTabsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (activeSubTab && subTabsRef.current) {
-      subTabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (!activeSubTab) return;
+
+    const scrollToActivePanel = () => {
+      const panel = document.querySelector<HTMLElement>(`[data-bp-subtab="${activeSubTab}"]`);
+      panel?.scrollIntoView({ behavior: "auto", block: "start" });
+    };
+
+    const frame = requestAnimationFrame(() => requestAnimationFrame(scrollToActivePanel));
+    const settleTimer = window.setTimeout(scrollToActivePanel, 300);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(settleTimer);
+    };
   }, [activeMainTab, activeSubTab]);
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
@@ -149,25 +156,23 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        <div ref={mainTab === "tam" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("tam", "tam-research")} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
-          <TabsContent value="tam-research">
+          <TabsContent value="tam-research" data-bp-subtab="tam-research" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedMarketResearch {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-pestel">
+          <TabsContent value="tam-pestel" data-bp-subtab="tam-pestel" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPestel {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-valuechain">
+          <TabsContent value="tam-valuechain" data-bp-subtab="tam-valuechain" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedValueChain {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-porter">
+          <TabsContent value="tam-porter" data-bp-subtab="tam-porter" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPorter {...tamProps} />
           </TabsContent>
-          <TabsContent value="tam-swot">
+          <TabsContent value="tam-swot" data-bp-subtab="tam-swot" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedSwot {...tamProps} />
           </TabsContent>
         </Tabs>
-        </div>
       </TabsContent>
 
       {/* ═══ SAM ═══ */}
@@ -179,46 +184,44 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           strategicAnalyses={saData}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        <div ref={mainTab === "sam" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("sam", "sam-channels")} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
-          <TabsContent value="sam-channels">
+          <TabsContent value="sam-channels" data-bp-subtab="sam-channels" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-customers">
+          <TabsContent value="sam-customers" data-bp-subtab="sam-customers" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CustomerLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-strategic">
+          <TabsContent value="sam-strategic" data-bp-subtab="sam-strategic" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <StrategicFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-portfolio">
+          <TabsContent value="sam-portfolio" data-bp-subtab="sam-portfolio" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <PortfolioFitTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-feasibility">
+          <TabsContent value="sam-feasibility" data-bp-subtab="sam-feasibility" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <FeasibilityTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-org">
+          <TabsContent value="sam-org" data-bp-subtab="sam-org" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <OrganisationalReadinessTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-risk">
+          <TabsContent value="sam-risk" data-bp-subtab="sam-risk" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-interviews">
+          <TabsContent value="sam-interviews" data-bp-subtab="sam-interviews" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedCustomerInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-affiliate">
+          <TabsContent value="sam-affiliate" data-bp-subtab="sam-affiliate" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedInternalAffiliateInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-bu">
+          <TabsContent value="sam-bu" data-bp-subtab="sam-bu" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedInternalBUInterviews {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-bmc">
+          <TabsContent value="sam-bmc" data-bp-subtab="sam-bmc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedBMC {...samProps} />
           </TabsContent>
-          <TabsContent value="sam-lean">
+          <TabsContent value="sam-lean" data-bp-subtab="sam-lean" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedLeanCanvas {...samProps} />
           </TabsContent>
         </Tabs>
-        </div>
       </TabsContent>
 
       {/* ═══ SOM ═══ */}
@@ -230,12 +233,11 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           strategicAnalyses={saData}
           opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
           solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        <div ref={mainTab === "som" ? subTabsRef : undefined} className="scroll-mt-4">
         <Tabs value={getSubTab("som", "som-competitor")} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
-          <TabsContent value="som-competitor">
+          <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
           </TabsContent>
-          <TabsContent value="som-customers-found">
+          <TabsContent value="som-customers-found" data-bp-subtab="som-customers-found" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CustomersFoundTab
               {...samProps}
               title={bp("Customers Found – Customer Scan", "Gefundene Kunden – Customer Scan")}
@@ -245,26 +247,25 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
               )}
             />
           </TabsContent>
-          <TabsContent value="som-pilot">
+          <TabsContent value="som-pilot" data-bp-subtab="som-pilot" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="som-vpc">
+          <TabsContent value="som-vpc" data-bp-subtab="som-vpc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedVPC {...somProps} />
           </TabsContent>
-          <TabsContent value="som-cba">
+          <TabsContent value="som-cba" data-bp-subtab="som-cba" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedCBA {...somProps} />
           </TabsContent>
-          <TabsContent value="som-threecircles">
+          <TabsContent value="som-threecircles" data-bp-subtab="som-threecircles" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedThreeCircles {...somProps} />
           </TabsContent>
-          <TabsContent value="som-positioning">
+          <TabsContent value="som-positioning" data-bp-subtab="som-positioning" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedPositioning {...somProps} />
           </TabsContent>
-          <TabsContent value="som-targetcosting">
+          <TabsContent value="som-targetcosting" data-bp-subtab="som-targetcosting" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedTargetCosting {...somProps} />
           </TabsContent>
         </Tabs>
-        </div>
       </TabsContent>
 
       {/* ═══ Others ═══ */}
