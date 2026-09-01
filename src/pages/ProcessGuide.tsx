@@ -132,6 +132,16 @@ export default function ProcessGuide() {
             />
 
             <FeatureCard
+              icon={<Briefcase className="h-5 w-5 text-primary" />}
+              title={bp("Market Verification (Phase 4)", "Marktverifizierung (Phase 4)")}
+              description={bp(
+                "A separate section — no longer part of the TAM/SAM/SOM analysis — with four tabs: Customer Interviews, Affiliate Interviews, BU Interviews, and Pilot & Leads. Here you confront the modelled market with reality: what customers actually say, how internal affiliates and business units judge the opportunity, and which pilot customers and leads are concretely available. Gate G4 is decided on this evidence.",
+                "Ein eigener Bereich — nicht mehr Teil der TAM/SAM/SOM-Analyse — mit vier Tabs: Kundeninterviews, Affiliate-Interviews, BU-Interviews und Pilot & Leads. Hier wird der modellierte Markt mit der Realität konfrontiert: Was Kunden tatsächlich sagen, wie interne Affiliates und Business Units die Opportunity beurteilen und welche Pilotkunden und Leads konkret verfügbar sind. Gate G4 wird auf dieser Basis entschieden."
+              )}
+            />
+
+
+            <FeatureCard
               icon={<DollarSign className="h-5 w-5 text-primary" />}
               title={bp("Business Case (Investment Calculation)", "Business Case (Investitionsrechnung)")}
               description={bp(
