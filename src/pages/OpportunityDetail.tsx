@@ -412,10 +412,10 @@ export default function OpportunityDetail() {
             }
 
             const item = row.item;
-            const isBpTarget = !!item.bpTarget;
-            const isActive = isBpTarget
-              ? activeTab === "business_plan" && bpMainTab === item.bpTarget![0] && bpSubTab === item.bpTarget![1]
-              : (activeTab === item.key && !(item.key === "business_plan" && !!bpSubTab && ["sam-interviews", "sam-affiliate", "sam-bu", "som-pilot"].includes(bpSubTab)))
+            const isVerificationTarget = !!item.verificationTarget;
+            const isActive = isVerificationTarget
+              ? activeTab === "market_verification" && marketVerificationTab === item.verificationTarget
+              : activeTab === item.key
                 || (item.key === "scoring" && (activeTab as string).startsWith("sa_"))
                 || (item.key === "gates" && (activeTab as string).startsWith("gates_"));
             const done = isTabDone(item.key);
@@ -429,8 +429,10 @@ export default function OpportunityDetail() {
               <div key={item.id}>
                 <button
                   onClick={() => {
-                    if (isBpTarget) {
-                      handleBpSubNavClick(item.bpTarget![0], item.bpTarget![1]);
+                    if (item.verificationTarget) {
+                      setActiveTab("market_verification");
+                      setMarketVerificationTab(item.verificationTarget);
+                      setSidebarOpen(false);
                       setBpExpanded(false);
                       setScoringExpanded(false);
                       setGatesExpanded(false);
@@ -727,6 +729,17 @@ export default function OpportunityDetail() {
                 industry={opp.industry}
                 geography={opp.geography}
                 technology={opp.technology}
+              />
+            )}
+            {activeTab === "market_verification" && (
+              <MarketVerificationSection
+                activeTab={marketVerificationTab}
+                onTabChange={setMarketVerificationTab}
+                detailedScoring={opp.businessPlan}
+                strategicAnalyses={opp.strategicAnalyses}
+                onSaveDetailed={(data) => updateBusinessPlan(opp.id, data)}
+                onSaveStrategic={(data) => updateOpportunity(opp.id, { strategicAnalyses: data })}
+                readonly={opp.stage === "closed"}
               />
             )}
             {activeTab === "investment_case" && (
