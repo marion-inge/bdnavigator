@@ -135,7 +135,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
       <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
         onSaveDetailed={handleUpdateScoring} />
 
-    <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
+    <Tabs ref={tabsRef} value={mainTab} onValueChange={handleMainTabChange} className="space-y-6 scroll-mt-4">
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
