@@ -133,7 +133,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     titleDe: "Stage-Gate-Prozess",
     icon: <Shield className="h-5 w-5" />,
     features: [
-      { en: "3 Decision Gates (G1, G2, G3)", de: "3 Entscheidungs-Gates (G1, G2, G3)", detail: "Go/No-Go/Pivot decisions with justification and date tracking", detailDe: "Go/No-Go/Pivot-Entscheidungen mit Begründung und Datumsverfolgung" },
+      { en: "5 Decision Gates (G1–G5)", de: "5 Entscheidungs-Gates (G1–G5)", detail: "G1 after Idea Scoring, G2 after Market Intelligence, G3 after TAM SAM SOM, G4 after Market Verification, G5 after Business Case", detailDe: "G1 nach Ideen-Scoring, G2 nach Market Intelligence, G3 nach TAM SAM SOM, G4 nach Marktverifizierung, G5 nach Business Case" },
+      { en: "7 Phases", de: "7 Phasen", detail: "Idea & Scoring, Market Intelligence, TAM SAM SOM, Market Verification, Business Case, Implementation & GTM, Implementation & Review", detailDe: "Idee & Scoring, Market Intelligence, TAM SAM SOM, Marktverifizierung, Business Case, Umsetzung & GTM, Umsetzung & Review" },
       { en: "Gate Reversion Support", de: "Gate-Rücknahme-Unterstützung" },
       { en: "Stage Badges & Timeline", de: "Phasen-Badges & Timeline" },
     ],
