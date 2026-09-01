@@ -168,7 +168,10 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     titleDe: "Dokumentation",
     icon: <BookOpen className="h-5 w-5" />,
     features: [
-      { en: "Tool Guide (9-Step Lifecycle)", de: "Tool-Guide (9-Schritte-Lebenszyklus)", detail: "Complete documentation of the stage-gate process, scoring formula, AI agents, and FAQ", detailDe: "Komplette Dokumentation des Stage-Gate-Prozesses, Scoring-Formel, KI-Agenten und FAQ" },
+      { en: "Tool Guide (7 Phases, 5 Gates)", de: "Tool-Guide (7 Phasen, 5 Gates)", detail: "Complete documentation of the stage-gate process, scoring formula, AI agents, and FAQ", detailDe: "Komplette Dokumentation des Stage-Gate-Prozesses, Scoring-Formel, KI-Agenten und FAQ" },
+      { en: "Prompt Library", de: "Prompt-Bibliothek", detail: "Transparency on every IDA and Mark system prompt, its inputs and outputs", detailDe: "Transparenz über jeden IDA- und Mark-System-Prompt, dessen Eingaben und Ausgaben" },
+      { en: "Training Academy", de: "Training Academy", detail: "Lesson modules with videos on market modeling, strategic frameworks, scoring and tool usage", detailDe: "Lernmodule mit Videos zu Marktmodellierung, strategischen Frameworks, Scoring und Tool-Nutzung" },
+      { en: "FAQ", de: "FAQ", detail: "Answers on gates, reversion, data bridge, scan dependencies and export", detailDe: "Antworten zu Gates, Rücknahme, Datenbrücke, Scan-Abhängigkeiten und Export" },
     ],
   },
 ];
