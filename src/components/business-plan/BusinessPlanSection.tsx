@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CombinedOverview } from "./CombinedOverview";
 import { TamOverview } from "./TamOverview";
@@ -14,11 +14,9 @@ import { RiskTab } from "@/components/detailed-scoring/RiskTab";
 import { CustomerLandscapeTab } from "@/components/detailed-scoring/CustomerLandscapeTab";
 import { CompetitorLandscapeTab } from "@/components/detailed-scoring/CompetitorLandscapeTab";
 
-import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
-
 import { EmbeddedMarketResearch, EmbeddedPestel, EmbeddedPorter, EmbeddedSwot, EmbeddedValueChain } from "./embedded/TamModels";
 
-import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews, EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
+import { EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
@@ -57,22 +55,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
   const mainTab = activeMainTab || "tam";
 
-  useEffect(() => {
-    if (!activeSubTab) return;
-
-    const scrollToActivePanel = () => {
-      const panel = document.querySelector<HTMLElement>(`[data-bp-subtab="${activeSubTab}"]`);
-      panel?.scrollIntoView({ behavior: "auto", block: "start" });
-    };
-
-    const frame = requestAnimationFrame(() => requestAnimationFrame(scrollToActivePanel));
-    const settleTimer = window.setTimeout(scrollToActivePanel, 300);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(settleTimer);
-    };
-  }, [activeMainTab, activeSubTab]);
   const handleMainTabChange = (value: string) => {
     onTabChange?.(value, undefined);
   };
@@ -206,15 +188,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
           <TabsContent value="sam-risk" data-bp-subtab="sam-risk" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <RiskTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
-          <TabsContent value="sam-interviews" data-bp-subtab="sam-interviews" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
-            <EmbeddedCustomerInterviews {...samProps} />
-          </TabsContent>
-          <TabsContent value="sam-affiliate" data-bp-subtab="sam-affiliate" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
-            <EmbeddedInternalAffiliateInterviews {...samProps} />
-          </TabsContent>
-          <TabsContent value="sam-bu" data-bp-subtab="sam-bu" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
-            <EmbeddedInternalBUInterviews {...samProps} />
-          </TabsContent>
           <TabsContent value="sam-bmc" data-bp-subtab="sam-bmc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedBMC {...samProps} />
           </TabsContent>
@@ -246,9 +219,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
                 "Detailübersicht der über den Customer Scan identifizierten Kunden (Tier A–E). Excel-Datenbank des Customer Scan importieren oder Accounts manuell hinzufügen. Speist die Bottom-Up-Berechnung und den Buying Center Scan.",
               )}
             />
-          </TabsContent>
-          <TabsContent value="som-pilot" data-bp-subtab="som-pilot" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
-            <PilotCustomerTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="som-vpc" data-bp-subtab="som-vpc" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedVPC {...somProps} />
