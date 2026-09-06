@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useConfirm } from "@/components/ConfirmProvider";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useI18n } from "@/lib/i18n";
 import { calculateTotalScore, Stage, createDefaultBusinessPlan, createDefaultBusinessCase, createDefaultInvestmentCase, STAGE_ORDER, BusinessPlanData } from "@/lib/types";
 import { OpportunityOverview } from "@/components/OpportunityOverview";
@@ -138,6 +139,8 @@ export default function OpportunityDetail() {
     files:              "",
   };
 
+  const isMobile = useIsMobile();
+
   const isTabDone = (key: TabKey) =>
     STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf(tabStageThreshold[key]);
   const isTabCurrent = (key: TabKey) =>
@@ -201,11 +204,11 @@ export default function OpportunityDetail() {
 
 
 
-  const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
+  const handleBpSubNavClick = (mainTab: string, subTab?: string, closeSidebar = true) => {
     setActiveTab("business_plan");
     setBpMainTab(mainTab);
     setBpSubTab(subTab);
-    setSidebarOpen(false);
+    if (closeSidebar) setSidebarOpen(false);
   };
 
   type NavItem = { id: string; key: TabKey; label: string; icon: React.ReactNode; badge?: string; verificationTarget?: MarketVerificationTab };
@@ -439,7 +442,9 @@ export default function OpportunityDetail() {
                       return;
                     }
                     setActiveTab(item.key);
-                    setSidebarOpen(false);
+                    // On mobile, keep the sidebar open for expandable groups
+                    // (TAM/SAM/SOM, Scoring, Gates) so sub-items stay reachable
+                    if (!(isMobile && hasExpander)) setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
                     if (isScoringItem) setForceWizardMode(false);
                     if (isBpItem) {
@@ -550,9 +555,10 @@ export default function OpportunityDetail() {
                             onClick={() => {
                               if (hasChildren) {
                                 setExpandedBpSection(isSectionExpanded ? null : section.key);
-                                // Navigate to first child
+                                // Navigate to first child; on mobile keep the sidebar open
+                                // so the sub-categories stay reachable
                                 if (!isSectionExpanded) {
-                                  handleBpSubNavClick(section.key, section.children![0].key);
+                                  handleBpSubNavClick(section.key, section.children![0].key, !isMobile);
                                 }
                               } else {
                                 handleBpSubNavClick(section.key);
