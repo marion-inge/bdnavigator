@@ -442,7 +442,9 @@ export default function OpportunityDetail() {
                       return;
                     }
                     setActiveTab(item.key);
-                    setSidebarOpen(false);
+                    // On mobile, keep the sidebar open for expandable groups
+                    // (TAM/SAM/SOM, Scoring, Gates) so sub-items stay reachable
+                    if (!(isMobile && hasExpander)) setSidebarOpen(false);
                     if (item.key !== "strategic_analyses") setSaDefaultTab(undefined);
                     if (isScoringItem) setForceWizardMode(false);
                     if (isBpItem) {
