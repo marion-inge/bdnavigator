@@ -202,11 +202,11 @@ export default function OpportunityDetail() {
 
 
 
-  const handleBpSubNavClick = (mainTab: string, subTab?: string) => {
+  const handleBpSubNavClick = (mainTab: string, subTab?: string, closeSidebar = true) => {
     setActiveTab("business_plan");
     setBpMainTab(mainTab);
     setBpSubTab(subTab);
-    setSidebarOpen(false);
+    if (closeSidebar) setSidebarOpen(false);
   };
 
   type NavItem = { id: string; key: TabKey; label: string; icon: React.ReactNode; badge?: string; verificationTarget?: MarketVerificationTab };
