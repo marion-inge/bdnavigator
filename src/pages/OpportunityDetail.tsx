@@ -139,6 +139,8 @@ export default function OpportunityDetail() {
     files:              "",
   };
 
+  const isMobile = useIsMobile();
+
   const isTabDone = (key: TabKey) =>
     STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf(tabStageThreshold[key]);
   const isTabCurrent = (key: TabKey) =>
@@ -551,9 +553,10 @@ export default function OpportunityDetail() {
                             onClick={() => {
                               if (hasChildren) {
                                 setExpandedBpSection(isSectionExpanded ? null : section.key);
-                                // Navigate to first child
+                                // Navigate to first child; on mobile keep the sidebar open
+                                // so the sub-categories stay reachable
                                 if (!isSectionExpanded) {
-                                  handleBpSubNavClick(section.key, section.children![0].key);
+                                  handleBpSubNavClick(section.key, section.children![0].key, !isMobile);
                                 }
                               } else {
                                 handleBpSubNavClick(section.key);
