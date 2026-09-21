@@ -134,11 +134,11 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
               </div>
               <div className="min-w-0">
                 <h5 className="text-sm font-semibold text-foreground">{t("maSegmentDistribution")}</h5>
-                <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-2">
+                <div className="mt-3 space-y-2">
                   {chartSegments.map((segment, index) => (
                     <div key={`${segment.name}-${index}`} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 text-sm">
                       <span className={`h-3 w-3 rounded-sm ${PIE_SWATCH_CLASSES[index % PIE_SWATCH_CLASSES.length]}`} aria-hidden="true" />
-                      <span className="truncate text-foreground" title={segment.name}>{segment.name}</span>
+                      <span className="break-words text-foreground">{segment.name}</span>
                       <span className="font-medium tabular-nums text-foreground">{segment.size}%</span>
                     </div>
                   ))}
@@ -170,10 +170,16 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
                 </thead>
                 <tbody className="divide-y divide-border">
                   {segments.map((segment, index) => (
-                    <tr key={index}>
-                      <td className="p-2"><Input value={segment.name} onChange={(event) => updateSegment(index, "name", event.target.value)} disabled={readonly} placeholder={t("maSegmentName")} /></td>
-                      <td className="p-2"><Input type="number" min={0} max={100} value={segment.size} onChange={(event) => updateSegment(index, "size", Number(event.target.value))} disabled={readonly} aria-label={t("maSegmentSize")} /></td>
-                      <td className="p-2"><Input value={segment.description} onChange={(event) => updateSegment(index, "description", event.target.value)} disabled={readonly} placeholder={t("maSegmentDesc")} /></td>
+                    <tr key={index} className="align-top">
+                      <td className="p-3">
+                        {readonly ? <p className="break-words leading-5 text-foreground">{segment.name || "—"}</p> : <Input value={segment.name} onChange={(event) => updateSegment(index, "name", event.target.value)} placeholder={t("maSegmentName")} />}
+                      </td>
+                      <td className="p-3">
+                        {readonly ? <p className="tabular-nums text-foreground">{segment.size}%</p> : <Input type="number" min={0} max={100} value={segment.size} onChange={(event) => updateSegment(index, "size", Number(event.target.value))} aria-label={t("maSegmentSize")} />}
+                      </td>
+                      <td className="p-3">
+                        {readonly ? <p className="break-words leading-5 text-foreground">{segment.description || "—"}</p> : <Textarea value={segment.description} onChange={(event) => updateSegment(index, "description", event.target.value)} placeholder={t("maSegmentDesc")} rows={2} className="min-h-16 resize-y" />}
+                      </td>
                       {!readonly && (
                         <td className="p-2 text-right">
                           <Button variant="ghost" size="icon" onClick={() => confirm(() => removeSegment(index))} aria-label={t("maDeleteSegment")} title={t("maDeleteSegment")}>
