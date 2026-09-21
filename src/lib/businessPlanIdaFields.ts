@@ -135,6 +135,58 @@ const modelField = (
   }),
 });
 
+// ─── Industry value chain stages (structured table) ───────────────────────
+const fmtStages = (stages: any[] | undefined): string => {
+  if (!stages?.length) return "";
+  return stages
+    .map((s) =>
+      `Stage: ${s.name || ""}\nOur position: ${s.isOurPosition ? "yes" : "no"}\nMargin attractiveness: ${s.marginAttractiveness ?? 3}/5\nDifferentiators: ${s.differentiators || ""}\nDynamics: ${s.dynamics || ""}`,
+    )
+    .join("\n\n");
+};
+
+const parseStages = (text: string) => {
+  const blocks = text.split(/\n\s*\n/g).map((b) => b.trim()).filter(Boolean);
+  const out: any[] = [];
+  for (const block of blocks) {
+    const lines = block.split(/\n/g).map((l) => l.trim()).filter(Boolean);
+    const get = (label: string) =>
+      lines.find((l) => l.toLowerCase().startsWith(label))?.split(/:(.*)/s)[1]?.trim() || "";
+    const name = get("stage") || lines[0]?.replace(/^[-•]\s*/, "").trim() || "";
+    if (!name) continue;
+    const marginRaw = get("margin attractiveness") || get("margin");
+    const margin = parseInt(String(marginRaw).match(/\d+/)?.[0] || "3", 10);
+    const pos = (get("our position") || "").toLowerCase();
+    out.push({
+      id: crypto.randomUUID(),
+      name,
+      isOurPosition: /^(yes|ja|true|x)/.test(pos),
+      marginAttractiveness: Math.max(1, Math.min(5, Number.isFinite(margin) ? margin : 3)),
+      differentiators: get("differentiators"),
+      dynamics: get("dynamics"),
+    });
+  }
+  return out;
+};
+
+const valueChainStagesField: IdaFieldDef = {
+  path: "tam.valueChain.stages",
+  labelEn: "Value chain stages (table)",
+  labelDe: "Wertschöpfungsstufen (Tabelle)",
+  multiline: true,
+  section: "Value Chain",
+  get: (_s, sa) => fmtStages((sa.tam.valueChain as any)?.stages),
+  apply: (s, sa, v) => {
+    const stages = parseStages(v);
+    return {
+      scoring: s,
+      sa: stages.length
+        ? setTamModel(sa, "valueChain" as any, { stages })
+        : sa,
+    };
+  },
+};
+
 // Porter forces nest one level deeper (each force has .description)
 const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFieldDef => ({
   path: `tam.porter.${forceKey}`,
@@ -469,6 +521,7 @@ export const TAM_FIELDS: IdaFieldDef[] = [
   modelField("tam", "pestel", "description", "PESTEL", "Description", "Beschreibung"),
   modelField("tam", "pestel", "rationale", "PESTEL", "Rationale", "Begründung"),
   // Value Chain
+  valueChainStagesField,
   modelField("tam", "valueChain", "description", "Value Chain", "Description", "Beschreibung"),
   modelField("tam", "valueChain", "rationale", "Value Chain", "Rationale", "Begründung"),
   // Porter
@@ -774,6 +827,9 @@ export function readProposal(proposal: any, path: string): string {
   }
   if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "company" in r && ("tier" in r || "customerType" in r))) {
     return fmtCustomersFound(cur as CustomerFoundEntry[]);
+  }
+  if (Array.isArray(cur) && cur.every((r) => r && typeof r === "object" && "name" in r && ("marginAttractiveness" in r || "isOurPosition" in r || "dynamics" in r))) {
+    return fmtStages(cur as any[]);
   }
   return String(cur);
 }
