@@ -469,6 +469,7 @@ export const TAM_FIELDS: IdaFieldDef[] = [
   modelField("tam", "pestel", "description", "PESTEL", "Description", "Beschreibung"),
   modelField("tam", "pestel", "rationale", "PESTEL", "Rationale", "Begründung"),
   // Value Chain
+  valueChainStagesField,
   modelField("tam", "valueChain", "description", "Value Chain", "Description", "Beschreibung"),
   modelField("tam", "valueChain", "rationale", "Value Chain", "Rationale", "Begründung"),
   // Porter
