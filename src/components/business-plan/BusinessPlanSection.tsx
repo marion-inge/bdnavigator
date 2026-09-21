@@ -2,7 +2,6 @@ import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CombinedOverview } from "./CombinedOverview";
 import { TamOverview } from "./TamOverview";
 import { SamOverview } from "./SamOverview";
 import { SomOverview } from "./SomOverview";
@@ -115,12 +114,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
 
 
-
-      {/* The combined overview belongs to the TAM/SAM/SOM overview page only. */}
-      {!activeSubTab && (
-        <CombinedOverview scoring={scoring} strategicAnalyses={saData} onSaveStrategic={handleUpdateSa} readonly={readonly}
-          onSaveDetailed={handleUpdateScoring} />
-      )}
 
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
