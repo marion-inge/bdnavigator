@@ -164,6 +164,23 @@ const MARKET_RESEARCH_KEYS = ["secondaryResearch","primaryResearch","keyFigures"
 const PESTEL_KEYS = ["political","economic","social","technological","environmental","legal","description","rationale"];
 const SWOT_KEYS = ["strengths","weaknesses","opportunities","threats","description","rationale"];
 const VALUECHAIN_KEYS = ["description","rationale"];
+
+const valueChainStagesSchema = {
+  type: "array",
+  description: "Industry value chain stages in order (e.g. raw materials, components, manufacturing, integration, distribution, service). Extract every stage described or implied in the documents.",
+  items: {
+    type: "object",
+    properties: {
+      name: { type: "string", description: "Stage name." },
+      isOurPosition: { type: "boolean", description: "True if our company/offering is positioned in this stage." },
+      marginAttractiveness: { type: "integer", minimum: 1, maximum: 5, description: "Margin attractiveness of this stage: 1 = very low, 5 = very high." },
+      differentiators: { type: "string", description: "Key differentiators / success factors in this stage." },
+      dynamics: { type: "string", description: "Market dynamics, players, trends or shifts in this stage." },
+    },
+    required: ["name", "isOurPosition", "marginAttractiveness", "differentiators", "dynamics"],
+    additionalProperties: false,
+  },
+};
 const PORTER_FORCES = ["competitiveRivalry","threatOfNewEntrants","threatOfSubstitutes","bargainingPowerBuyers","bargainingPowerSuppliers"];
 
 const BMC_KEYS = ["valueProposition","customerSegments","channels","customerRelationships","revenueStreams","keyResources","keyActivities","keyPartners","costStructure","description","rationale"];
