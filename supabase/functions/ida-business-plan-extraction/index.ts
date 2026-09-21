@@ -246,7 +246,15 @@ function buildSchema(scope: SectionScope) {
         porter: {
           type: "object",
           properties: {
-            ...Object.fromEntries(PORTER_FORCES.map((f) => [f, { type: "string" }])),
+            ...Object.fromEntries(PORTER_FORCES.map((f) => [f, {
+              type: "object",
+              properties: {
+                intensity: { type: "number", description: "Force intensity rating 1-5 (1 = very low, 5 = very high)." },
+                description: { type: "string" },
+              },
+              required: ["intensity", "description"],
+              additionalProperties: false,
+            }])),
             description: { type: "string" },
             rationale: { type: "string" },
           },
@@ -408,7 +416,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
 - marketResearch: secondaryResearch, primaryResearch, keyFigures, methodology, centralInsights, description, rationale
 - pestel: political, economic, social, technological, environmental, legal, description, rationale
 - valueChain: description, rationale, stages[] — IMPORTANT: extract the full industry value chain as separate stages in order, each with name, isOurPosition, marginAttractiveness (1-5), differentiators and dynamics. Do not merge the chain into one paragraph.
-- porter: competitiveRivalry, threatOfNewEntrants, threatOfSubstitutes, bargainingPowerBuyers, bargainingPowerSuppliers, description, rationale
+- porter: competitiveRivalry, threatOfNewEntrants, threatOfSubstitutes, bargainingPowerBuyers, bargainingPowerSuppliers, description, rationale — IMPORTANT: each force is an object with intensity (number 1-5, 1 = very low / 5 = very high) and description. ALWAYS provide a numeric intensity rating per force, justified by the evidence in the documents.
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
 - customerSegmentation: description, rationale, entries[] — IMPORTANT: extract every customer segment mentioned as a separate row with name, size, needs, willingnessToPay and priority (high/medium/low). Do not merge segments into one paragraph.

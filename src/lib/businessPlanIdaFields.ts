@@ -187,9 +187,9 @@ const valueChainStagesField: IdaFieldDef = {
   },
 };
 
-// Porter forces nest one level deeper (each force has .description)
+// Porter forces nest one level deeper (each force has .description and .intensity)
 const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFieldDef => ({
-  path: `tam.porter.${forceKey}`,
+  path: `tam.porter.${forceKey}.description`,
   labelEn, labelDe, multiline: true, section: "Porter's Five Forces",
   get: (_s, sa) => ((sa.tam.porter as any)?.[forceKey]?.description as string) ?? "",
   apply: (s, sa, v) => ({
@@ -200,11 +200,38 @@ const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFie
         ...sa.tam,
         porter: {
           ...sa.tam.porter,
-          [forceKey]: { ...(sa.tam.porter as any)[forceKey], description: v },
+      [forceKey]: { ...(sa.tam.porter as any)[forceKey], description: v },
         },
       },
     },
   }),
+});
+
+// Numeric intensity rating (1-5) per Porter force
+const porterIntensity = (forceKey: string, labelEn: string, labelDe: string): IdaFieldDef => ({
+  path: `tam.porter.${forceKey}.intensity`,
+  labelEn: `${labelEn} – intensity (1-5)`, labelDe: `${labelDe} – Intensität (1-5)`,
+  multiline: false, section: "Porter's Five Forces",
+  get: (_s, sa) => {
+    const v = (sa.tam.porter as any)?.[forceKey]?.intensity;
+    return v == null ? "" : String(v);
+  },
+  apply: (s, sa, v) => {
+    const n = Math.min(5, Math.max(1, Math.round(parseFloat(v.replace(/,/g, ".")) || 3)));
+    return {
+      scoring: s,
+      sa: {
+        ...sa,
+        tam: {
+          ...sa.tam,
+          porter: {
+            ...sa.tam.porter,
+            [forceKey]: { ...(sa.tam.porter as any)[forceKey], intensity: n },
+          },
+        },
+      },
+    };
+  },
 });
 
 // ─── projection helpers (numeric 5-year arrays) ───────────────────────────
@@ -530,6 +557,11 @@ export const TAM_FIELDS: IdaFieldDef[] = [
   porterForce("threatOfSubstitutes", "Threat of substitutes", "Bedrohung durch Substitute"),
   porterForce("bargainingPowerBuyers", "Bargaining power of buyers", "Verhandlungsmacht der Käufer"),
   porterForce("bargainingPowerSuppliers", "Bargaining power of suppliers", "Verhandlungsmacht der Lieferanten"),
+  porterIntensity("competitiveRivalry", "Competitive rivalry", "Wettbewerbsrivalität"),
+  porterIntensity("threatOfNewEntrants", "Threat of new entrants", "Bedrohung durch neue Anbieter"),
+  porterIntensity("threatOfSubstitutes", "Threat of substitutes", "Bedrohung durch Substitute"),
+  porterIntensity("bargainingPowerBuyers", "Bargaining power of buyers", "Verhandlungsmacht der Käufer"),
+  porterIntensity("bargainingPowerSuppliers", "Bargaining power of suppliers", "Verhandlungsmacht der Lieferanten"),
   modelField("tam", "porter", "description", "Porter's Five Forces", "Description", "Beschreibung"),
   modelField("tam", "porter", "rationale", "Porter's Five Forces", "Rationale", "Begründung"),
   // SWOT
