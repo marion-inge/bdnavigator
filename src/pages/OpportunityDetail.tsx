@@ -56,6 +56,7 @@ export default function OpportunityDetail() {
     window.scrollTo(0, 0);
   }, [id]);
 
+  const isMobile = useIsMobile();
   const opp = getOpportunity(id!);
   if (!opp) {
     return (
@@ -138,8 +139,6 @@ export default function OpportunityDetail() {
     strategic_analyses: "",
     files:              "",
   };
-
-  const isMobile = useIsMobile();
 
   const isTabDone = (key: TabKey) =>
     STAGE_ORDER.indexOf(opp.stage) >= STAGE_ORDER.indexOf(tabStageThreshold[key]);
@@ -544,7 +543,7 @@ export default function OpportunityDetail() {
                 {isBpItem && bpExpanded && isActive && (
                   <div className="ml-3 mt-0.5 mb-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
                     {bpSubNav.map((section) => {
-                      const isSectionActive = bpMainTab === section.key && !section.children;
+                      const isSectionActive = bpMainTab === section.key && !bpSubTab;
                       const hasChildren = !!section.children;
                       const isSectionExpanded = expandedBpSection === section.key;
                       const isChildActive = hasChildren && section.children!.some(c => bpMainTab === section.key && bpSubTab === c.key);
@@ -555,11 +554,9 @@ export default function OpportunityDetail() {
                             onClick={() => {
                               if (hasChildren) {
                                 setExpandedBpSection(isSectionExpanded ? null : section.key);
-                                if (!isSectionExpanded) {
-                                   // The section itself is the TAM/SAM/SOM overview.
-                                   // Keep the mobile sidebar open so a dedicated sub-page can be selected.
-                                   handleBpSubNavClick(section.key, undefined, !isMobile);
-                                }
+                                // TAM, SAM and SOM themselves are their respective overview pages.
+                                // This also returns from a child page to the overview when already expanded.
+                                handleBpSubNavClick(section.key, undefined, !isMobile);
                               } else {
                                 handleBpSubNavClick(section.key);
                                 setExpandedBpSection(null);
