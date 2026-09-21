@@ -187,9 +187,9 @@ const valueChainStagesField: IdaFieldDef = {
   },
 };
 
-// Porter forces nest one level deeper (each force has .description)
+// Porter forces nest one level deeper (each force has .description and .intensity)
 const porterForce = (forceKey: string, labelEn: string, labelDe: string): IdaFieldDef => ({
-  path: `tam.porter.${forceKey}`,
+  path: `tam.porter.${forceKey}.description`,
   labelEn, labelDe, multiline: true, section: "Porter's Five Forces",
   get: (_s, sa) => ((sa.tam.porter as any)?.[forceKey]?.description as string) ?? "",
   apply: (s, sa, v) => ({
