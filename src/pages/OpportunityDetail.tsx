@@ -555,10 +555,10 @@ export default function OpportunityDetail() {
                             onClick={() => {
                               if (hasChildren) {
                                 setExpandedBpSection(isSectionExpanded ? null : section.key);
-                                // Navigate to first child; on mobile keep the sidebar open
-                                // so the sub-categories stay reachable
                                 if (!isSectionExpanded) {
-                                  handleBpSubNavClick(section.key, section.children![0].key, !isMobile);
+                                   // The section itself is the TAM/SAM/SOM overview.
+                                   // Keep the mobile sidebar open so a dedicated sub-page can be selected.
+                                   handleBpSubNavClick(section.key, undefined, !isMobile);
                                 }
                               } else {
                                 handleBpSubNavClick(section.key);
