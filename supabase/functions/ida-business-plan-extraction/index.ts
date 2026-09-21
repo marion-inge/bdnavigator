@@ -407,7 +407,7 @@ const FIELD_GUIDE: Record<SectionScope, string> = {
   tam: `Fill every field you can support across these models:
 - marketResearch: secondaryResearch, primaryResearch, keyFigures, methodology, centralInsights, description, rationale
 - pestel: political, economic, social, technological, environmental, legal, description, rationale
-- valueChain: description, rationale
+- valueChain: description, rationale, stages[] — IMPORTANT: extract the full industry value chain as separate stages in order, each with name, isOurPosition, marginAttractiveness (1-5), differentiators and dynamics. Do not merge the chain into one paragraph.
 - porter: competitiveRivalry, threatOfNewEntrants, threatOfSubstitutes, bargainingPowerBuyers, bargainingPowerSuppliers, description, rationale
 - swot: strengths, weaknesses, opportunities, threats, description, rationale`,
   sam: `Fill every field you can support across these models:
