@@ -25,6 +25,14 @@ const PIE_COLORS = [
   "hsl(var(--accent))",
 ];
 
+const PIE_SWATCH_CLASSES = [
+  "bg-primary",
+  "bg-primary/70",
+  "bg-primary/50",
+  "bg-primary/30",
+  "bg-accent",
+];
+
 export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly }: Props) {
   const { t } = useI18n();
   const confirm = useConfirm();
@@ -50,6 +58,8 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
 
   // Customer segments
   const segments = local.analysis.customerSegments || [];
+  const chartSegments = segments.filter((segment) => segment.name.trim() && segment.size > 0);
+  const totalShare = chartSegments.reduce((sum, segment) => sum + segment.size, 0);
   const addSegment = () => {
     const newSeg: CustomerSegment = { name: "", size: 0, description: "" };
     setLocal((prev) => ({ ...prev, analysis: { ...prev.analysis, customerSegments: [...(prev.analysis.customerSegments || []), newSeg] } }));
@@ -73,26 +83,18 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
   return (
     <EditableSection editing={editing} onEdit={() => setEditing(true)} onSave={() => { handleSave(); setEditing(false); }} readonly={propReadonly} dirty={dirty}>
     <div className="space-y-8">
-      {/* Header */}
-      <div className="rounded-xl border-2 border-border bg-card p-6">
-        <div className="flex items-center gap-3">
+      <div className="space-y-6">
+        <div className="flex items-start gap-3 border-b border-border pb-5">
           <div className="p-2 rounded-lg bg-primary/10">
             <Users className="h-5 w-5 text-primary" />
           </div>
-          <h3 className="text-xl font-bold text-card-foreground">{t("maCustomerLandscape")}</h3>
-        </div>
-      </div>
-
-      {/* Customer Landscape Content */}
-      <div className="rounded-xl border border-border bg-card p-6 space-y-5">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Users className="h-5 w-5 text-primary" />
+          <div>
+            <h3 className="text-xl font-bold text-foreground">{t("maCustomerLandscape")}</h3>
+            <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{t("maCustomerLandscapeDescription")}</p>
           </div>
-          <h3 className="text-lg font-bold text-card-foreground">{t("maCustomerLandscape")}</h3>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-2">
           <div className="space-y-2">
             <h4 className="font-semibold text-card-foreground">{t("targetCustomers")}</h4>
             <Textarea value={local.analysis.targetCustomers} onChange={(e) => update("targetCustomers", e.target.value)} disabled={readonly} rows={3} className="text-sm resize-none" placeholder={t("targetCustomersPlaceholder")} />
@@ -103,61 +105,127 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
           </div>
         </div>
 
-        {/* Customer Segments Pie Chart */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-card-foreground">{t("maCustomerSegments")}</h4>
+        <div className="space-y-4 border-t border-border pt-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h4 className="font-semibold text-card-foreground">{t("maCustomerSegments")}</h4>
+              <p className="mt-1 text-sm text-muted-foreground">{t("maCustomerSegmentsDescription")}</p>
+            </div>
             {!readonly && (
-              <Button variant="outline" size="sm" onClick={addSegment}>
+              <Button variant="outline" size="sm" onClick={addSegment} className="self-start">
                 <Plus className="h-3 w-3 mr-1" />{t("maAddSegment")}
               </Button>
             )}
           </div>
 
-          {segments.length > 0 && (
-            <div className="rounded-lg border border-border bg-background/50 p-4">
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie
-                    data={segments.filter(s => s.name && s.size > 0)}
-                    dataKey="size"
-                    nameKey="name"
-                    cx="50%" cy="50%"
-                    outerRadius={80}
-                    label={({ name, size }) => `${name} (${size}%)`}
-                    labelLine={{ stroke: "hsl(var(--muted-foreground))" }}
-                  >
-                    {segments.filter(s => s.name && s.size > 0).map((_, i) => (
-                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-                </PieChart>
-              </ResponsiveContainer>
+          {chartSegments.length > 0 && (
+            <div className="grid items-center gap-6 rounded-lg border border-border bg-muted/20 p-4 md:grid-cols-[minmax(220px,0.8fr)_minmax(240px,1.2fr)]">
+              <div className="hidden md:block" aria-label={t("maSegmentDistribution")}>
+                <ResponsiveContainer width="100%" height={240}>
+                  <PieChart>
+                    <Pie data={chartSegments} dataKey="size" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={88} paddingAngle={2}>
+                      {chartSegments.map((_, index) => (
+                        <Cell key={index} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: number) => [`${value}%`, t("maSegmentShare")]} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="min-w-0">
+                <h5 className="text-sm font-semibold text-foreground">{t("maSegmentDistribution")}</h5>
+                <div className="mt-3 space-y-2">
+                  {chartSegments.map((segment, index) => (
+                    <div key={`${segment.name}-${index}`} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 text-sm">
+                      <span className={`h-3 w-3 rounded-sm ${PIE_SWATCH_CLASSES[index % PIE_SWATCH_CLASSES.length]}`} aria-hidden="true" />
+                      <span className="break-words text-foreground">{segment.name}</span>
+                      <span className="font-medium tabular-nums text-foreground">{segment.size}%</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex justify-between border-t border-border pt-3 text-sm">
+                  <span className="text-muted-foreground">{t("maTotalShare")}</span>
+                  <span className={`font-semibold tabular-nums ${totalShare === 100 ? "text-foreground" : "text-destructive"}`}>{totalShare}%</span>
+                </div>
+              </div>
             </div>
           )}
 
           {segments.length === 0 && (
-            <p className="text-sm text-muted-foreground italic py-3">{t("maNoSegments")}</p>
+            <div className="rounded-lg border border-dashed border-border px-5 py-8 text-center">
+              <p className="text-sm text-muted-foreground">{t("maNoSegments")}</p>
+            </div>
           )}
 
-          {segments.map((seg, idx) => (
-            <div key={idx} className="rounded-lg border border-border bg-background/50 p-3 space-y-2">
-              <div className="flex items-center gap-2">
-                <Input value={seg.name} onChange={(e) => updateSegment(idx, "name", e.target.value)} disabled={readonly} placeholder={t("maSegmentName")} className="flex-1" />
-                <Input type="number" value={seg.size} onChange={(e) => updateSegment(idx, "size", Number(e.target.value))} disabled={readonly} placeholder={t("maSegmentSize")} className="w-24" />
-                {!readonly && (
-                  <Button variant="ghost" size="sm" onClick={() => confirm(() => removeSegment(idx))}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                )}
-              </div>
-              <Input value={seg.description} onChange={(e) => updateSegment(idx, "description", e.target.value)} disabled={readonly} placeholder={t("maSegmentDesc")} className="text-sm" />
+          {segments.length > 0 && (
+            <div className="space-y-3 md:hidden">
+              {segments.map((segment, index) => (
+                <div key={index} className="rounded-lg border border-border p-4">
+                  {readonly ? (
+                    <>
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="break-words font-semibold leading-5 text-foreground">{segment.name || "—"}</p>
+                        <span className="shrink-0 font-semibold tabular-nums text-foreground">{segment.size}%</span>
+                      </div>
+                      <p className="mt-2 break-words text-sm leading-5 text-muted-foreground">{segment.description || "—"}</p>
+                    </>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-[minmax(0,1fr)_6rem] gap-2">
+                        <Input value={segment.name} onChange={(event) => updateSegment(index, "name", event.target.value)} placeholder={t("maSegmentName")} />
+                        <Input type="number" min={0} max={100} value={segment.size} onChange={(event) => updateSegment(index, "size", Number(event.target.value))} aria-label={t("maSegmentSize")} />
+                      </div>
+                      <Textarea value={segment.description} onChange={(event) => updateSegment(index, "description", event.target.value)} placeholder={t("maSegmentDesc")} rows={3} className="resize-y" />
+                      <div className="flex justify-end">
+                        <Button variant="ghost" size="icon" onClick={() => confirm(() => removeSegment(index))} aria-label={t("maDeleteSegment")} title={t("maDeleteSegment")}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          {segments.length > 0 && (
+            <div className="hidden overflow-x-auto rounded-lg border border-border md:block">
+              <table className="w-full min-w-[680px] border-collapse text-sm">
+                <thead className="bg-muted/50 text-left">
+                  <tr>
+                    <th scope="col" className="w-[30%] px-3 py-2.5 font-semibold text-foreground">{t("maSegmentName")}</th>
+                    <th scope="col" className="w-28 px-3 py-2.5 font-semibold text-foreground">{t("maSegmentSize")}</th>
+                    <th scope="col" className="px-3 py-2.5 font-semibold text-foreground">{t("maSegmentDesc")}</th>
+                    {!readonly && <th scope="col" className="w-14 px-3 py-2.5 text-right font-semibold text-foreground">{t("maActions")}</th>}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {segments.map((segment, index) => (
+                    <tr key={index} className="align-top">
+                      <td className="p-3">
+                        {readonly ? <p className="break-words leading-5 text-foreground">{segment.name || "—"}</p> : <Input value={segment.name} onChange={(event) => updateSegment(index, "name", event.target.value)} placeholder={t("maSegmentName")} />}
+                      </td>
+                      <td className="p-3">
+                        {readonly ? <p className="tabular-nums text-foreground">{segment.size}%</p> : <Input type="number" min={0} max={100} value={segment.size} onChange={(event) => updateSegment(index, "size", Number(event.target.value))} aria-label={t("maSegmentSize")} />}
+                      </td>
+                      <td className="p-3">
+                        {readonly ? <p className="break-words leading-5 text-foreground">{segment.description || "—"}</p> : <Textarea value={segment.description} onChange={(event) => updateSegment(index, "description", event.target.value)} placeholder={t("maSegmentDesc")} rows={2} className="min-h-16 resize-y" />}
+                      </td>
+                      {!readonly && (
+                        <td className="p-2 text-right">
+                          <Button variant="ghost" size="icon" onClick={() => confirm(() => removeSegment(index))} aria-label={t("maDeleteSegment")} title={t("maDeleteSegment")}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
-
     </div>
     </EditableSection>
   );
