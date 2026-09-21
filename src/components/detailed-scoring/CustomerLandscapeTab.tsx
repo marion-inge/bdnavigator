@@ -120,7 +120,7 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
 
           {chartSegments.length > 0 && (
             <div className="grid items-center gap-6 rounded-lg border border-border bg-muted/20 p-4 md:grid-cols-[minmax(220px,0.8fr)_minmax(240px,1.2fr)]">
-              <div aria-label={t("maSegmentDistribution")}>
+              <div className="hidden md:block" aria-label={t("maSegmentDistribution")}>
                 <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie data={chartSegments} dataKey="size" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={88} paddingAngle={2}>
@@ -158,7 +158,38 @@ export function CustomerLandscapeTab({ scoring, onUpdate, readonly: propReadonly
           )}
 
           {segments.length > 0 && (
-            <div className="overflow-x-auto rounded-lg border border-border">
+            <div className="space-y-3 md:hidden">
+              {segments.map((segment, index) => (
+                <div key={index} className="rounded-lg border border-border p-4">
+                  {readonly ? (
+                    <>
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="break-words font-semibold leading-5 text-foreground">{segment.name || "—"}</p>
+                        <span className="shrink-0 font-semibold tabular-nums text-foreground">{segment.size}%</span>
+                      </div>
+                      <p className="mt-2 break-words text-sm leading-5 text-muted-foreground">{segment.description || "—"}</p>
+                    </>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-[minmax(0,1fr)_6rem] gap-2">
+                        <Input value={segment.name} onChange={(event) => updateSegment(index, "name", event.target.value)} placeholder={t("maSegmentName")} />
+                        <Input type="number" min={0} max={100} value={segment.size} onChange={(event) => updateSegment(index, "size", Number(event.target.value))} aria-label={t("maSegmentSize")} />
+                      </div>
+                      <Textarea value={segment.description} onChange={(event) => updateSegment(index, "description", event.target.value)} placeholder={t("maSegmentDesc")} rows={3} className="resize-y" />
+                      <div className="flex justify-end">
+                        <Button variant="ghost" size="icon" onClick={() => confirm(() => removeSegment(index))} aria-label={t("maDeleteSegment")} title={t("maDeleteSegment")}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {segments.length > 0 && (
+            <div className="hidden overflow-x-auto rounded-lg border border-border md:block">
               <table className="w-full min-w-[680px] border-collapse text-sm">
                 <thead className="bg-muted/50 text-left">
                   <tr>
