@@ -242,7 +242,7 @@ function buildSchema(scope: SectionScope) {
       properties: {
         marketResearch: { type: "object", properties: strProps(MARKET_RESEARCH_KEYS), additionalProperties: false },
         pestel: { type: "object", properties: strProps(PESTEL_KEYS), additionalProperties: false },
-        valueChain: { type: "object", properties: strProps(VALUECHAIN_KEYS), additionalProperties: false },
+        valueChain: { type: "object", properties: { ...strProps(VALUECHAIN_KEYS), stages: valueChainStagesSchema }, additionalProperties: false },
         porter: {
           type: "object",
           properties: {
