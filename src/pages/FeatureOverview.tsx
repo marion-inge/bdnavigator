@@ -28,7 +28,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Portfolio Executive Summary (IDA)", de: "Portfolio-Executive-Summary (IDA)", detail: "AI-generated summary across all ideas, regenerated on every dashboard visit", detailDe: "KI-generierte Zusammenfassung über alle Ideen, bei jedem Dashboard-Besuch neu erzeugt" },
       { en: "Strategic Frameworks Tab", de: "Strategische-Frameworks-Tab", detail: "Ansoff, McKinsey/GE, BCG and Three Horizons in one secondary dashboard tab", detailDe: "Ansoff, McKinsey/GE, BCG und Drei Horizonte in einem sekundären Dashboard-Tab" },
       { en: "Score × Market Potential Scatter", de: "Score-×-Marktpotenzial-Scatter", detail: "Scatter plot positioning every idea by score and SOM potential", detailDe: "Streudiagramm, das jede Idee nach Score und SOM-Potenzial positioniert" },
-      { en: "Idea Table with Financial Metrics", de: "Ideen-Tabelle mit Finanzkennzahlen", detail: "Columns for Stage, Industry, Owner, Scoring, Scan Pack progress, TAM, SAM, SOM, Growth Rate, Payback", detailDe: "Spalten für Phase, Branche, Owner, Scoring, Scan-Pack-Fortschritt, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit" },
+      { en: "Decision-ready Idea Table", de: "Entscheidungsreife Ideen-Tabelle", detail: "Five color-coded groups: general information with idea bringer, scoring, scan progress, TAM/SAM/SOM and business-case KPIs; horizontally scrollable on smaller screens", detailDe: "Fünf farblich getrennte Bereiche: allgemeine Informationen mit Ideengeber, Scoring, Scan-Fortschritt, TAM/SAM/SOM und Business-Case-KPIs; auf kleineren Bildschirmen seitlich scrollbar" },
+      { en: "IDA Status Summary per Idea", de: "IDA-Statuszusammenfassung je Idee", detail: "Run IDA for one or all ideas to see current status, open process steps, recommendation and a Go/Hold/Stop verdict", detailDe: "IDA für einzelne oder alle Ideen ausführen und aktuellen Status, offene Prozessschritte, Empfehlung sowie Go/Hold/Stop-Urteil sehen" },
 
     ],
   },
@@ -37,7 +38,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     titleDe: "Ideen-Management",
     icon: <Lightbulb className="h-5 w-5" />,
     features: [
-      { en: "Create New Ideas", de: "Neue Ideen anlegen", detail: "Dialog with fields for title, description, industry, geography, technology, owner", detailDe: "Dialog mit Feldern für Titel, Beschreibung, Branche, Geografie, Technologie, Owner" },
+      { en: "Create New Ideas", de: "Neue Ideen anlegen", detail: "Capture title, problem, solution, industry, geography, technology, idea bringer and responsible owner", detailDe: "Titel, Problem, Lösung, Branche, Geografie, Technologie, Ideengeber und verantwortlichen Owner erfassen" },
       { en: "Idea Detail View", de: "Ideen-Detailansicht", detail: "Comprehensive view with tabs for all phases", detailDe: "Umfassende Ansicht mit Tabs für alle Phasen" },
       { en: "Stage Timeline", de: "Phasen-Timeline", detail: "Visual progress tracker through the stage-gate process", detailDe: "Visueller Fortschritts-Tracker durch den Stage-Gate-Prozess" },
       { en: "Editable Sections", de: "Bearbeitbare Sektionen", detail: "Inline editing for all idea fields", detailDe: "Inline-Bearbeitung aller Ideen-Felder" },
@@ -81,8 +82,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Risk Assessment", de: "Risikobewertung" },
       { en: "Competitor & Customer Landscape", de: "Wettbewerbs- & Kundenlandschaft" },
       { en: "Portfolio Fit & Organisational Readiness", de: "Portfolio-Fit & Organisatorische Bereitschaft" },
-      { en: "Combined TAM/SAM/SOM Overview", de: "TAM/SAM/SOM-Gesamtübersicht", detail: "Always-visible header comparison of all three market levels", detailDe: "Immer sichtbarer Kopfvergleich aller drei Marktebenen" },
-      { en: "IDA Estimations for TAM, SAM, SOM", de: "IDA-Schätzungen für TAM, SAM, SOM", detail: "Three-scenario estimates (conservative/base/optimistic) with assumptions", detailDe: "Drei-Szenarien-Schätzungen (konservativ/basis/optimistisch) mit Annahmen" },
+      { en: "Separate TAM, SAM and SOM Overviews", de: "Separate TAM-, SAM- und SOM-Übersichten", detail: "Each market level opens its own overview; Market Research, PESTEL, Value Chain, Porter's and SWOT open as standalone subpages", detailDe: "Jede Marktebene öffnet ihre eigene Übersicht; Market Research, PESTEL, Value Chain, Porter's und SWOT öffnen als eigenständige Unterseiten" },
+      { en: "Fill TAM/SAM/SOM with IDA", de: "TAM/SAM/SOM mit IDA ausfüllen", detail: "Select attachments and Scan Pack results, review field-level proposals and apply only the values you choose; long text PDFs are read page by page", detailDe: "Anhänge und Scan-Pack-Ergebnisse auswählen, Vorschläge je Feld prüfen und nur gewählte Werte übernehmen; lange Text-PDFs werden seitenweise gelesen" },
       { en: "Customers Found (under SOM)", de: "Gefundene Kunden (unter SOM)", detail: "Concrete customer list derived from the customer scan", detailDe: "Konkrete Kundenliste aus dem Customer Scan" },
     ],
   },
@@ -96,6 +97,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Affiliate Interviews", de: "Affiliate-Interviews", detail: "Internal affiliate perspective on the opportunity", detailDe: "Interne Affiliate-Perspektive auf die Opportunity" },
       { en: "BU Interviews", de: "BU-Interviews", detail: "Business unit stakeholder validation", detailDe: "Validierung durch Business-Unit-Stakeholder" },
       { en: "Pilot & Leads", de: "Pilot & Leads", detail: "Target pilot customers and lead pipeline for verification", detailDe: "Ziel-Pilotkunden und Lead-Pipeline zur Verifizierung" },
+      { en: "IDA Verification Calibration", de: "IDA-Verifizierungskalibrierung", detail: "IDA compares interview and pilot evidence with the current market model, recommends before/after adjustments and applies selected changes to TAM/SAM/SOM", detailDe: "IDA vergleicht Interview- und Pilot-Evidenz mit dem aktuellen Marktmodell, empfiehlt Vorher-/Nachher-Anpassungen und übernimmt ausgewählte Änderungen in TAM/SAM/SOM" },
     ],
   },
   {
@@ -106,6 +108,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { en: "Investment Case Builder", de: "Investment-Case-Builder", detail: "Financial projections and ROI calculations", detailDe: "Finanzprognosen und ROI-Berechnungen" },
       { en: "Business Case Section", de: "Business-Case-Sektion", detail: "Comprehensive case documentation", detailDe: "Umfassende Case-Dokumentation" },
       { en: "Payback Period Tracking", de: "Amortisationszeit-Tracking" },
+      { en: "Import from TAM SAM SOM", de: "Aus TAM SAM SOM übernehmen", detail: "Transfers SOM projections and market assumptions into the investment calculation on demand", detailDe: "Überträgt SOM-Projektionen und Marktannahmen auf Anforderung in die Investitionsrechnung" },
     ],
   },
   {
@@ -124,9 +127,9 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     icon: <Bot className="h-5 w-5" />,
     features: [
       { en: "IDA – AI Assessment Agent", de: "IDA – KI-Bewertungsagent", detail: "Automatic strengths/weaknesses analysis with overall rating and next steps", detailDe: "Automatische Stärken-/Schwächenanalyse mit Gesamtbewertung und nächsten Schritten" },
-      { en: "Mark – Research Agent", de: "Mark – Recherche-Agent", detail: "Interactive chat agent for market research and analysis", detailDe: "Interaktiver Chat-Agent für Marktrecherche und Analyse" },
       { en: "Business Case AI Assessment", de: "Business-Case-KI-Bewertung" },
-      { en: "Dashboard AI Recommendations", de: "Dashboard-KI-Empfehlungen", detail: "IDA's recommendations visible directly in the idea table", detailDe: "IDAs Empfehlungen direkt in der Idee-Tabelle sichtbar" },
+      { en: "Dashboard Status Recommendations", de: "Status-Empfehlungen im Dashboard", detail: "IDA summarizes status, open steps and recommendation for each idea with explicit Go/Hold/Stop criteria", detailDe: "IDA fasst Status, offene Schritte und Empfehlung je Idee anhand expliziter Go/Hold/Stop-Kriterien zusammen" },
+      { en: "Evidence-based Market Calibration", de: "Evidenzbasierte Marktkalibrierung", detail: "IDA proposes selectable adjustments after Market Verification instead of silently overwriting the market model", detailDe: "IDA schlägt nach der Marktverifizierung auswählbare Anpassungen vor, statt das Marktmodell still zu überschreiben" },
     ],
   },
   {
