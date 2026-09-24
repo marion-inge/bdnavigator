@@ -64,8 +64,8 @@ export default function ProcessGuide() {
               icon={<LayoutDashboard className="h-5 w-5 text-primary" />}
               title={bp("Overview", "Übersicht")}
               description={bp(
-                "The idea overview shows all key metadata at a glance: title, problem description, solution idea, industry, geography, technology, initiator, and BD team owner. It also displays the current stage, scoring results, and AI assessment summary.",
-                "Die Ideenübersicht zeigt alle wichtigen Metadaten auf einen Blick: Titel, Problembeschreibung, Lösungsidee, Branche, Geografie, Technologie, Initiator und BD-Team-Owner. Außerdem werden aktuelle Phase, Scoring-Ergebnisse und KI-Assessment-Zusammenfassung angezeigt."
+                "The portfolio table separates General Information, Idea Scoring, Scan Pack, TAM/SAM/SOM and Business Case into color-coded column groups. It shows the idea bringer and an IDA status summary for each idea. Scroll sideways to reach all columns on smaller screens.",
+                "Die Portfolio-Tabelle trennt Allgemeine Informationen, Ideen-Scoring, Scan Pack, TAM/SAM/SOM und Business Case in farblich markierte Spaltengruppen. Sie zeigt den Ideengeber und eine IDA-Statuszusammenfassung je Idee. Auf kleineren Bildschirmen erreichen Sie alle Spalten durch seitliches Scrollen."
               )}
             />
 
@@ -100,8 +100,8 @@ export default function ProcessGuide() {
               icon={<Globe className="h-5 w-5 text-primary" />}
               title={bp("Business Plan — TAM Overview", "Business Plan — TAM-Übersicht")}
               description={bp(
-                "Total Addressable Market analysis (all values in M€). 5-year projections with CAGR, geographic breakdown with potential ratings and radar chart, scope definition, market assumptions, market development drivers & trends, and derivation methodology with source assessment. Supporting models: Market Research, PESTEL, Value Chain, Porter's Five Forces, SWOT.",
-                "Gesamtmarktanalyse (Total Addressable Market, alle Werte in M€). 5-Jahres-Projektionen mit CAGR, geografische Aufschlüsselung mit Potenzialbewertungen und Radar-Chart, Scope-Definition, Marktannahmen, Marktentwicklungstreiber & Trends und Herleitungsmethodik mit Quellenbewertung. Unterstützende Modelle: Marktforschung, PESTEL, Wertschöpfungskette, Porter's Five Forces, SWOT."
+                "TAM has its own overview with 5-year projections, CAGR, geography, scope, assumptions, drivers and methodology. Market Research, PESTEL, Value Chain, Porter's Five Forces and SWOT open as separate subpages. 'Fill TAM with IDA' derives reviewable field proposals from selected attachments and Scan Pack results.",
+                "TAM besitzt eine eigene Übersicht mit 5-Jahres-Projektionen, CAGR, Geografie, Scope, Annahmen, Treibern und Methodik. Marktforschung, PESTEL, Wertschöpfungskette, Porter's Five Forces und SWOT öffnen als eigene Unterseiten. „TAM mit IDA ausfüllen“ leitet prüfbare Feldvorschläge aus ausgewählten Anhängen und Scan-Pack-Ergebnissen ab."
               )}
             />
 
@@ -136,8 +136,8 @@ export default function ProcessGuide() {
               icon={<Briefcase className="h-5 w-5 text-primary" />}
               title={bp("Market Verification (Phase 4)", "Marktverifizierung (Phase 4)")}
               description={bp(
-                "A separate section — no longer part of the TAM/SAM/SOM analysis — with four tabs: Customer Interviews, Affiliate Interviews, BU Interviews, and Pilot & Leads. Here you confront the modelled market with reality: what customers actually say, how internal affiliates and business units judge the opportunity, and which pilot customers and leads are concretely available. Gate G4 is decided on this evidence.",
-                "Ein eigener Bereich — nicht mehr Teil der TAM/SAM/SOM-Analyse — mit vier Tabs: Kundeninterviews, Affiliate-Interviews, BU-Interviews und Pilot & Leads. Hier wird der modellierte Markt mit der Realität konfrontiert: Was Kunden tatsächlich sagen, wie interne Affiliates und Business Units die Opportunity beurteilen und welche Pilotkunden und Leads konkret verfügbar sind. Gate G4 wird auf dieser Basis entschieden."
+                "A separate section with Customer, Affiliate and BU Interviews plus Pilot & Leads. IDA compares this evidence with the current SAM/SOM model, explains recommended adjustments as current versus proposed values, and lets you apply selected changes before deciding G4.",
+                "Ein eigener Bereich mit Kunden-, Affiliate- und BU-Interviews sowie Pilot & Leads. IDA vergleicht diese Evidenz mit dem aktuellen SAM-/SOM-Modell, erläutert empfohlene Anpassungen als aktuelle und vorgeschlagene Werte und lässt ausgewählte Änderungen vor der G4-Entscheidung übernehmen."
               )}
             />
 
@@ -222,8 +222,8 @@ export default function ProcessGuide() {
           <h2 className="text-2xl font-bold text-foreground">{bp("AI Agents", "KI-Agenten")}</h2>
           <p className="text-muted-foreground leading-relaxed">
             {bp(
-              "Two AI agents are embedded throughout the tool to support your analysis work:",
-              "Zwei KI-Agenten sind im gesamten Tool eingebettet, um Ihre Analysearbeit zu unterstützen:"
+              "IDA supports analysis, evidence transfer and decision preparation throughout the workflow. Mark research capabilities are documented separately as planned functionality.",
+              "IDA unterstützt Analyse, Evidenzübernahme und Entscheidungsvorbereitung im gesamten Ablauf. Mark-Recherchefunktionen sind separat als geplante Funktionalität dokumentiert."
             )}
           </p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -240,8 +240,8 @@ export default function ProcessGuide() {
               <CardContent>
                 <p className="text-sm text-muted-foreground">
                   {bp(
-                    "IDA analyzes the data already entered in the tool. She finds connections between sections, identifies strengths and weaknesses, highlights gaps, gives recommendations, and summarizes your progress. She works exclusively with internal data — nothing external.",
-                    "IDA analysiert die bereits im Tool eingegebenen Daten. Sie findet Verbindungen zwischen Bereichen, identifiziert Stärken und Schwächen, zeigt Lücken auf, gibt Empfehlungen und fasst Ihren Fortschritt zusammen. Sie arbeitet ausschließlich mit internen Daten — nichts Externes."
+                    "IDA assesses scoring and financials, creates status summaries for one or all ideas, reads selected attachments and Scan Pack outcomes to fill TAM/SAM/SOM, and recommends market-model adjustments after verification. Every proposed field remains reviewable before it is applied.",
+                    "IDA bewertet Scoring und Finanzdaten, erstellt Statuszusammenfassungen für einzelne oder alle Ideen, liest ausgewählte Anhänge und Scan-Pack-Ergebnisse zur Befüllung von TAM/SAM/SOM und empfiehlt nach der Verifizierung Anpassungen am Marktmodell. Jeder Feldvorschlag bleibt vor der Übernahme prüfbar."
                   )}
                 </p>
               </CardContent>
@@ -260,8 +260,8 @@ export default function ProcessGuide() {
               <CardContent>
                 <p className="text-sm text-muted-foreground">
                   {bp(
-                    "Mark is your market research assistant. He suggests improvements based on market best practices, points out relevant industry trends and benchmarks, and recommends external research directions. Web search integration coming soon.",
-                    "Mark ist Ihr Marktforschungsassistent. Er schlägt Verbesserungen basierend auf Markt-Best-Practices vor, weist auf relevante Branchentrends und Benchmarks hin und empfiehlt externe Forschungsrichtungen. Web-Suchintegration kommt bald."
+                    "Mark is the planned external research agent. His future prompts are documented in the Prompt Library, but Mark is not currently an active control in TAM/SAM/SOM.",
+                    "Mark ist der geplante Agent für externe Recherche. Seine künftigen Prompts sind in der Prompt-Bibliothek dokumentiert; in TAM/SAM/SOM ist Mark derzeit kein aktives Bedienelement."
                   )}
                 </p>
               </CardContent>
@@ -276,8 +276,8 @@ export default function ProcessGuide() {
             <CardContent className="pt-6 space-y-3">
               <p className="text-sm text-muted-foreground">
                 {bp(
-                  "The Data Bridge connects the Business Plan (market modeling) with the Business Case (investment calculation). It automatically transfers:",
-                  "Die Datenbrücke verbindet den Business Plan (Marktmodellierung) mit dem Business Case (Investitionsrechnung). Sie überträgt automatisch:"
+                  "The Business Case action 'Import from TAM SAM SOM' connects the market model with the investment calculation. It transfers:",
+                  "Die Business-Case-Aktion „Aus TAM SAM SOM übernehmen“ verbindet das Marktmodell mit der Investitionsrechnung. Sie überträgt:"
                 )}
               </p>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
@@ -289,8 +289,8 @@ export default function ProcessGuide() {
               </ul>
               <p className="text-sm text-muted-foreground">
                 {bp(
-                  "Market Assumptions are defined in the SOM Overview (Business Plan) and displayed as read-only references in the Business Case. This ensures a single source of truth for market parameters.",
-                  "Marktannahmen werden in der SOM-Übersicht (Business Plan) definiert und als Nur-Lese-Referenz im Business Case angezeigt. Dies gewährleistet eine einzige Datenquelle für Marktparameter."
+                  "Run the import again after verification changes the market model. The explicit action avoids silent overwrites and keeps TAM/SAM/SOM as the source of truth.",
+                  "Führen Sie die Übernahme erneut aus, wenn die Verifizierung das Marktmodell verändert. Die explizite Aktion vermeidet stilles Überschreiben und belässt TAM/SAM/SOM als führende Datenquelle."
                 )}
               </p>
             </CardContent>
@@ -397,8 +397,8 @@ export default function ProcessGuide() {
               icon={<span className="text-lg">📋</span>}
               title={bp("Idea Table", "Ideen-Tabelle")}
               description={bp(
-                "Central table with key columns: Stage, Industry, Owner, Rough Scoring, TAM, SAM, SOM, Growth Rate, Payback Period, and IDA AI Assessment summary.",
-                "Zentrale Tabelle mit wichtigen Spalten: Phase, Branche, Owner, Rough Scoring, TAM, SAM, SOM, Wachstumsrate, Amortisationszeit und IDA-KI-Assessment-Zusammenfassung."
+                "Horizontally scrollable table with color-coded groups for general information, scoring, Scan Pack progress, TAM/SAM/SOM and Business Case. It includes the idea bringer, investment, NPV, ROI and payback plus an IDA status summary with Go, Hold or Stop.",
+                "Seitlich scrollbare Tabelle mit farblich getrennten Bereichen für allgemeine Informationen, Scoring, Scan-Pack-Fortschritt, TAM/SAM/SOM und Business Case. Sie enthält Ideengeber, Investition, NPV, ROI und Amortisation sowie eine IDA-Statuszusammenfassung mit Go, Hold oder Stop."
               )}
             />
             <FeatureCard

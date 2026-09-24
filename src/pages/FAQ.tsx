@@ -156,11 +156,61 @@ export default function FAQ() {
                 <AccordionContent>
                   <p className="text-sm text-muted-foreground">
                     {bp(
-                      "The Data Bridge automatically transfers SOM revenue projections and market assumptions (Portfolio Coverage, Visibility, Visibility Growth, Hitrate) from the Business Plan into the Business Case. These values appear as read-only references in the Business Case to ensure consistency. To change them, update the SOM section in the Business Plan.",
-                      "Die Datenbrücke überträgt automatisch SOM-Umsatzprojektionen und Marktannahmen (Portfolioabdeckung, Sichtbarkeit, Sichtbarkeitswachstum, Hitrate) vom Business Plan in den Business Case. Diese Werte erscheinen als Nur-Lese-Referenzen im Business Case, um Konsistenz zu gewährleisten. Um sie zu ändern, aktualisieren Sie den SOM-Bereich im Business Plan."
+                      "Use 'Import from TAM SAM SOM' in the Business Case to transfer SOM revenue projections and market assumptions (Portfolio Coverage, Visibility, Visibility Growth, Hitrate). If verification changes the model, update TAM/SAM/SOM and run the import again.",
+                      "Nutzen Sie im Business Case „Aus TAM SAM SOM übernehmen“, um SOM-Umsatzprojektionen und Marktannahmen (Portfolioabdeckung, Sichtbarkeit, Sichtbarkeitswachstum, Hitrate) zu übertragen. Verändert die Verifizierung das Modell, aktualisieren Sie TAM/SAM/SOM und führen die Übernahme erneut aus."
                     )}
                   </p>
                 </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="ida-fill-market">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("How does 'Fill TAM/SAM/SOM with IDA' work?", "Wie funktioniert „TAM/SAM/SOM mit IDA ausfüllen“?")}
+                </AccordionTrigger>
+                <AccordionContent><p className="text-sm text-muted-foreground">{bp(
+                  "Open the relevant TAM, SAM or SOM overview, select attachments and Scan Pack results, and start IDA. IDA proposes values field by field; review, edit and select them before applying. Existing data is not silently overwritten.",
+                  "Öffnen Sie die jeweilige TAM-, SAM- oder SOM-Übersicht, wählen Sie Anhänge und Scan-Pack-Ergebnisse und starten Sie IDA. IDA schlägt Werte feldweise vor; prüfen, bearbeiten und markieren Sie diese vor der Übernahme. Bestehende Daten werden nicht still überschrieben."
+                )}</p></AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="long-pdf">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("Can IDA read long PDF documents?", "Kann IDA lange PDF-Dokumente lesen?")}
+                </AccordionTrigger>
+                <AccordionContent><p className="text-sm text-muted-foreground">{bp(
+                  "Yes. Text PDFs are extracted page by page in the browser, divided into sections and condensed with page references before fields are proposed. This can take several minutes and consumes more AI credits. Image-only scans without selectable text cannot use this route and remain subject to the file-size limit.",
+                  "Ja. Text-PDFs werden im Browser seitenweise ausgelesen, in Abschnitte geteilt und mit Seitenhinweisen verdichtet, bevor Feldvorschläge entstehen. Das kann mehrere Minuten dauern und mehr KI-Credits verbrauchen. Reine Bildscans ohne auswählbaren Text können diesen Weg nicht nutzen und unterliegen weiterhin der Dateigrößengrenze."
+                )}</p></AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="verification-calibration">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("How do verification findings update TAM/SAM/SOM?", "Wie wirken Verifizierungsergebnisse auf TAM/SAM/SOM?")}
+                </AccordionTrigger>
+                <AccordionContent><p className="text-sm text-muted-foreground">{bp(
+                  "In Market Verification, ask IDA for adjustments. IDA compares customer, affiliate and BU interviews plus Pilot & Leads with the current SAM/SOM model. Each recommendation shows the current and proposed value with a rationale. Apply only selected changes, then re-import the updated market assumptions into the Business Case.",
+                  "Lassen Sie IDA in der Marktverifizierung Anpassungen empfehlen. IDA vergleicht Kunden-, Affiliate- und BU-Interviews sowie Pilot & Leads mit dem aktuellen SAM-/SOM-Modell. Jede Empfehlung zeigt aktuellen und vorgeschlagenen Wert samt Begründung. Übernehmen Sie nur ausgewählte Änderungen und importieren Sie anschließend die aktualisierten Marktannahmen erneut in den Business Case."
+                )}</p></AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="ida-verdict">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("What do IDA's Go, Hold and Stop verdicts mean?", "Was bedeuten IDAs Urteile Go, Hold und Stop?")}
+                </AccordionTrigger>
+                <AccordionContent><p className="text-sm text-muted-foreground">{bp(
+                  "Go means score ≥3.5, the current phase is at least 80% complete and no stop gate is open. Hold applies when the score is 2.5–3.5, more than two mandatory steps are open, or TAM/SAM/SOM is empty. Stop applies when the score is below 2.5, a gate was rejected, or NPV/ROI is negative. The summary supports a decision; it does not replace the documented gate decision.",
+                  "Go bedeutet: Score ≥3,5, aktuelle Phase zu mindestens 80 % abgeschlossen und kein offenes Stop-Gate. Hold gilt bei Score 2,5–3,5, mehr als zwei offenen Pflichtschritten oder leerem TAM/SAM/SOM. Stop gilt bei Score unter 2,5, abgelehntem Gate oder negativem NPV/ROI. Die Zusammenfassung unterstützt die Entscheidung, ersetzt aber nicht die dokumentierte Gate-Entscheidung."
+                )}</p></AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="mobile-navigation">
+                <AccordionTrigger className="text-sm font-medium">
+                  {bp("How do I open TAM/SAM/SOM subpages on mobile?", "Wie öffne ich TAM-/SAM-/SOM-Unterseiten mobil?")}
+                </AccordionTrigger>
+                <AccordionContent><p className="text-sm text-muted-foreground">{bp(
+                  "Tap TAM, SAM or SOM to keep the expandable sidebar group open, then select the desired child page. Choosing a child closes the sidebar and opens only that page rather than scrolling within a combined overview.",
+                  "Tippen Sie auf TAM, SAM oder SOM; die aufklappbare Gruppe bleibt geöffnet. Wählen Sie dann die gewünschte Unterseite. Erst die Auswahl der Unterseite schließt die Sidebar und öffnet ausschließlich diese Seite, statt innerhalb einer Gesamtansicht zu scrollen."
+                )}</p></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="scoring-formula">
@@ -198,8 +248,8 @@ export default function FAQ() {
                 <AccordionContent>
                   <p className="text-sm text-muted-foreground">
                     {bp(
-                      "IDA (Internal Data Analyst) works exclusively with the data you've entered in the tool — she finds connections, identifies gaps, and gives recommendations based on your inputs. Mark (Market Researcher) focuses on external market context — he suggests improvements based on industry best practices, trends, and benchmarks.",
-                      "IDA (Interne Datenanalystin) arbeitet ausschließlich mit den Daten, die Sie im Tool eingegeben haben — sie findet Verbindungen, identifiziert Lücken und gibt Empfehlungen basierend auf Ihren Eingaben. Mark (Marktforscher) konzentriert sich auf externen Marktkontext — er schlägt Verbesserungen basierend auf Branchenstandards, Trends und Benchmarks vor."
+                      "IDA is active: she analyzes entered data, selected attachments and Scan Pack results, creates assessments and status summaries, fills market fields and calibrates the model after verification. Mark is the planned external research agent; his future prompts are documented, but he is not currently active in TAM/SAM/SOM.",
+                      "IDA ist aktiv: Sie analysiert eingegebene Daten, ausgewählte Anhänge und Scan-Pack-Ergebnisse, erstellt Assessments und Statuszusammenfassungen, befüllt Marktfelder und kalibriert das Modell nach der Verifizierung. Mark ist der geplante Agent für externe Recherche; seine künftigen Prompts sind dokumentiert, in TAM/SAM/SOM ist er derzeit aber nicht aktiv."
                     )}
                   </p>
                 </AccordionContent>
