@@ -95,7 +95,8 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
-        {!activeSubTab && (
+        {!activeSubTab && (<>
+          {idaButton("tam", "Fill TAM with IDA", "TAM mit IDA ausfüllen")}
           <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
             onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
