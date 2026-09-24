@@ -800,10 +800,27 @@ serve(async (req) => {
           // gateway with N identical multi-document calls in the same instant.
           // Run sections sequentially: each request serializes all attachments,
           // so parallel calls multiplied memory usage and crashed the function.
+          // Pass 1: full-read evidence digest. On success, sections work from
+          // the digest (plus light text sources) instead of re-reading PDFs.
+          let sectionBlocks = blocks;
+          try {
+            const digest = await buildEvidenceDigest(blocks, anchor, lang, LOVABLE_API_KEY);
+            if (digest.length > 500) {
+              const textBlocks = blocks.filter((b) => b.type === "text" && String(b.text).length < 20_000);
+              sectionBlocks = [
+                { type: "text", text: `=== EVIDENCE DIGEST (complete extraction from all source documents; primary evidence) ===\n${digest}\n=== END DIGEST ===` },
+                ...textBlocks,
+              ];
+            }
+          } catch (e: any) {
+            if (e?.status === 402) throw e;
+            console.warn("Digest failed, falling back to raw documents", e);
+          }
+
           const results: PromiseSettledResult<any>[] = [];
           for (const s of sections) {
             try {
-              results.push({ status: "fulfilled", value: await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY) });
+              results.push({ status: "fulfilled", value: await runSectionWithRetry(s, sectionBlocks, anchor, lang, LOVABLE_API_KEY) });
             } catch (reason) {
               results.push({ status: "rejected", reason });
             }
