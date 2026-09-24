@@ -83,7 +83,7 @@ export function IdaIdeaSummaryCell({
       </Button>
     );
   }
-  const verdictLabel = { go: "Go", not_pursue: de ? "Nicht weiterverfolgen" : "Do not pursue", stop: "Stop" }[summary.verdict] || summary.verdict;
+  const verdictLabel = { go: "Go", not_pursue: "Hodl", stop: "Stop" }[summary.verdict] || summary.verdict;
   return (
     <div className="text-xs space-y-1 w-[340px] whitespace-normal" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between gap-2">
