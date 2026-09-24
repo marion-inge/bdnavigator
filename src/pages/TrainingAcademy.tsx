@@ -62,7 +62,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "Im Tool",
-            body: "Unter 'Business Plan → TAM' dokumentieren Sie Ihre Scope-Definition, geographische Abdeckung, Annahmen und 5-Jahres-Projektionen. Die IDA-KI kann basierend auf Ihren Daten eine eigene Schätzung erstellen.",
+            body: "Unter 'TAM → Überblick' dokumentieren Sie Scope, Geografie, Annahmen und 5-Jahres-Projektionen. Market Research, PESTEL, Wertschöpfungskette, Porter's und SWOT öffnen als eigene Unterseiten. Mit 'TAM mit IDA ausfüllen' wählen Sie Anhänge und Scan-Pack-Ergebnisse aus und prüfen die Vorschläge Feld für Feld.",
           },
         ],
       },
@@ -104,6 +104,10 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
             heading: "TAM → SAM → SOM Zusammenspiel",
             body: "Die drei Marktgrößen bilden einen Trichter: TAM ist die theoretische Obergrenze, SAM der adressierbare Teil, SOM Ihre realistische Planung. Die Verhältnisse (SAM/TAM, SOM/SAM) zeigen, wie fokussiert Ihre Strategie ist.",
             tip: "Ein SOM/SAM-Verhältnis von >30% im Jahr 1 ist in den meisten Märkten unrealistisch. 1-5% ist ein guter Startpunkt.",
+          },
+          {
+            heading: "Nach der Marktverifizierung kalibrieren",
+            body: "Kunden-, Affiliate- und BU-Interviews sowie Pilot & Leads können Marktannahmen verändern. Lassen Sie IDA die Evidenz mit SAM und SOM vergleichen. Prüfen Sie aktuelle und vorgeschlagene Werte, übernehmen Sie nur begründete Anpassungen und importieren Sie danach TAM SAM SOM erneut in den Business Case.",
           },
         ],
       },
@@ -221,7 +225,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           {
             heading: "Der 22-Kriterien-Fragebogen",
             body: "Das Idea Scoring bewertet neue Ideen anhand von 22 Fragen in 5 Kategorien:\n1. Strategische Passung (Strategic Fit)\n2. Marktpotenzial (Market Potential)\n3. Technische Machbarkeit (Feasibility)\n4. Kommerzielle Tragfähigkeit (Commercial Viability)\n5. Risiko (Risk)\n\nJede Frage wird auf einer Skala bewertet. Die Gewichtung der Kategorien kann angepasst werden.",
-            tip: "Ein Score ab 60% wird typischerweise als 'Go' für Gate 1 angesehen. Unter 40% sollte die Idee überarbeitet oder verworfen werden.",
+            tip: "Der Score allein entscheidet kein Gate. IDAs Portfolio-Urteil nutzt feste Kriterien: Go ab 3,5 bei mindestens 80 % Phasenfortschritt; Hold bei 2,5–3,5, zu vielen offenen Pflichtschritten oder leerem TAM/SAM/SOM; Stop unter 2,5, bei abgelehntem Gate oder negativem NPV/ROI.",
           },
           {
             heading: "IDA Assessment",
@@ -236,11 +240,11 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Investment Case",
-            body: "Der Investment Case fasst zusammen, warum in diese Idee investiert werden soll: erwarteter ROI, benötigte Investitionen, Zeitplan und Risikobewertung. Er wird vor Gate 2 erstellt.",
+            body: "Der Business Case wird in Phase 5 vor Gate 5 erstellt. Mit 'Aus TAM SAM SOM übernehmen' fließen SOM-Projektionen, Portfolioabdeckung, Sichtbarkeit, Sichtbarkeitswachstum und Hitrate gezielt in die Investitionsrechnung. Danach werden Investition, Cashflow, NPV, ROI und Amortisation bewertet.",
           },
           {
-            heading: "Business Case (Implementation & GTM Plan)",
-            body: "Der Business Case detailliert den Umsetzungs- und Go-to-Market-Plan: Entwicklungsschritte, Marketingstrategie, Vertriebskanäle, Pilotkunden und Meilensteine. Er wird vor Gate 3 erstellt.",
+            heading: "Umsetzung & GTM nach Gate 5",
+            body: "Erst nach dem Business Case und Gate 5 folgt Phase 6 mit Zielsegmenten, Kanälen, Pilotkunden, Verantwortlichen und Meilensteinen. Phase 7 dokumentiert Fortschritt, Erkenntnisse, nächste Schritte und Review.",
           },
           {
             heading: "Stage-Gate-Prozess",
@@ -264,11 +268,11 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "Das Dashboard",
-            body: "Das Dashboard zeigt alle Ideen mit Filtern (Stage, Branche, Geographie, Technologie, Owner). Die Pipeline-Funnel-Ansicht visualisiert die Verteilung über die Phasen. Das Ansoff-Dashboard und der Three Horizons Chart geben strategische Einblicke.",
+            body: "Das Dashboard zeigt alle Ideen mit Filtern sowie farblich getrennten Spaltengruppen für allgemeine Informationen, Ideen-Scoring, Scan Pack, TAM/SAM/SOM und Business Case. Ideengeber, Investition, NPV, ROI und Amortisation sind direkt vergleichbar. Auf kleineren Bildschirmen wird die Tabelle seitlich gescrollt beziehungsweise kompakt dargestellt.",
           },
           {
             heading: "Idee erstellen",
-            body: "Klicken Sie auf '+ Neue Idee' im Header. Füllen Sie Titel, Problembeschreibung, Lösungsidee, Branche, Geographie, Technologie und Owner aus. Nach dem Erstellen starten Sie im Status 'Idea'.",
+            body: "Klicken Sie auf '+ Neue Idee' im Header. Erfassen Sie Titel, Problembeschreibung, Lösungsidee, Branche, Geographie, Technologie, Ideengeber und verantwortlichen Owner. Nach dem Erstellen starten Sie in Phase 1.",
           },
         ],
       },
@@ -283,7 +287,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
           },
           {
             heading: "KI-Agenten nutzen",
-            body: "IDA (rosa Roboter): Bewertet Ihre Eingaben und erstellt Assessments\nMark (blauer Roboter): Wird zukünftig Web-Recherche für Marktdaten durchführen\n\nKI-Schätzungen finden Sie unter den 'IDA Estimation'-Buttons in TAM, SAM und SOM.",
+            body: "IDA bewertet Scoring und Business Case, erstellt in der Ideen-Tabelle Status, offene Schritte, Empfehlung und Go/Hold/Stop, befüllt TAM/SAM/SOM aus ausgewählten Anhängen und Scan-Pack-Ergebnissen und kalibriert das Marktmodell nach der Verifizierung. Alle vorgeschlagenen Feldänderungen werden vor der Übernahme geprüft. Mark ist für künftige externe Web-Recherche vorgesehen und derzeit in TAM/SAM/SOM nicht aktiv.",
           },
         ],
       },
@@ -294,7 +298,7 @@ const modulesDE: { id: string; title: string; description: string; icon: React.E
         content: [
           {
             heading: "PDF-Export",
-            body: "Auf dem Overview-Tab jeder Idee finden Sie den PDF-Export-Button. Dieser erstellt ein umfassendes Dokument mit allen Scoring-Ergebnissen, Marktanalysen und Gate-Entscheidungen.",
+            body: "Der einzelne Download pro Idee erzeugt einen vollständigen PDF-Bericht mit Ideendaten, Scoring, TAM/SAM/SOM, strategischen Modellen, Diagrammen, Marktverifizierung, Gate-Entscheidungen und dem gesamten Business Case.",
           },
           {
             heading: "Dateien anhängen",
@@ -330,7 +334,7 @@ const modulesEN: typeof modulesDE = [
             tip: "TAM should be derived from reliable sources (market research reports, industry associations). Top-down and bottom-up approaches complement each other.",
           },
           { heading: "Calculation Methods", body: "Top-Down: Total market data from studies → narrow to relevant segment.\nBottom-Up: Number of potential customers × average revenue per customer.\nValue Theory: Estimated value your solution creates × number of customers." },
-          { heading: "In the Tool", body: "Under 'Business Plan → TAM' you document your scope definition, geographic coverage, assumptions and 5-year projections. The IDA AI can create its own estimate based on your data." },
+          { heading: "In the Tool", body: "Under 'TAM → Overview' you document scope, geography, assumptions and 5-year projections. Market Research, PESTEL, Value Chain, Porter's and SWOT open as separate subpages. 'Fill TAM with IDA' uses selected attachments and Scan Pack results to create field-level proposals for review." },
         ],
       },
       {
@@ -351,6 +355,7 @@ const modulesEN: typeof modulesDE = [
           { heading: "What is SOM?", body: "SOM is the realistic share of SAM you can actually capture in the next 3-5 years, considering sales capacity, marketing budgets, competition and operational constraints.", example: "With a SAM of €200M, your SOM in Year 1 might be €2M (1% market share), growing to €10M by Year 5." },
           { heading: "Key Parameters", body: "• Portfolio Coverage: How much of SAM does your portfolio cover?\n• Visibility Rate: How many potential customers know you?\n• Hit Rate: How many inquiries become orders?\n• Sales Capacity: How many customers can your team actively manage?" },
           { heading: "TAM → SAM → SOM Funnel", body: "The three market sizes form a funnel. The ratios (SAM/TAM, SOM/SAM) show how focused your strategy is.", tip: "A SOM/SAM ratio >30% in Year 1 is unrealistic in most markets. 1-5% is a good starting point." },
+          { heading: "Calibrate after Market Verification", body: "Customer, Affiliate and BU interviews plus Pilot & Leads may invalidate assumptions. Ask IDA to compare this evidence with SAM and SOM, review current versus proposed values, apply only justified adjustments, then import TAM SAM SOM into the Business Case again." },
         ],
       },
     ],
@@ -411,15 +416,15 @@ const modulesEN: typeof modulesDE = [
       {
         title: "Idea Scoring (Rough Scoring)", description: "The initial assessment of an idea", icon: CheckCircle2,
         content: [
-          { heading: "The 22-Criteria Questionnaire", body: "Idea Scoring evaluates new ideas across 22 questions in 5 categories:\n1. Strategic Fit\n2. Market Potential\n3. Technical Feasibility\n4. Commercial Viability\n5. Risk\n\nEach question is rated on a scale. Category weights can be adjusted.", tip: "A score above 60% is typically considered 'Go' for Gate 1. Below 40%, the idea should be reworked or dropped." },
+          { heading: "The 22-Criteria Questionnaire", body: "Idea Scoring evaluates new ideas across 22 questions in 5 categories:\n1. Strategic Fit\n2. Market Potential\n3. Technical Feasibility\n4. Commercial Viability\n5. Risk\n\nEach question is rated on a scale. Category weights can be adjusted.", tip: "The score alone does not decide a gate. IDA's portfolio verdict uses explicit rules: Go from 3.5 with at least 80% phase completion; Hold at 2.5–3.5, too many open mandatory steps or empty TAM/SAM/SOM; Stop below 2.5, after a rejected gate or with negative NPV/ROI." },
           { heading: "IDA Assessment", body: "The AI agent IDA analyzes your scoring results and provides an assessment with strengths, weaknesses, risks and next steps." },
         ],
       },
       {
         title: "Investment Case & Business Case", description: "From idea to investment decision", icon: Calculator,
         content: [
-          { heading: "Investment Case", body: "Summarizes why to invest: expected ROI, required investment, timeline and risk assessment. Created before Gate 2." },
-          { heading: "Business Case", body: "Details the implementation and go-to-market plan: development steps, marketing strategy, sales channels, pilot customers and milestones." },
+          { heading: "Business Case", body: "Created in Phase 5 before Gate 5. 'Import from TAM SAM SOM' deliberately transfers SOM projections, portfolio coverage, visibility, visibility growth and hit rate into the investment calculation. Investment, cash flow, NPV, ROI and payback are then assessed." },
+          { heading: "Implementation & GTM after Gate 5", body: "Phase 6 follows the approved Business Case and defines target segments, channels, pilots, owners and milestones. Phase 7 tracks progress, learning and review." },
           { heading: "Stage-Gate Process", body: "The process has 7 phases and 5 gates. Each gate is a decision point (Go/Hold/No-Go):\n• Gate 1: after Idea & Idea Scoring → Market Intelligence\n• Gate 2: after Market Intelligence (Hypothesis & Scan Pack) → TAM SAM SOM\n• Gate 3: after TAM SAM SOM → Market Verification\n• Gate 4: after Market Verification → Business Case\n• Gate 5: after Business Case → Implementation & GTM\n\nGate meetings are documented with meeting notes." },
         ],
       },
@@ -435,21 +440,21 @@ const modulesEN: typeof modulesDE = [
       {
         title: "Dashboard & Navigation", description: "Overview and getting started", icon: Compass,
         content: [
-          { heading: "The Dashboard", body: "Shows all ideas with filters. The pipeline funnel visualizes distribution across stages. Ansoff and Three Horizons charts provide strategic insights." },
-          { heading: "Creating an Idea", body: "Click '+ New Idea' in the header. Fill in title, problem, solution, industry, geography, technology and owner." },
+          { heading: "The Dashboard", body: "Shows all ideas with filters and color-coded groups for General Information, Idea Scoring, Scan Pack, TAM/SAM/SOM and Business Case. Idea bringer, investment, NPV, ROI and payback are directly comparable. Smaller screens use sideways scrolling or a compact presentation." },
+          { heading: "Creating an Idea", body: "Click '+ New Idea' in the header. Fill in title, problem, solution, industry, geography, technology, idea bringer and responsible owner." },
         ],
       },
       {
         title: "Sidebar Navigation", description: "All areas of an idea", icon: BookOpen,
         content: [
           { heading: "Hierarchical Navigation", body: "Navigate via the left sidebar, which is grouped into the 7 phases:\n• Phase 1 — Overview, Idea Scoring (wizard & strategic models) → G1\n• Phase 2 — Hypothesis, Scan Pack and the scan outcomes (industry, customer, competitor, market potential) → G2\n• Phase 3 — TAM/SAM/SOM with combined overview & models → G3\n• Phase 4 — Market Verification: Customer Interviews, Affiliate Interviews, BU Interviews, Pilot & Leads → G4\n• Phase 5 — Business Case / Investment Case → G5\n• Phase 6 — Implementation & GTM Plan\n• Phase 7 — Implementation & Review\n\nThe gate records G1–G5 sit between the phases." },
-          { heading: "Using AI Agents", body: "IDA (pink robot): Evaluates your inputs and creates assessments\nMark (blue robot): Will perform web research for market data in the future\n\nAI estimations are under the 'IDA Estimation' buttons in TAM, SAM and SOM." },
+          { heading: "Using AI", body: "IDA assesses scoring and the Business Case, creates status/open-steps/recommendation/Go-Hold-Stop summaries in the idea table, fills TAM/SAM/SOM from selected attachments and Scan Pack outcomes, and calibrates the market model after verification. Every proposed field change is reviewed before application. Mark is planned for future external web research and is not currently active in TAM/SAM/SOM." },
         ],
       },
       {
         title: "Export & Sharing", description: "PDF export and collaboration", icon: Rocket,
         content: [
-          { heading: "PDF Export", body: "Find the PDF export button on the Overview tab of each idea." },
+          { heading: "PDF Export", body: "One download per idea creates the complete PDF report: idea data, scoring, TAM/SAM/SOM, strategic models, charts, verification, gate decisions and the full Business Case." },
           { heading: "File Attachments", body: "Attach files (market reports, presentations, technical documents) on the Overview tab." },
           { heading: "Language Switching", body: "The tool supports German and English. Use the language toggle in the header." },
         ],
