@@ -105,7 +105,7 @@ async function toContentBlock(name: string, mime: string, buf: Uint8Array): Prom
     // Extract the full text layer page by page — reliable for long reports and
     // far lighter than sending the binary. Fall back to binary only for scans.
     try {
-      const pdf = await getDocumentProxy(buf, { disableFontFace: true, isEvalSupported: false, useSystemFonts: false, stopAtErrors: false } as any);
+      const pdf = await getDocumentProxy(buf.byteLength <= MAX_BYTES ? buf.slice() : buf, { disableFontFace: true, isEvalSupported: false, useSystemFonts: false, stopAtErrors: false } as any);
       const totalPages = pdf.numPages;
       const parts: string[] = [];
       let len = 0;
