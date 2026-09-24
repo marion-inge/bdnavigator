@@ -15,6 +15,9 @@ import { StrategicFrameworksTabs } from "@/components/StrategicFrameworksTabs";
 import { ScoreMarketPotentialScatter } from "@/components/ScoreMarketPotentialScatter";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ProcessOverview } from "@/components/ProcessOverview";
+import { IdaIdeaSummaryCell, IdeaSummary, runIdaSummary } from "@/components/IdaIdeaSummaryCell";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -32,6 +35,19 @@ export default function Index() {
   const [geographyFilter, setGeographyFilter] = useState<string>("all");
   const [technologyFilter, setTechnologyFilter] = useState<string>("all");
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
+  const [idaSummaries, setIdaSummaries] = useState<Record<string, IdeaSummary>>({});
+  const [runningAll, setRunningAll] = useState(false);
+  useEffect(() => {
+    supabase.from("ai_assessments").select("*").eq("basis", "status_summary").order("created_at", { ascending: true })
+      .then(({ data }) => {
+        const m: Record<string, IdeaSummary> = {};
+        for (const r of data || []) m[r.opportunity_id] = {
+          status: r.summary, openSteps: (r.next_steps as string[]) || [],
+          recommendation: ((r.strengths as string[]) || [])[0] || "", verdict: r.overall_rating, createdAt: r.created_at,
+        };
+        setIdaSummaries(m);
+      });
+  }, []);
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of STAGE_ORDER) counts[s] = 0;
@@ -89,6 +105,17 @@ export default function Index() {
   ];
 
   const hasActiveFilters = stageFilter !== "all" || industryFilter !== "all" || geographyFilter !== "all" || technologyFilter !== "all" || ownerFilter !== "all";
+
+  const runAllIda = async () => {
+    setRunningAll(true);
+    for (const opp of filtered) {
+      try {
+        const s = await runIdaSummary(opp, language);
+        setIdaSummaries((m) => ({ ...m, [opp.id]: s }));
+      } catch { /* continue */ }
+    }
+    setRunningAll(false);
+  };
 
   const clearAllFilters = () => {
     setStageFilter("all");
@@ -331,9 +358,16 @@ export default function Index() {
               </p>
             </div>
             <div className="rounded-lg border border-border bg-card overflow-auto max-h-[70vh] novi-table-scroll">
-              <table className="w-full min-w-[1400px]">
+              <table className="w-full min-w-[1780px]">
               <thead>
                 <tr className="border-b border-border bg-muted/60 sticky top-0 z-20">
+                  <th rowSpan={2} className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-primary bg-card border-r-2 border-primary/40 align-middle">
+                    <div className="flex items-center gap-2">IDA Summary
+                      <button onClick={runAllIda} disabled={runningAll} className="normal-case font-medium underline text-primary">
+                        {runningAll ? <Loader2 className="h-3 w-3 animate-spin" /> : (language === "de" ? "Alle ausführen" : "Run all")}
+                      </button>
+                    </div>
+                  </th>
                   <th colSpan={6} className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/60 border-l-2 border-muted-foreground/30">
                     {language === "de" ? "Allgemeine Informationen" : "General Information"}
                   </th>
@@ -404,6 +438,9 @@ export default function Index() {
                       onClick={() => navigate(`/opportunity/${opp.id}`)}
                       className="border-b border-border last:border-0 hover:bg-muted/30 cursor-pointer transition-colors"
                     >
+                      <td className="px-4 py-3 align-top border-r-2 border-primary/40">
+                        <IdaIdeaSummaryCell opp={opp} summary={idaSummaries[opp.id]} language={language} onDone={(s) => setIdaSummaries((m) => ({ ...m, [opp.id]: s }))} />
+                      </td>
                       <td className="px-4 py-3">
                         <span className="font-medium text-card-foreground">{opp.title}</span>
                       </td>
