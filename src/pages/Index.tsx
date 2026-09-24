@@ -295,7 +295,8 @@ export default function Index() {
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                     {opp.industry && <span>{opp.industry}</span>}
                     {opp.geography && <span>{opp.geography}</span>}
-                    {opp.owner && <span>{opp.owner}</span>}
+                    {opp.technology && <span>{opp.technology}</span>}
+                    {opp.ideaBringer && <span>{t("ideaBringer")}: {opp.ideaBringer}</span>}
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
