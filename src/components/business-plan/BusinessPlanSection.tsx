@@ -1,7 +1,7 @@
 import { useI18n } from "@/lib/i18n";
 import { DetailedScoring, StrategicAnalyses, createDefaultDetailedScoring, createDefaultStrategicAnalyses } from "@/lib/types";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { TamOverview } from "./TamOverview";
 import { SamOverview } from "./SamOverview";
 import { SomOverview } from "./SomOverview";
@@ -19,11 +19,6 @@ import { EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
-import { Globe, Target, TrendingUp, BarChart3 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import idaRobot from "@/assets/ida-robot.png";
-import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
-import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
 
 
 export type StrategicAnalysisTab = string;
@@ -68,8 +63,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
     onSaveStrategic(updated);
   };
 
-  const oppContext = opportunityTitle ? { title: opportunityTitle, description: opportunityDescription || "", solutionDescription, industry: industry || "", geography: geography || "", technology: technology || "" } : undefined;
-  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly, opportunity: oppContext };
+  const tamProps = { data: saData.tam, onSave: (d: any) => handleUpdateSa({ ...saData, tam: d }), readonly };
   const samProps = { data: saData.sam, onSave: (d: any) => handleUpdateSa({ ...saData, sam: d }), readonly };
   const somProps = { data: saData.som, onSave: (d: any) => handleUpdateSa({ ...saData, som: d }), readonly };
 
@@ -77,51 +71,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
     onTabChange?.(section, subTab);
   };
 
-  const agentContext = {
-    section: "Business Plan",
-    mainTab,
-    opportunityTitle,
-    opportunityDescription,
-    detailedScoring: scoring,
-    strategicAnalyses: saData,
-  };
-
-  const [idaScope, setIdaScope] = useState<ProposalGroup | "all" | null>(null);
-  const canRunIda = !!opportunityId && !readonly;
-
-  const IdaButton = ({ scope, label }: { scope: ProposalGroup | "all"; label: string }) => (
-    <Button
-      type="button"
-      size="sm"
-      variant={scope === "all" ? "default" : "outline"}
-      onClick={() => setIdaScope(scope)}
-      disabled={!canRunIda}
-      className="gap-2"
-      title={!opportunityId ? "Save the idea first" : ""}
-    >
-      <img src={idaRobot} alt="" className="h-4 w-4" />
-      {label}
-    </Button>
-  );
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end gap-2">
-        {canRunIda && (
-          <IdaButton scope="all" label={bp("Fill Business Plan with IDA", "Businessplan mit IDA ausfüllen")} />
-        )}
-      </div>
-
-
-
-
     <Tabs value={mainTab} onValueChange={handleMainTabChange} className="space-y-6">
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
-        {canRunIda && (
-          <div className="flex justify-end mb-2"><IdaButton scope="tam" label={bp("Fill TAM with IDA", "TAM mit IDA ausfüllen")} /></div>
-        )}
         {!activeSubTab && (
           <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
@@ -151,9 +107,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
-        {canRunIda && (
-          <div className="flex justify-end mb-2"><IdaButton scope="sam" label={bp("Fill SAM with IDA", "SAM mit IDA ausfüllen")} /></div>
-        )}
         {!activeSubTab && (
           <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
@@ -193,9 +146,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
-        {canRunIda && (
-          <div className="flex justify-end mb-2"><IdaButton scope="som" label={bp("Fill SOM with IDA", "SOM mit IDA ausfüllen")} /></div>
-        )}
         {!activeSubTab && (
           <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
@@ -204,7 +154,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
         )}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
-            <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} opportunity={oppContext} />
+            <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
           </TabsContent>
           <TabsContent value="som-customers-found" data-bp-subtab="som-customers-found" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CustomersFoundTab
@@ -236,21 +186,6 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ Others ═══ */}
     </Tabs>
-    {opportunityId && idaScope && (
-      <IdaBusinessPlanFillDialog
-        open={!!idaScope}
-        onOpenChange={(v) => { if (!v) setIdaScope(null); }}
-        opportunityId={opportunityId}
-        scope={idaScope}
-        scoring={scoring}
-        strategicAnalyses={saData}
-        context={{ title: opportunityTitle, description: opportunityDescription, solutionDescription, industry, geography, technology }}
-        onApply={({ scoring: s, sa }) => {
-          handleUpdateScoring(s);
-          handleUpdateSa(sa);
-        }}
-      />
-    )}
     </div>
   );
 }
