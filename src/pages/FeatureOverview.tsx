@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, LayoutDashboard, Target, ClipboardCheck, FileText, BarChart3, Bot, Globe, Shield, Upload, Lightbulb, TrendingUp, Layers, BookOpen, Search } from "lucide-react";
 import noviLogo from "@/assets/novi-logo-v4.png";
+import { NoviValueFlow } from "@/components/NoviValueFlow";
 
 interface FeatureGroup {
   titleEn: string;
@@ -207,6 +208,11 @@ export default function FeatureOverview() {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-6">
+        <NoviValueFlow
+          variant="compact"
+          bp={(en, de) => isDE ? de : en}
+        />
+
         {/* Summary bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
