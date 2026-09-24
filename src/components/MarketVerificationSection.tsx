@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmbeddedCustomerInterviews, EmbeddedInternalAffiliateInterviews, EmbeddedInternalBUInterviews } from "@/components/business-plan/embedded/SamModels";
 import { PilotCustomerTab } from "@/components/detailed-scoring/PilotCustomerTab";
 import { useI18n } from "@/lib/i18n";
+import { IdaCalibrationPanel } from "@/components/IdaCalibrationPanel";
 
 export type MarketVerificationTab = "customer" | "affiliate" | "bu" | "pilot";
 
@@ -65,6 +66,8 @@ export function MarketVerificationSection({
           <PilotCustomerTab scoring={scoring} onUpdate={onSaveDetailed} readonly={readonly} />
         </TabsContent>
       </Tabs>
+
+      <IdaCalibrationPanel scoring={scoring} analyses={analyses} onSaveDetailed={onSaveDetailed} readonly={readonly} />
     </section>
   );
 }
