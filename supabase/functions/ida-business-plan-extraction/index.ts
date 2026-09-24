@@ -523,6 +523,86 @@ ${FIELD_GUIDE[scope]}`;
   }
 }
 
+/** Pass 1: read every document completely ONCE and write a dense, structured
+ *  evidence digest. Long documents lose detail when the field-filling calls
+ *  have to read them and fill a big schema at the same time; the digest gives
+ *  every section focused, pre-extracted facts instead. */
+function toResponsesContent(blocks: any[]): any[] {
+  return blocks.map((b) => {
+    if (b.type === "text") return { type: "input_text", text: b.text };
+    if (b.type === "image_url") return { type: "input_image", image_url: b.image_url.url };
+    if (b.type === "file") return { type: "input_file", filename: b.file.filename, file_data: b.file.file_data };
+    return { type: "input_text", text: String(b.text ?? "") };
+  });
+}
+
+async function buildEvidenceDigest(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
+  const instructions = `You are IDA, a meticulous market analyst. Read EVERY attached document completely, page by page, including tables, charts, footnotes and appendices. Do not summarise loosely — EXTRACT.
+
+Write an evidence digest in ${lang}, organised under these headings:
+1. Market size & growth (TAM/SAM/SOM figures, CAGR, years, currencies, regions, methodology, sources)
+2. Segments, industries & geographies (included/excluded, shares, sizes)
+3. Customers & buying behaviour (target groups, named customers, pains, needs, buying center, willingness to pay, procurement cycles)
+4. Competitors (names, offerings, prices, market shares, strengths/weaknesses, positioning)
+5. Pricing, costs & business model (prices, margins, cost structure, target costs)
+6. Value chain & industry structure (stages, players, margins, supplier/buyer power, substitutes, entry barriers)
+7. PESTEL factors (regulations, standards, policies, economic/social/technological/environmental trends)
+8. Technology & product (features, differentiation, maturity)
+9. Sales, go-to-market & pipeline (channels, capacity, hit rates, pilots, leads)
+10. Risks, assumptions & open questions
+11. Strengths / weaknesses / opportunities / threats evident from the documents
+
+Rules: bullet points; keep EVERY concrete number, unit, year, name and table value; add the source file and page/section in brackets, e.g. [report.pdf, p.12]; never invent; write "no evidence" under a heading with nothing. Be exhaustive — length is fine.`;
+
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "fetch" },
+    body: JSON.stringify({
+      model: "openai/gpt-6-astra",
+      instructions,
+      stream: true,
+      reasoning: { effort: "low" },
+      input: [{
+        role: "user",
+        content: [
+          { type: "input_text", text: `Opportunity anchor:\n${anchor || "(none)"}\n\nDocuments follow. Read them completely and write the digest.` },
+          ...toResponsesContent(blocks),
+        ],
+      }],
+    }),
+  });
+  if (!res.ok || !res.body) {
+    const t = await res.text().catch(() => "");
+    console.error("Digest gateway error", res.status, t.slice(0, 1000));
+    const err: any = new Error(`digest_${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "", out = "", completed = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let idx;
+    while ((idx = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, idx).trim();
+      buf = buf.slice(idx + 1);
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const ev = JSON.parse(payload);
+        if (ev.type === "response.output_text.delta") out += ev.delta || "";
+        else if (ev.type === "response.completed") completed = ev.response?.output_text || "";
+        else if (ev.type === "error" || ev.type === "response.failed") console.error("Digest stream error", payload.slice(0, 500));
+      } catch { /* partial */ }
+    }
+  }
+  return (out || completed).trim();
+}
+
 /** The upstream gateway intermittently returns 429/5xx, and Gemini occasionally
  *  returns MALFORMED_FUNCTION_CALL on the larger schemas. Retry with exponential
  *  backoff and fall back to a second model before giving up on a section. */
