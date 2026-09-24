@@ -224,12 +224,12 @@ const ENTRIES: PromptEntry[] = [
   {
     id: "portfolio-executive-summary",
     agent: "ida",
-    triggerEn: "Automatically on every visit to the Dashboard",
-    triggerDe: "Automatisch bei jedem Besuch des Dashboards",
+    triggerEn: "On the Dashboard → Generate or refresh the portfolio summary",
+    triggerDe: "Im Dashboard → Portfolio-Zusammenfassung erzeugen oder aktualisieren",
     contextEn: "Portfolio Executive Summary",
     contextDe: "Portfolio-Executive-Summary",
-    systemPromptSummaryEn: "IDA reviews the entire idea portfolio and writes a management-level executive summary: where the pipeline stands, which ideas carry the most potential, where the risks and bottlenecks are, and what the portfolio should focus on next. The summary is regenerated on every page load, never cached.",
-    systemPromptSummaryDe: "IDA prüft das gesamte Ideenportfolio und schreibt eine Executive Summary auf Management-Ebene: Wo die Pipeline steht, welche Ideen das größte Potenzial haben, wo Risiken und Engpässe liegen und worauf sich das Portfolio als Nächstes konzentrieren sollte. Die Zusammenfassung wird bei jedem Seitenaufruf neu erzeugt und nie zwischengespeichert.",
+    systemPromptSummaryEn: "IDA reviews the entire idea portfolio and writes a management-level executive summary: where the pipeline stands, which ideas carry the most potential, where the risks and bottlenecks are, and what the portfolio should focus on next.",
+    systemPromptSummaryDe: "IDA prüft das gesamte Ideenportfolio und schreibt eine Executive Summary auf Management-Ebene: Wo die Pipeline steht, welche Ideen das größte Potenzial haben, wo Risiken und Engpässe liegen und worauf sich das Portfolio als Nächstes konzentrieren sollte.",
     inputDataEn: [
        "All ideas with stage, idea bringer, industry, geography and technology",
       "Scores and score distribution",

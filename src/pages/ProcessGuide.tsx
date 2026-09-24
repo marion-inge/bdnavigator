@@ -125,10 +125,10 @@ export default function ProcessGuide() {
 
             <FeatureCard
               icon={<ArrowRightLeft className="h-5 w-5 text-primary" />}
-              title={bp("Business Plan — Combined Overview", "Business Plan — Gesamtübersicht")}
+              title={bp("TAM/SAM/SOM — Separate Overviews", "TAM/SAM/SOM — Separate Übersichten")}
               description={bp(
-                "Unified view of TAM, SAM, and SOM development over 5 years (all in M€). Includes area chart comparison, data table with CAGR, auto-calculated insights (conversion rates, growth ratios), geographic comparison across all three levels, and an interpretation section for strategic conclusions.",
-                "Einheitliche Darstellung der TAM-, SAM- und SOM-Entwicklung über 5 Jahre (alle in M€). Enthält Flächendiagramm-Vergleich, Datentabelle mit CAGR, automatisch berechnete Insights (Konversionsraten, Wachstumsverhältnisse), geografischen Vergleich über alle drei Ebenen und einen Interpretationsabschnitt für strategische Schlussfolgerungen."
+                "Clicking TAM, SAM or SOM opens that market level's own overview. Selecting Market Research, PESTEL, Value Chain, Porter's or SWOT opens only the chosen subpage rather than a long combined page.",
+                "Ein Klick auf TAM, SAM oder SOM öffnet die jeweilige eigene Übersicht. Die Auswahl von Marktforschung, PESTEL, Wertschöpfungskette, Porter's oder SWOT öffnet ausschließlich die gewählte Unterseite statt einer langen Gesamtseite."
               )}
             />
 
@@ -146,8 +146,8 @@ export default function ProcessGuide() {
               icon={<DollarSign className="h-5 w-5 text-primary" />}
               title={bp("Business Case (Investment Calculation)", "Business Case (Investitionsrechnung)")}
               description={bp(
-                "Financial modeling with an 11-year horizon (e.g. 2025–2035). Three tabs: Parameters (unit price, costs, team size, market assumptions from SOM via Data Bridge), Year Data (investment, R&D, revenue, costs per year), and Results (NPV, IRR, payback period, cumulative cash flow chart). The Data Bridge imports SOM projections and market assumptions automatically from the Business Plan.",
-                "Finanzmodellierung mit 11-Jahres-Horizont (z.B. 2025–2035). Drei Tabs: Parameter (Stückpreis, Kosten, Teamgröße, Marktannahmen aus SOM via Datenbrücke), Jahresdaten (Investition, F&E, Umsatz, Kosten pro Jahr) und Ergebnisse (NPV, IRR, Amortisationszeit, kumulatives Cashflow-Diagramm). Die Datenbrücke importiert SOM-Projektionen und Marktannahmen automatisch aus dem Business Plan."
+                "Financial modeling with an 11-year horizon. Three tabs cover parameters, yearly investment/R&D/revenue/cost data, and results including NPV, ROCE, payback and cumulative cash flow. Use 'Import from TAM SAM SOM' to transfer the latest market assumptions deliberately.",
+                "Finanzmodellierung mit 11-Jahres-Horizont. Drei Tabs enthalten Parameter, jährliche Investitions-/F&E-/Umsatz-/Kostendaten sowie Ergebnisse mit NPV, ROCE, Amortisation und kumuliertem Cashflow. Mit „Aus TAM SAM SOM übernehmen“ übertragen Sie bewusst die neuesten Marktannahmen."
               )}
             />
 
@@ -343,7 +343,7 @@ export default function ProcessGuide() {
               </p>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                 <li>{bp("5-year projections in TAM, SAM, and SOM overviews", "5-Jahres-Projektionen in TAM-, SAM- und SOM-Übersichten")}</li>
-                <li>{bp("Combined Overview chart and data table", "Gesamtübersicht-Diagramm und Datentabelle")}</li>
+                <li>{bp("Separate TAM, SAM and SOM overview charts and tables", "Separate TAM-, SAM- und SOM-Übersichtsdiagramme und -tabellen")}</li>
                 <li>{bp("Chart tooltips and Y-axis labels", "Chart-Tooltips und Y-Achsen-Beschriftungen")}</li>
                 <li>{bp("Geographic regional market sizes", "Geografische regionale Marktgrößen")}</li>
               </ul>
