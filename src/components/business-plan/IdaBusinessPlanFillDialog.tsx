@@ -12,6 +12,8 @@ import type { DetailedScoring, StrategicAnalyses } from "@/lib/types";
 import { fieldsForGroup, readProposal, type IdaFieldDef, type ProposalGroup } from "@/lib/businessPlanIdaFields";
 import { useStore } from "@/lib/store";
 import type { ScanPackKey } from "@/lib/scanPackTypes";
+import { supabase } from "@/integrations/supabase/client";
+import { extractPdfTextFromUrl } from "@/lib/pdfText";
 
 const SCAN_LABELS: Record<ScanPackKey, { en: string; de: string }> = {
   industry: { en: "Industry Study", de: "Industriestudie" },
@@ -133,10 +135,27 @@ export function IdaBusinessPlanFillDialog({
   const runExtraction = async () => {
     setStep("running");
     try {
+      // Read PDF text in the browser so long reports arrive complete.
+      const extractedTexts: { fileId: string; name: string; text: string; pages: number }[] = [];
+      for (const f of files.filter((x) => selectedFiles.has(x.id))) {
+        const isPdf = f.mime_type === "application/pdf" || f.file_name.toLowerCase().endsWith(".pdf");
+        const path = (f as any).file_path as string | undefined;
+        if (!isPdf || !path) continue;
+        try {
+          const url = supabase.storage.from("opportunity-files").getPublicUrl(path).data.publicUrl;
+          const { text, pages } = await extractPdfTextFromUrl(url);
+          if (text.replace(/\[p\.\d+\]/g, "").trim().length > 1500) {
+            extractedTexts.push({ fileId: f.id, name: f.file_name, text, pages });
+          }
+        } catch (e) {
+          console.warn("PDF text extraction failed", f.file_name, e);
+        }
+      }
       const { data, error } = await invokeFunction("ida-business-plan-extraction", {
         opportunityId,
         fileIds: Array.from(selectedFiles),
         scanKeys: Array.from(selectedScans),
+        extractedTexts,
         scope,
         language,
         context,
