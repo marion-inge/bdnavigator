@@ -295,7 +295,8 @@ export default function Index() {
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                     {opp.industry && <span>{opp.industry}</span>}
                     {opp.geography && <span>{opp.geography}</span>}
-                    {opp.owner && <span>{opp.owner}</span>}
+                    {opp.technology && <span>{opp.technology}</span>}
+                    {opp.ideaBringer && <span>{t("ideaBringer")}: {opp.ideaBringer}</span>}
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="text-muted-foreground">{t("roughScoring")}: <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span></span>
@@ -311,6 +312,9 @@ export default function Index() {
                     {samVal !== "" && samVal != null && <span>SAM: <span className="font-semibold text-card-foreground">{typeof samVal === "number" ? `${samVal} M€` : samVal}</span></span>}
                     {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
+                    {opp.businessCase && <span>{t("investmentCost")}: <span className="font-semibold text-card-foreground">€{(opp.businessCase.investmentCost / 1e6).toFixed(1)}M</span></span>}
+                    {opp.businessCase && <span>{t("npv")}: <span className="font-semibold text-card-foreground">€{(opp.businessCase.npv / 1e6).toFixed(1)}M</span></span>}
+                    {opp.businessCase && <span>{t("roi")}: <span className="font-semibold text-card-foreground">{opp.businessCase.roi}%</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
                 </div>
@@ -319,21 +323,42 @@ export default function Index() {
           </div>
           {/* Desktop: Table layout */}
           <div className="rounded-lg border border-border bg-card overflow-x-auto hidden sm:block">
-            <table className="w-full min-w-[1200px]">
+            <table className="w-full min-w-[1400px]">
               <thead>
+                <tr className="border-b border-border">
+                  <th colSpan={6} className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/60 border-l-2 border-muted-foreground/30">
+                    {language === "de" ? "Allgemeine Informationen" : "General Information"}
+                  </th>
+                  <th colSpan={1} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 border-l-2 border-primary/40">
+                    {t("roughScoring")}
+                  </th>
+                  <th colSpan={1} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--success))] bg-[hsl(var(--success))]/10 border-l-2 border-[hsl(var(--success))]/40">
+                    Scan Pack
+                  </th>
+                  <th colSpan={4} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--warning))] bg-[hsl(var(--warning))]/10 border-l-2 border-[hsl(var(--warning))]/40">
+                    TAM SAM SOM
+                  </th>
+                  <th colSpan={4} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-card-foreground bg-accent/60 border-l-2 border-accent-foreground/30">
+                    Business Case
+                  </th>
+                </tr>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider border-l-2 border-muted-foreground/30">{t("title")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan Pack</th>
-
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{language === "de" ? "Wachstum" : "Growth"}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payback</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("geography")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("technology")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("ideaBringer")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-primary uppercase tracking-wider bg-primary/5 border-l-2 border-primary/40">{t("roughScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--success))] uppercase tracking-wider bg-[hsl(var(--success))]/5 border-l-2 border-[hsl(var(--success))]/40">Scan Pack</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5 border-l-2 border-[hsl(var(--warning))]/40">TAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">SAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">SOM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">{language === "de" ? "Wachstum" : "Growth"}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40 border-l-2 border-accent-foreground/30">{t("investmentCost")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">{t("npv")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">{t("roi")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">Payback</th>
                 </tr>
               </thead>
               <tbody>
@@ -378,19 +403,24 @@ export default function Index() {
                         <StageBadge stage={opp.stage} />
                       </td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.geography || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.technology || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.ideaBringer || "—"}</td>
+                      <td className="px-4 py-3 text-right bg-primary/5 border-l-2 border-primary/40">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
-                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium">
+                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium bg-[hsl(var(--success))]/5 border-l-2 border-[hsl(var(--success))]/40">
                         {opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0}/6
                       </td>
 
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{growthRate || "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5 border-l-2 border-[hsl(var(--warning))]/40">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{growthRate || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40 border-l-2 border-accent-foreground/30">{opp.businessCase ? `€${(opp.businessCase.investmentCost / 1e6).toFixed(1)}M` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm font-medium text-card-foreground bg-accent/40">{opp.businessCase ? `€${(opp.businessCase.npv / 1e6).toFixed(1)}M` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40">{opp.businessCase ? `${opp.businessCase.roi}%` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
                     </tr>
                   );
                 })}
