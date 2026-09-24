@@ -103,7 +103,7 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
             onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
             opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
             solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        )}
+        </>)}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-research" data-bp-subtab="tam-research" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedMarketResearch {...tamProps} />
