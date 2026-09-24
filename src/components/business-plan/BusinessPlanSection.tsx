@@ -51,6 +51,18 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
+  const [idaScope, setIdaScope] = useState<ProposalGroup | null>(null);
+
+  const idaButton = (scope: ProposalGroup, labelEn: string, labelDe: string) =>
+    !readonly && opportunityId ? (
+      <div className="flex justify-end mb-3">
+        <Button type="button" size="sm" onClick={() => setIdaScope(scope)}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <img src={idaRobot} alt="" className="h-4 w-4" />
+          {bp(labelEn, labelDe)}
+        </Button>
+      </div>
+    ) : null;
 
   const mainTab = activeMainTab || "tam";
 
