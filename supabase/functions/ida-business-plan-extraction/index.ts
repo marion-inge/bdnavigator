@@ -5,6 +5,11 @@ import JSZip from "npm:jszip@3.10.1";
 import * as XLSX from "npm:xlsx@0.18.5";
 
 const MAX_BYTES = 10 * 1024 * 1024;
+// PDFs are converted to text server-side, so much larger files are fine.
+const MAX_PDF_BYTES = 40 * 1024 * 1024;
+const MAX_PDF_CHARS = 600_000;
+const isPdf = (mime: string, name: string) => mime === "application/pdf" || name.toLowerCase().endsWith(".pdf");
+const sizeCap = (mime: string, name: string) => (isPdf(mime, name) ? MAX_PDF_BYTES : MAX_BYTES);
 // Total budget for binary (PDF/image) payloads sent inline as base64, to stay under the function memory limit.
 const MAX_TOTAL_BINARY_BYTES = 12 * 1024 * 1024;
 let binaryBudgetUsed = 0;
@@ -536,7 +541,7 @@ function toResponsesContent(blocks: any[]): any[] {
   });
 }
 
-async function buildEvidenceDigest(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
+async function digestPart(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
   const instructions = `You are IDA, a meticulous market analyst. Read EVERY attached document completely, page by page, including tables, charts, footnotes and appendices. Do not summarise loosely — EXTRACT.
 
 Write an evidence digest in ${lang}, organised under these headings:
@@ -552,7 +557,7 @@ Write an evidence digest in ${lang}, organised under these headings:
 10. Risks, assumptions & open questions
 11. Strengths / weaknesses / opportunities / threats evident from the documents
 
-Rules: bullet points; keep EVERY concrete number, unit, year, name and table value; add the source file and page/section in brackets, e.g. [report.pdf, p.12]; never invent; write "no evidence" under a heading with nothing. Be exhaustive — length is fine.`;
+Rules: bullet points; keep EVERY concrete number, unit, year, name and table value; add the source file and page/section in brackets, e.g. [report.pdf, p.12]; never invent; write "no evidence" under a heading with nothing. Be dense: this is one part of a larger set, keep it under ~1,500 words, prioritise numbers, names and tables over prose.`;
 
   const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
@@ -601,6 +606,37 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
     }
   }
   return (out || completed).trim();
+}
+
+/** Split long sources into parts and digest them in parallel — one pass over a
+ *  300-page report would take longer than the function is allowed to run. */
+const DIGEST_CHUNK_CHARS = 90_000;
+async function buildEvidenceDigestParallel(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
+  const groups: any[][] = [[]];
+  let cur = 0;
+  for (const b of blocks) {
+    if (b.type === "text" && String(b.text).length > DIGEST_CHUNK_CHARS) {
+      const t = String(b.text);
+      const head = t.slice(0, t.indexOf("\n") + 1);
+      for (let i = 0; i < t.length; i += DIGEST_CHUNK_CHARS) {
+        const part = i === 0 ? t.slice(0, DIGEST_CHUNK_CHARS) : head + "[continued]\n" + t.slice(i, i + DIGEST_CHUNK_CHARS);
+        groups.push([{ type: "text", text: part }]);
+      }
+    } else if (b.type !== "text") {
+      groups.push([b]);
+    } else {
+      if (cur + String(b.text).length > DIGEST_CHUNK_CHARS) { groups.push([]); cur = 0; }
+      groups[groups.length - 1].push(b);
+      cur += String(b.text).length;
+    }
+  }
+  const work = groups.filter((g) => g.length > 0);
+  const settled = await Promise.allSettled(work.map((g, i) =>
+    new Promise((r) => setTimeout(r, i * 300)).then(() => digestPart(g, anchor, lang, apiKey))));
+  const ok = settled.filter((r) => r.status === "fulfilled").map((r: any) => r.value as string).filter(Boolean);
+  const denied: any = settled.find((r: any) => r.status === "rejected" && r.reason?.status === 402);
+  if (denied) throw denied.reason;
+  return ok.map((d, i) => `### Digest part ${i + 1}/${ok.length}\n${d}`).join("\n\n");
 }
 
 /** The upstream gateway intermittently returns 429/5xx, and Gemini occasionally
@@ -660,6 +696,7 @@ serve(async (req) => {
       scope?: "all" | "overview" | "tam" | "sam" | "som";
       language?: "en" | "de";
       context?: Record<string, any>;
+      extractedTexts?: { fileId: string; name?: string; text: string; pages?: number }[];
     };
 
     const fileIds = body.fileIds ?? [];
@@ -681,11 +718,24 @@ serve(async (req) => {
     if (fileIds.length > 0) {
       const { data: files } = await supabase
         .from("opportunity_files")
-        .select("file_name, file_path, mime_type, file_size, comment")
+        .select("id, file_name, file_path, mime_type, file_size, comment")
         .eq("opportunity_id", body.opportunityId)
         .in("id", fileIds);
 
+      const provided = new Map<string, { name: string; text: string; pages: number }>();
+      for (const t of (body.extractedTexts ?? [])) {
+        if (t && typeof t.fileId === "string" && typeof t.text === "string") {
+          provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
+        }
+      }
       for (const f of files ?? []) {
+        const pre = provided.get((f as any).id);
+        if (pre) {
+          if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
+          blocks.push({ type: "text", text: `--- File: ${f.file_name} (PDF, ${pre.pages} pages, full text) ---\n${pre.text}\n--- End of ${f.file_name} ---` });
+          usedFiles.push(f.file_name);
+          continue;
+        }
         if ((f.file_size || 0) > MAX_BYTES) {
           blocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
           continue;
@@ -804,7 +854,7 @@ serve(async (req) => {
           // the digest (plus light text sources) instead of re-reading PDFs.
           let sectionBlocks = blocks;
           try {
-            const digest = await buildEvidenceDigest(blocks, anchor, lang, LOVABLE_API_KEY);
+            const digest = await buildEvidenceDigestParallel(blocks, anchor, lang, LOVABLE_API_KEY);
             if (digest.length > 500) {
               const textBlocks = blocks.filter((b) => b.type === "text" && String(b.text).length < 20_000);
               sectionBlocks = [
