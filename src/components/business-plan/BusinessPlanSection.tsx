@@ -19,6 +19,11 @@ import { EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
+import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
+import { Button } from "@/components/ui/button";
+import idaRobot from "@/assets/ida-robot.png";
+import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
+
 
 
 export type StrategicAnalysisTab = string;
