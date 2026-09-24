@@ -319,21 +319,42 @@ export default function Index() {
           </div>
           {/* Desktop: Table layout */}
           <div className="rounded-lg border border-border bg-card overflow-x-auto hidden sm:block">
-            <table className="w-full min-w-[1200px]">
+            <table className="w-full min-w-[1400px]">
               <thead>
+                <tr className="border-b border-border">
+                  <th colSpan={6} className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/60 border-l-2 border-muted-foreground/30">
+                    {language === "de" ? "Allgemeine Informationen" : "General Information"}
+                  </th>
+                  <th colSpan={1} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 border-l-2 border-primary/40">
+                    {t("roughScoring")}
+                  </th>
+                  <th colSpan={1} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--success))] bg-[hsl(var(--success))]/10 border-l-2 border-[hsl(var(--success))]/40">
+                    Scan Pack
+                  </th>
+                  <th colSpan={4} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--warning))] bg-[hsl(var(--warning))]/10 border-l-2 border-[hsl(var(--warning))]/40">
+                    TAM SAM SOM
+                  </th>
+                  <th colSpan={4} className="px-4 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-card-foreground bg-accent/60 border-l-2 border-accent-foreground/30">
+                    Business Case
+                  </th>
+                </tr>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider border-l-2 border-muted-foreground/30">{t("title")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("owner")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("roughScoring")}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scan Pack</th>
-
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">TAM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SAM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">SOM</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{language === "de" ? "Wachstum" : "Growth"}</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payback</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("geography")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("technology")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("ideaBringer")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-primary uppercase tracking-wider bg-primary/5 border-l-2 border-primary/40">{t("roughScoring")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--success))] uppercase tracking-wider bg-[hsl(var(--success))]/5 border-l-2 border-[hsl(var(--success))]/40">Scan Pack</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5 border-l-2 border-[hsl(var(--warning))]/40">TAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">SAM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">SOM</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-[hsl(var(--warning))] uppercase tracking-wider bg-[hsl(var(--warning))]/5">{language === "de" ? "Wachstum" : "Growth"}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40 border-l-2 border-accent-foreground/30">{t("investmentCost")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">{t("npv")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">{t("roi")}</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-accent/40">Payback</th>
                 </tr>
               </thead>
               <tbody>
