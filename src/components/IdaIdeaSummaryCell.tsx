@@ -56,7 +56,7 @@ export async function runIdaSummary(opp: Opportunity, language: string): Promise
 
 const verdictCls: Record<string, string> = {
   go: "bg-[hsl(var(--success))]/15 text-[hsl(var(--success))]",
-  watch: "bg-[hsl(var(--warning))]/15 text-[hsl(var(--warning))]",
+  not_pursue: "bg-[hsl(var(--warning))]/15 text-[hsl(var(--warning))]",
   stop: "bg-destructive/15 text-destructive",
 };
 
@@ -83,7 +83,7 @@ export function IdaIdeaSummaryCell({
       </Button>
     );
   }
-  const verdictLabel = { go: "Go", watch: de ? "Beobachten" : "Watch", stop: "Stop" }[summary.verdict] || summary.verdict;
+  const verdictLabel = { go: "Go", not_pursue: de ? "Nicht weiterverfolgen" : "Do not pursue", stop: "Stop" }[summary.verdict] || summary.verdict;
   return (
     <div className="text-xs space-y-1 w-[340px] whitespace-normal" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between gap-2">
