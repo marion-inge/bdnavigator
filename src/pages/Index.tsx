@@ -330,7 +330,7 @@ export default function Index() {
                   : "Scroll the table sideways to see all columns →"}
               </p>
             </div>
-            <div className="rounded-lg border border-border bg-card overflow-x-scroll novi-table-scroll">
+            <div className="rounded-lg border border-border bg-card overflow-auto max-h-[70vh] novi-table-scroll">
               <table className="w-full min-w-[1400px]">
               <thead>
                 <tr className="border-b border-border">
