@@ -165,12 +165,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
-        {!activeSubTab && (
+        {!activeSubTab && (<>
+          {idaButton("som", "Fill SOM with IDA", "SOM mit IDA ausfüllen")}
           <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
             opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
             solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        )}
+        </>)}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
