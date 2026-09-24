@@ -312,6 +312,9 @@ export default function Index() {
                     {samVal !== "" && samVal != null && <span>SAM: <span className="font-semibold text-card-foreground">{typeof samVal === "number" ? `${samVal} M€` : samVal}</span></span>}
                     {somVal != null && somVal > 0 && <span>SOM: <span className="font-semibold text-card-foreground">{somVal} M€</span></span>}
                     {growthRate && <span>{language === "de" ? "Wachstum" : "Growth"}: <span className="font-semibold text-card-foreground">{typeof growthRate === "number" ? `${growthRate}%` : growthRate}</span></span>}
+                    {opp.businessCase && <span>{t("investmentCost")}: <span className="font-semibold text-card-foreground">€{(opp.businessCase.investmentCost / 1e6).toFixed(1)}M</span></span>}
+                    {opp.businessCase && <span>{t("npv")}: <span className="font-semibold text-card-foreground">€{(opp.businessCase.npv / 1e6).toFixed(1)}M</span></span>}
+                    {opp.businessCase && <span>{t("roi")}: <span className="font-semibold text-card-foreground">{opp.businessCase.roi}%</span></span>}
                     {payback != null && payback > 0 && <span>Payback: <span className="font-semibold text-card-foreground">{payback} {language === "de" ? "J." : "yr"}</span></span>}
                   </div>
                 </div>
