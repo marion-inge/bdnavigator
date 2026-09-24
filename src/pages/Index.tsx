@@ -399,19 +399,24 @@ export default function Index() {
                         <StageBadge stage={opp.stage} />
                       </td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{opp.industry || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.owner || "—"}</td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.geography || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.technology || "—"}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{opp.ideaBringer || "—"}</td>
+                      <td className="px-4 py-3 text-right bg-primary/5 border-l-2 border-primary/40">
                         <span className="font-semibold text-primary">{roughScore.toFixed(1)}</span>
                       </td>
-                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium">
+                      <td className="px-4 py-3 text-right text-sm text-card-foreground font-medium bg-[hsl(var(--success))]/5 border-l-2 border-[hsl(var(--success))]/40">
                         {opp.scanPack ? Object.values(opp.scanPack).filter((s: any) => s.status === "done").length : 0}/6
                       </td>
 
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{growthRate || "—"}</td>
-                      <td className="px-4 py-3 text-right text-sm text-muted-foreground">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5 border-l-2 border-[hsl(var(--warning))]/40">{tamVal !== "" && tamVal != null ? (typeof tamVal === "number" ? `${tamVal} M€` : tamVal) : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{samVal !== "" && samVal != null ? (typeof samVal === "number" ? `${samVal} M€` : samVal) : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{somVal != null && somVal > 0 ? `${somVal} M€` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-[hsl(var(--warning))]/5">{growthRate || "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40 border-l-2 border-accent-foreground/30">{opp.businessCase ? `€${(opp.businessCase.investmentCost / 1e6).toFixed(1)}M` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm font-medium text-card-foreground bg-accent/40">{opp.businessCase ? `€${(opp.businessCase.npv / 1e6).toFixed(1)}M` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40">{opp.businessCase ? `${opp.businessCase.roi}%` : "—"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-muted-foreground bg-accent/40">{payback != null && payback > 0 ? `${payback} ${language === "de" ? "J." : "yr"}` : "—"}</td>
                     </tr>
                   );
                 })}
