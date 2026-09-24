@@ -206,6 +206,18 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ Others ═══ */}
     </Tabs>
+    {opportunityId && idaScope && (
+      <IdaBusinessPlanFillDialog
+        open={!!idaScope}
+        onOpenChange={(o) => !o && setIdaScope(null)}
+        opportunityId={opportunityId}
+        scope={idaScope}
+        scoring={scoring}
+        strategicAnalyses={saData}
+        context={{ title: opportunityTitle, description: opportunityDescription, solutionDescription, industry, geography, technology }}
+        onApply={({ scoring: s, sa }) => { handleUpdateScoring(s); handleUpdateSa(sa); setIdaScope(null); }}
+      />
+    )}
     </div>
   );
 }
