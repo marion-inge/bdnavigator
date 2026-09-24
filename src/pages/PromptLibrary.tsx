@@ -379,8 +379,8 @@ export default function PromptLibrary() {
           <CardContent className="p-4 space-y-2">
             <p className="text-sm text-foreground font-medium">
               {bp(
-                "This page documents the system prompts that IDA and Mark use behind the scenes in each context. It provides full transparency into what data the AI agents receive, how they process it, and what output they generate.",
-                "Diese Seite dokumentiert die System-Prompts, die IDA und Mark im Hintergrund in jedem Kontext verwenden. Sie bietet volle Transparenz darüber, welche Daten die KI-Agenten erhalten, wie sie diese verarbeiten und welchen Output sie erzeugen."
+                "This page documents IDA's active analysis prompts and Mark's separately labelled planned research prompts. It shows what data each workflow receives, how it is processed and what output it generates.",
+                "Diese Seite dokumentiert IDAs aktive Analyse-Prompts und Marks separat gekennzeichnete, geplante Recherche-Prompts. Sie zeigt, welche Daten jeder Ablauf erhält, wie sie verarbeitet werden und welchen Output er erzeugt."
               )}
             </p>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">

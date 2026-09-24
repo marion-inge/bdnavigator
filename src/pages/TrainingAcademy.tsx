@@ -523,14 +523,14 @@ export default function TrainingAcademy() {
                     onClick={() => setActiveModule(mod.id)}
                   >
                     {moduleVideos[mod.id] && (
-                      <div className="overflow-hidden rounded-t-lg">
+                      <div className="hidden h-32 overflow-hidden rounded-t-lg sm:block">
                         <video
                           src={moduleVideos[mod.id]}
                           autoPlay
                           loop
                           muted
                           playsInline
-                          className="w-full h-32 object-cover"
+                          className="h-full w-full object-cover"
                         />
                       </div>
                     )}

@@ -4,4 +4,4 @@
 - [x] Update Feature Overview and Tool Guide
 - [x] Update FAQ and Prompt Library
 - [x] Update Training Academy
-- [ ] Verify German/English and desktop/mobile rendering
+- [x] Verify German/English and desktop/mobile rendering
