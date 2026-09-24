@@ -3,7 +3,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import JSZip from "npm:jszip@3.10.1";
 import * as XLSX from "npm:xlsx@0.18.5";
-import { getDocumentProxy } from "npm:unpdf@0.12.1";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 // PDFs are converted to text server-side, so much larger files are fine.
@@ -100,35 +99,7 @@ async function extractPptxText(buf: Uint8Array): Promise<string> {
 async function toContentBlock(name: string, mime: string, buf: Uint8Array): Promise<any> {
   const kind = classify(mime, name);
   if (kind === "unsupported") return { type: "text", text: `[Attachment "${name}" cannot be read.]` };
-  if (buf.byteLength > sizeCap(mime, name)) return { type: "text", text: `[Attachment "${name}" exceeded size cap and was skipped.]` };
-  if (kind === "pdf") {
-    // Extract the full text layer page by page — reliable for long reports and
-    // far lighter than sending the binary. Fall back to binary only for scans.
-    try {
-      const pdf = await getDocumentProxy(buf.byteLength <= MAX_BYTES ? buf.slice() : buf, { disableFontFace: true, isEvalSupported: false, useSystemFonts: false, stopAtErrors: false } as any);
-      const totalPages = pdf.numPages;
-      const parts: string[] = [];
-      let len = 0;
-      for (let i = 1; i <= totalPages && len < MAX_PDF_CHARS; i++) {
-        const page = await pdf.getPage(i);
-        const tc = await page.getTextContent();
-        const t = (tc.items as any[]).map((it) => (it.str ?? "") + (it.hasEOL ? "\n" : " ")).join("").replace(/[ \t]+/g, " ").trim();
-        page.cleanup();
-        parts.push(`[p.${i}]\n${t}`);
-        len += t.length;
-      }
-      await pdf.destroy();
-      const pages = parts.join("\n\n");
-      if (pages.replace(/\[p\.\d+\]/g, "").trim().length > 1500) {
-        const clipped = pages.slice(0, MAX_PDF_CHARS);
-        const note = pages.length > MAX_PDF_CHARS ? `\n[Text truncated after ${MAX_PDF_CHARS} characters]` : "";
-        return { type: "text", text: `--- File: ${name} (PDF, ${totalPages} pages, extracted text) ---\n${clipped}${note}\n--- End of ${name} ---` };
-      }
-    } catch (e) {
-      console.error(`PDF text extraction failed for ${name}`, e);
-    }
-    if (buf.byteLength > MAX_BYTES) return { type: "text", text: `[Attachment "${name}" has no readable text layer and is too large to scan as images.]` };
-  }
+  if (buf.byteLength > MAX_BYTES) return { type: "text", text: `[Attachment "${name}" exceeded size cap and was skipped.]` };
   if (kind === "text") {
     const text = new TextDecoder().decode(buf).slice(0, MAX_EXTRACTED_CHARS_PER_FILE);
     return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End of ${name} ---` };
@@ -694,6 +665,7 @@ serve(async (req) => {
       scope?: "all" | "overview" | "tam" | "sam" | "som";
       language?: "en" | "de";
       context?: Record<string, any>;
+      extractedTexts?: { fileId: string; name?: string; text: string; pages?: number }[];
     };
 
     const fileIds = body.fileIds ?? [];
@@ -715,12 +687,25 @@ serve(async (req) => {
     if (fileIds.length > 0) {
       const { data: files } = await supabase
         .from("opportunity_files")
-        .select("file_name, file_path, mime_type, file_size, comment")
+        .select("id, file_name, file_path, mime_type, file_size, comment")
         .eq("opportunity_id", body.opportunityId)
         .in("id", fileIds);
 
+      const provided = new Map<string, { name: string; text: string; pages: number }>();
+      for (const t of (body.extractedTexts ?? [])) {
+        if (t && typeof t.fileId === "string" && typeof t.text === "string") {
+          provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
+        }
+      }
       for (const f of files ?? []) {
-        if ((f.file_size || 0) > sizeCap(f.mime_type || "", f.file_name)) {
+        const pre = provided.get((f as any).id);
+        if (pre) {
+          if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
+          blocks.push({ type: "text", text: `--- File: ${f.file_name} (PDF, ${pre.pages} pages, full text) ---\n${pre.text}\n--- End of ${f.file_name} ---` });
+          usedFiles.push(f.file_name);
+          continue;
+        }
+        if ((f.file_size || 0) > MAX_BYTES) {
           blocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
           continue;
         }
@@ -762,7 +747,7 @@ serve(async (req) => {
         blocks.push({ type: "text", text: parts.join("\n\n") });
 
         for (const meta of (card.files ?? []) as any[]) {
-          if ((meta.size || 0) > sizeCap(meta.mime || "", meta.name || "")) {
+          if ((meta.size || 0) > MAX_BYTES) {
             blocks.push({ type: "text", text: `[Scan deliverable "${meta.name}" too large, skipped.]` });
             continue;
           }
