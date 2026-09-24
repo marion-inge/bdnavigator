@@ -163,9 +163,14 @@ export function NoviValueFlow({ bp, variant = "detailed" }: NoviValueFlowProps) 
                         <p className="mt-2 text-xs font-semibold text-sidebar-primary">{bp(phase.resultEn, phase.resultDe)}</p>
                       </>
                     )}
+                    {gate && (
+                      <span className="novi-gate-pulse mt-2 inline-flex h-7 min-w-9 items-center justify-center rounded-md border border-warning bg-sidebar px-2 text-[10px] font-bold text-warning lg:hidden">
+                        {gate}
+                      </span>
+                    )}
                   </div>
                   {gate && (
-                    <div className="absolute left-6 top-[3.35rem] z-20 -translate-x-1/2 lg:-right-3 lg:left-auto lg:top-4 lg:translate-x-1/2">
+                    <div className="absolute -right-3 top-4 z-20 hidden translate-x-1/2 lg:block">
                       <span className="novi-gate-pulse inline-flex h-7 min-w-9 items-center justify-center rounded-md border border-warning bg-sidebar px-2 text-[10px] font-bold text-warning">
                         {gate}
                       </span>
