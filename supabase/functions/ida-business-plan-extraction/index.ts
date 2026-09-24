@@ -4,7 +4,10 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import JSZip from "npm:jszip@3.10.1";
 import * as XLSX from "npm:xlsx@0.18.5";
 
-const MAX_BYTES = 18 * 1024 * 1024;
+const MAX_BYTES = 10 * 1024 * 1024;
+// Total budget for binary (PDF/image) payloads sent inline as base64, to stay under the function memory limit.
+const MAX_TOTAL_BINARY_BYTES = 12 * 1024 * 1024;
+let binaryBudgetUsed = 0;
 const MAX_EXTRACTED_CHARS_PER_FILE = 220_000;
 
 function classify(mime: string, name: string): "text" | "image" | "pdf" | "docx" | "xlsx" | "pptx" | "unsupported" {
@@ -115,6 +118,10 @@ async function toContentBlock(name: string, mime: string, buf: Uint8Array): Prom
       return { type: "text", text: `[Attachment "${name}" could not be extracted. Please convert it to PDF, TXT, CSV or XLSX and try again.]` };
     }
   }
+  if (binaryBudgetUsed + buf.byteLength > MAX_TOTAL_BINARY_BYTES) {
+    return { type: "text", text: `[Attachment "${name}" skipped: total attachment size limit reached. Select fewer or smaller files.]` };
+  }
+  binaryBudgetUsed += buf.byteLength;
   const b64 = bufToBase64(buf);
   if (kind === "image") return { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${b64}` } };
   return { type: "file", file: { filename: name, file_data: `data:application/pdf;base64,${b64}` } };
@@ -587,6 +594,7 @@ serve(async (req) => {
     const lang = body.language === "de" ? "German" : "English";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    binaryBudgetUsed = 0;
     const blocks: any[] = [];
     const usedFiles: string[] = [];
 
@@ -710,12 +718,16 @@ serve(async (req) => {
         try {
           // Run sections in parallel, staggered by 400ms so we don't hit the
           // gateway with N identical multi-document calls in the same instant.
-          const results = await Promise.allSettled(
-            sections.map(async (s, i) => {
-              await sleep(i * 400);
-              return await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY);
-            }),
-          );
+          // Run sections sequentially: each request serializes all attachments,
+          // so parallel calls multiplied memory usage and crashed the function.
+          const results: PromiseSettledResult<any>[] = [];
+          for (const s of sections) {
+            try {
+              results.push({ status: "fulfilled", value: await runSectionWithRetry(s, blocks, anchor, lang, LOVABLE_API_KEY) });
+            } catch (reason) {
+              results.push({ status: "rejected", reason });
+            }
+          }
 
           const proposal: any = {};
           const failures: string[] = [];
