@@ -114,8 +114,8 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
     setData(updated);
     onSave(updated);
     toast.success(bp(
-      "Market data imported from Business Plan",
-      "Marktdaten aus Business Plan übernommen"
+      "Market data imported from TAM SAM SOM",
+      "Marktdaten aus TAM SAM SOM übernommen"
     ));
   };
 
@@ -174,7 +174,7 @@ export function InvestmentCaseSection({ investmentCase, onSave, readonly: propRe
           {hasBpData && (
             <Button variant="outline" size="sm" onClick={() => { setEditing(true); importFromBusinessPlan(); }} className="gap-1.5 text-xs">
               <Download className="h-3.5 w-3.5" />
-              {bp("Import from Business Plan", "Aus Business Plan übernehmen")}
+              {bp("Import from TAM SAM SOM", "Aus TAM SAM SOM übernehmen")}
             </Button>
           )}
           <div className="flex-1" />
