@@ -541,7 +541,7 @@ function toResponsesContent(blocks: any[]): any[] {
   });
 }
 
-async function buildEvidenceDigest(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
+async function digestPart(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
   const instructions = `You are IDA, a meticulous market analyst. Read EVERY attached document completely, page by page, including tables, charts, footnotes and appendices. Do not summarise loosely — EXTRACT.
 
 Write an evidence digest in ${lang}, organised under these headings:
@@ -557,7 +557,7 @@ Write an evidence digest in ${lang}, organised under these headings:
 10. Risks, assumptions & open questions
 11. Strengths / weaknesses / opportunities / threats evident from the documents
 
-Rules: bullet points; keep EVERY concrete number, unit, year, name and table value; add the source file and page/section in brackets, e.g. [report.pdf, p.12]; never invent; write "no evidence" under a heading with nothing. Be exhaustive — length is fine.`;
+Rules: bullet points; keep EVERY concrete number, unit, year, name and table value; add the source file and page/section in brackets, e.g. [report.pdf, p.12]; never invent; write "no evidence" under a heading with nothing. Be dense: this is one part of a larger set, keep it under ~1,500 words, prioritise numbers, names and tables over prose.`;
 
   const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
@@ -606,6 +606,37 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
     }
   }
   return (out || completed).trim();
+}
+
+/** Split long sources into parts and digest them in parallel — one pass over a
+ *  300-page report would take longer than the function is allowed to run. */
+const DIGEST_CHUNK_CHARS = 90_000;
+async function buildEvidenceDigestParallel(blocks: any[], anchor: string, lang: string, apiKey: string): Promise<string> {
+  const groups: any[][] = [[]];
+  let cur = 0;
+  for (const b of blocks) {
+    if (b.type === "text" && String(b.text).length > DIGEST_CHUNK_CHARS) {
+      const t = String(b.text);
+      const head = t.slice(0, t.indexOf("\n") + 1);
+      for (let i = 0; i < t.length; i += DIGEST_CHUNK_CHARS) {
+        const part = i === 0 ? t.slice(0, DIGEST_CHUNK_CHARS) : head + "[continued]\n" + t.slice(i, i + DIGEST_CHUNK_CHARS);
+        groups.push([{ type: "text", text: part }]);
+      }
+    } else if (b.type !== "text") {
+      groups.push([b]);
+    } else {
+      if (cur + String(b.text).length > DIGEST_CHUNK_CHARS) { groups.push([]); cur = 0; }
+      groups[groups.length - 1].push(b);
+      cur += String(b.text).length;
+    }
+  }
+  const work = groups.filter((g) => g.length > 0);
+  const settled = await Promise.allSettled(work.map((g, i) =>
+    new Promise((r) => setTimeout(r, i * 300)).then(() => digestPart(g, anchor, lang, apiKey))));
+  const ok = settled.filter((r) => r.status === "fulfilled").map((r: any) => r.value as string).filter(Boolean);
+  const denied: any = settled.find((r: any) => r.status === "rejected" && r.reason?.status === 402);
+  if (denied) throw denied.reason;
+  return ok.map((d, i) => `### Digest part ${i + 1}/${ok.length}\n${d}`).join("\n\n");
 }
 
 /** The upstream gateway intermittently returns 429/5xx, and Gemini occasionally
@@ -823,7 +854,7 @@ serve(async (req) => {
           // the digest (plus light text sources) instead of re-reading PDFs.
           let sectionBlocks = blocks;
           try {
-            const digest = await buildEvidenceDigest(blocks, anchor, lang, LOVABLE_API_KEY);
+            const digest = await buildEvidenceDigestParallel(blocks, anchor, lang, LOVABLE_API_KEY);
             if (digest.length > 500) {
               const textBlocks = blocks.filter((b) => b.type === "text" && String(b.text).length < 20_000);
               sectionBlocks = [
