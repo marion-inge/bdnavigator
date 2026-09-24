@@ -9,26 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { EditableSection } from "@/components/EditableSection";
-import { Plus, Trash2, Target, Building2, Users, MapPin, RefreshCw, Loader2 } from "lucide-react";
+import { Plus, Trash2, Target, Building2, Users, MapPin, RefreshCw } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { invokeFunction } from "@/lib/backendAdapter";
-import { toast } from "sonner";
-import idaRobot from "@/assets/ida-robot.png";
-
-interface SamScenario {
-  projections: MarketYearValue[];
-  cagr: string;
-  assumptions: string[];
-  rationale: string;
-}
-
-interface SamEstimation {
-  methodology: string;
-  keyDifferentiators: string;
-  conservative: SamScenario;
-  base: SamScenario;
-  optimistic: SamScenario;
-}
 
 interface Props {
   scoring: DetailedScoring;
@@ -67,8 +49,6 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
   const [localSamDesc, setLocalSamDesc] = useState(analysis.samDescription || "");
   const [localRegions, setLocalRegions] = useState<GeographicalRegion[]>(samOverview.geographicalRegions || []);
   const [dirty, setDirty] = useState(false);
-  const [samEstimation, setSamEstimation] = useState<SamEstimation | null>((scoring as any).samEstimation || null);
-  const [estimating, setEstimating] = useState(false);
   const readonly = propReadonly || !editing;
 
   // Re-sync local state from props when not actively editing (e.g. after IDA fills fields)
@@ -83,117 +63,6 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
 
   const markDirty = () => setDirty(true);
   const updateOv = (patch: Partial<SamOverviewData>) => { setLocalOv(prev => ({ ...prev, ...patch })); markDirty(); };
-
-  const tamProj = scoring.marketAttractiveness?.analysis?.tamProjections || [];
-  const hasTamData = tamProj.some(p => p.value > 0);
-
-  const handleEstimateSam = async () => {
-    if (!hasTamData) {
-      toast.error(bp("Please enter TAM projections first.", "Bitte zuerst TAM-Projektionen eingeben."));
-      return;
-    }
-    setEstimating(true);
-    try {
-      const { data, error } = await invokeFunction("sam-estimation", {
-        body: {
-          opportunityTitle: opportunityTitle || "",
-          opportunityDescription: opportunityDescription || "",
-          solutionDescription: solutionDescription || "",
-          industry: industry || "",
-          geography: geography || "",
-          technology: technology || "",
-          language,
-          tamData: {
-            tamProjections: tamProj,
-            tamOverview: (scoring as any).tamOverview,
-          },
-          scoringData: {
-            strategicFit: scoring.strategicFit,
-            portfolioFit: scoring.portfolioFit,
-            feasibility: scoring.feasibility,
-            organisationalReadiness: scoring.organisationalReadiness,
-            risk: scoring.risk,
-            marketAnalysis: scoring.marketAttractiveness?.analysis,
-          },
-          strategicData: strategicAnalyses ? {
-            customerInterviewing: strategicAnalyses.sam?.customerInterviewing,
-            internalAffiliateInterviews: strategicAnalyses.sam?.internalAffiliateInterviews,
-            internalBUInterviews: strategicAnalyses.sam?.internalBUInterviews,
-            businessModelling: strategicAnalyses.sam?.businessModelling,
-            leanCanvas: strategicAnalyses.sam?.leanCanvas,
-            customerSegmentation: strategicAnalyses.sam?.customerSegmentation,
-            competitorAnalysis: strategicAnalyses.som?.competitorAnalysis,
-            // TAM supporting models
-            marketResearch: strategicAnalyses.tam?.marketResearch,
-            pestel: strategicAnalyses.tam?.pestel,
-            valueChain: strategicAnalyses.tam?.valueChain,
-            porter: strategicAnalyses.tam?.porter,
-            swot: strategicAnalyses.tam?.swot,
-          } : undefined,
-          salesChannelAnalysis: samOverview.salesChannelAnalysis || undefined,
-        },
-      });
-      if (error) throw error;
-      setSamEstimation(data as SamEstimation);
-      // Persist estimation to scoring
-      const updated: any = {
-        ...scoring,
-        samEstimation: data,
-      };
-      onUpdate(updated);
-      toast.success(bp("SAM estimation completed!", "SAM-Schätzung abgeschlossen!"));
-    } catch (e: any) {
-      console.error("SAM estimation error:", e);
-      toast.error(e.message || bp("Failed to estimate SAM", "SAM-Schätzung fehlgeschlagen"));
-    } finally {
-      setEstimating(false);
-    }
-  };
-
-  const handleApplyScenario = (scenario: SamScenario) => {
-    setLocalProj(scenario.projections);
-    markDirty();
-    toast.success(bp("SAM projections applied! Click Save to persist.", "SAM-Projektionen übernommen! Klicke Speichern zum Sichern."));
-  };
-
-  function formatValue(v: number): string {
-    if (v >= 1_000) return `${(v / 1_000).toFixed(1)} B€`;
-    if (v > 0) return `${v} M€`;
-    return `0 M€`;
-  }
-
-  const renderScenarioCard = (label: string, scenario: SamScenario, color: string, icon: string) => (
-    <Card className={`border-${color}-500/30`}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <span>{icon}</span> {label}
-          <span className={`ml-auto text-xs font-normal text-${color}-600 dark:text-${color}-400`}>
-            CAGR: {scenario.cagr}
-          </span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid grid-cols-5 gap-1 text-center text-xs">
-          {scenario.projections.map(p => (
-            <div key={p.year} className="space-y-0.5">
-              <div className="text-muted-foreground">{bp("Y", "J")}{p.year}</div>
-              <div className={`font-semibold text-${color}-600 dark:text-${color}-400`}>{formatValue(p.value)}</div>
-            </div>
-          ))}
-        </div>
-        <div className="space-y-1">
-          <p className="text-xs font-medium">{bp("Assumptions:", "Annahmen:")}</p>
-          <ul className="text-xs text-muted-foreground space-y-0.5">
-            {scenario.assumptions.map((a, i) => <li key={i}>• {a}</li>)}
-          </ul>
-        </div>
-        <p className="text-xs text-muted-foreground italic">{scenario.rationale}</p>
-        <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleApplyScenario(scenario)}>
-          {bp("Apply as SAM", "Als SAM übernehmen")}
-        </Button>
-      </CardContent>
-    </Card>
-  );
 
   const handleSave = () => {
     const updated: any = {
@@ -377,91 +246,6 @@ export function SamOverview({ scoring, onUpdate, readonly: propReadonly, strateg
             )}
           </CardContent>
         </Card>
-
-        {/* IDA SAM Estimation */}
-        {!samEstimation ? (
-          <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
-            <div className="flex flex-col items-center text-center gap-3">
-              <img src={idaRobot} alt="IDA" className="w-16 h-16" />
-              <div>
-                <h3 className="font-semibold text-card-foreground">
-                  IDA – SAM Estimation
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 max-w-md">
-                  {bp(
-                    "IDA analyzes TAM (incl. Market Research, PESTEL, Porter's, SWOT, Value Chain), Customer Landscape, Strategic Fit, Feasibility, Customer Interviews, BMC and Lean Canvas to estimate the SAM in 3 scenarios.",
-                    "IDA analysiert TAM (inkl. Market Research, PESTEL, Porter's, SWOT, Value Chain), Customer Landscape, Strategic Fit, Feasibility, Kundeninterviews, BMC und Lean Canvas, um den SAM in 3 Szenarien zu schätzen."
-                  )}
-                </p>
-              </div>
-              <Button onClick={handleEstimateSam} disabled={estimating || !hasTamData} className="mt-2">
-                {estimating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {bp("IDA is analyzing...", "IDA analysiert...")}
-                  </>
-                ) : (
-                  <>
-                    <img src={idaRobot} alt="" className="h-4 w-4 mr-2" />
-                    {bp("Estimate SAM", "SAM schätzen")}
-                  </>
-                )}
-              </Button>
-              {!hasTamData && (
-                <p className="text-xs text-muted-foreground">{bp("Please enter TAM projections first.", "Bitte zuerst TAM-Projektionen eingeben.")}</p>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-lg border border-border bg-card p-5 space-y-5">
-            {/* Header */}
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <img src={idaRobot} alt="IDA" className="h-6 w-6" />
-                <h3 className="font-semibold text-card-foreground">
-                  {bp("IDA's SAM Estimation", "IDAs SAM-Schätzung")}
-                </h3>
-              </div>
-            </div>
-
-            {/* Methodology */}
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-card-foreground">{bp("Methodology", "Methodik")}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{samEstimation.methodology}</p>
-            </div>
-
-            {/* Scenario Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-              {renderScenarioCard(bp("Conservative", "Konservativ"), samEstimation.conservative, "orange", "🔻")}
-              {renderScenarioCard(bp("Base Case", "Basisszenario"), samEstimation.base, "blue", "📊")}
-              {renderScenarioCard(bp("Optimistic", "Optimistisch"), samEstimation.optimistic, "emerald", "🔺")}
-            </div>
-
-            {/* Key Differentiators */}
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-card-foreground">{bp("Key Scenario Differentiators", "Wesentliche Szenario-Unterschiede")}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{samEstimation.keyDifferentiators}</p>
-            </div>
-
-            {/* Footer with Re-analyze */}
-            <div className="flex items-center justify-between pt-2 border-t border-border">
-              <div className="flex items-center gap-1.5">
-                <img src={idaRobot} alt="IDA" className="h-4 w-4" />
-                <p className="text-[10px] text-muted-foreground">
-                  IDA – Intelligent Data Analyst
-                </p>
-              </div>
-              <Button variant="outline" size="sm" onClick={handleEstimateSam} disabled={estimating}>
-                {estimating ? <Loader2 className="h-3 w-3 animate-spin" /> : (
-                  <>
-                    <img src={idaRobot} alt="" className="h-3 w-3 mr-1" />
-                    {bp("Neu analysieren", "Re-analyze")}
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        )}
 
         <Card className="border-dashed">
           <CardContent className="p-4">

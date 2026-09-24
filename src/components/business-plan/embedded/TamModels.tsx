@@ -1,6 +1,5 @@
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useI18n } from "@/lib/i18n";
-import { MarkWebSearch } from "@/components/MarkWebSearch";
 import { StrategicAnalyses, createDefaultStrategicAnalyses, createDefaultValueChain, ValueChainStage, TamModels } from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,28 +103,7 @@ export function EmbeddedPestel({ data, onSave, readonly: propReadonly, opportuni
           <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={pestel.rationale} onChange={e => update({ rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
-      {opportunity && (
-        <MarkWebSearch
-          researchType="pestel"
-          titleEn="PESTEL Web Research"
-          titleDe="PESTEL Web-Recherche"
-          descriptionEn="Mark will research current political, economic, social, technological, environmental, and legal trends relevant to your industry and geography from public web sources — and auto-fill the fields above."
-          descriptionDe="Mark recherchiert aktuelle politische, ökonomische, soziale, technologische, ökologische und rechtliche Trends für deine Branche und Geografie aus öffentlichen Webquellen — und füllt die obigen Felder automatisch aus."
-          opportunity={opportunity}
-          onStructuredFill={(s) => {
-            update({
-              political: s.political ?? pestel.political,
-              economic: s.economic ?? pestel.economic,
-              social: s.social ?? pestel.social,
-              technological: s.technological ?? pestel.technological,
-              environmental: s.environmental ?? pestel.environmental,
-              legal: s.legal ?? pestel.legal,
-              description: s.description ?? pestel.description,
-              rationale: s.rationale ?? pestel.rationale,
-            });
-          }}
-        />
-      )}
+
     </EditableSection>
   );
 }
@@ -191,33 +169,7 @@ export function EmbeddedPorter({ data, onSave, readonly: propReadonly, opportuni
           <div><Label>{bp("Rationale", "Begründung")}</Label><Textarea value={porter.rationale} onChange={e => update({ ...porter, rationale: e.target.value })} disabled={readonly} /></div>
         </CardContent>
       </Card>
-      {opportunity && (
-        <MarkWebSearch
-          researchType="porter"
-          titleEn="Competitive Forces Research"
-          titleDe="Wettbewerbskräfte-Recherche"
-          descriptionEn="Mark will research competitor landscape, market entry barriers, substitute products, and supplier/buyer dynamics from industry reports — and auto-fill intensities and descriptions."
-          descriptionDe="Mark recherchiert Wettbewerbslandschaft, Markteintrittsbarrieren, Substitutionsprodukte und Lieferanten-/Käufer-Dynamiken — und füllt Intensitäten und Beschreibungen automatisch aus."
-          opportunity={opportunity}
-          onStructuredFill={(s) => {
-            const keys = ["competitiveRivalry","threatOfNewEntrants","threatOfSubstitutes","bargainingPowerBuyers","bargainingPowerSuppliers"] as const;
-            const next = { ...porter };
-            keys.forEach(k => {
-              const v = s[k];
-              if (v && typeof v === "object") {
-                next[k] = {
-                  ...porter[k],
-                  intensity: typeof v.intensity === "number" ? Math.max(1, Math.min(5, Math.round(v.intensity))) : porter[k].intensity,
-                  description: typeof v.description === "string" ? v.description : porter[k].description,
-                };
-              }
-            });
-            if (typeof s.description === "string") next.description = s.description;
-            if (typeof s.rationale === "string") next.rationale = s.rationale;
-            update(next);
-          }}
-        />
-      )}
+
     </EditableSection>
   );
 }
