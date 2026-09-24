@@ -167,3 +167,65 @@
 .novi-table-scroll::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.7);
 }
+
+@keyframes novi-flow-horizontal {
+  0% { left: 0; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { left: calc(100% - 6rem); opacity: 0; }
+}
+
+@keyframes novi-flow-vertical {
+  0% { top: 0; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: calc(100% - 0.5rem); opacity: 0; }
+}
+
+@keyframes novi-gate {
+  0%, 70%, 100% { box-shadow: 0 0 0 0 hsl(var(--warning) / 0); }
+  80% { box-shadow: 0 0 0 5px hsl(var(--warning) / 0.18); }
+}
+
+@keyframes novi-loop {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.novi-flow-signal {
+  animation: novi-flow-horizontal 5.5s linear infinite;
+}
+
+.novi-flow-drop {
+  animation: novi-flow-vertical 1.8s ease-in-out infinite;
+}
+
+.novi-flow-delay {
+  animation-delay: 0.9s;
+}
+
+.novi-gate-pulse {
+  animation: novi-gate 5.5s ease-out infinite;
+}
+
+.novi-loop-arrow {
+  display: inline-block;
+  animation: novi-loop 4s linear infinite;
+}
+
+.novi-flow-core::before {
+  content: "";
+  position: absolute;
+  inset: -0.55rem;
+  border: 1px solid hsl(var(--sidebar-primary) / 0.35);
+  border-radius: 9999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .novi-flow-signal,
+  .novi-flow-drop,
+  .novi-gate-pulse,
+  .novi-loop-arrow {
+    animation: none;
+  }
+}
