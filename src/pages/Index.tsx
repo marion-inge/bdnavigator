@@ -333,7 +333,7 @@ export default function Index() {
             <div className="rounded-lg border border-border bg-card overflow-auto max-h-[70vh] novi-table-scroll">
               <table className="w-full min-w-[1400px]">
               <thead>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border bg-muted/60 sticky top-0 z-20">
                   <th colSpan={6} className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/60 border-l-2 border-muted-foreground/30">
                     {language === "de" ? "Allgemeine Informationen" : "General Information"}
                   </th>
