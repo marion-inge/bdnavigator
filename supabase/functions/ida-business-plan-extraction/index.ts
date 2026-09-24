@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import JSZip from "npm:jszip@3.10.1";
 import * as XLSX from "npm:xlsx@0.18.5";
-import { extractText, getDocumentProxy } from "npm:unpdf@0.12.1";
+import { getDocumentProxy } from "npm:unpdf@0.12.1";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 // PDFs are converted to text server-side, so much larger files are fine.
@@ -105,9 +105,20 @@ async function toContentBlock(name: string, mime: string, buf: Uint8Array): Prom
     // Extract the full text layer page by page — reliable for long reports and
     // far lighter than sending the binary. Fall back to binary only for scans.
     try {
-      const pdf = await getDocumentProxy(new Uint8Array(buf));
-      const { totalPages, text } = await extractText(pdf, { mergePages: false });
-      const pages = (text as string[]).map((t, i) => `[p.${i + 1}]\n${t.trim()}`).join("\n\n");
+      const pdf = await getDocumentProxy(buf, { disableFontFace: true, isEvalSupported: false, useSystemFonts: false, stopAtErrors: false } as any);
+      const totalPages = pdf.numPages;
+      const parts: string[] = [];
+      let len = 0;
+      for (let i = 1; i <= totalPages && len < MAX_PDF_CHARS; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        const t = (tc.items as any[]).map((it) => (it.str ?? "") + (it.hasEOL ? "\n" : " ")).join("").replace(/[ \t]+/g, " ").trim();
+        page.cleanup();
+        parts.push(`[p.${i}]\n${t}`);
+        len += t.length;
+      }
+      await pdf.destroy();
+      const pages = parts.join("\n\n");
       if (pages.replace(/\[p\.\d+\]/g, "").trim().length > 1500) {
         const clipped = pages.slice(0, MAX_PDF_CHARS);
         const note = pages.length > MAX_PDF_CHARS ? `\n[Text truncated after ${MAX_PDF_CHARS} characters]` : "";
