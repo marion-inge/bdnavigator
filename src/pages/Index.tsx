@@ -350,7 +350,7 @@ export default function Index() {
                     Business Case
                   </th>
                 </tr>
-                <tr className="border-b border-border bg-muted/50">
+                <tr className="border-b border-border bg-muted/50 sticky top-[28px] z-10">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider border-l-2 border-muted-foreground/30">{t("title")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("stage")}</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("industry")}</th>
