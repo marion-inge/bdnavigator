@@ -19,6 +19,11 @@ import { EmbeddedBMC, EmbeddedLeanCanvas } from "./embedded/SamModels";
 import { CustomersFoundTab } from "./embedded/CustomersFoundTab";
 import { EmbeddedVPC, EmbeddedCBA, EmbeddedThreeCircles, EmbeddedPositioning, EmbeddedTargetCosting } from "./embedded/SomModels";
 import { SalesChannelAnalysisTab } from "./embedded/SalesChannelAnalysisTab";
+import { IdaBusinessPlanFillDialog } from "./IdaBusinessPlanFillDialog";
+import { Button } from "@/components/ui/button";
+import idaRobot from "@/assets/ida-robot.png";
+import type { ProposalGroup } from "@/lib/businessPlanIdaFields";
+
 
 
 export type StrategicAnalysisTab = string;
@@ -46,6 +51,18 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
   const [scoring, setScoring] = useState<DetailedScoring>(detailedScoring || createDefaultDetailedScoring());
   const [saData, setSaData] = useState<StrategicAnalyses>(strategicAnalyses || createDefaultStrategicAnalyses());
+  const [idaScope, setIdaScope] = useState<ProposalGroup | null>(null);
+
+  const idaButton = (scope: ProposalGroup, labelEn: string, labelDe: string) =>
+    !readonly && opportunityId ? (
+      <div className="flex justify-end mb-3">
+        <Button type="button" size="sm" onClick={() => setIdaScope(scope)}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+          <img src={idaRobot} alt="" className="h-4 w-4" />
+          {bp(labelEn, labelDe)}
+        </Button>
+      </div>
+    ) : null;
 
   const mainTab = activeMainTab || "tam";
 
@@ -78,14 +95,15 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ TAM ═══ */}
       <TabsContent value="tam">
-        {!activeSubTab && (
+        {!activeSubTab && (<>
+          {idaButton("tam", "Fill TAM with IDA", "TAM mit IDA ausfüllen")}
           <TamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
             onSaveTam={(d) => handleUpdateSa({ ...saData, tam: d })}
             onSaveSam={(d) => handleUpdateSa({ ...saData, sam: d })}
             opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
             solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        )}
+        </>)}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("tam", v)} className="space-y-4">
           <TabsContent value="tam-research" data-bp-subtab="tam-research" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <EmbeddedMarketResearch {...tamProps} />
@@ -107,12 +125,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SAM ═══ */}
       <TabsContent value="sam">
-        {!activeSubTab && (
+        {!activeSubTab && (<>
+          {idaButton("sam", "Fill SAM with IDA", "SAM mit IDA ausfüllen")}
           <SamOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
             opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
             solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        )}
+        </>)}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("sam", v)} className="space-y-4">
           <TabsContent value="sam-channels" data-bp-subtab="sam-channels" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <SalesChannelAnalysisTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -146,12 +165,13 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ SOM ═══ */}
       <TabsContent value="som">
-        {!activeSubTab && (
+        {!activeSubTab && (<>
+          {idaButton("som", "Fill SOM with IDA", "SOM mit IDA ausfüllen")}
           <SomOverview scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly}
             strategicAnalyses={saData}
             opportunityTitle={opportunityTitle} opportunityDescription={opportunityDescription}
             solutionDescription={solutionDescription} industry={industry} geography={geography} technology={technology} />
-        )}
+        </>)}
         {activeSubTab && <Tabs value={activeSubTab} onValueChange={(v) => handleSubTabChange("som", v)} className="space-y-4">
           <TabsContent value="som-competitor" data-bp-subtab="som-competitor" className="scroll-mt-4 min-h-[calc(100vh-2rem)]">
             <CompetitorLandscapeTab scoring={scoring} onUpdate={handleUpdateScoring} readonly={readonly} />
@@ -186,6 +206,18 @@ export function BusinessPlanSection({ opportunityId, detailedScoring, strategicA
 
       {/* ═══ Others ═══ */}
     </Tabs>
+    {opportunityId && idaScope && (
+      <IdaBusinessPlanFillDialog
+        open={!!idaScope}
+        onOpenChange={(o) => !o && setIdaScope(null)}
+        opportunityId={opportunityId}
+        scope={idaScope}
+        scoring={scoring}
+        strategicAnalyses={saData}
+        context={{ title: opportunityTitle, description: opportunityDescription, solutionDescription, industry, geography, technology }}
+        onApply={({ scoring: s, sa }) => { handleUpdateScoring(s); handleUpdateSa(sa); setIdaScope(null); }}
+      />
+    )}
     </div>
   );
 }
