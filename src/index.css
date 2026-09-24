@@ -145,3 +145,25 @@
 .display-mode button[role="combobox"]:disabled svg {
   display: none;
 }
+
+/* Visible, always-on horizontal scrollbar for the ideas table */
+.novi-table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.5) hsl(var(--muted) / 0.4);
+}
+.novi-table-scroll::-webkit-scrollbar {
+  height: 10px;
+  -webkit-appearance: none;
+}
+.novi-table-scroll::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.4);
+  border-radius: 6px;
+}
+.novi-table-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.5);
+  border-radius: 6px;
+  border: 2px solid hsl(var(--muted) / 0.4);
+}
+.novi-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.7);
+}
