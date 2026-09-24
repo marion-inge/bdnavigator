@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, BookOpen, LayoutDashboard, BarChart2, Globe, Target, TrendingUp, Briefcase, RefreshCw, GitMerge, LineChart, Paperclip, DollarSign, ArrowRightLeft, Rocket, Search } from "lucide-react";
 import idaRobot from "@/assets/ida-robot.png";
 import markRobot from "@/assets/mark-robot.png";
+import { NoviValueFlow } from "@/components/NoviValueFlow";
 
 export default function ProcessGuide() {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ export default function ProcessGuide() {
               "Jede Idee durchläuft 7 Phasen mit 5 Gate-Entscheidungen. Gate-Reviews stellen sicher, dass nur die vielversprechendsten Ideen weiterkommen. Der Prozess ist flexibel — Phasen können bei neuen Erkenntnissen erneut besucht werden."
             )}
           </p>
-          <StageFlowDiagram bp={bp} />
+          <NoviValueFlow bp={bp} />
         </section>
 
         {/* Tool Sections */}
@@ -421,36 +422,6 @@ export default function ProcessGuide() {
 
 
       </main>
-    </div>
-  );
-}
-
-/* Stage flow visual — 7-phase process with 5 gates */
-function StageFlowDiagram({ bp }: { bp: (en: string, de: string) => string }) {
-  const stages = [
-    { label: bp("1 Idea & Scoring", "1 Idee & Scoring"), color: "bg-stage-rough-scoring" },
-    { label: "G1", color: "bg-stage-gate1" },
-    { label: bp("2 Market Intelligence", "2 Marktintelligenz"), color: "bg-stage-market-intel" },
-    { label: "G2", color: "bg-stage-gate2" },
-    { label: bp("3 TAM SAM SOM", "3 TAM SAM SOM"), color: "bg-stage-detailed-scoring" },
-    { label: "G3", color: "bg-stage-gate3" },
-    { label: bp("4 Market Verification", "4 Marktverifizierung"), color: "bg-stage-verify-market" },
-    { label: "G4", color: "bg-stage-gate4" },
-    { label: bp("5 Business Case", "5 Business Case"), color: "bg-stage-business-case" },
-    { label: "G5", color: "bg-stage-gate5" },
-    { label: bp("6 Implementation & GTM", "6 Umsetzung & GTM"), color: "bg-stage-gtm" },
-    { label: bp("7 Implement & Review", "7 Umsetzung & Review"), color: "bg-stage-implement-review" },
-  ];
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {stages.map(({ label, color }, i) => (
-        <div key={label} className="flex items-center gap-2">
-          <div className={`${color} text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap`}>
-            {label}
-          </div>
-          {i < stages.length - 1 && <span className="text-muted-foreground text-lg">→</span>}
-        </div>
-      ))}
     </div>
   );
 }
