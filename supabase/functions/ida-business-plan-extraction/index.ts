@@ -631,8 +631,17 @@ async function buildEvidenceDigestParallel(blocks: any[], anchor: string, lang: 
     }
   }
   const work = groups.filter((g) => g.length > 0);
-  const settled = await Promise.allSettled(work.map((g, i) =>
-    new Promise((r) => setTimeout(r, i * 300)).then(() => digestPart(g, anchor, lang, apiKey))));
+  // Bounded concurrency keeps CPU/memory per instant low.
+  const settled: PromiseSettledResult<string>[] = new Array(work.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < work.length) {
+      const i = next++;
+      try { settled[i] = { status: "fulfilled", value: await digestPart(work[i], anchor, lang, apiKey) }; }
+      catch (reason) { settled[i] = { status: "rejected", reason }; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(6, work.length) }, worker));
   const ok = settled.filter((r) => r.status === "fulfilled").map((r: any) => r.value as string).filter(Boolean);
   const denied: any = settled.find((r: any) => r.status === "rejected" && r.reason?.status === 402);
   if (denied) throw denied.reason;
@@ -715,6 +724,16 @@ serve(async (req) => {
     const blocks: any[] = [];
     const usedFiles: string[] = [];
 
+    // Text the browser already extracted (PDF / Office), keyed by attachment id
+    // or "scan:<path>" for Scan-Pack deliverables. Parsing these server-side
+    // exceeded the function's CPU budget.
+    const provided = new Map<string, { name: string; text: string; pages: number }>();
+    for (const t of (body.extractedTexts ?? [])) {
+      if (t && typeof t.fileId === "string" && typeof t.text === "string") {
+        provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
+      }
+    }
+
     if (fileIds.length > 0) {
       const { data: files } = await supabase
         .from("opportunity_files")
@@ -722,14 +741,9 @@ serve(async (req) => {
         .eq("opportunity_id", body.opportunityId)
         .in("id", fileIds);
 
-      const provided = new Map<string, { name: string; text: string; pages: number }>();
-      for (const t of (body.extractedTexts ?? [])) {
-        if (t && typeof t.fileId === "string" && typeof t.text === "string") {
-          provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
-        }
-      }
       for (const f of files ?? []) {
         const pre = provided.get((f as any).id);
+        if (pre?.text === "__DUPLICATE__") continue; // same report already sent as PDF
         if (pre) {
           if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
           const label = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
@@ -779,6 +793,15 @@ serve(async (req) => {
         blocks.push({ type: "text", text: parts.join("\n\n") });
 
         for (const meta of (card.files ?? []) as any[]) {
+          const pre = provided.get(`scan:${meta.path}`);
+          if (pre) {
+            if (pre.text === "__DUPLICATE__") continue; // same file already sent as attachment
+            const displayName = `[${label}] ${meta.name}`;
+            const lbl = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
+            blocks.push({ type: "text", text: `--- File: ${displayName} (${lbl}) ---\n${pre.text}\n--- End of ${displayName} ---` });
+            usedFiles.push(displayName);
+            continue;
+          }
           if ((meta.size || 0) > MAX_BYTES) {
             blocks.push({ type: "text", text: `[Scan deliverable "${meta.name}" too large, skipped.]` });
             continue;
