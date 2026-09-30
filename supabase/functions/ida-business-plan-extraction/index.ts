@@ -732,7 +732,8 @@ serve(async (req) => {
         const pre = provided.get((f as any).id);
         if (pre) {
           if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
-          blocks.push({ type: "text", text: `--- File: ${f.file_name} (PDF, ${pre.pages} pages, full text) ---\n${pre.text}\n--- End of ${f.file_name} ---` });
+          const label = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
+          blocks.push({ type: "text", text: `--- File: ${f.file_name} (${label}) ---\n${pre.text}\n--- End of ${f.file_name} ---` });
           usedFiles.push(f.file_name);
           continue;
         }

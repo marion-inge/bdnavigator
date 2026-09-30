@@ -14,6 +14,7 @@ import { useStore } from "@/lib/store";
 import type { ScanPackKey } from "@/lib/scanPackTypes";
 import { supabase } from "@/integrations/supabase/client";
 import { extractPdfTextFromUrl } from "@/lib/pdfText";
+import { extractOfficeTextFromUrl, officeKind } from "@/lib/officeText";
 
 const SCAN_LABELS: Record<ScanPackKey, { en: string; de: string }> = {
   industry: { en: "Industry Study", de: "Industriestudie" },
@@ -140,7 +141,19 @@ export function IdaBusinessPlanFillDialog({
       for (const f of files.filter((x) => selectedFiles.has(x.id))) {
         const isPdf = f.mime_type === "application/pdf" || f.file_name.toLowerCase().endsWith(".pdf");
         const path = (f as any).file_path as string | undefined;
-        if (!isPdf || !path) continue;
+        if (!path) continue;
+        const office = officeKind(f.file_name, f.mime_type || "");
+        if (office) {
+          try {
+            const url = supabase.storage.from("opportunity-files").getPublicUrl(path).data.publicUrl;
+            const text = await extractOfficeTextFromUrl(url, office);
+            extractedTexts.push({ fileId: f.id, name: f.file_name, text: text || "(no readable content)", pages: 0 });
+          } catch (e) {
+            console.warn("Office text extraction failed", f.file_name, e);
+          }
+          continue;
+        }
+        if (!isPdf) continue;
         try {
           const url = supabase.storage.from("opportunity-files").getPublicUrl(path).data.publicUrl;
           const { text, pages } = await extractPdfTextFromUrl(url);
