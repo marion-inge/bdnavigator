@@ -229,10 +229,9 @@ export function IdaBusinessPlanFillDialog({
         setStep("pick");
         return;
       }
-      const data2 = payload;
-      const prop = (data as any).proposal;
+      const prop = payload.proposal;
       setProposal(prop);
-      setFilesUsed((data as any).filesUsed || []);
+      setFilesUsed(payload.filesUsed || []);
 
       // Pre-populate edits + default acceptance (only fields that came back AND are currently empty)
       const newEdits: Record<string, string> = {};
