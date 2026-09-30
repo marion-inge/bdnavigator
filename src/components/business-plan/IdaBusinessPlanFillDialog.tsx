@@ -138,11 +138,20 @@ export function IdaBusinessPlanFillDialog({
     try {
       // Read PDF text in the browser so long reports arrive complete.
       const extractedTexts: { fileId: string; name: string; text: string; pages: number }[] = [];
+      const baseName = (n: string) => n.toLowerCase().replace(/\.[a-z0-9]+$/, "").replace(/\s*\(\d+\)$/, "").trim();
+      const pdfBases = new Set(
+        files.filter((x) => selectedFiles.has(x.id) && x.file_name.toLowerCase().endsWith(".pdf")).map((x) => baseName(x.file_name)),
+      );
       for (const f of files.filter((x) => selectedFiles.has(x.id))) {
         const isPdf = f.mime_type === "application/pdf" || f.file_name.toLowerCase().endsWith(".pdf");
         const path = (f as any).file_path as string | undefined;
         if (!path) continue;
         const office = officeKind(f.file_name, f.mime_type || "");
+        // Word/PowerPoint that also exists as a selected PDF: read only the PDF.
+        if (office && office !== "xlsx" && pdfBases.has(baseName(f.file_name))) {
+          extractedTexts.push({ fileId: f.id, name: f.file_name, text: "__DUPLICATE__", pages: 0 });
+          continue;
+        }
         if (office) {
           try {
             const url = supabase.storage.from("opportunity-files").getPublicUrl(path).data.publicUrl;

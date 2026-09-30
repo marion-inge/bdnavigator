@@ -743,6 +743,7 @@ serve(async (req) => {
 
       for (const f of files ?? []) {
         const pre = provided.get((f as any).id);
+        if (pre?.text === "__DUPLICATE__") continue; // same report already sent as PDF
         if (pre) {
           if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
           const label = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
