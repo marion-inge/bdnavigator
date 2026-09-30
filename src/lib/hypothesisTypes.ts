@@ -89,6 +89,7 @@ export interface HypothesisBuyingCenter {
   shortlistRule: string;
   depth: string;
   deliveryNotes: string;
+  outreachHandover: string;
 }
 
 export interface HypothesisData {
@@ -168,6 +169,7 @@ export function createDefaultBuyingCenter(): HypothesisBuyingCenter {
     shortlistRule: "",
     depth: "",
     deliveryNotes: "",
+    outreachHandover: "",
   };
 }
 
