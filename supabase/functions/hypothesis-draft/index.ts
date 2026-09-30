@@ -66,6 +66,8 @@ serve(async (req) => {
       selectedScans: ScanKey[];
       language?: "en" | "de";
       fileIds?: string[];
+      excelText?: string;
+      excelName?: string;
     };
 
     const lang = body.language === "de" ? "German" : "English";
@@ -103,7 +105,11 @@ serve(async (req) => {
       const c = comments[qid];
       briefLines.push(`- ${qid}: ${score}${c ? ` — ${c}` : ""}`);
     }
-    const brief = briefLines.join("\n");
+    let brief = briefLines.join("\n");
+    const excelText = typeof body.excelText === "string" ? body.excelText.slice(0, 200000) : "";
+    if (excelText) {
+      brief += `\n\n--- Uploaded hypothesis Excel "${body.excelName || "upload.xlsx"}" (PRIMARY SOURCE) ---\n${excelText}\n--- End Excel ---`;
+    }
 
     // Load selected attached files (if any) as multimodal content blocks
     const fileBlocks: any[] = [];
@@ -145,9 +151,12 @@ serve(async (req) => {
         "Buying Center Scan: fill offeringDescription (3–5 sentences), seedInputType ('customer_scan_db'|'crm_export'|'lead_list'|'manual_account_list'|''), shortlistRule, depth ('full_mapping_50'|'contact_coverage_400'|''), deliveryNotes.",
     };
 
-    const attachmentClause = fileBlocks.length > 0
-      ? " In addition to the idea brief, the user has attached supporting documents — read them carefully and use any concrete facts, figures, customers, competitors, specs or geographies grounded in those documents."
+    const excelClause = excelText
+      ? " The user uploaded an existing hypothesis Excel. Treat it as the PRIMARY source: transfer its content faithfully into the matching fields (same wording, lists split into array items). Only use the idea brief to fill fields the Excel leaves empty."
       : "";
+    const attachmentClause = excelClause + (fileBlocks.length > 0
+      ? " In addition to the idea brief, the user has attached supporting documents — read them carefully and use any concrete facts, figures, customers, competitors, specs or geographies grounded in those documents."
+      : "");
 
     const systemPrompt =
       `You are IDA, a senior innovation analyst. Draft a "Hypothesis Builder" input sheet for a research team. Use ONLY the idea brief${fileBlocks.length > 0 ? " and the attached documents" : ""} provided. If a specific field cannot be reasonably inferred, return an empty string / empty array / null — DO NOT invent facts, numbers, company names or specifications. Prefer leaving fields empty over hallucinating. Respond in ${lang}.${attachmentClause}`;

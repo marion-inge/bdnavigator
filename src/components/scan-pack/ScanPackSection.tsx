@@ -152,17 +152,6 @@ export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
   const allScansDone = NON_ASSEMBLER_KEYS.every((k) => pack[k].status === "done");
   const doneCount = SCAN_PACK_KEYS.filter((k) => pack[k].status === "done").length;
 
-  if (!hypothesisPresent) {
-    return (
-      <div className="rounded-lg border border-border p-6 text-sm text-muted-foreground">
-        {L(
-          "Draft a hypothesis first — the Scan Pack module opens once at least a draft hypothesis exists.",
-          "Bitte zuerst eine Hypothese entwerfen — das Scan-Pack-Modul öffnet sich, sobald mindestens ein Entwurf existiert.",
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -183,11 +172,20 @@ export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
         </div>
       </div>
 
-      {hypothesisDraft && (
+      {!hypothesisPresent && (
+        <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
+          {L(
+            "No hypothesis yet — that's fine. You can upload scan results directly. A hypothesis (built in NOVI or imported from Excel) is optional and only pre-fills the scan intakes.",
+            "Noch keine Hypothese — kein Problem. Du kannst Scan-Ergebnisse direkt hochladen. Eine Hypothese (in NOVI erstellt oder aus Excel übernommen) ist optional und befüllt nur die Scan-Intakes vor.",
+          )}
+        </div>
+      )}
+
+      {hypothesisPresent && hypothesisDraft && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
           {L(
-            "Your hypothesis is still a draft. Recommended: confirm it before commissioning the scans — but you can proceed.",
-            "Deine Hypothese ist noch ein Entwurf. Empfehlung: bestätige sie vor Beauftragung der Scans — du kannst aber weitermachen.",
+            "Your hypothesis is still a draft. Optional: confirm it before commissioning the scans.",
+            "Deine Hypothese ist noch ein Entwurf. Optional: bestätige sie vor Beauftragung der Scans.",
           )}
         </div>
       )}
