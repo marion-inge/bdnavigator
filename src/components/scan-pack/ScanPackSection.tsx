@@ -153,16 +153,6 @@ export function ScanPackSection({ opportunity, onSave, readonly }: Props) {
   const doneCount = SCAN_PACK_KEYS.filter((k) => pack[k].status === "done").length;
 
   return (
-      <div className="rounded-lg border border-border p-6 text-sm text-muted-foreground">
-        {L(
-          "Draft a hypothesis first — the Scan Pack module opens once at least a draft hypothesis exists.",
-          "Bitte zuerst eine Hypothese entwerfen — das Scan-Pack-Modul öffnet sich, sobald mindestens ein Entwurf existiert.",
-        )}
-      </div>
-    );
-  }
-
-  return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
