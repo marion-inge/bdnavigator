@@ -164,6 +164,39 @@ export function IdaBusinessPlanFillDialog({
           console.warn("PDF text extraction failed", f.file_name, e);
         }
       }
+      // Scan-Pack deliverables: read in the browser as well; skip copies of files
+      // that are already selected as attachments.
+      const norm = (n: string) => n.toLowerCase().replace(/\s*\(\d+\)(?=\.[a-z0-9]+$)/, "").trim();
+      const attachedNames = new Set(files.filter((x) => selectedFiles.has(x.id)).map((x) => norm(x.file_name)));
+      for (const k of Array.from(selectedScans)) {
+        const metas: any[] = ((scanPack as any)?.[k]?.files ?? []) as any[];
+        for (const meta of metas) {
+          if (!meta?.path) continue;
+          const id = `scan:${meta.path}`;
+          if (attachedNames.has(norm(String(meta.name || "")))) {
+            extractedTexts.push({ fileId: id, name: meta.name, text: "__DUPLICATE__", pages: 0 });
+            continue;
+          }
+          const office = officeKind(String(meta.name || ""), meta.mime || "");
+          const isPdf = (meta.mime || "") === "application/pdf" || String(meta.name || "").toLowerCase().endsWith(".pdf");
+          if (!office && !isPdf) continue;
+          try {
+            const { data: signed } = await supabase.storage.from("scan-deliverables").createSignedUrl(meta.path, 600);
+            if (!signed?.signedUrl) continue;
+            if (office) {
+              const text = await extractOfficeTextFromUrl(signed.signedUrl, office);
+              extractedTexts.push({ fileId: id, name: meta.name, text: text || "(no readable content)", pages: 0 });
+            } else {
+              const { text, pages } = await extractPdfTextFromUrl(signed.signedUrl);
+              if (text.replace(/\[p\.\d+\]/g, "").trim().length > 1500) {
+                extractedTexts.push({ fileId: id, name: meta.name, text, pages });
+              }
+            }
+          } catch (e) {
+            console.warn("Scan deliverable extraction failed", meta.name, e);
+          }
+        }
+      }
       const { data, error } = await invokeFunction("ida-business-plan-extraction", {
         opportunityId,
         fileIds: Array.from(selectedFiles),
