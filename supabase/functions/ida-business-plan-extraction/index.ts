@@ -11,7 +11,7 @@ const MAX_PDF_CHARS = 600_000;
 const isPdf = (mime: string, name: string) => mime === "application/pdf" || name.toLowerCase().endsWith(".pdf");
 const sizeCap = (mime: string, name: string) => (isPdf(mime, name) ? MAX_PDF_BYTES : MAX_BYTES);
 // Total budget for binary (PDF/image) payloads sent inline as base64, to stay under the function memory limit.
-const MAX_TOTAL_BINARY_BYTES = 12 * 1024 * 1024;
+const MAX_TOTAL_BINARY_BYTES = 40 * 1024 * 1024;
 let binaryBudgetUsed = 0;
 const MAX_EXTRACTED_CHARS_PER_FILE = 220_000;
 
@@ -99,7 +99,7 @@ async function extractPptxText(buf: Uint8Array): Promise<string> {
 async function toContentBlock(name: string, mime: string, buf: Uint8Array): Promise<any> {
   const kind = classify(mime, name);
   if (kind === "unsupported") return { type: "text", text: `[Attachment "${name}" cannot be read.]` };
-  if (buf.byteLength > MAX_BYTES) return { type: "text", text: `[Attachment "${name}" exceeded size cap and was skipped.]` };
+  if (buf.byteLength > sizeCap(mime, name)) return { type: "text", text: `[Attachment "${name}" exceeded size cap and was skipped.]` };
   if (kind === "text") {
     const text = new TextDecoder().decode(buf).slice(0, MAX_EXTRACTED_CHARS_PER_FILE);
     return { type: "text", text: `--- File: ${name} ---\n${text}\n--- End of ${name} ---` };
@@ -779,7 +779,7 @@ serve(async (req) => {
           usedFiles.push(f.file_name);
           continue;
         }
-        if ((f.file_size || 0) > MAX_BYTES) {
+        if ((f.file_size || 0) > sizeCap(f.mime_type || "", f.file_name)) {
           blocks.push({ type: "text", text: `[Attachment "${f.file_name}" too large, skipped.]` });
           continue;
         }
@@ -831,7 +831,7 @@ serve(async (req) => {
             usedFiles.push(displayName);
             continue;
           }
-          if ((meta.size || 0) > MAX_BYTES) {
+          if ((meta.size || 0) > sizeCap(meta.mime || "", meta.name)) {
             blocks.push({ type: "text", text: `[Scan deliverable "${meta.name}" too large, skipped.]` });
             continue;
           }
