@@ -669,7 +669,7 @@ async function runSectionWithRetry(
     } catch (e: any) {
       lastError = e;
       // Don't burn retries on non-transient failures.
-      if (e?.status === 402) throw e;
+      if (e?.status === 402 || e?.status === 403) throw e;
       if (e?.status && e.status !== 429 && e.status < 500) throw e;
     }
   }
@@ -969,6 +969,8 @@ serve(async (req) => {
               ? "Rate limit exceeded — please wait a moment and try again."
               : st === 402
               ? "AI credits exhausted."
+              : st === 403
+              ? "The workspace AI credit limit has been reached. Please ask the workspace owner to raise the limit, then try again."
               : st === 503
               ? "The AI service is temporarily overloaded. Please try again in a minute."
               : "IDA could not extract any fields. Try again or select different documents.";

@@ -239,7 +239,7 @@ export function IdaBusinessPlanFillDialog({
             });
             let p: any = d;
             if (typeof p === "string") { try { p = JSON.parse(p); } catch { p = null; } }
-            if (p?.status === 402) creditsError = true;
+            if (p?.status === 402 || p?.status === 403) creditsError = true;
             if (!e && p?.digest) digests[i] = p.digest;
             if (creditsError) break;
           }
@@ -249,7 +249,7 @@ export function IdaBusinessPlanFillDialog({
       };
       await Promise.all(Array.from({ length: Math.min(4, parts.length) }, worker));
       if (creditsError) {
-        toast.error(bp("AI credits exhausted.", "KI-Guthaben aufgebraucht."));
+        toast.error(bp("The AI credit limit has been reached. Please ask the workspace owner to raise it, then try again.", "Das KI-Guthaben-Limit ist erreicht. Bitte den Workspace-Inhaber bitten, das Limit zu erhöhen, dann erneut versuchen."));
         setStep("pick");
         return;
       }
