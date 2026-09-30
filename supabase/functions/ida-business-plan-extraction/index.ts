@@ -641,7 +641,7 @@ async function buildEvidenceDigestParallel(blocks: any[], anchor: string, lang: 
       catch (reason) { settled[i] = { status: "rejected", reason }; }
     }
   };
-  await Promise.all(Array.from({ length: Math.min(4, work.length) }, worker));
+  await Promise.all(Array.from({ length: Math.min(6, work.length) }, worker));
   const ok = settled.filter((r) => r.status === "fulfilled").map((r: any) => r.value as string).filter(Boolean);
   const denied: any = settled.find((r: any) => r.status === "rejected" && r.reason?.status === 402);
   if (denied) throw denied.reason;
