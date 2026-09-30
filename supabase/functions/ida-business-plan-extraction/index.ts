@@ -715,6 +715,16 @@ serve(async (req) => {
     const blocks: any[] = [];
     const usedFiles: string[] = [];
 
+    // Text the browser already extracted (PDF / Office), keyed by attachment id
+    // or "scan:<path>" for Scan-Pack deliverables. Parsing these server-side
+    // exceeded the function's CPU budget.
+    const provided = new Map<string, { name: string; text: string; pages: number }>();
+    for (const t of (body.extractedTexts ?? [])) {
+      if (t && typeof t.fileId === "string" && typeof t.text === "string") {
+        provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
+      }
+    }
+
     if (fileIds.length > 0) {
       const { data: files } = await supabase
         .from("opportunity_files")
@@ -722,12 +732,6 @@ serve(async (req) => {
         .eq("opportunity_id", body.opportunityId)
         .in("id", fileIds);
 
-      const provided = new Map<string, { name: string; text: string; pages: number }>();
-      for (const t of (body.extractedTexts ?? [])) {
-        if (t && typeof t.fileId === "string" && typeof t.text === "string") {
-          provided.set(t.fileId, { name: String(t.name || ""), text: t.text.slice(0, MAX_PDF_CHARS), pages: Number(t.pages) || 0 });
-        }
-      }
       for (const f of files ?? []) {
         const pre = provided.get((f as any).id);
         if (pre) {
