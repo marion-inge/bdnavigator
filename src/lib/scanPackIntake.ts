@@ -123,6 +123,7 @@ function scanBlock(h: HypothesisData, scan: ScanPackKey): string {
         line("Shortlist rule", s.shortlistRule),
         line("Depth", s.depth),
         line("Delivery notes", s.deliveryNotes),
+        line("Outreach handover", s.outreachHandover),
       ]);
     }
     case "assembler":
