@@ -441,6 +441,12 @@ function BuyingCenterFields({ h, onChange, readonly, lang }: { h: HypothesisData
         <Textarea disabled={readonly} rows={2} value={b.deliveryNotes} placeholder={L(lang, "e.g. map decision-makers and influencers per account", "z. B. Entscheider und Influencer pro Account abbilden")}
           onChange={(e) => set({ deliveryNotes: e.target.value })} />
       </Field>
+      <Field label={L(lang, "Outreach handover", "Outreach-Übergabe")} empty={!b.outreachHandover}
+        help={L(lang, "How verified contacts are handed over to outreach: target format, recipient, timing.", "Wie verifizierte Kontakte an das Outreach übergeben werden: Zielformat, Empfänger, Zeitpunkt.")}>
+        <Textarea disabled={readonly} rows={2} value={b.outreachHandover ?? ""}
+          placeholder={L(lang, "e.g. verified contact list as Excel to sales team after each batch", "z. B. verifizierte Kontaktliste als Excel an das Sales-Team nach jedem Batch")}
+          onChange={(e) => set({ outreachHandover: e.target.value })} />
+      </Field>
     </>
   );
 }

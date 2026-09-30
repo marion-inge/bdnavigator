@@ -157,6 +157,7 @@ function buyingCenterRows(h: HypothesisData, lang: Language): Row[] {
     [L(lang, "Shortlist rule", "Shortlist-Regel"), b.shortlistRule || "", help("Rule used to shortlist accounts / contacts.", "Regel zur Shortlist-Bildung.")],
     [L(lang, "Depth", "Tiefe"), b.depth || "", help("Analysis depth: light / baseline / deep.", "Analyse-Tiefe: light / baseline / deep.")],
     [L(lang, "Delivery notes", "Liefer-Notizen"), b.deliveryNotes || "", ""],
+    [L(lang, "Outreach handover", "Outreach-Übergabe"), b.outreachHandover || "", help("How verified contacts are handed over to outreach.", "Wie verifizierte Kontakte an das Outreach übergeben werden.")],
   ];
 }
 
