@@ -76,6 +76,7 @@ export function IdaBusinessPlanFillDialog({
 
   const [proposal, setProposal] = useState<any>(null);
   const [filesUsed, setFilesUsed] = useState<string[]>([]);
+  const [progress, setProgress] = useState("");
 
   /** per-field edited proposal value (key = field.path) */
   const [edits, setEdits] = useState<Record<string, string>>({});
@@ -135,6 +136,7 @@ export function IdaBusinessPlanFillDialog({
 
   const runExtraction = async () => {
     setStep("running");
+    setProgress(bp("Preparing documents…", "Dokumente werden vorbereitet…"));
     try {
       // Read PDF text in the browser so long reports arrive complete.
       const extractedTexts: { fileId: string; name: string; text: string; pages: number }[] = [];
@@ -206,11 +208,65 @@ export function IdaBusinessPlanFillDialog({
           }
         }
       }
+      // Step 1: read the documents in parts, each part in its own short server
+      // call. One call for everything ran past the server's time/CPU limits.
+      const real = extractedTexts.filter((t) => t.text !== "__DUPLICATE__");
+      const CHUNK = 90_000;
+      const parts: string[] = [];
+      let cur = "";
+      for (const t of real) {
+        const header = `--- File: ${t.name}${t.pages ? ` (PDF, ${t.pages} pages)` : ""} ---\n`;
+        const full = t.text;
+        for (let i = 0; i < full.length; i += CHUNK) {
+          const piece = header + (i > 0 ? "[continued]\n" : "") + full.slice(i, i + CHUNK) + `\n--- End of ${t.name} ---`;
+          if (cur && cur.length + piece.length > CHUNK) { parts.push(cur); cur = ""; }
+          cur += (cur ? "\n\n" : "") + piece;
+        }
+      }
+      if (cur) parts.push(cur);
+
+      const digests: string[] = new Array(parts.length).fill("");
+      let doneParts = 0;
+      let creditsError = false;
+      setProgress(parts.length ? bp(`Reading documents: 0 / ${parts.length} parts`, `Dokumente lesen: 0 / ${parts.length} Teile`) : "");
+      let nextPart = 0;
+      const worker = async () => {
+        while (nextPart < parts.length) {
+          const i = nextPart++;
+          for (let attempt = 0; attempt < 2 && !digests[i]; attempt++) {
+            const { data: d, error: e } = await invokeFunction("ida-business-plan-extraction", {
+              mode: "digest", opportunityId, text: parts[i], language, context,
+            });
+            let p: any = d;
+            if (typeof p === "string") { try { p = JSON.parse(p); } catch { p = null; } }
+            if (p?.status === 402) creditsError = true;
+            if (!e && p?.digest) digests[i] = p.digest;
+            if (creditsError) break;
+          }
+          doneParts++;
+          setProgress(bp(`Reading documents: ${doneParts} / ${parts.length} parts`, `Dokumente lesen: ${doneParts} / ${parts.length} Teile`));
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(4, parts.length) }, worker));
+      if (creditsError) {
+        toast.error(bp("AI credits exhausted.", "KI-Guthaben aufgebraucht."));
+        setStep("pick");
+        return;
+      }
+      const okDigests = digests.filter(Boolean);
+      const digest = okDigests.map((d, i) => `### Digest part ${i + 1}/${okDigests.length}\n${d}`).join("\n\n");
+
+      // Step 2: fill the fields from the digest (plus small notes/summaries).
+      setProgress(bp("Filling the fields…", "Felder werden ausgefüllt…"));
       const { data, error } = await invokeFunction("ida-business-plan-extraction", {
         opportunityId,
         fileIds: Array.from(selectedFiles),
         scanKeys: Array.from(selectedScans),
-        extractedTexts,
+        // If the digest worked, send only markers; otherwise fall back to full text.
+        extractedTexts: digest.length > 500
+          ? extractedTexts.map((t) => ({ ...t, text: t.text === "__DUPLICATE__" ? t.text : "__DIGESTED__" }))
+          : extractedTexts,
+        digest: digest.length > 500 ? digest : undefined,
         scope,
         language,
         context,
@@ -450,6 +506,7 @@ export function IdaBusinessPlanFillDialog({
               <p className="text-sm text-muted-foreground">
                 {bp("IDA is reading your documents and proposing field values...", "IDA liest Ihre Dokumente und schlägt Werte vor...")}
               </p>
+              {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
             </div>
           )}
 
