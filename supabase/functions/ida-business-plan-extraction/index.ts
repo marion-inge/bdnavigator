@@ -565,7 +565,9 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
     body: JSON.stringify({
       model: "openai/gpt-6-astra",
       instructions,
-      stream: true,
+      // Non-streaming on purpose: parsing thousands of SSE events per part
+      // burned through the function's CPU budget ("CPU Time exceeded").
+      stream: false,
       reasoning: { effort: "low" },
       input: [{
         role: "user",
@@ -576,36 +578,22 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
       }],
     }),
   });
-  if (!res.ok || !res.body) {
+  if (!res.ok) {
     const t = await res.text().catch(() => "");
     console.error("Digest gateway error", res.status, t.slice(0, 1000));
     const err: any = new Error(`digest_${res.status}`);
     err.status = res.status;
     throw err;
   }
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  let buf = "", out = "", completed = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    let idx;
-    while ((idx = buf.indexOf("\n")) >= 0) {
-      const line = buf.slice(0, idx).trim();
-      buf = buf.slice(idx + 1);
-      if (!line.startsWith("data:")) continue;
-      const payload = line.slice(5).trim();
-      if (!payload || payload === "[DONE]") continue;
-      try {
-        const ev = JSON.parse(payload);
-        if (ev.type === "response.output_text.delta") out += ev.delta || "";
-        else if (ev.type === "response.completed") completed = ev.response?.output_text || "";
-        else if (ev.type === "error" || ev.type === "response.failed") console.error("Digest stream error", payload.slice(0, 500));
-      } catch { /* partial */ }
+  const data = await res.json();
+  if (typeof data?.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
+  const parts: string[] = [];
+  for (const item of data?.output ?? []) {
+    for (const c of item?.content ?? []) {
+      if (c?.type === "output_text" && typeof c.text === "string") parts.push(c.text);
     }
   }
-  return (out || completed).trim();
+  return parts.join("\n").trim();
 }
 
 /** Split long sources into parts and digest them in parallel — one pass over a
@@ -681,13 +669,30 @@ async function runSectionWithRetry(
     } catch (e: any) {
       lastError = e;
       // Don't burn retries on non-transient failures.
-      if (e?.status === 402) throw e;
+      if (e?.status === 402 || e?.status === 403) throw e;
       if (e?.status && e.status !== 429 && e.status < 500) throw e;
     }
   }
   throw lastError ?? new Error(`section_failed_${scope}`);
 }
 
+
+/** Respond with whitespace keepalives while `work` runs, then the JSON result.
+ *  The platform drops responses that stay silent for 150s. */
+function streamJson(work: () => Promise<unknown>): Response {
+  const enc = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const ka = setInterval(() => { try { controller.enqueue(enc.encode(" ")); } catch { /* closed */ } }, 10_000);
+      let out: unknown;
+      try { out = await work(); } catch (e: any) { out = { error: e?.message || "Unknown" }; }
+      clearInterval(ka);
+      try { controller.enqueue(enc.encode(JSON.stringify(out))); } catch { /* closed */ }
+      controller.close();
+    },
+  });
+  return new Response(stream, { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -706,7 +711,29 @@ serve(async (req) => {
       language?: "en" | "de";
       context?: Record<string, any>;
       extractedTexts?: { fileId: string; name?: string; text: string; pages?: number }[];
+      mode?: "digest";
+      text?: string;
+      digest?: string;
     };
+
+    // Mode "digest": read ONE part of the documents (the browser splits them)
+    // and return the evidence digest. Keeps each call well within limits.
+    if (body.mode === "digest") {
+      const text = typeof body.text === "string" ? body.text.slice(0, 120_000) : "";
+      if (!text.trim()) {
+        return new Response(JSON.stringify({ error: "no_text" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const c = body.context || {};
+      const anc = [c.title ? `Title: ${c.title}` : "", c.industry ? `Industry: ${c.industry}` : "", c.geography ? `Geography: ${c.geography}` : "", c.technology ? `Technology: ${c.technology}` : ""].filter(Boolean).join("\n");
+      const lng = body.language === "de" ? "German" : "English";
+      return streamJson(async () => {
+        try {
+          return { digest: await digestPart([{ type: "text", text }], anc, lng, LOVABLE_API_KEY) };
+        } catch (e: any) {
+          return { error: e?.message || "digest_failed", status: e?.status };
+        }
+      });
+    }
 
     const fileIds = body.fileIds ?? [];
     const scanKeys = body.scanKeys ?? [];
@@ -744,6 +771,7 @@ serve(async (req) => {
       for (const f of files ?? []) {
         const pre = provided.get((f as any).id);
         if (pre?.text === "__DUPLICATE__") continue; // same report already sent as PDF
+        if (pre?.text === "__DIGESTED__") { usedFiles.push(f.file_name); if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` }); continue; }
         if (pre) {
           if (f.comment) blocks.push({ type: "text", text: `User note on "${f.file_name}": ${f.comment}` });
           const label = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
@@ -797,6 +825,7 @@ serve(async (req) => {
           if (pre) {
             if (pre.text === "__DUPLICATE__") continue; // same file already sent as attachment
             const displayName = `[${label}] ${meta.name}`;
+            if (pre.text === "__DIGESTED__") { usedFiles.push(displayName); continue; }
             const lbl = pre.pages > 0 ? `PDF, ${pre.pages} pages, full text` : "extracted content";
             blocks.push({ type: "text", text: `--- File: ${displayName} (${lbl}) ---\n${pre.text}\n--- End of ${displayName} ---` });
             usedFiles.push(displayName);
@@ -815,6 +844,11 @@ serve(async (req) => {
           if (classify(meta.mime || "", meta.name) !== "unsupported") usedFiles.push(displayName);
         }
       }
+    }
+
+    const clientDigest = typeof body.digest === "string" ? body.digest.slice(0, 400_000) : "";
+    if (clientDigest) {
+      blocks.unshift({ type: "text", text: `=== EVIDENCE DIGEST (complete extraction from all source documents; primary evidence) ===\n${clientDigest}\n=== END DIGEST ===` });
     }
 
     if (blocks.length === 0) {
@@ -877,7 +911,7 @@ serve(async (req) => {
           // Pass 1: full-read evidence digest. On success, sections work from
           // the digest (plus light text sources) instead of re-reading PDFs.
           let sectionBlocks = blocks;
-          try {
+          if (!clientDigest) try {
             const digest = await buildEvidenceDigestParallel(blocks, anchor, lang, LOVABLE_API_KEY);
             if (digest.length > 500) {
               const textBlocks = blocks.filter((b) => b.type === "text" && String(b.text).length < 20_000);
@@ -891,12 +925,20 @@ serve(async (req) => {
             console.warn("Digest failed, falling back to raw documents", e);
           }
 
-          const results: PromiseSettledResult<any>[] = [];
-          for (const s of sections) {
-            try {
-              results.push({ status: "fulfilled", value: await runSectionWithRetry(s, sectionBlocks, anchor, lang, LOVABLE_API_KEY) });
-            } catch (reason) {
-              results.push({ status: "rejected", reason });
+          // With a text-only digest the inputs are small, so sections can run in
+          // parallel (saves minutes). Binary attachments stay sequential for memory.
+          const hasBinary = sectionBlocks.some((b) => b.type !== "text");
+          let results: PromiseSettledResult<any>[] = [];
+          if (!hasBinary) {
+            results = await Promise.allSettled(sections.map((s, i) =>
+              sleep(i * 400).then(() => runSectionWithRetry(s, sectionBlocks, anchor, lang, LOVABLE_API_KEY))));
+          } else {
+            for (const s of sections) {
+              try {
+                results.push({ status: "fulfilled", value: await runSectionWithRetry(s, sectionBlocks, anchor, lang, LOVABLE_API_KEY) });
+              } catch (reason) {
+                results.push({ status: "rejected", reason });
+              }
             }
           }
 
@@ -927,6 +969,8 @@ serve(async (req) => {
               ? "Rate limit exceeded — please wait a moment and try again."
               : st === 402
               ? "AI credits exhausted."
+              : st === 403
+              ? "The workspace AI credit limit has been reached. Please ask the workspace owner to raise the limit, then try again."
               : st === 503
               ? "The AI service is temporarily overloaded. Please try again in a minute."
               : "IDA could not extract any fields. Try again or select different documents.";
