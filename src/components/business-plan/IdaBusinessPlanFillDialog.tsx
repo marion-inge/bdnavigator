@@ -215,12 +215,21 @@ export function IdaBusinessPlanFillDialog({
         language,
         context,
       });
-      if (error || !data || (data as any).error) {
-        const msg = (data as any)?.message || (data as any)?.error || (error as any)?.message || "IDA failed";
-        toast.error(msg);
+      let payload: any = data;
+      if (typeof payload === "string") {
+        try { payload = payload.trim() ? JSON.parse(payload) : null; } catch { payload = null; }
+      }
+      if (error || !payload || payload.error || !payload.proposal) {
+        const raw = String(payload?.message || payload?.error || (error as any)?.message || "");
+        const interrupted = !payload || /json|unexpected end|network/i.test(raw);
+        toast.error(interrupted
+          ? bp("IDA was interrupted before finishing. Please try again, or select fewer documents.",
+               "IDA wurde vor dem Abschluss unterbrochen. Bitte erneut versuchen oder weniger Dokumente auswählen.")
+          : raw || "IDA failed");
         setStep("pick");
         return;
       }
+      const data2 = payload;
       const prop = (data as any).proposal;
       setProposal(prop);
       setFilesUsed((data as any).filesUsed || []);
