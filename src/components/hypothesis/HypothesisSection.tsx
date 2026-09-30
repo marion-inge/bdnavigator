@@ -47,7 +47,7 @@ export function HypothesisSection({ opportunity, onSave, readonly }: Props) {
         true,
       );
       onSave({ ...merged, updatedAt: new Date().toISOString() });
-      toast.success(de ? `Hypothese aus „${file.name}" übernommen — bitte prüfen.` : `Hypothesis imported from "${file.name}" — please review.`);
+      toast.success(de ? `Hypothese aus „${file.name}“ übernommen — bitte prüfen.` : `Hypothesis imported from "${file.name}" — please review.`);
     } catch (e: any) {
       toast.error((de ? "Import fehlgeschlagen: " : "Import failed: ") + (e?.message || e));
     } finally {
@@ -125,7 +125,7 @@ export function HypothesisSection({ opportunity, onSave, readonly }: Props) {
       {!hasCompletedScoring && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
           {language === "de"
-            ? "„Mit IDA entwickeln" braucht den ausgefüllten Idea-Scoring-Fragebogen. Du kannst die Hypothese aber jederzeit manuell ausfüllen oder aus einer Excel übernehmen — oder direkt mit dem Scan Pack weitermachen. Die Hypothese ist optional."
+            ? "„Mit IDA entwickeln“ braucht den ausgefüllten Idea-Scoring-Fragebogen. Du kannst die Hypothese aber jederzeit manuell ausfüllen oder aus einer Excel übernehmen — oder direkt mit dem Scan Pack weitermachen. Die Hypothese ist optional."
             : "\"Develop with IDA\" needs the completed Idea Scoring questionnaire. You can still fill the hypothesis manually or import it from Excel — or go straight to the Scan Pack. The hypothesis is optional."}
         </div>
       )}
