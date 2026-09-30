@@ -565,7 +565,9 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
     body: JSON.stringify({
       model: "openai/gpt-6-astra",
       instructions,
-      stream: true,
+      // Non-streaming on purpose: parsing thousands of SSE events per part
+      // burned through the function's CPU budget ("CPU Time exceeded").
+      stream: false,
       reasoning: { effort: "low" },
       input: [{
         role: "user",
@@ -576,36 +578,22 @@ Rules: bullet points; keep EVERY concrete number, unit, year, name and table val
       }],
     }),
   });
-  if (!res.ok || !res.body) {
+  if (!res.ok) {
     const t = await res.text().catch(() => "");
     console.error("Digest gateway error", res.status, t.slice(0, 1000));
     const err: any = new Error(`digest_${res.status}`);
     err.status = res.status;
     throw err;
   }
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  let buf = "", out = "", completed = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    let idx;
-    while ((idx = buf.indexOf("\n")) >= 0) {
-      const line = buf.slice(0, idx).trim();
-      buf = buf.slice(idx + 1);
-      if (!line.startsWith("data:")) continue;
-      const payload = line.slice(5).trim();
-      if (!payload || payload === "[DONE]") continue;
-      try {
-        const ev = JSON.parse(payload);
-        if (ev.type === "response.output_text.delta") out += ev.delta || "";
-        else if (ev.type === "response.completed") completed = ev.response?.output_text || "";
-        else if (ev.type === "error" || ev.type === "response.failed") console.error("Digest stream error", payload.slice(0, 500));
-      } catch { /* partial */ }
+  const data = await res.json();
+  if (typeof data?.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
+  const parts: string[] = [];
+  for (const item of data?.output ?? []) {
+    for (const c of item?.content ?? []) {
+      if (c?.type === "output_text" && typeof c.text === "string") parts.push(c.text);
     }
   }
-  return (out || completed).trim();
+  return parts.join("\n").trim();
 }
 
 /** Split long sources into parts and digest them in parallel — one pass over a
