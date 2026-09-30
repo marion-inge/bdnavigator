@@ -156,7 +156,7 @@ serve(async (req) => {
       : "";
     const attachmentClause = excelClause + (fileBlocks.length > 0
       ? " In addition to the idea brief, the user has attached supporting documents — read them carefully and use any concrete facts, figures, customers, competitors, specs or geographies grounded in those documents."
-      : "";
+      : "");
 
     const systemPrompt =
       `You are IDA, a senior innovation analyst. Draft a "Hypothesis Builder" input sheet for a research team. Use ONLY the idea brief${fileBlocks.length > 0 ? " and the attached documents" : ""} provided. If a specific field cannot be reasonably inferred, return an empty string / empty array / null — DO NOT invent facts, numbers, company names or specifications. Prefer leaving fields empty over hallucinating. Respond in ${lang}.${attachmentClause}`;
